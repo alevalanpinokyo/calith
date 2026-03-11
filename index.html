@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALITH | Calisthenics Ekipman & Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark antialiased selection:bg-white selection:text-black">
+
+<div class="grain"></div>
+
+<!-- Navigation -->
+<nav id="global-nav" class="fixed w-full z-50 top-0 left-0 px-4 sm:px-6 lg:px-8 py-4 backdrop-blur-md border-b border-primary transition-colors duration-300">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex-shrink-0 cursor-pointer select-none transition-transform" id="logo-container">
+            <span class="text-2xl font-black tracking-tighter">CALITH</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-8">
+            <button onclick="showSection('shop')" class="text-sm font-medium hover:opacity-70 transition-opacity">EKİPMAN</button>
+            <button onclick="showSection('blog')" class="text-sm font-medium hover:opacity-70 transition-opacity">BLOG</button>
+            <button onclick="showSection('about')" class="text-sm font-medium hover:opacity-70 transition-opacity">HAKKIMIZDA</button>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <button onclick="toggleCart()" class="relative p-2 hover:opacity-70 transition-opacity">
+                <i class="fas fa-shopping-bag text-lg"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+            </button>
+            <button class="md:hidden p-2 hover:opacity-70 transition-opacity" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-primary pt-20 px-6">
+    <button onclick="toggleMobileMenu()" class="absolute top-4 right-4 p-2"><i class="fas fa-times text-2xl"></i></button>
+    <div class="space-y-6 text-2xl font-bold">
+        <button onclick="showSection('shop'); toggleMobileMenu()" class="block w-full text-left py-2 border-b border-primary">EKİPMAN</button>
+        <button onclick="showSection('blog'); toggleMobileMenu()" class="block w-full text-left py-2 border-b border-primary">BLOG</button>
+        <button onclick="showSection('about'); toggleMobileMenu()" class="block w-full text-left py-2 border-b border-primary">HAKKIMIZDA</button>
+    </div>
+</div>
+
+<!-- LANDING -->
+<section id="landing" class="min-h-screen pt-16 page-transition active">
+    <!-- Hero Section -->
+    <div class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/50 to-primary z-10"></div>
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=2069&auto=format&fit=crop" 
+                 class="w-full h-full object-cover opacity-40 grayscale">
+        </div>
+        <div class="relative z-20 text-center px-6 max-w-5xl mx-auto">
+            <p class="text-secondary text-sm tracking-[0.3em] mb-4 reveal">VÜCUT AĞIRLIĞI EĞİTİMİ</p>
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-6 reveal leading-none text-gradient">
+                SADECE<br>SEN
+            </h1>
+            <p class="text-lg md:text-xl text-secondary max-w-2xl mx-auto mb-10 font-light reveal">
+                Yerçekimi senin spor salonun. Ekipman sadece ilerlemeni hızlandırır, başlamana gerek yok.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal">
+                <button onclick="showSection('blog')" class="px-8 py-4 bg-white text-black font-bold tracking-wider hover:bg-gray-200 transition-colors">
+                    ÜCRETSİZ BAŞLA
+                </button>
+                <button onclick="showSection('shop')" class="px-8 py-4 border border-white/30 font-bold tracking-wider hover:bg-white/10 transition-colors">
+                    EKİPMAN İNCELE
+                </button>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+            <i class="fas fa-chevron-down text-2xl opacity-50"></i>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="border-y border-primary bg-secondary/30 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 divide-x divide-primary">
+            <div class="py-8 text-center reveal">
+                <div class="text-4xl font-black mb-1 stat-counter">0₺</div>
+                <div class="text-secondary text-xs tracking-widest">BAŞLAMAK İÇİN</div>
+            </div>
+            <div class="py-8 text-center reveal">
+                <div class="text-4xl font-black mb-1 stat-counter">100%</div>
+                <div class="text-secondary text-xs tracking-widest">VÜCUT AĞIRLIĞI</div>
+            </div>
+            <div class="py-8 text-center reveal">
+                <div class="text-4xl font-black mb-1 stat-counter">∞</div>
+                <div class="text-secondary text-xs tracking-widest">İLERLEME</div>
+            </div>
+            <div class="py-8 text-center reveal">
+                <div class="text-4xl font-black mb-1 stat-counter">24/7</div>
+                <div class="text-secondary text-xs tracking-widest">HER YERDE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="max-w-7xl mx-auto px-4 py-24">
+        <div class="text-center mb-16 reveal">
+            <h2 class="text-3xl md:text-5xl font-black tracking-tighter mb-4">Neden CALITH?</h2>
+            <p class="text-secondary max-w-2xl mx-auto">Profesyonel ekipmanlar ve uzman rehberlikle hedeflerine ulaş.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="feature-card bg-secondary border border-primary p-8 rounded-2xl hover-lift reveal group cursor-pointer" onclick="showSection('shop')">
+                <div class="feature-icon w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-white group-hover:text-black transition-all">
+                    💪
+                </div>
+                <h3 class="text-2xl font-black mb-3">Premium Ekipman</h3>
+                <p class="text-secondary leading-relaxed">Evinde profesyonel spor salonu deneyimi yaşa. Dayanıklı, güvenli ve şık tasarımlar.</p>
+            </div>
+            <div class="feature-card bg-secondary border border-primary p-8 rounded-2xl hover-lift reveal group cursor-pointer" onclick="showSection('blog')">
+                <div class="feature-icon w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-white group-hover:text-black transition-all">
+                    📚
+                </div>
+                <h3 class="text-2xl font-black mb-3">Ücretsiz Rehberler</h3>
+                <p class="text-secondary leading-relaxed">Başlangıçtan ileri seviyeye tüm hareketleri öğren. Video anlatımlar ve detaylı programlar.</p>
+            </div>
+            <div class="feature-card bg-secondary border border-primary p-8 rounded-2xl hover-lift reveal group">
+                <div class="feature-icon w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-white group-hover:text-black transition-all">
+                    🚀
+                </div>
+                <h3 class="text-2xl font-black mb-3">Hızlı Kargo</h3>
+                <p class="text-secondary leading-relaxed">500₺ üzeri siparişlerde bedava kargo. 14 gün içinde koşulsuz iade garantisi.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transformation Section -->
+    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="reveal">
+                <p class="text-accent font-bold tracking-wider mb-4">TRANSFORMASYON</p>
+                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-6">3 AYDA<br>VÜCUT DÖNÜŞÜMÜ</h2>
+                <p class="text-secondary text-lg mb-8 leading-relaxed">
+                    Sadece barfiks barı ve paralel bar ile evinde profesyonel antrenman yap. 
+                    Programlarımızı takip eden kullanıcıların %89'u ilk ay sonuç alıyor.
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <h4 class="font-bold">Temel Hareketleri Öğren</h4>
+                            <p class="text-secondary text-sm">Pull-up, dip, squat temellerini blog'dan öğren.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <h4 class="font-bold">Ekipmanını Seç</h4>
+                            <p class="text-secondary text-sm">İhtiyacına uygun barfiks veya paralel barı al.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-bold">3</div>
+                        <div>
+                            <h4 class="font-bold">Programı Takip Et</h4>
+                            <p class="text-secondary text-sm">Haftalık programlarla düzenli çalış.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 reveal">
+                <div class="space-y-4">
+                    <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c149a?q=80&w=800&auto=format&fit=crop" class="w-full h-64 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
+                    <img src="https://images.unsplash.com/photo-1598971639058-211a74a96aa7?q=80&w=800&auto=format&fit=crop" class="w-full h-48 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
+                </div>
+                <div class="space-y-4 pt-8">
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop" class="w-full h-48 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
+                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" class="w-full h-64 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marquee Text -->
+    <div class="border-y border-primary py-6 overflow-hidden bg-secondary/20">
+        <div class="marquee-container">
+            <div class="marquee-content text-4xl md:text-6xl font-black tracking-tighter opacity-20">
+                PULL-UP • DIP • MUSCLE-UP • HANDSTAND • PLANCHE • FRONT LEVER • PULL-UP • DIP • MUSCLE-UP • HANDSTAND • PLANCHE • FRONT LEVER •
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="max-w-7xl mx-auto px-4 py-24">
+        <div class="bg-secondary border border-primary rounded-3xl p-8 md:p-16 text-center reveal relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
+            <h2 class="text-3xl md:text-5xl font-black tracking-tighter mb-6 relative z-10">BAŞLAMAYA HAZIR MISIN?</h2>
+            <p class="text-secondary text-lg mb-8 max-w-2xl mx-auto relative z-10">Binlerce kişi CALITH ile evinde profesyonel antrenman yapıyor. Sen de aramıza katıl.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+                <button onclick="showSection('shop')" class="px-8 py-4 bg-white text-black font-bold tracking-wider hover:bg-gray-200 transition-colors rounded-full">
+                    EKİPMAN ALIŞVERİŞİ
+                </button>
+                <button onclick="showSection('blog')" class="px-8 py-4 border border-white/30 font-bold tracking-wider hover:bg-white/10 transition-colors rounded-full">
+                    ÜCRETSİZ BAŞLA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Blog Preview -->
+    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
+        <div class="flex justify-between items-end mb-12 reveal">
+            <div>
+                <p class="text-accent font-bold tracking-wider mb-2">BLOG</p>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tighter">SON YAZILAR</h2>
+            </div>
+            <button onclick="showSection('blog')" class="text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2 group">
+                Tümünü Gör <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+        <div id="landing-blog-preview" class="grid md:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
+        <div class="max-w-2xl mx-auto text-center reveal">
+            <i class="fas fa-envelope text-4xl mb-6 opacity-50"></i>
+            <h2 class="text-3xl font-black tracking-tighter mb-4">GÜNCEL KAL</h2>
+            <p class="text-secondary mb-8">Yeni yazılar ve özel indirimlerden haberdar ol.</p>
+            <form class="flex gap-2" onsubmit="event.preventDefault(); showToast('Abone oldunuz!');">
+                <input type="email" placeholder="E-posta adresin" class="flex-1 bg-secondary border border-primary px-6 py-4 rounded-full focus:outline-none focus:border-white transition-colors">
+                <button type="submit" class="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors">
+                    ABONE OL
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="bg-black text-white text-center py-2.5 text-xs font-medium tracking-wider">🚚 500₺ ÜZERİ KARGO BEDAVA • 14 GÜN İADE</div>
+
+    <div class="bg-secondary py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">EKİPMAN</h1>
+            <p class="text-secondary max-w-xl mx-auto">Antrenmanını bir üst seviyeye taşı. Profesyonel calisthenics ekipmanları.</p>
+        </div>
+    </div>
+
+    <div class="sticky top-16 z-30 bg-primary border-b border-primary shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex gap-2 overflow-x-auto">
+            <button onclick="filterProducts('all')" class="shop-filter active px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap bg-black text-white" data-filter="all">Tümü</button>
+            <button onclick="filterProducts('bar')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="bar">Barfiks</button>
+            <button onclick="filterProducts('parallettes')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="parallettes">Paralel</button>
+            <button onclick="filterProducts('rings')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="rings">Halka</button>
+            <button onclick="filterProducts('band')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="band">Band</button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+    </div>
+</section>
+
+<!-- PRODUCT DETAIL -->
+<section id="product-detail" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <button onclick="showSection('shop')" class="mb-6 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm ürünler</button>
+        <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+            <div class="aspect-square bg-secondary rounded-lg overflow-hidden"><img id="pd-image" src="" class="w-full h-full object-cover"></div>
+            <div class="flex flex-col justify-center">
+                <p id="pd-category" class="text-sm text-secondary font-medium tracking-wider mb-2"></p>
+                <h1 id="pd-name" class="text-3xl md:text-4xl font-black tracking-tighter mb-4"></h1>
+                <div class="flex items-baseline gap-3 mb-6"><span id="pd-price" class="text-3xl font-bold"></span><span id="pd-old-price" class="text-lg text-secondary line-through"></span></div>
+                <p id="pd-desc" class="text-secondary mb-6 leading-relaxed"></p>
+                <div class="mb-6">
+                    <p class="text-sm font-medium mb-3">ADET</p>
+                    <div class="flex items-center border border-primary w-fit rounded">
+                        <button onclick="changePdQty(-1)" class="px-4 py-2 hover:bg-secondary transition-colors">-</button>
+                        <span id="pd-qty" class="px-4 py-2 font-medium min-w-[3rem] text-center">1</span>
+                        <button onclick="changePdQty(1)" class="px-4 py-2 hover:bg-secondary transition-colors">+</button>
+                    </div>
+                </div>
+                <button onclick="addToCartFromDetail()" class="flex-1 bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">SEPETE EKLE</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div class="text-center mb-16 reveal">
+            <p class="text-accent font-bold tracking-wider mb-4">BLOG & REHBERLER</p>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">BLOG</h1>
+            <p class="text-secondary max-w-2xl mx-auto text-lg">Temelden ileri seviyeye tüm rehberler, programlar ve ipuçları.</p>
+        </div>
+        
+        <!-- Blog Categories -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
+            <button onclick="filterBlog('all')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all active" data-filter="all">Tümü</button>
+            <button onclick="filterBlog('temel')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="temel">Temel</button>
+            <button onclick="filterBlog('ileri')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="ileri">İleri Seviye</button>
+            <button onclick="filterBlog('beslenme')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="beslenme">Beslenme</button>
+            <button onclick="filterBlog('ekipman')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="ekipman">Ekipman</button>
+        </div>
+
+        <div id="blog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+</section>
+
+<!-- BLOG DETAIL -->
+<section id="blog-detail" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <button onclick="showSection('blog')" class="mb-8 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm yazılar</button>
+        <article id="blog-detail-content" class="blog-content"></article>
+    </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <h1 class="text-4xl font-black tracking-tighter mb-8 reveal">ADMIN PANEL</h1>
+        <div id="admin-login" class="max-w-md mx-auto space-y-6 reveal">
+            <div class="text-center mb-8">
+                <i class="fas fa-lock text-4xl mb-4 opacity-50"></i>
+                <p class="text-secondary">Yönetici erişimi için şifre girin</p>
+            </div>
+            <input type="password" id="admin-pass" placeholder="Şifre" class="w-full bg-secondary border border-primary px-4 py-4 rounded-xl text-center text-lg tracking-widest focus:outline-none focus:border-white">
+            <button onclick="checkAdmin()" class="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition-colors">GİRİŞ YAP</button>
+            <p class="text-xs text-center text-secondary mt-4">İpucu: Logo'ya 5 saniye basılı tutarak da erişebilirsiniz</p>
+        </div>
+        <div id="admin-editor" class="hidden space-y-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Yeni Yazı Ekle</h2>
+                <button onclick="logoutAdmin()" class="text-sm text-secondary hover:text-white">Çıkış →</button>
+            </div>
+            <input type="text" id="post-title" placeholder="Başlık" class="w-full bg-transparent text-3xl font-black placeholder-secondary border-none focus:outline-none">
+            <div class="grid md:grid-cols-3 gap-4">
+                <select id="post-category" class="bg-secondary border border-primary px-4 py-3 rounded-lg">
+                    <option value="temel">Temel</option>
+                    <option value="ileri">İleri Seviye</option>
+                    <option value="beslenme">Beslenme</option>
+                    <option value="ekipman">Ekipman</option>
+                </select>
+                <input type="date" id="post-date" class="bg-secondary border border-primary px-4 py-3 rounded-lg">
+                <input type="url" id="post-cover" placeholder="Kapak Görseli URL" class="bg-secondary border border-primary px-4 py-3 rounded-lg">
+            </div>
+            <textarea id="post-excerpt" placeholder="Yazı özeti..." rows="3" class="w-full bg-secondary border border-primary px-4 py-3 rounded-lg resize-none"></textarea>
+            <div class="flex flex-wrap gap-2 bg-secondary p-3 rounded-lg border border-primary">
+                <button onclick="insertFormat('bold')" class="px-4 py-2 border border-primary rounded hover:bg-white hover:text-black transition-colors font-bold">B</button>
+                <button onclick="insertFormat('h2')" class="px-4 py-2 border border-primary rounded hover:bg-white hover:text-black transition-colors">H2</button>
+                <button onclick="insertFormat('ul')" class="px-4 py-2 border border-primary rounded hover:bg-white hover:text-black transition-colors">• Liste</button>
+                <button onclick="insertImage()" class="px-4 py-2 bg-white/10 border border-primary rounded hover:bg-white hover:text-black transition-colors">🖼️ Görsel</button>
+                <button onclick="insertVideo()" class="px-4 py-2 bg-white/10 border border-primary rounded hover:bg-white hover:text-black transition-colors">▶️ Video</button>
+            </div>
+            <div id="editor" contenteditable="true" class="bg-secondary border border-primary rounded-lg p-6 min-h-[400px] focus:outline-none focus:border-white/50 prose prose-invert max-w-none"><p>Yazına başla...</p></div>
+            <div class="flex gap-4 sticky bottom-4 bg-primary/90 backdrop-blur p-4 -mx-4 rounded-xl border border-primary">
+                <button onclick="savePost()" class="flex-1 bg-white text-black py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors">YAYINLA</button>
+                <button onclick="previewPost()" class="px-6 border border-primary rounded-xl hover:bg-white/10 transition-colors">👁️ Önizle</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-20 text-center">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-8 reveal">HAKKIMIZDA</h1>
+        <p class="text-xl text-secondary leading-relaxed mb-12 reveal">CALITH, 2024 yılında kurulan bir calisthenics markasıdır. Amacımız, herkesin evinde profesyonel düzeyde antrenman yapabilmesini sağlamak.</p>
+        <div class="grid md:grid-cols-3 gap-8 mt-16 reveal">
+            <div class="p-6 border border-primary rounded-lg hover:bg-secondary transition-colors">
+                <div class="text-4xl font-black mb-2 accent">1000+</div>
+                <div class="text-secondary text-sm">Mutlu Müşteri</div>
+            </div>
+            <div class="p-6 border border-primary rounded-lg hover:bg-secondary transition-colors">
+                <div class="text-4xl font-black mb-2 accent">50+</div>
+                <div class="text-secondary text-sm">Blog Yazısı</div>
+            </div>
+            <div class="p-6 border border-primary rounded-lg hover:bg-secondary transition-colors">
+                <div class="text-4xl font-black mb-2 accent">6</div>
+                <div class="text-secondary text-sm">Ürün Çeşidi</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CART -->
+<div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+<div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-white text-black z-50 shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 class="text-lg font-black tracking-tighter">SEPET <span id="cart-count-drawer" class="text-gray-500 font-normal">(0)</span></h2>
+        <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-full"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>
+    </div>
+    <div class="border-t border-gray-200 p-4 space-y-4 bg-gray-50">
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Ara Toplam</span><span id="cart-subtotal" class="font-medium">0₺</span></div>
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Kargo</span><span id="cart-shipping" class="font-medium text-green-600">Bedava</span></div>
+        <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-3"><span>Toplam</span><span id="cart-total">0₺</span></div>
+        <button onclick="checkout()" class="w-full bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">ÖDEME YAP</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3">
+    <i class="fas fa-check-circle text-green-400"></i>
+    <span id="toast-msg">Sepete eklendi</span>
+</div>
+
+<!-- MOBILE CART -->
+<button onclick="toggleCart()" class="mobile-cart-btn md:hidden w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center">
+    <i class="fas fa-shopping-bag text-xl"></i>
+    <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+</button>
+
+<script>
+// Supabase client
+const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0'; // Supabase projenin anon public key'i
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const products = [
+    { id: 1, name: "Kapı Barfiks Barı", category: "bar", price: 349, oldPrice: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
+    { id: 2, name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
+    { id: 3, name: "Ahşap Paralel Bar", category: "parallettes", price: 599, image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop", desc: "Kayın ağacı, el yapımı. Kaymaz taban.", badge: "YENİ" },
+    { id: 4, name: "Jimnastik Halkası", category: "rings", price: 449, image: "https://images.unsplash.com/photo-1576678927484-cc907957088c?q=80&w=800&auto=format&fit=crop", desc: "ABS veya ahşap. Ayarlanabilir kayış.", badge: null },
+    { id: 5, name: "Direnç Bandı Seti", category: "band", price: 249, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=800&auto=format&fit=crop", desc: "5 farklı direnç. Pull-up assist.", badge: "SET" },
+    { id: 6, name: "Sokak Workout Seti", category: "bundle", price: 1499, oldPrice: 1799, image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop", desc: "Barfiks + Paralel + Halka + Band.", badge: "İNDİRİM" }
+];
+
+const defaultPosts = [
+    { id: 1, title: "Calisthenics'e Başlarken: Temel 5 Hareket", slug: "calisthenics-baslarken", category: "temel", excerpt: "Vücut ağırlığı eğitimine başlamak için bilmen gereken temel hareketler ve form ipuçları.", content: `<p>Calisthenics, sadece vücut ağırlığını kullanarak yapılan en etkili antrenman şekillerinden biridir. İşte başlaman için 5 temel hareket:</p><h2>1. Pull-Up (Barfiks)</h2><p>Sırt ve biceps kaslarını çalıştıran temel hareket. Barfiks barına asıl ve kendini yukarı çek.</p><h2>2. Push-Up (Şınav)</h2><p>Göğüs, omuz ve triceps için klasik hareket. Vücudun düz bir hat olsun.</p><h2>3. Bodyweight Squat</h2><p>Bacak ve kalça kasları için. Ayaklar omuz genişliğinde.</p><h2>4. Plank</h2><p>Core ve karın kasları için. Dirsekler omuz hizasında.</p><h2>5. Dips</h2><p>Paralel bar veya sandalye kenarında. Göğüs altı ve triceps için.</p>`, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", date: "2024-03-10" },
+    { id: 2, title: "Evde Pull-Up Barı Kurulum Rehberi", slug: "evde-pull-up-bari-kurulum", category: "ekipman", excerpt: "Kapı barfiks barı nasıl kurulur? Duvara montaj ipuçları ve güvenlik önlemleri.", content: `<p>Kapı barfiks barı, evde calisthenics yapmanın en kolay yoludur.</p><h2>1. Kapı Seçimi</h2><p>Kapı kasası sağlam olmalı. Metal kasalar idealdir.</p><h2>2. Montaj</h2><p>Barı kapı kasasına yerleştir. Ayarlanabilir mekanizmayı sık.</p><h2>3. Güvenlik Testi</h2><p>Önce hafif ağırlıkla test et. 130kg taşıma kapasitesi var.</p>`, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", date: "2024-03-15" },
+    { id: 3, title: "Muscle-Up Teknik Rehberi", slug: "muscle-up-teknik", category: "ileri", excerpt: "Barfiksten muscle-up geçişi için detaylı teknik analiz ve egzersizler.", content: `<p>Muscle-up, calisthenics'in en etkileyici hareketlerinden biridir.</p><h2>Teknik Adımlar</h2><p>Kuvvetli bir pull-up ile başla, hızlan ve dirseklerini döndür.</p>`, image: "https://images.unsplash.com/photo-1581009146145-b5ef050c149a?q=80&w=800&auto=format&fit=crop", date: "2024-03-20" }
+];
+
+let posts = [];
+
+async function loadPosts() {
+    const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Supabase hata:', error);
+        posts = defaultPosts;
+    } else {
+        posts = data.map(p => ({
+            ...p,
+            category: p.category || 'temel',
+            image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
+            date: (p.created_at || '').slice(0, 10)
+        }));
+    }
+
+    renderLandingBlog();
+    renderBlog();
+}
+let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
+let currentPd = null;
+let pdQty = 1;
+let isAdminMode = false;
+const ADMIN_HASH = 'Y2FsaXRoMjAyNA==';
+
+function showSection(section) {
+    document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active'); });
+    const target = document.getElementById(section);
+    target.classList.remove('hidden');
+    setTimeout(() => target.classList.add('active'), 50);
+    
+    const nav = document.getElementById('global-nav');
+    if (section === 'shop' || section === 'product-detail') {
+        document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
+        nav.classList.add('bg-white/80', 'border-gray-200'); nav.classList.remove('bg-dark/80', 'border-primary');
+    } else {
+        document.body.classList.remove('theme-light'); document.body.classList.add('theme-dark');
+        nav.classList.remove('bg-white/80', 'border-gray-200'); nav.classList.add('bg-dark/80', 'border-primary');
+    }
+    window.scrollTo(0, 0);
+    if (section === 'landing') renderLandingBlog();
+    if (section === 'shop') renderShop();
+    if (section === 'blog') renderBlog();
+}
+
+function renderLandingBlog() {
+    const container = document.getElementById('landing-blog-preview');
+    if (!container) return;
+    container.innerHTML = posts.slice(0, 3).map(p => `
+        <article onclick="showBlogDetail(${p.id})" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[400px] relative">
+            <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 card-content">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-medium uppercase tracking-wider">${p.category}</span>
+                    <span class="text-white/60 text-xs">${p.date}</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-accent transition-colors">${p.title}</h3>
+                <p class="text-white/70 text-sm line-clamp-2">${p.excerpt}</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-white gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    OKU <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function renderShop(filter = 'all') {
+    const grid = document.getElementById('shop-grid');
+    const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+    grid.innerHTML = filtered.map(p => `
+        <div onclick="showProductDetail(${p.id})" class="product-card group cursor-pointer bg-secondary border border-primary rounded-lg overflow-hidden">
+            <div class="aspect-[4/5] relative overflow-hidden"><img src="${p.image}" class="w-full h-full object-cover">${p.badge ? `<span class="absolute top-2 left-2 bg-black text-white text-xs font-bold px-2 py-1">${p.badge}</span>` : ''}${p.oldPrice ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1">-%${Math.round((1-p.price/p.oldPrice)*100)}</span>` : ''}</div>
+            <div class="p-4"><p class="text-xs text-secondary mb-1 uppercase">${p.category}</p><h3 class="font-bold text-sm mb-2 group-hover:text-secondary transition-colors">${p.name}</h3><div class="flex items-center gap-2"><span class="font-bold text-lg">${p.price}₺</span>${p.oldPrice ? `<span class="text-sm text-secondary line-through">${p.oldPrice}₺</span>` : ''}</div></div>
+        </div>
+    `).join('');
+}
+
+function filterProducts(cat) {
+    document.querySelectorAll('.shop-filter').forEach(b => { b.classList.remove('active', 'bg-black', 'text-white'); if (b.dataset.filter === cat) b.classList.add('active', 'bg-black', 'text-white'); });
+    renderShop(cat);
+}
+
+function showProductDetail(id) {
+    currentPd = products.find(p => p.id === id);
+    if (!currentPd) return;
+    document.getElementById('pd-image').src = currentPd.image;
+    document.getElementById('pd-category').textContent = currentPd.category;
+    document.getElementById('pd-name').textContent = currentPd.name;
+    document.getElementById('pd-price').textContent = currentPd.price + '₺';
+    document.getElementById('pd-old-price').textContent = currentPd.oldPrice ? currentPd.oldPrice + '₺' : '';
+    document.getElementById('pd-desc').textContent = currentPd.desc;
+    pdQty = 1; document.getElementById('pd-qty').textContent = '1';
+    showSection('product-detail');
+}
+
+function changePdQty(delta) { pdQty = Math.max(1, pdQty + delta); document.getElementById('pd-qty').textContent = pdQty; }
+
+function addToCartFromDetail() { if (!currentPd) return; addToCart(currentPd, pdQty); showSection('shop'); }
+
+function renderBlog(filter = 'all') {
+    const grid = document.getElementById('blog-grid');
+    if (!grid) return;
+    
+    const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
+    
+    if (filtered.length === 0) { 
+        grid.innerHTML = '<div class="col-span-3 text-center py-12 text-secondary">Henüz yazı yok.</div>'; 
+        return; 
+    }
+    
+    grid.innerHTML = filtered.map(p => `
+        <article onclick="showBlogDetail(${p.id})" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[450px] relative">
+            <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+            <div class="absolute top-4 left-4 z-10">
+                <span class="px-3 py-1 bg-white text-black text-xs font-bold uppercase tracking-wider rounded-full">${p.category}</span>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 z-10 card-content">
+                <div class="text-white/60 text-xs mb-2 uppercase tracking-wider">${p.date}</div>
+                <h3 class="text-2xl font-black text-white mb-3 line-clamp-2 leading-tight group-hover:text-accent transition-colors">${p.title}</h3>
+                <p class="text-white/70 text-sm line-clamp-3 mb-4">${p.excerpt}</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white flex items-center gap-2 group-hover:gap-3 transition-all">
+                        DEVAMINI OKU <i class="fas fa-long-arrow-alt-right"></i>
+                    </span>
+                    <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                        <i class="fas fa-arrow-up transform rotate-45"></i>
+                    </span>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function filterBlog(cat) {
+    document.querySelectorAll('.blog-filter').forEach(b => {
+        b.classList.remove('active', 'bg-white', 'text-black');
+        if (b.dataset.filter === cat) b.classList.add('active', 'bg-white', 'text-black');
+    });
+    renderBlog(cat);
+}
+
+function showBlogDetail(id) {
+    const p = posts.find(post => post.id === id);
+    if (!p) return;
+    const contentDiv = document.getElementById('blog-detail-content');
+    if (!contentDiv) return;
+    contentDiv.innerHTML = `
+        <div class="mb-8">
+            <span class="inline-block px-4 py-1 bg-white/10 rounded-full text-sm font-medium uppercase tracking-wider mb-4">${p.category}</span>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-6 leading-tight">${p.title}</h1>
+            <div class="flex items-center gap-4 text-secondary text-sm">
+                <span><i class="far fa-calendar mr-2"></i>${p.date}</span>
+                <span><i class="far fa-clock mr-2"></i>5 dk okuma</span>
+            </div>
+        </div>
+        ${p.image ? `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">` : ''}
+        <div class="prose prose-invert prose-lg max-w-none">
+            ${p.content}
+        </div>
+        <div class="mt-12 pt-8 border-t border-primary">
+            <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                ${posts.filter(post => post.id !== p.id).slice(0, 2).map(post => `
+                    <div onclick="showBlogDetail(${post.id})" class="cursor-pointer bg-secondary border border-primary p-4 rounded-xl hover:border-white/30 transition-colors">
+                        <h4 class="font-bold mb-1">${post.title}</h4>
+                        <p class="text-sm text-secondary">${post.excerpt.substring(0, 60)}...</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    showSection('blog-detail');
+}
+
+function showAdmin() {
+    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+    const adminSection = document.getElementById('admin');
+    adminSection.classList.remove('hidden');
+    adminSection.classList.add('active');
+    document.getElementById('admin-login').classList.remove('hidden'); 
+    document.getElementById('admin-editor').classList.add('hidden');
+    window.scrollTo(0, 0);
+}
+
+function checkAdmin() {
+    if (btoa(document.getElementById('admin-pass').value) === ADMIN_HASH) {
+        document.getElementById('admin-login').classList.add('hidden'); 
+        document.getElementById('admin-editor').classList.remove('hidden');
+        document.getElementById('post-date').valueAsDate = new Date();
+        isAdminMode = true;
+    } else { 
+        alert('Hatalı şifre'); 
+    }
+}
+
+function logoutAdmin() { 
+    document.getElementById('admin-login').classList.remove('hidden'); 
+    document.getElementById('admin-editor').classList.add('hidden'); 
+    document.getElementById('admin-pass').value = ''; 
+    isAdminMode = false;
+    showSection('blog'); 
+}
+
+// Logo'ya uzun basma olayı - DÜZELTİLMİŞ VERSİYON
+document.addEventListener('DOMContentLoaded', () => {
+    const logo = document.getElementById('logo-container');
+    let pressTimer;
+    let isPressing = false;
+    
+    if (logo) {
+        // Mouse events
+        logo.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isPressing = true;
+            logo.style.transform = 'scale(0.95)';
+            logo.style.transition = 'transform 0.2s ease';
+            
+            pressTimer = setTimeout(() => {
+                if (isPressing) {
+                    isPressing = false;
+                    logo.style.transform = 'scale(1)';
+                    showToast('Admin modu açılıyor...');
+                    setTimeout(() => showAdmin(), 500);
+                }
+            }, 5000);
+        });
+        
+        logo.addEventListener('mouseup', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+        
+        logo.addEventListener('mouseleave', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+        
+        // Touch events - Mobil için
+        logo.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isPressing = true;
+            logo.style.transform = 'scale(0.95)';
+            logo.style.transition = 'transform 0.2s ease';
+            
+            pressTimer = setTimeout(() => {
+                if (isPressing) {
+                    isPressing = false;
+                    logo.style.transform = 'scale(1)';
+                    showToast('Admin modu açılıyor...');
+                    setTimeout(() => showAdmin(), 500);
+                }
+            }, 5000);
+        });
+        
+        logo.addEventListener('touchend', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+        
+        logo.addEventListener('touchcancel', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+    }
+    
+    loadPosts();
+    updateCartUI();
+});
+    
+function insertFormat(type) {
+    document.getElementById('editor').focus();
+    const html = type === 'bold' ? '<b>Kalın metin</b>' : type === 'h2' ? '<h2>Başlık</h2>' : '<ul><li>Madde 1</li><li>Madde 2</li></ul>';
+    document.execCommand('insertHTML', false, html);
+}
+
+function insertImage() { const url = prompt('Görsel URL:'); if (url) document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;margin:1rem 0;border-radius:0.5rem;">`); }
+
+function insertVideo() {
+    const url = prompt('YouTube URL:');
+    const id = url.match(/(?:youtu\.be\/|v\/|watch\?v=)([^&?]+)/)?.[1];
+    if (id) document.execCommand('insertHTML', false, `<iframe src="https://www.youtube.com/embed/${id}" style="width:100%;aspect-ratio:16/9;border-radius:0.5rem;"></iframe>`);
+}
+
+async function savePost() {
+    const title = document.getElementById('post-title').value;
+    const content = document.getElementById('editor').innerHTML;
+    if (!title) { alert('Başlık gerekli!'); return; }
+
+    const newPost = {
+        title,
+        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        category: document.getElementById('post-category').value,
+        excerpt: document.getElementById('post-excerpt').value || 'Yeni bir yazı...',
+        content,
+        image: document.getElementById('post-cover').value || null,
+        published: true
+    };
+
+    const { error } = await supabase.from('posts').insert(newPost);
+    if (error) {
+        alert('Kayıt hatası: ' + error.message);
+        console.error(error);
+        return;
+    }
+
+    await loadPosts();
+    showToast('Yazı yayınlandı!');
+    document.getElementById('post-title').value = ''; 
+    document.getElementById('post-excerpt').value = ''; 
+    document.getElementById('post-cover').value = ''; 
+    document.getElementById('editor').innerHTML = '<p>Yazına başla...</p>';
+    showSection('blog');
+}
+
+function previewPost() { 
+    const w = window.open('', '_blank'); 
+    w.document.write(`<html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-black text-white p-8 max-w-3xl mx-auto">${document.getElementById('editor').innerHTML}</body></html>`); 
+}
+
+function addToCart(product, qty) {
+    const existing = cart.find(i => i.id === product.id);
+    if (existing) { existing.qty += qty; } else { cart.push({ ...product, qty }); }
+    saveCart(); 
+    showToast(`${product.name} sepete eklendi`); 
+    updateCartUI();
+}
+
+function saveCart() { localStorage.setItem('calith_cart', JSON.stringify(cart)); }
+
+function updateCartUI() {
+    const count = cart.reduce((s, i) => s + i.qty, 0), total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    const badge = document.getElementById('cart-badge'), mobileBadge = document.getElementById('mobile-cart-badge');
+    if (badge) { badge.textContent = count; badge.classList.toggle('hidden', count === 0); }
+    if (mobileBadge) { mobileBadge.textContent = count; mobileBadge.classList.toggle('hidden', count === 0); }
+    const drawerCount = document.getElementById('cart-count-drawer'), subtotal = document.getElementById('cart-subtotal'), totalEl = document.getElementById('cart-total'), shipping = document.getElementById('cart-shipping');
+    if (drawerCount) drawerCount.textContent = `(${count})`; 
+    if (subtotal) subtotal.textContent = total + '₺'; 
+    if (totalEl) totalEl.textContent = total + '₺';
+    if (shipping) { 
+        if (total >= 500) { shipping.textContent = 'Bedava'; shipping.className = 'font-medium text-green-600'; } 
+        else { shipping.textContent = '49₺'; shipping.className = 'font-medium'; } 
+    }
+    const container = document.getElementById('cart-items');
+    if (container) { 
+        if (cart.length === 0) { 
+            container.innerHTML = '<div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>'; 
+        } else { 
+            container.innerHTML = cart.map(item => `
+                <div class="flex gap-4 bg-gray-50 p-3 rounded-lg">
+                    <img src="${item.image}" class="w-20 h-20 object-cover rounded">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm mb-1">${item.name}</h4>
+                        <p class="text-sm text-gray-600 mb-2">${item.price}₺</p>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center border border-gray-300 rounded bg-white">
+                                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-1 hover:bg-gray-100">-</button>
+                                <span class="px-2 py-1 text-sm font-medium min-w-[1.5rem] text-center">${item.qty}</span>
+                                <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-1 hover:bg-gray-100">+</button>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-500 text-sm hover:underline">Kaldır</button>
+                        </div>
+                    </div>
+                    <div class="font-bold">${item.price * item.qty}₺</div>
+                </div>
+            `).join(''); 
+        } 
+    }
+}
+
+function updateCartQty(id, delta) { 
+    const item = cart.find(i => i.id === id); 
+    if (item) { 
+        item.qty = Math.max(1, item.qty + delta); 
+        saveCart(); 
+        updateCartUI(); 
+    } 
+}
+
+function removeFromCart(id) { 
+    cart = cart.filter(i => i.id !== id); 
+    saveCart(); 
+    updateCartUI(); 
+}
+
+function toggleCart() {
+    const drawer = document.getElementById('cart-drawer'), overlay = document.getElementById('cart-overlay');
+    if (!drawer || !overlay) return;
+    if (drawer.classList.contains('open')) { 
+        drawer.classList.remove('open'); 
+        overlay.classList.add('hidden'); 
+    } else { 
+        drawer.classList.add('open'); 
+        overlay.classList.remove('hidden'); 
+    }
+}
+
+function checkout() { 
+    if (cart.length === 0) return; 
+    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0); 
+    alert(`Ödeme: ${total}₺\n\nDemo versiyon.`); 
+}
+
+function showToast(msg) { 
+    const toast = document.getElementById('toast'), msgEl = document.getElementById('toast-msg'); 
+    if (toast && msgEl) { 
+        msgEl.textContent = msg; 
+        toast.classList.add('show'); 
+        setTimeout(() => toast.classList.remove('show'), 3000); 
+    } 
+}
+
+function toggleMobileMenu() { 
+    const menu = document.getElementById('mobile-menu'); 
+    if (menu) menu.classList.toggle('hidden'); 
+}
+
+const observer = new IntersectionObserver((entries) => { 
+    entries.forEach(e => { 
+        if (e.isIntersecting) e.target.classList.add('active'); 
+    }); 
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
