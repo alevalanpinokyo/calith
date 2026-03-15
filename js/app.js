@@ -1,7 +1,14 @@
-// Supabase client
 const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0'; // Supabase projenin anon public key'i
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
+let supabaseClient = null;
+function getSupabase() {
+    if (supabaseClient) return supabaseClient;
+    if (window.supabase) {
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        return supabaseClient;
+    }
+    return null;
+}
 
 const products = [
     { id: 1, name: "Kapı Barfiks Barı", category: "bar", price: 349, oldPrice: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
@@ -21,7 +28,16 @@ const defaultPosts = [
 let posts = [];
 
 async function loadPosts() {
-    const { data, error } = await supabaseClient
+    const sb = getSupabase();
+    if (!sb) {
+        console.warn('Supabase henüz hazır değil, varsayılan yazılar yükleniyor.');
+        posts = defaultPosts;
+        renderLandingBlog();
+        renderBlog();
+        return;
+    }
+
+    const { data, error } = await sb
         .from('posts')
         .select('*')
         .eq('published', true)
@@ -328,6 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     loadPosts().then(() => {
+        // Eğer blog sayfasındaysak blogu tekrar render et (garanti olsun)
+        if (window.location.pathname.includes('blog.html')) renderBlog();
+        
         // URL parametrelerini kontrol et
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('p');
@@ -339,6 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showBlogDetail(parseInt(blogId));
         }
     });
+    
+    // Eğer shop sayfasındaysak dükkanı render et
+    if (window.location.pathname.includes('shop.html')) renderShop();
+    
     updateCartUI();
 
     // Aktif menü öğesini vurgula
@@ -385,7 +408,9 @@ async function savePost() {
         published: true
     };
 
-    const { error } = await supabaseClient.from('posts').insert(newPost);
+    const sb = getSupabase();
+    if (!sb) { alert('Hata: Supabase bağlantısı kurulamadı.'); return; }
+    const { error } = await sb.from('posts').insert(newPost);
     if (error) {
         alert('Kayıt hatası: ' + error.message);
         console.error(error);
