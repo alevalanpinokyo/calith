@@ -105,7 +105,7 @@ function renderLandingBlog() {
     const container = document.getElementById('landing-blog-preview');
     if (!container) return;
     container.innerHTML = posts.slice(0, 3).map(p => `
-        <article onclick="showBlogDetail(${p.id})" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[400px] relative">
+        <article onclick="showBlogDetail('${p.id}')" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[400px] relative">
             <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
             <div class="absolute bottom-0 left-0 right-0 p-6 card-content">
@@ -168,7 +168,7 @@ function renderBlog(filter = 'all') {
     }
     
     grid.innerHTML = filtered.map(p => `
-        <article onclick="showBlogDetail(${p.id})" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[450px] relative">
+        <article onclick="showBlogDetail('${p.id}')" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[450px] relative">
             <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
             <div class="absolute top-4 left-4 z-10">
@@ -201,7 +201,7 @@ function filterBlog(cat) {
 
 function showBlogDetail(id) {
     currentBlogId = id;
-    const p = posts.find(post => post.id === id);
+    const p = posts.find(post => post.id.toString() === id.toString());
     if (!p) return;
     const contentDiv = document.getElementById('blog-detail-content');
     
@@ -225,8 +225,8 @@ function showBlogDetail(id) {
         <div class="mt-12 pt-8 border-t border-primary">
             <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
             <div class="grid md:grid-cols-2 gap-4">
-                ${posts.filter(post => post.id !== p.id).slice(0, 2).map(post => `
-                    <div onclick="showBlogDetail(${post.id})" class="cursor-pointer bg-secondary border border-primary p-4 rounded-xl hover:border-white/30 transition-colors">
+                ${posts.filter(post => post.id.toString() !== p.id.toString()).slice(0, 2).map(post => `
+                    <div onclick="showBlogDetail('${post.id}')" class="cursor-pointer bg-secondary border border-primary p-4 rounded-xl hover:border-white/30 transition-colors">
                         <h4 class="font-bold mb-1">${post.title}</h4>
                         <p class="text-sm text-secondary">${post.excerpt.substring(0, 60)}...</p>
                     </div>
@@ -353,9 +353,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const blogId = params.get('b');
 
         if (productId) {
-            showProductDetail(parseInt(productId));
+            showProductDetail(productId);
         } else if (blogId) {
-            showBlogDetail(parseInt(blogId));
+            showBlogDetail(blogId);
         }
     });
     
