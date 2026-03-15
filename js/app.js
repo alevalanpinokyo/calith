@@ -1,0 +1,512 @@
+// Supabase client
+const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0'; // Supabase projenin anon public key'i
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const products = [
+    { id: 1, name: "Kapı Barfiks Barı", category: "bar", price: 349, oldPrice: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
+    { id: 2, name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
+    { id: 3, name: "Ahşap Paralel Bar", category: "parallettes", price: 599, image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop", desc: "Kayın ağacı, el yapımı. Kaymaz taban.", badge: "YENİ" },
+    { id: 4, name: "Jimnastik Halkası", category: "rings", price: 449, image: "https://images.unsplash.com/photo-1576678927484-cc907957088c?q=80&w=800&auto=format&fit=crop", desc: "ABS veya ahşap. Ayarlanabilir kayış.", badge: null },
+    { id: 5, name: "Direnç Bandı Seti", category: "band", price: 249, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=800&auto=format&fit=crop", desc: "5 farklı direnç. Pull-up assist.", badge: "SET" },
+    { id: 6, name: "Sokak Workout Seti", category: "bundle", price: 1499, oldPrice: 1799, image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop", desc: "Barfiks + Paralel + Halka + Band.", badge: "İNDİRİM" }
+];
+
+const defaultPosts = [
+    { id: 1, title: "Calisthenics'e Başlarken: Temel 5 Hareket", slug: "calisthenics-baslarken", category: "temel", excerpt: "Vücut ağırlığı eğitimine başlamak için bilmen gereken temel hareketler ve form ipuçları.", content: `<p>Calisthenics, sadece vücut ağırlığını kullanarak yapılan en etkili antrenman şekillerinden biridir. İşte başlaman için 5 temel hareket:</p><h2>1. Pull-Up (Barfiks)</h2><p>Sırt ve biceps kaslarını çalıştıran temel hareket. Barfiks barına asıl ve kendini yukarı çek.</p><h2>2. Push-Up (Şınav)</h2><p>Göğüs, omuz ve triceps için klasik hareket. Vücudun düz bir hat olsun.</p><h2>3. Bodyweight Squat</h2><p>Bacak ve kalça kasları için. Ayaklar omuz genişliğinde.</p><h2>4. Plank</h2><p>Core ve karın kasları için. Dirsekler omuz hizasında.</p><h2>5. Dips</h2><p>Paralel bar veya sandalye kenarında. Göğüs altı ve triceps için.</p>`, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", date: "2024-03-10" },
+    { id: 2, title: "Evde Pull-Up Barı Kurulum Rehberi", slug: "evde-pull-up-bari-kurulum", category: "ekipman", excerpt: "Kapı barfiks barı nasıl kurulur? Duvara montaj ipuçları ve güvenlik önlemleri.", content: `<p>Kapı barfiks barı, evde calisthenics yapmanın en kolay yoludur.</p><h2>1. Kapı Seçimi</h2><p>Kapı kasası sağlam olmalı. Metal kasalar idealdir.</p><h2>2. Montaj</h2><p>Barı kapı kasasına yerleştir. Ayarlanabilir mekanizmayı sık.</p><h2>3. Güvenlik Testi</h2><p>Önce hafif ağırlıkla test et. 130kg taşıma kapasitesi var.</p>`, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", date: "2024-03-15" },
+    { id: 3, title: "Muscle-Up Teknik Rehberi", slug: "muscle-up-teknik", category: "ileri", excerpt: "Barfiksten muscle-up geçişi için detaylı teknik analiz ve egzersizler.", content: `<p>Muscle-up, calisthenics'in en etkileyici hareketlerinden biridir.</p><h2>Teknik Adımlar</h2><p>Kuvvetli bir pull-up ile başla, hızlan ve dirseklerini döndür.</p>`, image: "https://images.unsplash.com/photo-1581009146145-b5ef050c149a?q=80&w=800&auto=format&fit=crop", date: "2024-03-20" }
+];
+
+let posts = [];
+
+async function loadPosts() {
+    const { data, error } = await supabaseClient
+        .from('posts')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Supabase hata:', error);
+        posts = defaultPosts;
+    } else {
+        posts = data.map(p => ({
+            ...p,
+            category: p.category || 'temel',
+            image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
+            date: (p.created_at || '').slice(0, 10)
+        }));
+    }
+
+    renderLandingBlog();
+    renderBlog();
+}
+let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
+let currentPd = null;
+let currentBlogId = null;
+let pdQty = 1;
+let isAdminMode = false;
+const ADMIN_HASH = 'Y2FsaXRoMjAyNA==';
+
+function showSection(section) {
+    const target = document.getElementById(section);
+    
+    if (!target) {
+        // Eğer bölüm bu sayfada yoksa, ilgili sayfaya yönlendir
+        if (section === 'landing') window.location.href = 'index.html';
+        else if (section === 'shop') window.location.href = 'shop.html';
+        else if (section === 'blog') window.location.href = 'blog.html';
+        else if (section === 'admin') window.location.href = 'admin.html';
+        else if (section === 'product-detail' && currentPd) window.location.href = `shop.html?p=${currentPd.id}`;
+        else if (section === 'blog-detail' && currentBlogId) window.location.href = `blog.html?b=${currentBlogId}`;
+        return;
+    }
+
+    document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active'); });
+    target.classList.remove('hidden');
+    setTimeout(() => target.classList.add('active'), 50);
+    
+    const nav = document.getElementById('global-nav');
+    if (section === 'shop' || section === 'product-detail') {
+        document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
+        if (nav) {
+            nav.classList.add('bg-white/80', 'border-gray-200'); nav.classList.remove('bg-dark/80', 'border-primary');
+        }
+    } else {
+        document.body.classList.remove('theme-light'); document.body.classList.add('theme-dark');
+        if (nav) {
+            nav.classList.remove('bg-white/80', 'border-gray-200'); nav.classList.add('bg-dark/80', 'border-primary');
+        }
+    }
+    window.scrollTo(0, 0);
+    if (section === 'landing') renderLandingBlog();
+    if (section === 'shop') renderShop();
+    if (section === 'blog') renderBlog();
+}
+
+function renderLandingBlog() {
+    const container = document.getElementById('landing-blog-preview');
+    if (!container) return;
+    container.innerHTML = posts.slice(0, 3).map(p => `
+        <article onclick="showBlogDetail(${p.id})" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[400px] relative">
+            <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 card-content">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-medium uppercase tracking-wider">${p.category}</span>
+                    <span class="text-white/60 text-xs">${p.date}</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-accent transition-colors">${p.title}</h3>
+                <p class="text-white/70 text-sm line-clamp-2">${p.excerpt}</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-white gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    OKU <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function renderShop(filter = 'all') {
+    const grid = document.getElementById('shop-grid');
+    const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+    grid.innerHTML = filtered.map(p => `
+        <div onclick="showProductDetail(${p.id})" class="product-card group cursor-pointer bg-secondary border border-primary rounded-lg overflow-hidden">
+            <div class="aspect-[4/5] relative overflow-hidden"><img src="${p.image}" class="w-full h-full object-cover">${p.badge ? `<span class="absolute top-2 left-2 bg-black text-white text-xs font-bold px-2 py-1">${p.badge}</span>` : ''}${p.oldPrice ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1">-%${Math.round((1-p.price/p.oldPrice)*100)}</span>` : ''}</div>
+            <div class="p-4"><p class="text-xs text-secondary mb-1 uppercase">${p.category}</p><h3 class="font-bold text-sm mb-2 group-hover:text-secondary transition-colors">${p.name}</h3><div class="flex items-center gap-2"><span class="font-bold text-lg">${p.price}₺</span>${p.oldPrice ? `<span class="text-sm text-secondary line-through">${p.oldPrice}₺</span>` : ''}</div></div>
+        </div>
+    `).join('');
+}
+
+function filterProducts(cat) {
+    document.querySelectorAll('.shop-filter').forEach(b => { b.classList.remove('active', 'bg-black', 'text-white'); if (b.dataset.filter === cat) b.classList.add('active', 'bg-black', 'text-white'); });
+    renderShop(cat);
+}
+
+function showProductDetail(id) {
+    currentPd = products.find(p => p.id === id);
+    if (!currentPd) return;
+    document.getElementById('pd-image').src = currentPd.image;
+    document.getElementById('pd-category').textContent = currentPd.category;
+    document.getElementById('pd-name').textContent = currentPd.name;
+    document.getElementById('pd-price').textContent = currentPd.price + '₺';
+    document.getElementById('pd-old-price').textContent = currentPd.oldPrice ? currentPd.oldPrice + '₺' : '';
+    document.getElementById('pd-desc').textContent = currentPd.desc;
+    pdQty = 1; document.getElementById('pd-qty').textContent = '1';
+    showSection('product-detail');
+}
+
+function changePdQty(delta) { pdQty = Math.max(1, pdQty + delta); document.getElementById('pd-qty').textContent = pdQty; }
+
+function addToCartFromDetail() { if (!currentPd) return; addToCart(currentPd, pdQty); showSection('shop'); }
+
+function renderBlog(filter = 'all') {
+    const grid = document.getElementById('blog-grid');
+    if (!grid) return;
+    
+    const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
+    
+    if (filtered.length === 0) { 
+        grid.innerHTML = '<div class="col-span-3 text-center py-12 text-secondary">Henüz yazı yok.</div>'; 
+        return; 
+    }
+    
+    grid.innerHTML = filtered.map(p => `
+        <article onclick="showBlogDetail(${p.id})" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[450px] relative">
+            <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+            <div class="absolute top-4 left-4 z-10">
+                <span class="px-3 py-1 bg-white text-black text-xs font-bold uppercase tracking-wider rounded-full">${p.category}</span>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 z-10 card-content">
+                <div class="text-white/60 text-xs mb-2 uppercase tracking-wider">${p.date}</div>
+                <h3 class="text-2xl font-black text-white mb-3 line-clamp-2 leading-tight group-hover:text-accent transition-colors">${p.title}</h3>
+                <p class="text-white/70 text-sm line-clamp-3 mb-4">${p.excerpt}</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white flex items-center gap-2 group-hover:gap-3 transition-all">
+                        DEVAMINI OKU <i class="fas fa-long-arrow-alt-right"></i>
+                    </span>
+                    <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                        <i class="fas fa-arrow-up transform rotate-45"></i>
+                    </span>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function filterBlog(cat) {
+    document.querySelectorAll('.blog-filter').forEach(b => {
+        b.classList.remove('active', 'bg-white', 'text-black');
+        if (b.dataset.filter === cat) b.classList.add('active', 'bg-white', 'text-black');
+    });
+    renderBlog(cat);
+}
+
+function showBlogDetail(id) {
+    currentBlogId = id;
+    const p = posts.find(post => post.id === id);
+    if (!p) return;
+    const contentDiv = document.getElementById('blog-detail-content');
+    
+    if (!contentDiv) {
+        window.location.href = `blog.html?b=${id}`;
+        return;
+    }
+    contentDiv.innerHTML = `
+        <div class="mb-8">
+            <span class="inline-block px-4 py-1 bg-white/10 rounded-full text-sm font-medium uppercase tracking-wider mb-4">${p.category}</span>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-6 leading-tight">${p.title}</h1>
+            <div class="flex items-center gap-4 text-secondary text-sm">
+                <span><i class="far fa-calendar mr-2"></i>${p.date}</span>
+                <span><i class="far fa-clock mr-2"></i>5 dk okuma</span>
+            </div>
+        </div>
+        ${p.image ? `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">` : ''}
+        <div class="prose prose-invert prose-lg max-w-none">
+            ${p.content}
+        </div>
+        <div class="mt-12 pt-8 border-t border-primary">
+            <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                ${posts.filter(post => post.id !== p.id).slice(0, 2).map(post => `
+                    <div onclick="showBlogDetail(${post.id})" class="cursor-pointer bg-secondary border border-primary p-4 rounded-xl hover:border-white/30 transition-colors">
+                        <h4 class="font-bold mb-1">${post.title}</h4>
+                        <p class="text-sm text-secondary">${post.excerpt.substring(0, 60)}...</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    showSection('blog-detail');
+}
+
+function showAdmin() {
+    const adminSection = document.getElementById('admin');
+    if (!adminSection) {
+        window.location.href = 'admin.html';
+        return;
+    }
+    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+    adminSection.classList.remove('hidden');
+    adminSection.classList.add('active');
+    document.getElementById('admin-login').classList.remove('hidden'); 
+    document.getElementById('admin-editor').classList.add('hidden');
+    window.scrollTo(0, 0);
+}
+
+function checkAdmin() {
+    if (btoa(document.getElementById('admin-pass').value) === ADMIN_HASH) {
+        document.getElementById('admin-login').classList.add('hidden'); 
+        document.getElementById('admin-editor').classList.remove('hidden');
+        document.getElementById('post-date').valueAsDate = new Date();
+        isAdminMode = true;
+    } else { 
+        alert('Hatalı şifre'); 
+    }
+}
+
+function logoutAdmin() { 
+    document.getElementById('admin-login').classList.remove('hidden'); 
+    document.getElementById('admin-editor').classList.add('hidden'); 
+    document.getElementById('admin-pass').value = ''; 
+    isAdminMode = false;
+    showSection('blog'); 
+}
+
+// Logo'ya uzun basma olayı - DÜZELTİLMİŞ VERSİYON
+document.addEventListener('DOMContentLoaded', () => {
+    const logo = document.getElementById('logo-container');
+    let pressTimer;
+    let isPressing = false;
+    
+    if (logo) {
+        // Normal tıklama - Ana sayfaya git
+        logo.addEventListener('click', (e) => {
+            if (!isPressing) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Mouse events
+        logo.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isPressing = true;
+            logo.style.transform = 'scale(0.95)';
+            logo.style.transition = 'transform 0.2s ease';
+            
+            pressTimer = setTimeout(() => {
+                if (isPressing) {
+                    isPressing = false;
+                    logo.style.transform = 'scale(1)';
+                    showToast('Admin modu açılıyor...');
+                    setTimeout(() => showAdmin(), 500);
+                }
+            }, 5000);
+        });
+        
+        logo.addEventListener('mouseup', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+        
+        logo.addEventListener('mouseleave', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+        
+        // Touch events - Mobil için
+        logo.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isPressing = true;
+            logo.style.transform = 'scale(0.95)';
+            logo.style.transition = 'transform 0.2s ease';
+            
+            pressTimer = setTimeout(() => {
+                if (isPressing) {
+                    isPressing = false;
+                    logo.style.transform = 'scale(1)';
+                    showToast('Admin modu açılıyor...');
+                    setTimeout(() => showAdmin(), 500);
+                }
+            }, 5000);
+        });
+        
+        logo.addEventListener('touchend', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+        
+        logo.addEventListener('touchcancel', () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        });
+    }
+    
+    loadPosts().then(() => {
+        // URL parametrelerini kontrol et
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('p');
+        const blogId = params.get('b');
+
+        if (productId) {
+            showProductDetail(parseInt(productId));
+        } else if (blogId) {
+            showBlogDetail(parseInt(blogId));
+        }
+    });
+    updateCartUI();
+
+    // Aktif menü öğesini vurgula
+    const path = window.location.pathname;
+    let fileName = path.split('/').pop() || 'index.html';
+    if (fileName === '') fileName = 'index.html';
+    
+    document.querySelectorAll('nav button, #mobile-menu button').forEach(btn => {
+        const onclick = btn.getAttribute('onclick') || '';
+        if (onclick.includes(fileName)) {
+            btn.classList.add('text-accent');
+        } else if (fileName === 'index.html' && (onclick.includes('landing') || onclick.includes('index.html'))) {
+             btn.classList.add('text-accent');
+        }
+    });
+});
+    
+function insertFormat(type) {
+    document.getElementById('editor').focus();
+    const html = type === 'bold' ? '<b>Kalın metin</b>' : type === 'h2' ? '<h2>Başlık</h2>' : '<ul><li>Madde 1</li><li>Madde 2</li></ul>';
+    document.execCommand('insertHTML', false, html);
+}
+
+function insertImage() { const url = prompt('Görsel URL:'); if (url) document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;margin:1rem 0;border-radius:0.5rem;">`); }
+
+function insertVideo() {
+    const url = prompt('YouTube URL:');
+    const id = url.match(/(?:youtu\.be\/|v\/|watch\?v=)([^&?]+)/)?.[1];
+    if (id) document.execCommand('insertHTML', false, `<iframe src="https://www.youtube.com/embed/${id}" style="width:100%;aspect-ratio:16/9;border-radius:0.5rem;"></iframe>`);
+}
+
+async function savePost() {
+    const title = document.getElementById('post-title').value;
+    const content = document.getElementById('editor').innerHTML;
+    if (!title) { alert('Başlık gerekli!'); return; }
+
+    const newPost = {
+        title,
+        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        category: document.getElementById('post-category').value,
+        excerpt: document.getElementById('post-excerpt').value || 'Yeni bir yazı...',
+        content,
+        image: document.getElementById('post-cover').value || null,
+        published: true
+    };
+
+    const { error } = await supabaseClient.from('posts').insert(newPost);
+    if (error) {
+        alert('Kayıt hatası: ' + error.message);
+        console.error(error);
+        return;
+    }
+
+    await loadPosts();
+    showToast('Yazı yayınlandı!');
+    document.getElementById('post-title').value = ''; 
+    document.getElementById('post-excerpt').value = ''; 
+    document.getElementById('post-cover').value = ''; 
+    document.getElementById('editor').innerHTML = '<p>Yazına başla...</p>';
+    showSection('blog');
+}
+
+function previewPost() { 
+    const w = window.open('', '_blank'); 
+    w.document.write(`<html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-black text-white p-8 max-w-3xl mx-auto">${document.getElementById('editor').innerHTML}</body></html>`); 
+}
+
+function addToCart(product, qty) {
+    const existing = cart.find(i => i.id === product.id);
+    if (existing) { existing.qty += qty; } else { cart.push({ ...product, qty }); }
+    saveCart(); 
+    showToast(`${product.name} sepete eklendi`); 
+    updateCartUI();
+}
+
+function saveCart() { localStorage.setItem('calith_cart', JSON.stringify(cart)); }
+
+function updateCartUI() {
+    const count = cart.reduce((s, i) => s + i.qty, 0), total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    const badge = document.getElementById('cart-badge'), mobileBadge = document.getElementById('mobile-cart-badge');
+    if (badge) { badge.textContent = count; badge.classList.toggle('hidden', count === 0); }
+    if (mobileBadge) { mobileBadge.textContent = count; mobileBadge.classList.toggle('hidden', count === 0); }
+    const drawerCount = document.getElementById('cart-count-drawer'), subtotal = document.getElementById('cart-subtotal'), totalEl = document.getElementById('cart-total'), shipping = document.getElementById('cart-shipping');
+    if (drawerCount) drawerCount.textContent = `(${count})`; 
+    if (subtotal) subtotal.textContent = total + '₺'; 
+    if (totalEl) totalEl.textContent = total + '₺';
+    if (shipping) { 
+        if (total >= 500) { shipping.textContent = 'Bedava'; shipping.className = 'font-medium text-green-600'; } 
+        else { shipping.textContent = '49₺'; shipping.className = 'font-medium'; } 
+    }
+    const container = document.getElementById('cart-items');
+    if (container) { 
+        if (cart.length === 0) { 
+            container.innerHTML = '<div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>'; 
+        } else { 
+            container.innerHTML = cart.map(item => `
+                <div class="flex gap-4 bg-gray-50 p-3 rounded-lg">
+                    <img src="${item.image}" class="w-20 h-20 object-cover rounded">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm mb-1">${item.name}</h4>
+                        <p class="text-sm text-gray-600 mb-2">${item.price}₺</p>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center border border-gray-300 rounded bg-white">
+                                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-1 hover:bg-gray-100">-</button>
+                                <span class="px-2 py-1 text-sm font-medium min-w-[1.5rem] text-center">${item.qty}</span>
+                                <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-1 hover:bg-gray-100">+</button>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-500 text-sm hover:underline">Kaldır</button>
+                        </div>
+                    </div>
+                    <div class="font-bold">${item.price * item.qty}₺</div>
+                </div>
+            `).join(''); 
+        } 
+    }
+}
+
+function updateCartQty(id, delta) { 
+    const item = cart.find(i => i.id === id); 
+    if (item) { 
+        item.qty = Math.max(1, item.qty + delta); 
+        saveCart(); 
+        updateCartUI(); 
+    } 
+}
+
+function removeFromCart(id) { 
+    cart = cart.filter(i => i.id !== id); 
+    saveCart(); 
+    updateCartUI(); 
+}
+
+function toggleCart() {
+    const drawer = document.getElementById('cart-drawer'), overlay = document.getElementById('cart-overlay');
+    if (!drawer || !overlay) return;
+    if (drawer.classList.contains('open')) { 
+        drawer.classList.remove('open'); 
+        overlay.classList.add('hidden'); 
+    } else { 
+        drawer.classList.add('open'); 
+        overlay.classList.remove('hidden'); 
+    }
+}
+
+function checkout() { 
+    if (cart.length === 0) return; 
+    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0); 
+    alert(`Ödeme: ${total}₺\n\nDemo versiyon.`); 
+}
+
+function showToast(msg) { 
+    const toast = document.getElementById('toast'), msgEl = document.getElementById('toast-msg'); 
+    if (toast && msgEl) { 
+        msgEl.textContent = msg; 
+        toast.classList.add('show'); 
+        setTimeout(() => toast.classList.remove('show'), 3000); 
+    } 
+}
+
+function toggleMobileMenu() { 
+    const menu = document.getElementById('mobile-menu'); 
+    if (menu) menu.classList.toggle('hidden'); 
+}
+
+const observer = new IntersectionObserver((entries) => { 
+    entries.forEach(e => { 
+        if (e.isIntersecting) e.target.classList.add('active'); 
+    }); 
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));

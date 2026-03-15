@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALITH | Calisthenics Ekipman & Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark antialiased selection:bg-white selection:text-black">
+
+<div class="grain"></div>
+
+<!-- Navigation -->
+<nav id="global-nav" class="fixed w-full z-50 top-0 left-0 px-4 sm:px-6 lg:px-8 py-4 backdrop-blur-md border-b border-primary transition-colors duration-300">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex-shrink-0 cursor-pointer select-none transition-transform" id="logo-container">
+            <span class="text-2xl font-black tracking-tighter">CALITH</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-6">
+            <button onclick="window.location.href='index.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">ANA SAYFA</button>
+            <button onclick="window.location.href='shop.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">EKİPMAN</button>
+            <button onclick="window.location.href='blog.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">BLOG</button>
+            <button onclick="window.location.href='skills.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">SKILLS</button>
+            <button onclick="window.location.href='premium.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">PREMIUM</button>
+            <button onclick="window.location.href='about.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">HAKKIMIZDA</button>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <button onclick="toggleCart()" class="relative p-2 hover:opacity-70 transition-opacity">
+                <i class="fas fa-shopping-bag text-lg"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+            </button>
+            <button class="md:hidden p-2 hover:opacity-70 transition-opacity" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-primary pt-20 px-6">
+    <button onclick="toggleMobileMenu()" class="absolute top-4 right-4 p-2"><i class="fas fa-times text-2xl"></i></button>
+    <div class="space-y-6 text-2xl font-bold">
+        <button onclick="window.location.href='index.html'" class="block w-full text-left py-2 border-b border-primary">ANA SAYFA</button>
+        <button onclick="window.location.href='shop.html'" class="block w-full text-left py-2 border-b border-primary">EKİPMAN</button>
+        <button onclick="window.location.href='blog.html'" class="block w-full text-left py-2 border-b border-primary">BLOG</button>
+        <button onclick="window.location.href='skills.html'" class="block w-full text-left py-2 border-b border-primary">SKILLS</button>
+        <button onclick="window.location.href='premium.html'" class="block w-full text-left py-2 border-b border-primary">PREMIUM</button>
+        <button onclick="window.location.href='about.html'" class="block w-full text-left py-2 border-b border-primary">HAKKIMIZDA</button>
+    </div>
+</div>
+
+
+<!-- ABOUT -->
+<section id="about" class="min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-20 text-center">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-8 reveal">HAKKIMIZDA</h1>
+        <p class="text-xl text-secondary leading-relaxed mb-12 reveal">CALITH, 2024 yılında kurulan bir calisthenics markasıdır. Amacımız, herkesin evinde profesyonel düzeyde antrenman yapabilmesini sağlamak.</p>
+        <div class="grid md:grid-cols-3 gap-8 mt-16 reveal">
+            <div class="p-6 border border-primary rounded-lg hover:bg-secondary transition-colors">
+                <div class="text-4xl font-black mb-2 accent">1000+</div>
+                <div class="text-secondary text-sm">Mutlu Müşteri</div>
+            </div>
+            <div class="p-6 border border-primary rounded-lg hover:bg-secondary transition-colors">
+                <div class="text-4xl font-black mb-2 accent">50+</div>
+                <div class="text-secondary text-sm">Blog Yazısı</div>
+            </div>
+            <div class="p-6 border border-primary rounded-lg hover:bg-secondary transition-colors">
+                <div class="text-4xl font-black mb-2 accent">6</div>
+                <div class="text-secondary text-sm">Ürün Çeşidi</div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- CART -->
+<div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+<div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-white text-black z-50 shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 class="text-lg font-black tracking-tighter">SEPET <span id="cart-count-drawer" class="text-gray-500 font-normal">(0)</span></h2>
+        <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-full"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>
+    </div>
+    <div class="border-t border-gray-200 p-4 space-y-4 bg-gray-50">
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Ara Toplam</span><span id="cart-subtotal" class="font-medium">0₺</span></div>
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Kargo</span><span id="cart-shipping" class="font-medium text-green-600">Bedava</span></div>
+        <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-3"><span>Toplam</span><span id="cart-total">0₺</span></div>
+        <button onclick="checkout()" class="w-full bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">ÖDEME YAP</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3">
+    <i class="fas fa-check-circle text-green-400"></i>
+    <span id="toast-msg">Sepete eklendi</span>
+</div>
+
+<!-- MOBILE CART -->
+<button onclick="toggleCart()" class="mobile-cart-btn md:hidden w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center">
+    <i class="fas fa-shopping-bag text-xl"></i>
+    <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+</button>
+
+
+<script src="js/app.js"></script>
+</body>
+</html>

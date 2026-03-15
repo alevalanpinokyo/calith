@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALITH | Calisthenics Ekipman & Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-light antialiased selection:bg-white selection:text-black">
+
+<div class="grain"></div>
+
+<!-- Navigation -->
+<nav id="global-nav" class="fixed w-full z-50 top-0 left-0 px-4 sm:px-6 lg:px-8 py-4 backdrop-blur-md border-b border-gray-200 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex-shrink-0 cursor-pointer select-none transition-transform" id="logo-container">
+            <span class="text-2xl font-black tracking-tighter">CALITH</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-6">
+            <button onclick="window.location.href='index.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">ANA SAYFA</button>
+            <button onclick="window.location.href='shop.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">EKİPMAN</button>
+            <button onclick="window.location.href='blog.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">BLOG</button>
+            <button onclick="window.location.href='skills.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">SKILLS</button>
+            <button onclick="window.location.href='premium.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">PREMIUM</button>
+            <button onclick="window.location.href='about.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">HAKKIMIZDA</button>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <button onclick="toggleCart()" class="relative p-2 hover:opacity-70 transition-opacity">
+                <i class="fas fa-shopping-bag text-lg"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+            </button>
+            <button class="md:hidden p-2 hover:opacity-70 transition-opacity" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-primary pt-20 px-6">
+    <button onclick="toggleMobileMenu()" class="absolute top-4 right-4 p-2"><i class="fas fa-times text-2xl"></i></button>
+    <div class="space-y-6 text-2xl font-bold">
+        <button onclick="window.location.href='index.html'" class="block w-full text-left py-2 border-b border-primary">ANA SAYFA</button>
+        <button onclick="window.location.href='shop.html'" class="block w-full text-left py-2 border-b border-primary">EKİPMAN</button>
+        <button onclick="window.location.href='blog.html'" class="block w-full text-left py-2 border-b border-primary">BLOG</button>
+        <button onclick="window.location.href='skills.html'" class="block w-full text-left py-2 border-b border-primary">SKILLS</button>
+        <button onclick="window.location.href='premium.html'" class="block w-full text-left py-2 border-b border-primary">PREMIUM</button>
+        <button onclick="window.location.href='about.html'" class="block w-full text-left py-2 border-b border-primary">HAKKIMIZDA</button>
+    </div>
+</div>
+
+
+<!-- SHOP -->
+<section id="shop" class="min-h-screen pt-16 page-transition theme-light">
+    <div class="bg-black text-white text-center py-2.5 text-xs font-medium tracking-wider">🚚 500₺ ÜZERİ KARGO BEDAVA • 14 GÜN İADE</div>
+
+    <div class="bg-secondary py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">EKİPMAN</h1>
+            <p class="text-secondary max-w-xl mx-auto">Antrenmanını bir üst seviyeye taşı. Profesyonel calisthenics ekipmanları.</p>
+        </div>
+    </div>
+
+    <div class="sticky top-16 z-30 bg-primary border-b border-primary shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex gap-2 overflow-x-auto">
+            <button onclick="filterProducts('all')" class="shop-filter active px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap bg-black text-white" data-filter="all">Tümü</button>
+            <button onclick="filterProducts('bar')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="bar">Barfiks</button>
+            <button onclick="filterProducts('parallettes')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="parallettes">Paralel</button>
+            <button onclick="filterProducts('rings')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="rings">Halka</button>
+            <button onclick="filterProducts('band')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="band">Band</button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+    </div>
+</section>
+<!-- PRODUCT DETAIL -->
+<section id="product-detail" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <button onclick="window.location.href='shop.html'" class="mb-6 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm ürünler</button>
+        <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+            <div class="aspect-square bg-secondary rounded-lg overflow-hidden"><img id="pd-image" src="" class="w-full h-full object-cover"></div>
+            <div class="flex flex-col justify-center">
+                <p id="pd-category" class="text-sm text-secondary font-medium tracking-wider mb-2"></p>
+                <h1 id="pd-name" class="text-3xl md:text-4xl font-black tracking-tighter mb-4"></h1>
+                <div class="flex items-baseline gap-3 mb-6"><span id="pd-price" class="text-3xl font-bold"></span><span id="pd-old-price" class="text-lg text-secondary line-through"></span></div>
+                <p id="pd-desc" class="text-secondary mb-6 leading-relaxed"></p>
+                <div class="mb-6">
+                    <p class="text-sm font-medium mb-3">ADET</p>
+                    <div class="flex items-center border border-primary w-fit rounded">
+                        <button onclick="changePdQty(-1)" class="px-4 py-2 hover:bg-secondary transition-colors">-</button>
+                        <span id="pd-qty" class="px-4 py-2 font-medium min-w-[3rem] text-center">1</span>
+                        <button onclick="changePdQty(1)" class="px-4 py-2 hover:bg-secondary transition-colors">+</button>
+                    </div>
+                </div>
+                <button onclick="addToCartFromDetail()" class="flex-1 bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">SEPETE EKLE</button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- CART -->
+<div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+<div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-white text-black z-50 shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 class="text-lg font-black tracking-tighter">SEPET <span id="cart-count-drawer" class="text-gray-500 font-normal">(0)</span></h2>
+        <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-full"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>
+    </div>
+    <div class="border-t border-gray-200 p-4 space-y-4 bg-gray-50">
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Ara Toplam</span><span id="cart-subtotal" class="font-medium">0₺</span></div>
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Kargo</span><span id="cart-shipping" class="font-medium text-green-600">Bedava</span></div>
+        <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-3"><span>Toplam</span><span id="cart-total">0₺</span></div>
+        <button onclick="checkout()" class="w-full bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">ÖDEME YAP</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3">
+    <i class="fas fa-check-circle text-green-400"></i>
+    <span id="toast-msg">Sepete eklendi</span>
+</div>
+
+<!-- MOBILE CART -->
+<button onclick="toggleCart()" class="mobile-cart-btn md:hidden w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center">
+    <i class="fas fa-shopping-bag text-xl"></i>
+    <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+</button>
+
+
+<script src="js/app.js"></script>
+</body>
+</html>
