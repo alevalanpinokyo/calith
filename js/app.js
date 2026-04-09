@@ -98,31 +98,26 @@ let posts = [];
 
 async function loadPosts() {
     const sb = getSupabase();
+    const deletedPostTitles = JSON.parse(localStorage.getItem('calith_deleted_posts')) || [];
     
     if (!sb) {
-        posts = defaultPosts;
-        renderLandingBlog();
-        renderBlog();
-        renderAdminPosts();
+        posts = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
+        renderLandingBlog(); renderBlog(); renderAdminPosts();
         return;
     }
 
-    const { data, error } = await sb
-        .from('posts')
-        .select('*')
-        .order('id', { ascending: false });
+    const { data, error } = await sb.from('posts').select('*').order('id', { ascending: false });
 
     if (error) {
-        console.error('Blog load error:', error);
-        posts = defaultPosts;
+        posts = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
     } else {
         const dbPosts = data || [];
-        // Veritabanı + Örnekler (İsim çakışması varsa veritabanı öncelikli)
         const combined = [...dbPosts];
         
         defaultPosts.forEach(def => {
-            const exists = dbPosts.some(db => db.title === def.title);
-            if (!exists) combined.push(def);
+            const existsInDb = dbPosts.some(db => db.title === def.title);
+            const isManuallyDeleted = deletedPostTitles.includes(def.title);
+            if (!existsInDb && !isManuallyDeleted) combined.push(def);
         });
 
         posts = combined.map(p => ({
@@ -132,9 +127,7 @@ async function loadPosts() {
             date: (p.created_at || p.date || '').slice(0, 10)
         }));
     }
-    renderLandingBlog();
-    renderBlog();
-    renderAdminPosts();
+    renderLandingBlog(); renderBlog(); renderAdminPosts();
 }
 let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
 let currentPd = null;
@@ -711,17 +704,27 @@ function editPost(id) {
 }
 
 async function deletePost(id) {
-    if (!confirm('Bu yazıyı silmek istediğinizden emin misiniz?')) return;
+    const postToDelete = posts.find(p => String(p.id) === String(id));
+    if (!postToDelete) return;
+    if (!confirm(`"${postToDelete.title}" yazısını silmek istediğinizden emin misiniz?`)) return;
     
-    // Eğer ID sayı ise (defaultPosts ID'leri 1, 2, 3 gibi sayısal) veya veritabanında yoksa yerelden de silmeliy/iz.
-    // Önce veritabanından silmeyi dene
     const sb = getSupabase();
     if (sb) {
         const { error } = await sb.from('posts').delete().eq('id', id);
-        if (error) console.warn('DB delete error (maybe it is a default post):', error.message);
+        if (error) {
+            console.error('Supabase Delete Error:', error);
+            alert('Supabase Silme Hatası: ' + error.message + '\n\nİpucu: Eğer kendi eklediğiniz bir yazıyı silemiyorsanız, Supabase RLS ayarlarından DELETE izni vermeniz gerekebilir.');
+        }
     }
 
-    // Listeden filtrele (Hem veritabanından hem yerelden silinmiş gibi davran)
+    // Kara listeye ekle (Geri gelmemesi için)
+    const deletedPostTitles = JSON.parse(localStorage.getItem('calith_deleted_posts')) || [];
+    if (!deletedPostTitles.includes(postToDelete.title)) {
+        deletedPostTitles.push(postToDelete.title);
+        localStorage.setItem('calith_deleted_posts', JSON.stringify(deletedPostTitles));
+    }
+
+    // Listeyi yerel olarak güncelle
     posts = posts.filter(p => String(p.id) !== String(id));
     
     showToast('Yazı silindi');
