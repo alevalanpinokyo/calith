@@ -339,13 +339,6 @@ function showBlogDetail(id) {
         ${p.image ? `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">` : ''}
         <div class="prose prose-invert prose-lg max-w-none">
             ${p.content}
-                    <div class="lg:col-span-2 space-y-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-display text-2xl font-bold uppercase">Ürün Listesi</h3>
-                            <button onclick="importDefaults()" class="text-[10px] font-bold text-gray-400 hover:text-white border border-white/10 px-4 py-2 rounded-lg transition-all">VARSYILANLARI YÜKLE</button>
-                        </div>
-                        <div id="admin-product-list" class="grid sm:grid-cols-2 gap-4"></div>
-                    </div>
         </div>
         <div class="mt-12 pt-8 border-t border-primary">
             <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
