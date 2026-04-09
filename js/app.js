@@ -190,13 +190,18 @@ function renderLandingBlog() {
 function renderShop(filter = 'all') {
     const grid = document.getElementById('shop-grid');
     if (!grid) return;
+    
+    // Filtre butonlarını göster (Çünkü mağaza listesini görüntülüyoruz)
+    const filters = document.getElementById('shop-filters');
+    if (filters) filters.classList.remove('hidden');
+
     const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
     grid.innerHTML = filtered.map(p => `
-        <div onclick="showProductDetail(${p.id})" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
+        <div onclick="showProductDetail('${p.id}')" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
             <div class="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-8 relative overflow-hidden">
                 <img src="${p.image}" class="w-full h-full object-cover mix-blend-overlay opacity-50 group-hover:opacity-100 transition-opacity">
                 ${p.badge ? `<span class="absolute top-4 left-4 bg-calith-orange text-white text-[10px] font-bold px-3 py-1 rounded-full">${p.badge}</span>` : ''}
-                ${p.oldPrice ? `<span class="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">-%${Math.round((1-p.price/p.oldPrice)*100)}</span>` : ''}
+                ${p.oldPrice ? `<span class="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">-%${Math.round((1-p.price / p.oldPrice) * 100)}</span>` : ''}
             </div>
             <div class="p-6">
                 <p class="text-[10px] text-calith-orange font-bold uppercase tracking-widest mb-1">${p.category}</p>
@@ -227,9 +232,16 @@ function filterProducts(cat) {
 }
 
 function showProductDetail(id) {
-    currentPd = products.find(p => p.id === id);
+    currentPd = products.find(p => String(p.id) === String(id));
     if (!currentPd) return;
-    document.getElementById('pd-image').src = currentPd.image;
+    
+    // Ürün detayındayken filtre butonlarını gizle
+    const filters = document.getElementById('shop-filters');
+    if (filters) filters.classList.add('hidden');
+    
+    const imgEl = document.getElementById('pd-image');
+    if (imgEl) imgEl.src = currentPd.image;
+    
     document.getElementById('pd-category').textContent = currentPd.category;
     document.getElementById('pd-name').textContent = currentPd.name;
     document.getElementById('pd-price').textContent = currentPd.price + '₺';
