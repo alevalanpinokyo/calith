@@ -311,19 +311,22 @@ function filterBlog(cat) {
 function showBlogDetail(id) {
     currentBlogId = id;
     if (!posts || posts.length === 0) {
-        // Postlar henüz yüklenmemişse yüklenmesini bekle ve tekrar dene
         setTimeout(() => showBlogDetail(id), 100);
         return;
     }
-    const p = posts.find(post => post.id.toString() === id.toString());
+    const p = posts.find(post => String(post.id) === String(id));
     if (!p) return;
-    const contentDiv = document.getElementById('blog-detail-content');
+    
+    // blog.html'deki gerçek ID: post-content
+    const contentDiv = document.getElementById('post-content');
     const isBlogPage = window.location.pathname.toLowerCase().includes('blog');
     
     if (!contentDiv && !isBlogPage) {
         window.location.href = `blog.html?b=${id}`;
         return;
     }
+
+    if (!contentDiv) return;
     contentDiv.innerHTML = `
         <div class="mb-8">
             <span class="inline-block px-4 py-1 bg-white/10 rounded-full text-sm font-medium uppercase tracking-wider mb-4">${p.category}</span>
