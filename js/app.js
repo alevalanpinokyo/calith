@@ -576,10 +576,15 @@ function previewPost() {
 }
 
 function addToCart(id) { 
-    const p = products.find(item => item.id == id); 
-    if (!p) return; 
+    console.log('Adding to cart, ID:', id);
+    const p = products.find(item => String(item.id) === String(id)); 
     
-    const existing = cart.find(i => i.id == id); 
+    if (!p) {
+        console.error('Product not found for ID:', id);
+        return; 
+    }
+    
+    const existing = cart.find(i => String(i.id) === String(id)); 
     if (existing) { 
         existing.qty++; 
     } else { 
@@ -588,10 +593,15 @@ function addToCart(id) {
     
     saveCart(); 
     updateCartUI(); 
-    showToast('Sepete eklendi'); 
+    showToast(`${p.name} sepete eklendi`); 
     
-    // Auto open cart
-    setTimeout(toggleCart, 500);
+    // Explicitly open the cart
+    const drawer = document.getElementById('cart-sidebar');
+    const overlay = document.getElementById('cart-overlay');
+    if (drawer && overlay) {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+    }
 }
 
 function saveCart() { localStorage.setItem('calith_cart', JSON.stringify(cart)); }
