@@ -165,7 +165,7 @@ function renderShop(filter = 'all') {
                         <span class="font-bold text-xl">${p.price}₺</span>
                         ${p.oldPrice ? `<span class="text-xs text-gray-500 line-through">${p.oldPrice}₺</span>` : ''}
                     </div>
-                    <button onclick="event.stopPropagation(); addToCartById(${p.id})" class="w-10 h-10 bg-calith-orange/10 text-calith-orange rounded-full flex items-center justify-center hover:bg-calith-orange hover:text-white transition-all transform hover:rotate-90">
+                    <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-10 h-10 bg-calith-orange/10 text-calith-orange rounded-full flex items-center justify-center hover:bg-calith-orange hover:text-white transition-all transform hover:rotate-90">
                         <i data-lucide="plus" class="w-5 h-5"></i>
                     </button>
                 </div>
