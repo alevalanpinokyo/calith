@@ -104,16 +104,11 @@ function showSection(section) {
     setTimeout(() => target.classList.add('active'), 50);
     
     const nav = document.getElementById('global-nav');
-    if (section === 'shop' || section === 'product-detail') {
-        document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
-        if (nav) {
-            nav.classList.add('bg-white/80', 'border-gray-200'); nav.classList.remove('bg-dark/80', 'border-primary');
-        }
-    } else {
-        document.body.classList.remove('theme-light'); document.body.classList.add('theme-dark');
-        if (nav) {
-            nav.classList.remove('bg-white/80', 'border-gray-200'); nav.classList.add('bg-dark/80', 'border-primary');
-        }
+    document.body.classList.add('theme-dark');
+    document.body.classList.remove('theme-light');
+    
+    if (nav) {
+        nav.classList.remove('bg-white/80', 'border-gray-200');
     }
     window.scrollTo(0, 0);
     if (section === 'landing') renderLandingBlog();
