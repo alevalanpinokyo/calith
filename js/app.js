@@ -509,16 +509,19 @@ async function saveProduct() {
     const editId = document.getElementById('prod-edit-id').value;
     
     let result;
-    if (editId) {
+    // Eğer editId 'def' ile başlıyorsa bu bir örnek üründür ve veritabanında yoktur.
+    // Bu yüzden 'update' yerine 'insert' yapmalıyız.
+    if (editId && !editId.startsWith('def')) {
         result = await sb.from('products').update(productData).eq('id', editId);
     } else {
         result = await sb.from('products').insert([productData]);
     }
 
     if (result.error) {
+        console.error('Save error:', result.error);
         alert('Hata: ' + result.error.message);
     } else {
-        showToast(editId ? 'Ürün güncellendi' : 'Ürün eklendi');
+        showToast((editId && !editId.startsWith('def')) ? 'Ürün güncellendi' : 'Ürün veritabanına kaydedildi');
         resetProductForm();
         loadProducts();
     }
