@@ -3,305 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CALITH | Calisthenics Ekipman & Blog</title>
+    <title>CALITH | Profesyonel Calisthenics Ekipman & Blog</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calith: {
+                            orange: '#FF6B35',
+                            dark: '#0A0A0A',
+                            gray: '#1A1A1A',
+                            light: '#2A2A2A',
+                            accent: '#00D9FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="theme-dark antialiased selection:bg-white selection:text-black">
+<body class="font-sans antialiased bg-calith-dark text-white">
 
 <div class="grain"></div>
 
 <!-- Navigation -->
-<nav id="global-nav" class="fixed w-full z-50 top-0 left-0 px-4 sm:px-6 lg:px-8 py-4 backdrop-blur-md border-b border-primary transition-colors duration-300">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <div class="flex-shrink-0 cursor-pointer select-none transition-transform" id="logo-container">
-            <span class="text-2xl font-black tracking-tighter">CALITH</span>
-        </div>
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+                <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </div>
 
-        <div class="hidden md:flex items-center space-x-6">
-            <button onclick="window.location.href='index.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">ANA SAYFA</button>
-            <button onclick="window.location.href='shop.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">EKİPMAN</button>
-            <button onclick="window.location.href='blog.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">BLOG</button>
-            <button onclick="window.location.href='skills.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">SKILLS</button>
-            <button onclick="window.location.href='premium.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">PREMIUM</button>
-            <button onclick="window.location.href='about.html'" class="text-xs font-bold tracking-widest hover:opacity-70 transition-opacity">HAKKIMIZDA</button>
-        </div>
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
+                <a href="shop.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">EKİPMAN</a>
+                <a href="blog.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">BLOG</a>
+                <a href="skills.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">PROGRAMLAR</a>
+                <a href="premium.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">PREMIUM</a>
+                <a href="about.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">HAKKIMIZDA</a>
+            </div>
 
-        <div class="flex items-center space-x-4">
-            <button onclick="toggleCart()" class="relative p-2 hover:opacity-70 transition-opacity">
-                <i class="fas fa-shopping-bag text-lg"></i>
-                <span id="cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
-            </button>
-            <button class="md:hidden p-2 hover:opacity-70 transition-opacity" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars text-lg"></i>
-            </button>
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-gray-400 hover:text-white transition-colors" onclick="toggleCart()">
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-calith-orange text-white text-xs rounded-full flex items-center justify-center font-bold hidden">0</span>
+                </button>
+                <button class="hidden md:block btn-primary px-6 py-2.5 rounded-full font-semibold text-sm" onclick="window.location.href='blog.html'">
+                    Hemen Başla
+                </button>
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3">
+            <a href="index.html" class="block text-white py-2">ANA SAYFA</a>
+            <a href="shop.html" class="block text-gray-400 hover:text-white py-2">EKİPMAN</a>
+            <a href="blog.html" class="block text-gray-400 hover:text-white py-2">BLOG</a>
+            <a href="skills.html" class="block text-gray-400 hover:text-white py-2">PROGRAMLAR</a>
+            <a href="premium.html" class="block text-gray-400 hover:text-white py-2">PREMIUM</a>
+            <a href="about.html" class="block text-gray-400 hover:text-white py-2">HAKKIMIZDA</a>
         </div>
     </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-primary pt-20 px-6">
-    <button onclick="toggleMobileMenu()" class="absolute top-4 right-4 p-2"><i class="fas fa-times text-2xl"></i></button>
-    <div class="space-y-6 text-2xl font-bold">
-        <button onclick="window.location.href='index.html'" class="block w-full text-left py-2 border-b border-primary">ANA SAYFA</button>
-        <button onclick="window.location.href='shop.html'" class="block w-full text-left py-2 border-b border-primary">EKİPMAN</button>
-        <button onclick="window.location.href='blog.html'" class="block w-full text-left py-2 border-b border-primary">BLOG</button>
-        <button onclick="window.location.href='skills.html'" class="block w-full text-left py-2 border-b border-primary">SKILLS</button>
-        <button onclick="window.location.href='premium.html'" class="block w-full text-left py-2 border-b border-primary">PREMIUM</button>
-        <button onclick="window.location.href='about.html'" class="block w-full text-left py-2 border-b border-primary">HAKKIMIZDA</button>
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center pt-20 hero-gradient overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 -left-20 w-96 h-96 bg-calith-orange/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-calith-accent/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="fade-in">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+                    <span class="w-2 h-2 bg-calith-orange rounded-full animate-pulse"></span>
+                    <span class="text-sm text-gray-400">Yeni: Pro Series 2025</span>
+                </div>
+                <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight mb-6">
+                    VÜCUT AĞIRLIĞI<br>
+                    <span class="gradient-text">ANTRENMANININ</span><br>
+                    GELECEĞİ
+                </h1>
+                <p class="text-gray-400 text-lg md:text-xl mb-8 max-w-lg leading-relaxed">
+                    Profesyonel calisthenics ekipmanları ve uzman rehberlikle evinde spor salonu deneyimi yaşa. 10.000+ sporcunun tercihi.
+                </p>
+                <div class="flex flex-wrap gap-4 mb-12">
+                    <button onclick="window.location.href='shop.html'" class="btn-primary px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2">
+                        <span>Koleksiyonu Keşfet</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="window.location.href='blog.html'" class="btn-outline px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i>
+                        <span>Videoları İzle</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
+                    <div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-white">10K+</div>
+                        <div class="text-gray-500 text-sm mt-1">Mutlu Müşteri</div>
+                    </div>
+                    <div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-white">50+</div>
+                        <div class="text-gray-500 text-sm mt-1">Ürün Çeşidi</div>
+                    </div>
+                    <div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-white">4.9</div>
+                        <div class="text-gray-500 text-sm mt-1">Ortalama Puan</div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative fade-in stagger-2">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/30 to-calith-accent/20 rounded-3xl blur-3xl transform scale-95"></div>
+                    <div class="relative bg-gradient-to-br from-calith-gray to-calith-dark rounded-3xl p-2 border border-white/10">
+                        <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                            <div class="text-center p-8">
+                                <i data-lucide="bar-horizontal" class="w-32 h-32 text-calith-orange mx-auto mb-4"></i>
+                                <p class="text-gray-500 text-sm">Pro Pull-Up Bar</p>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-4 -right-4 bg-calith-orange text-white px-6 py-3 rounded-2xl font-bold shadow-2xl">
+                            <div class="text-xs opacity-80">Başlangıç Fiyatı</div>
+                            <div class="text-xl">1.299₺</div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -left-4 bg-calith-gray/90 backdrop-blur border border-white/10 rounded-2xl p-4 shadow-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-5 h-5 text-green-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold">Stokta</div>
+                                <div class="text-xs text-gray-500">Hemen Kargo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <i data-lucide="chevron-down" class="w-6 h-6 text-gray-500"></i>
+    </div>
+</section>
+
+<!-- Marquee -->
+<div class="bg-calith-orange py-4 overflow-hidden border-y border-white/10">
+    <div class="flex whitespace-nowrap">
+        <div class="marquee flex items-center gap-8 text-black font-display font-bold text-lg">
+            <span>PULL-UP</span> <span class="text-black/30">•</span> <span>DIP</span> <span class="text-black/30">•</span> <span>MUSCLE-UP</span> <span class="text-black/30">•</span> <span>HANDSTAND</span> <span class="text-black/30">•</span> <span>PLANCHE</span> <span class="text-black/30">•</span> <span>FRONT LEVER</span> <span class="text-black/30">•</span> <span>PULL-UP</span> <span class="text-black/30">•</span> <span>DIP</span> <span class="text-black/30">•</span> <span>MUSCLE-UP</span> <span class="text-black/30">•</span> <span>HANDSTAND</span> <span class="text-black/30">•</span> <span>PLANCHE</span> <span class="text-black/30">•</span> <span>FRONT LEVER</span>
+        </div>
     </div>
 </div>
 
-
-<!-- LANDING -->
-<section id="landing" class="min-h-screen pt-16 page-transition active">
-    <!-- Hero Section -->
-    <div class="relative h-screen flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/50 to-primary z-10"></div>
-        <div class="absolute inset-0">
-            <img src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=2069&auto=format&fit=crop" 
-                 class="w-full h-full object-cover opacity-40 grayscale">
-        </div>
-        <div class="relative z-20 text-center px-6 max-w-5xl mx-auto">
-            <p class="text-secondary text-sm tracking-[0.3em] mb-4 reveal">VÜCUT AĞIRLIĞI EĞİTİMİ</p>
-            <h1 class="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-6 reveal leading-none text-gradient">
-                SADECE<br>SEN
-            </h1>
-            <p class="text-lg md:text-xl text-secondary max-w-2xl mx-auto mb-10 font-light reveal">
-                Yerçekimi senin spor salonun. Ekipman sadece ilerlemeni hızlandırır, başlamana gerek yok.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal">
-                <button onclick="window.location.href='blog.html'" class="px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold tracking-wider hover:from-gray-100 hover:to-gray-300 transition-all rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 reveal">
-                    ÜCRETSİZ BAŞLA
-                </button>
-                <button onclick="window.location.href='shop.html'" class="px-8 py-4 border-2 border-white/40 bg-white/5 backdrop-blur-sm font-bold tracking-wider hover:bg-white/15 hover:border-white/60 transition-all rounded-full hover:shadow-lg transform hover:scale-105 reveal">
-                    EKİPMAN İNCELE
-                </button>
-            </div>
-        </div>
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-            <i class="fas fa-chevron-down text-2xl opacity-50"></i>
-        </div>
-    </div>
-
-    <!-- Stats Bar -->
-    <div class="border-y border-primary bg-secondary/30 backdrop-blur">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 divide-x divide-primary">
-            <div class="py-8 text-center reveal">
-                <div class="text-4xl font-black mb-1 stat-counter">0₺</div>
-                <div class="text-secondary text-xs tracking-widest">BAŞLAMAK İÇİN</div>
-            </div>
-            <div class="py-8 text-center reveal">
-                <div class="text-4xl font-black mb-1 stat-counter">100%</div>
-                <div class="text-secondary text-xs tracking-widest">VÜCUT AĞIRLIĞI</div>
-            </div>
-            <div class="py-8 text-center reveal">
-                <div class="text-4xl font-black mb-1 stat-counter">∞</div>
-                <div class="text-secondary text-xs tracking-widest">İLERLEME</div>
-            </div>
-            <div class="py-8 text-center reveal">
-                <div class="text-4xl font-black mb-1 stat-counter">24/7</div>
-                <div class="text-secondary text-xs tracking-widest">HER YERDE</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Features Grid -->
-    <div class="max-w-7xl mx-auto px-4 py-24">
-        <div class="text-center mb-16 reveal">
-            <h2 class="text-3xl md:text-5xl font-black tracking-tighter mb-4">Neden CALITH?</h2>
-            <p class="text-secondary max-w-2xl mx-auto">Profesyonel ekipmanlar ve uzman rehberlikle hedeflerine ulaş.</p>
+<!-- Features Section -->
+<section class="py-24 bg-calith-dark">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">NEDEN <span class="gradient-text">CALITH</span>?</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto">Profesyonel sporcular ve antrenörler tarafından tasarlanan, kalite standartlarından ödün vermeyen ekipmanlar.</p>
         </div>
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="feature-card bg-secondary border border-primary p-8 rounded-2xl hover-lift reveal group cursor-pointer" onclick="window.location.href='shop.html'">
-                <div class="feature-icon w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-white group-hover:text-black transition-all">
-                    💪
+            <div class="card-hover product-card rounded-3xl p-8 fade-in stagger-1">
+                <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-calith-orange"></i>
                 </div>
-                <h3 class="text-2xl font-black mb-3">Premium Ekipman</h3>
-                <p class="text-secondary leading-relaxed">Evinde profesyonel spor salonu deneyimi yaşa. Dayanıklı, güvenli ve şık tasarımlar.</p>
+                <h3 class="font-display text-2xl font-bold mb-3">Premium Kalite</h3>
+                <p class="text-gray-400 leading-relaxed">Avrupa standartlarında çelik konstrüksiyon. 200kg taşıma kapasitesi, paslanmaz yüzey, ömür boyu garanti.</p>
             </div>
-            <div class="feature-card bg-secondary border border-primary p-8 rounded-2xl hover-lift reveal group cursor-pointer" onclick="window.location.href='blog.html'">
-                <div class="feature-icon w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-white group-hover:text-black transition-all">
-                    📚
+            <div class="card-hover product-card rounded-3xl p-8 fade-in stagger-2">
+                <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="graduation-cap" class="w-8 h-8 text-calith-accent"></i>
                 </div>
-                <h3 class="text-2xl font-black mb-3">Ücretsiz Rehberler</h3>
-                <p class="text-secondary leading-relaxed">Başlangıçtan ileri seviyeye tüm hareketleri öğren. Video anlatımlar ve detaylı programlar.</p>
+                <h3 class="font-display text-2xl font-bold mb-3">Ücretsiz Eğitim</h3>
+                <p class="text-gray-400 leading-relaxed">Her ürünle birlikte detaylı video kütüphanesi. Başlangıçtan ileri seviyeye tüm hareketlerin adım adım anlatımı.</p>
             </div>
-            <div class="feature-card bg-secondary border border-primary p-8 rounded-2xl hover-lift reveal group">
-                <div class="feature-icon w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-white group-hover:text-black transition-all">
-                    🚀
+            <div class="card-hover product-card rounded-3xl p-8 fade-in stagger-3">
+                <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="truck" class="w-8 h-8 text-calith-orange"></i>
                 </div>
-                <h3 class="text-2xl font-black mb-3">Hızlı Kargo</h3>
-                <p class="text-secondary leading-relaxed">500₺ üzeri siparişlerde bedava kargo. 14 gün içinde koşulsuz iade garantisi.</p>
+                <h3 class="font-display text-2xl font-bold mb-3">Hızlı Teslimat</h3>
+                <p class="text-gray-400 leading-relaxed">500₺ üzeri siparişlerde ücretsiz kargo. 14 gün koşulsuz iade. 7/24 müşteri desteği.</p>
             </div>
         </div>
     </div>
-
-    <!-- Transformation Section -->
-    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <div class="reveal">
-                <p class="text-accent font-bold tracking-wider mb-4">TRANSFORMASYON</p>
-                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-6">3 AYDA<br>VÜCUT DÖNÜŞÜMÜ</h2>
-                <p class="text-secondary text-lg mb-8 leading-relaxed">
-                    Sadece barfiks barı ve paralel bar ile evinde profesyonel antrenman yap. 
-                    Programlarımızı takip eden kullanıcıların %89'u ilk ay sonuç alıyor.
-                </p>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-bold">1</div>
-                        <div>
-                            <h4 class="font-bold">Temel Hareketleri Öğren</h4>
-                            <p class="text-secondary text-sm">Pull-up, dip, squat temellerini blog'dan öğren.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-bold">2</div>
-                        <div>
-                            <h4 class="font-bold">Ekipmanını Seç</h4>
-                            <p class="text-secondary text-sm">İhtiyacına uygun barfiks veya paralel barı al.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-bold">3</div>
-                        <div>
-                            <h4 class="font-bold">Programı Takip Et</h4>
-                            <p class="text-secondary text-sm">Haftalık programlarla düzenli çalış.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 reveal">
-                <div class="space-y-4">
-                    <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c149a?q=80&w=800&auto=format&fit=crop" class="w-full h-64 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
-                    <img src="https://images.unsplash.com/photo-1598971639058-211a74a96aa7?q=80&w=800&auto=format&fit=crop" class="w-full h-48 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
-                </div>
-                <div class="space-y-4 pt-8">
-                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop" class="w-full h-48 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
-                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" class="w-full h-64 object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-500">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Marquee Text -->
-    <div class="border-y border-primary py-6 overflow-bg-secondary/20">
-        <div class="marquee-container">
-            <div class="marquee-content text-4xl md:text-6xl font-black tracking-tighter opacity-20">
-                PULL-UP • DIP • MUSCLE-UP • HANDSTAND • PLANCHE • FRONT LEVER • PULL-UP • DIP • MUSCLE-UP • HANDSTAND • PLANCHE • FRONT LEVER •
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="max-w-7xl mx-auto px-4 py-24">
-        <div class="cta-section bg-secondary border border-primary rounded-3xl p-8 md:p-16 text-center reveal relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
-            <h2 class="text-3xl md:text-5xl font-black tracking-tighter mb-6 relative z-10 reveal">BAŞLAMAYA HAZIR MISIN?</h2>
-            <p class="text-secondary text-lg mb-8 max-w-2xl mx-auto relative z-10 reveal">Binlerce kişi CALITH ile evinde profesyonel antrenman yapıyor. Sen de aramıza katıl.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-                <button onclick="window.location.href='shop.html'" class="px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold tracking-wider hover:from-gray-100 hover:to-gray-300 transition-all rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 reveal">
-                    EKİPMAN ALIŞVERİŞİ
-                </button>
-                <button onclick="window.location.href='blog.html'" class="px-8 py-4 border-2 border-white/40 bg-white/5 backdrop-blur-sm font-bold tracking-wider hover:bg-white/15 hover:border-white/60 transition-all rounded-full hover:shadow-lg transform hover:scale-105 reveal">
-                    ÜCRETSİZ BAŞLA
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Latest Blog Preview -->
-    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
-        <div class="flex justify-between items-end mb-12 reveal">
-            <div>
-                <p class="text-accent font-bold tracking-wider mb-2">BLOG</p>
-                <h2 class="text-4xl md:text-5xl font-black tracking-tighter">SON YAZILAR</h2>
-            </div>
-            <button onclick="window.location.href='blog.html'" class="text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2 group">
-                Tümünü Gör <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-            </button>
-        </div>
-        <div id="landing-blog-preview" class="grid md:grid-cols-3 gap-6"></div>
-    </div>
-
-    <!-- Newsletter -->
-    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
-        <div class="max-w-2xl mx-auto text-center reveal">
-            <i class="fas fa-envelope text-4xl mb-6 opacity-50"></i>
-            <h2 class="text-3xl font-black tracking-tighter mb-4">GÜNCEL KAL</h2>
-            <p class="text-secondary mb-8">Yeni yazılar ve özel indirimlerden haberdar ol.</p>
-            <form class="flex gap-2" onsubmit="event.preventDefault(); showToast('Abone oldunuz!');">
-                <input type="email" placeholder="E-posta adresin" class="flex-1 bg-secondary border border-primary px-6 py-4 rounded-full focus:outline-none focus:border-white transition-colors focus:ring-2 focus:ring-red-500/20">
-                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-full hover:from-gray-100 hover:to-gray-300 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 reveal">
-                    ABONE OL
-                </button>
-            </form>
-        </div>
-    </div>
-    <!-- Footer -->
-    <footer class="border-t border-primary bg-secondary/20 py-12 mt-20">
-        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-8">
-            <div class="col-span-1 md:col-span-2">
-                <span class="text-2xl font-black tracking-tighter mb-4 block">CALITH</span>
-                <p class="text-secondary text-sm max-w-sm">Calisthenics ve lifestyle markası. Kendi spor salonun vücudun, kendi limitin sensin.</p>
-            </div>
-            <div>
-                <h4 class="font-bold text-xs tracking-widest uppercase mb-4">Hızlı Menü</h4>
-                <div class="flex flex-col gap-2 text-sm text-secondary">
-                    <a href="shop.html" class="hover:text-white transition-colors">Ekipman</a>
-                    <a href="blog.html" class="hover:text-white transition-colors">Blog</a>
-                    <a href="skills.html" class="hover:text-white transition-colors">Skills</a>
-                    <a href="premium.html" class="hover:text-white transition-colors">Premium</a>
-                </div>
-            </div>
-            <div>
-                <h4 class="font-bold text-xs tracking-widest uppercase mb-4">Sosyal Medya</h4>
-                <div class="flex flex-col gap-2 text-sm text-secondary">
-                    <a href="#" class="hover:text-white transition-colors">Instagram</a>
-                    <a href="#" class="hover:text-white transition-colors">YouTube</a>
-                    <a href="#" class="hover:text-white transition-colors">Twitter</a>
-                </div>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-primary text-center text-[10px] text-secondary tracking-widest uppercase">
-            © 2024 CALITH PROJECT. TÜM HAKLARI SAKLIDIR.
-        </div>
-    </footer>
 </section>
-<!-- CART -->
-<div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
-<div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-white text-black z-50 shadow-2xl flex flex-col">
-    <div class="flex items-center justify-between p-4 border-b border-gray-200">
-        <h2 class="text-lg font-black tracking-tighter">SEPET <span id="cart-count-drawer" class="text-gray-500 font-normal">(0)</span></h2>
-        <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-full"><i class="fas fa-times text-xl"></i></button>
+
+<!-- Latest Blog Section (SQL Integration) -->
+<section id="blog" class="py-24 bg-calith-gray relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+            <div class="fade-in">
+                <span class="text-calith-orange font-semibold text-sm tracking-wider uppercase">Rehberler</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold mt-2">SON <span class="gradient-text">YAZILAR</span></h2>
+            </div>
+            <a href="blog.html" class="mt-4 md:mt-0 text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
+                Tümünü Gör <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+        <div id="landing-blog-preview" class="grid md:grid-cols-3 gap-8">
+            <!-- Supabase content loaded here via app.js -->
+        </div>
     </div>
-    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
-        <div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-24 bg-gradient-to-br from-calith-orange to-orange-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="font-display text-4xl md:text-6xl font-bold text-black mb-6 uppercase">BAŞLAMAYA HAZIR MISIN?</h2>
+        <p class="text-black/70 text-lg md:text-xl mb-8 max-w-2xl mx-auto">Binlerce kişi CALITH ile evinde profesyonel antrenman yapıyor. Sen de aramıza katıl, vücut ağırlığı antrenmanının gücünü keşfet.</p>
+        <button onclick="window.location.href='shop.html'" class="bg-black text-white px-10 py-5 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl">
+            Hemen Başla - %20 İndirim
+        </button>
     </div>
-    <div class="border-t border-gray-200 p-4 space-y-4 bg-gray-50">
-        <div class="flex justify-between text-sm"><span class="text-gray-600">Ara Toplam</span><span id="cart-subtotal" class="font-medium">0₺</span></div>
-        <div class="flex justify-between text-sm"><span class="text-gray-600">Kargo</span><span id="cart-shipping" class="font-medium text-green-600">Bedava</span></div>
-        <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-3"><span>Toplam</span><span id="cart-total">0₺</span></div>
-        <button onclick="checkout()" class="w-full bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">ÖDEME YAP</button>
+</section>
+
+<!-- Footer -->
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+                </div>
+                <p class="text-gray-500 text-sm leading-relaxed">Profesyonel calisthenics ekipmanları ve eğitim kaynakları. Evinde spor salonu deneyimi.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ürünler</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Pull-Up Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Paralel Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Aksesuarlar</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Kaynaklar</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="skills.html" class="hover:text-white transition-colors">Programlar</a></li>
+                    <li><a href="premium.html" class="hover:text-white transition-colors">Premium</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Destek</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="about.html" class="hover:text-white transition-colors">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-500 text-sm">© 2025 CALITH. Tüm hakları saklıdır.</p>
+            <div class="flex gap-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Cart Elements (Managed by app.js) -->
+<div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-calith-gray z-50 transform translate-x-full transition-transform duration-300 shadow-2xl">
+    <div class="h-full flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b border-white/10">
+            <h3 class="font-display text-xl font-bold uppercase">SEPETİN</h3>
+            <button onclick="toggleCart()" class="p-2 hover:bg-white/10 rounded-full transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6"></div>
+        <div class="border-t border-white/10 p-6 space-y-4">
+            <div class="flex justify-between text-sm"><span class="text-gray-400">Ara Toplam</span><span id="cart-subtotal" class="font-semibold">0₺</span></div>
+            <div class="flex justify-between text-lg font-bold border-t border-white/10 pt-4"><span>Toplam</span><span id="cart-total">0₺</span></div>
+            <button onclick="checkout()" class="w-full btn-primary py-4 rounded-full font-bold">ÖDEMEYE GEÇ</button>
+        </div>
     </div>
 </div>
+<div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleCart()"></div>
 
-<!-- TOAST -->
-<div id="toast" class="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3">
-    <i class="fas fa-check-circle text-green-400"></i>
+<!-- Toast -->
+<div id="toast" class="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-calith-gray text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3">
+    <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
     <span id="toast-msg">Sepete eklendi</span>
 </div>
 
-<!-- MOBILE CART -->
-<button onclick="toggleCart()" class="mobile-cart-btn md:hidden w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center">
-    <i class="fas fa-shopping-bag text-xl"></i>
-    <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
-</button>
-
-
 <script src="js/app.js"></script>
+<script>
+    lucide.createIcons();
+    // Intersection Observer for animations
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, observerOptions);
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>

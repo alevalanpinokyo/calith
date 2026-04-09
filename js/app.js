@@ -105,33 +105,59 @@ function renderLandingBlog() {
     const container = document.getElementById('landing-blog-preview');
     if (!container) return;
     container.innerHTML = posts.slice(0, 3).map(p => `
-        <article onclick="showBlogDetail('${p.id}')" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[400px] relative">
-            <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 right-0 p-6 card-content">
+        <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
+            <div class="aspect-video relative overflow-hidden">
+                <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent"></div>
+            </div>
+            <div class="p-6">
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-medium uppercase tracking-wider">${p.category}</span>
-                    <span class="text-white/60 text-xs">${p.date}</span>
+                    <span class="px-3 py-1 bg-calith-orange/20 text-calith-orange text-[10px] font-bold uppercase tracking-wider rounded-full">${p.category}</span>
+                    <span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest">${p.date}</span>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-accent transition-colors">${p.title}</h3>
-                <p class="text-white/70 text-sm line-clamp-2">${p.excerpt}</p>
-                <div class="mt-4 flex items-center text-sm font-bold text-white gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    OKU <i class="fas fa-arrow-right"></i>
+                <h3 class="font-display text-xl font-bold mb-3 group-hover:text-calith-orange transition-colors">${p.title}</h3>
+                <p class="text-gray-400 text-sm line-clamp-2 md:h-10 mb-4">${p.excerpt}</p>
+                <div class="flex items-center gap-2 text-sm font-bold text-calith-orange opacity-0 group-hover:opacity-100 transition-all">
+                    OKU <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </div>
             </div>
         </article>
     `).join('');
+    if (window.lucide) lucide.createIcons();
 }
 
 function renderShop(filter = 'all') {
     const grid = document.getElementById('shop-grid');
+    if (!grid) return;
     const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
     grid.innerHTML = filtered.map(p => `
-        <div onclick="showProductDetail(${p.id})" class="product-card group cursor-pointer bg-secondary border border-primary rounded-lg overflow-hidden">
-            <div class="aspect-[4/5] relative overflow-hidden"><img src="${p.image}" class="w-full h-full object-cover">${p.badge ? `<span class="absolute top-2 left-2 bg-black text-white text-xs font-bold px-2 py-1">${p.badge}</span>` : ''}${p.oldPrice ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1">-%${Math.round((1-p.price/p.oldPrice)*100)}</span>` : ''}</div>
-            <div class="p-4"><p class="text-xs text-secondary mb-1 uppercase">${p.category}</p><h3 class="font-bold text-sm mb-2 group-hover:text-secondary transition-colors">${p.name}</h3><div class="flex items-center gap-2"><span class="font-bold text-lg">${p.price}₺</span>${p.oldPrice ? `<span class="text-sm text-secondary line-through">${p.oldPrice}₺</span>` : ''}</div></div>
+        <div onclick="showProductDetail(${p.id})" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
+            <div class="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-8 relative overflow-hidden">
+                <img src="${p.image}" class="w-full h-full object-cover mix-blend-overlay opacity-50 group-hover:opacity-100 transition-opacity">
+                ${p.badge ? `<span class="absolute top-4 left-4 bg-calith-orange text-white text-[10px] font-bold px-3 py-1 rounded-full">${p.badge}</span>` : ''}
+                ${p.oldPrice ? `<span class="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">-%${Math.round((1-p.price/p.oldPrice)*100)}</span>` : ''}
+            </div>
+            <div class="p-6">
+                <p class="text-[10px] text-calith-orange font-bold uppercase tracking-widest mb-1">${p.category}</p>
+                <h3 class="font-display text-lg font-bold mb-3 group-hover:text-white transition-colors">${p.name}</h3>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-baseline gap-2">
+                        <span class="font-bold text-xl">${p.price}₺</span>
+                        ${p.oldPrice ? `<span class="text-xs text-gray-500 line-through">${p.oldPrice}₺</span>` : ''}
+                    </div>
+                    <button onclick="event.stopPropagation(); addToCartById(${p.id})" class="w-10 h-10 bg-calith-orange/10 text-calith-orange rounded-full flex items-center justify-center hover:bg-calith-orange hover:text-white transition-all transform hover:rotate-90">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     `).join('');
+    if (window.lucide) lucide.createIcons();
+}
+
+function addToCartById(id) {
+    const p = products.find(item => item.id === id);
+    if (p) addToCart(p, 1);
 }
 
 function filterProducts(cat) {
@@ -457,28 +483,33 @@ function updateCartUI() {
     const container = document.getElementById('cart-items');
     if (container) { 
         if (cart.length === 0) { 
-            container.innerHTML = '<div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>'; 
+            container.innerHTML = '<div class="text-center py-12 text-gray-500"><i data-lucide="shopping-cart" class="w-12 h-12 mx-auto mb-4 opacity-10"></i><p class="font-medium">Sepetin boş</p></div>'; 
         } else { 
             container.innerHTML = cart.map(item => `
-                <div class="flex gap-4 bg-gray-50 p-3 rounded-lg">
-                    <img src="${item.image}" class="w-20 h-20 object-cover rounded">
+                <div class="flex gap-4 p-4 rounded-2xl bg-calith-dark border border-white/5 mb-3">
+                    <div class="w-20 h-20 bg-gray-800 rounded-xl overflow-hidden">
+                        <img src="${item.image}" class="w-full h-full object-cover opacity-80">
+                    </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-sm mb-1">${item.name}</h4>
-                        <p class="text-sm text-gray-600 mb-2">${item.price}₺</p>
-                        <div class="flex items-center gap-2">
-                            <div class="flex items-center border border-gray-300 rounded bg-white">
-                                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-1 hover:bg-gray-100">-</button>
-                                <span class="px-2 py-1 text-sm font-medium min-w-[1.5rem] text-center">${item.qty}</span>
-                                <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-1 hover:bg-gray-100">+</button>
+                        <h4 class="font-bold text-sm mb-1 line-clamp-1">${item.name}</h4>
+                        <p class="text-calith-orange font-bold text-sm mb-3">${item.price}₺</p>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center border border-white/10 rounded-lg overflow-hidden h-8">
+                                <button onclick="updateCartQty(${item.id}, -1)" class="px-3 hover:bg-white/5 transition-colors text-gray-400">-</button>
+                                <span class="px-2 text-xs font-bold min-w-[1.5rem] text-center">${item.qty}</span>
+                                <button onclick="updateCartQty(${item.id}, 1)" class="px-3 hover:bg-white/5 transition-colors text-gray-400">+</button>
                             </div>
-                            <button onclick="removeFromCart(${item.id})" class="text-red-500 text-sm hover:underline">Kaldır</button>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-500/50 hover:text-red-500 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="font-bold">${item.price * item.qty}₺</div>
+                    <div class="font-display font-bold text-lg">${item.price * item.qty}₺</div>
                 </div>
             `).join(''); 
         } 
     }
+    if (window.lucide) lucide.createIcons();
 }
 
 function updateCartQty(id, delta) { 
@@ -523,15 +554,39 @@ function showToast(msg) {
     } 
 }
 
-function toggleMobileMenu() { 
-    const menu = document.getElementById('mobile-menu'); 
-    if (menu) menu.classList.toggle('hidden'); 
+function init() {
+    loadPosts();
+    updateCartUI();
+    
+    // Auto-login admin if token exists (simplified)
+    if (localStorage.getItem('admin_token')) {
+        const editor = document.getElementById('admin-editor');
+        const login = document.getElementById('admin-login');
+        if (editor && login) {
+            editor.classList.remove('hidden');
+            login.classList.add('hidden');
+        }
+    }
+
+    // Scroll reveal observe
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal, .fade-in').forEach(el => observer.observe(el));
+
+    // Lucide support
+    if (window.lucide) lucide.createIcons();
+    
+    // Check URL for blog post detail
+    const params = new URLSearchParams(window.location.search);
+    const blogId = params.get('b');
+    if (blogId) {
+        setTimeout(() => showBlogDetail(blogId), 500);
+    }
 }
 
-const observer = new IntersectionObserver((entries) => { 
-    entries.forEach(e => { 
-        if (e.isIntersecting) e.target.classList.add('active'); 
-    }); 
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.addEventListener('DOMContentLoaded', init);
