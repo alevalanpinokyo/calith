@@ -10,47 +10,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        calith: {
-                            orange: '#FF6B35',
-                            dark: '#0A0A0A',
-                            gray: '#1A1A1A',
-                            light: '#2A2A2A',
-                            accent: '#00D9FF'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Oswald', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="font-sans antialiased bg-calith-dark text-white">
-
 <div class="grain"></div>
 
-<!-- Navigation -->
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
-            <!-- Logo -->
-            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
                 <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
                     <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
                 </div>
                 <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
             </div>
-
-            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
                 <a href="index.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">ANA SAYFA</a>
                 <a href="shop.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">EKİPMAN</a>
@@ -59,7 +32,6 @@
                 <a href="premium.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">PREMIUM</a>
                 <a href="about.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">HAKKIMIZDA</a>
             </div>
-
             <div class="flex items-center gap-4">
                 <button class="relative p-2 text-gray-400 hover:text-white transition-colors" onclick="toggleCart()">
                     <i data-lucide="shopping-cart" class="w-6 h-6"></i>
@@ -71,53 +43,50 @@
             </div>
         </div>
     </div>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3 font-medium text-sm">
+            <a href="index.html" class="block text-gray-400 py-2">ANA SAYFA</a>
+            <a href="shop.html" class="block text-gray-400 py-2">EKİPMAN</a>
+            <a href="blog.html" class="block text-gray-400 py-2">BLOG</a>
+            <a href="skills.html" class="block text-white py-2">PROGRAMLAR</a>
+            <a href="premium.html" class="block text-gray-400 py-2">PREMIUM</a>
+            <a href="about.html" class="block text-gray-400 py-2">HAKKIMIZDA</a>
+        </div>
+    </div>
 </nav>
 
-<!-- SKILL LIBRARY -->
 <section id="skill-library" class="min-h-screen pt-32 pb-20 fade-in">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <span class="text-calith-orange font-semibold text-sm tracking-wider uppercase">Skill Library</span>
-            <h1 class="font-display text-5xl md:text-7xl font-bold mt-4 mb-6">HAREKET <span class="gradient-text">REHBERİ</span></h1>
-            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Vücut ağırlığı antrenmanının temelinden ileri seviyesine tüm hareketler.</p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Example Skill Cards -->
-            <div class="product-card p-6 rounded-3xl card-hover group cursor-pointer" onclick="showSkill('muscle-up')">
-                <div class="w-12 h-12 bg-calith-orange/10 rounded-2xl flex items-center justify-center mb-6 text-calith-orange group-hover:scale-110 transition-transform">
-                    <i data-lucide="arrow-up" class="w-6 h-6"></i>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="font-display text-5xl md:text-7xl font-bold mb-6">SKILL <span class="gradient-text">REHBERİ</span></h1>
+        <p class="text-gray-400 max-w-2xl mx-auto text-lg">Tüm seviyeler için detaylı hareket kütüphanesi ve teknik rehberler.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+            <div class="product-card p-8 rounded-3xl group cursor-pointer" onclick="showSkill('muscle-up')">
+                <div class="w-12 h-12 bg-calith-orange/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-calith-orange group-hover:scale-110 transition-transform">
+                    <i data-lucide="zap" class="w-6 h-6"></i>
                 </div>
-                <h3 class="font-display text-xl font-bold mb-2">Muscle Up</h3>
-                <p class="text-gray-500 text-xs">Seviye: İleri</p>
+                <h3 class="font-bold">Muscle Up</h3>
             </div>
-            <div class="product-card p-6 rounded-3xl card-hover group cursor-pointer" onclick="showSkill('handstand')">
-                <div class="w-12 h-12 bg-calith-accent/10 rounded-2xl flex items-center justify-center mb-6 text-calith-accent group-hover:scale-110 transition-transform">
+            <div class="product-card p-8 rounded-3xl group cursor-pointer" onclick="showSkill('handstand')">
+                <div class="w-12 h-12 bg-calith-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-calith-accent group-hover:scale-110 transition-transform">
                     <i data-lucide="refresh-cw" class="w-6 h-6"></i>
                 </div>
-                <h3 class="font-display text-xl font-bold mb-2">Handstand</h3>
-                <p class="text-gray-500 text-xs">Seviye: Orta</p>
+                <h3 class="font-bold">Handstand</h3>
             </div>
-            <!-- More would be rendered via JS if needed -->
         </div>
     </div>
 </section>
 
-<!-- Footers and Cart same as index... simplified for breath -->
-<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
-        <p>© 2025 CALITH. Tüm hakları saklıdır.</p>
-    </div>
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8 text-center text-gray-500 text-sm">
+    <p>© 2025 CALITH. Tüm hakları saklıdır.</p>
 </footer>
 
+<div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-calith-gray z-50 transform translate-x-full transition-transform duration-300 shadow-2xl">
+    <div class="h-full flex flex-col p-6"><button onclick="toggleCart()" class="self-end mb-4"><i data-lucide="x" class="w-6 h-6"></i></button><div id="cart-items" class="flex-1 overflow-y-auto"></div></div>
+</div>
+<div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleCart()"></div>
+<div id="toast" class="toast fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-gray text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i><span id="toast-msg"></span></div>
+
 <script src="js/app.js"></script>
-<script>
-    lucide.createIcons();
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-    }, observerOptions);
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-</script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
