@@ -575,12 +575,23 @@ function previewPost() {
     w.document.write(`<html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-black text-white p-8 max-w-3xl mx-auto">${document.getElementById('editor').innerHTML}</body></html>`); 
 }
 
-function addToCart(product, qty) {
-    const existing = cart.find(i => i.id === product.id);
-    if (existing) { existing.qty += qty; } else { cart.push({ ...product, qty }); }
+function addToCart(id) { 
+    const p = products.find(item => item.id == id); 
+    if (!p) return; 
+    
+    const existing = cart.find(i => i.id == id); 
+    if (existing) { 
+        existing.qty++; 
+    } else { 
+        cart.push({ ...p, qty: 1 }); 
+    } 
+    
     saveCart(); 
-    showToast(`${product.name} sepete eklendi`); 
-    updateCartUI();
+    updateCartUI(); 
+    showToast('Sepete eklendi'); 
+    
+    // Auto open cart
+    setTimeout(toggleCart, 500);
 }
 
 function saveCart() { localStorage.setItem('calith_cart', JSON.stringify(cart)); }
@@ -646,14 +657,14 @@ function removeFromCart(id) {
 }
 
 function toggleCart() {
-    const drawer = document.getElementById('cart-drawer'), overlay = document.getElementById('cart-overlay');
+    const drawer = document.getElementById('cart-sidebar'), overlay = document.getElementById('cart-overlay');
     if (!drawer || !overlay) return;
-    if (drawer.classList.contains('open')) { 
-        drawer.classList.remove('open'); 
-        overlay.classList.add('hidden'); 
-    } else { 
-        drawer.classList.add('open'); 
-        overlay.classList.remove('hidden'); 
+    if (drawer.classList.contains('translate-x-full')) {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+    } else {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
     }
 }
 
