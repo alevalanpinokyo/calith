@@ -77,26 +77,43 @@
                     <h3 class="font-display text-2xl font-bold uppercase">ÜRÜN <span class="text-calith-orange">İŞLEMLERİ</span></h3>
                     <input type="hidden" id="prod-edit-id">
                     <div class="space-y-4">
-                        <input type="text" id="prod-name" placeholder="Ürün Adı" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl outline-none focus:border-calith-orange">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Ürün Adı</label>
+                            <input type="text" id="prod-name" placeholder="Ürün Adı" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori</label>
+                            <select id="prod-category" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                                <option value="bar">Barfiks</option>
+                                <option value="parallettes">Paralel</option>
+                                <option value="rings">Halka</option>
+                                <option value="band">Band</option>
+                                <option value="bundle">Set</option>
+                            </select>
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fiyat (TL)</label>
-                                <input type="number" id="prod-price" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                <input type="number" id="prod-price" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Eski Fiyat (Opsiyonel)</label>
-                                <input type="number" id="prod-old-price" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                <input type="number" id="prod-old-price" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Rozet (Örn: Yeni)</label>
-                                <input type="text" id="prod-badge" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                <input type="text" id="prod-badge" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Görsel URL</label>
-                                <input type="url" id="prod-image-url" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                <input type="url" id="prod-image-url" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
                             </div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
+                            <textarea id="prod-desc" rows="3" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white resize-none"></textarea>
                         </div>
                         <button onclick="saveProduct()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">Ürünü Kaydet</button>
                     </div>
