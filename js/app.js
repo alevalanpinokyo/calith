@@ -630,6 +630,8 @@ async function savePost() {
     const title = document.getElementById('post-title').value;
     const content = document.getElementById('editor').innerHTML;
     const category = document.getElementById('post-category').value;
+    const image = document.getElementById('post-cover').value;
+    const video = document.getElementById('post-video').value;
     const editId = document.getElementById('post-edit-id').value;
     
     if (!title) { alert('Başlık gerekli!'); return; }
@@ -638,8 +640,10 @@ async function savePost() {
         title,
         slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         category,
-        excerpt: title.substring(0, 50) + '...', // Otomatik özet
+        excerpt: title.substring(0, 50) + '...',
         content,
+        image: image || null,
+        video: video || null,
         published: true
     };
 
@@ -699,6 +703,8 @@ function editPost(id) {
     document.getElementById('post-edit-id').value = p.id;
     document.getElementById('post-title').value = p.title;
     document.getElementById('post-category').value = p.category;
+    document.getElementById('post-cover').value = p.image || '';
+    document.getElementById('post-video').value = p.video || '';
     document.getElementById('editor').innerHTML = p.content;
     document.getElementById('btn-save-post').textContent = 'YAZIYI GÜNCELLE';
     
@@ -741,6 +747,8 @@ async function deletePost(id) {
 function resetPostForm() {
     document.getElementById('post-edit-id').value = '';
     document.getElementById('post-title').value = '';
+    document.getElementById('post-cover').value = '';
+    document.getElementById('post-video').value = '';
     document.getElementById('editor').innerHTML = '';
     document.getElementById('btn-save-post').textContent = 'YAZIYI YAYINLA';
 }

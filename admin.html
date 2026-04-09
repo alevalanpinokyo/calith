@@ -81,9 +81,19 @@
                                 <option value="program">Programlar</option>
                             </select>
                         </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kapak Görseli URL</label>
+                                <input type="url" id="post-cover" placeholder="https://..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Öne Çıkan Video URL</label>
+                                <input type="url" id="post-video" placeholder="YouTube URL vb." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                        </div>
                         <div>
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İçerik (Zengin Metin)</label>
-                            <div id="editor" contenteditable="true" class="bg-black/40 border border-white/10 rounded-xl p-4 min-h-[300px] outline-none prose prose-invert max-w-none text-sm overflow-y-auto"></div>
+                            <div id="editor" contenteditable="true" class="bg-black/40 border border-white/10 rounded-xl p-4 min-h-[250px] outline-none prose prose-invert max-w-none text-sm overflow-y-auto"></div>
                         </div>
                         <button onclick="savePost()" id="btn-save-post" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">YAZIYI YAYINLA</button>
                     </div>
