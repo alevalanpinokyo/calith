@@ -200,41 +200,39 @@ function showProductDetail(id) {
 
 function changePdQty(delta) { pdQty = Math.max(1, pdQty + delta); document.getElementById('pd-qty').textContent = pdQty; }
 
-function addToCartFromDetail() { if (!currentPd) return; addToCart(currentPd, pdQty); showSection('shop'); }
+function addToCartFromDetail() { if (!currentPd) return; addToCart(currentPd.id, pdQty); }
 
 function renderBlog(filter = 'all') {
-    const grid = document.getElementById('blog-grid');
-    if (!grid) return;
+    const list = document.getElementById('blog-list');
+    if (!list) return;
     
     const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
     
     if (filtered.length === 0) { 
-        grid.innerHTML = '<div class="col-span-3 text-center py-12 text-secondary">Henüz yazı yok.</div>'; 
+        list.innerHTML = '<div class="col-span-3 text-center py-20 text-gray-500 font-bold uppercase tracking-widest">Henüz yazı yok.</div>'; 
         return; 
     }
     
-    grid.innerHTML = filtered.map(p => `
-        <article onclick="showBlogDetail('${p.id}')" class="blog-card group cursor-pointer bg-secondary border border-primary rounded-2xl overflow-hidden h-[450px] relative">
-            <img src="${p.image}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
-            <div class="absolute top-4 left-4 z-10">
-                <span class="px-3 py-1 bg-white text-black text-xs font-bold uppercase tracking-wider rounded-full">${p.category}</span>
+    list.innerHTML = filtered.map(p => `
+        <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
+            <div class="aspect-video relative overflow-hidden">
+                <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent opacity-60"></div>
             </div>
-            <div class="absolute bottom-0 left-0 right-0 p-6 z-10 card-content">
-                <div class="text-white/60 text-xs mb-2 uppercase tracking-wider">${p.date}</div>
-                <h3 class="text-2xl font-black text-white mb-3 line-clamp-2 leading-tight group-hover:text-accent transition-colors">${p.title}</h3>
-                <p class="text-white/70 text-sm line-clamp-3 mb-4">${p.excerpt}</p>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white flex items-center gap-2 group-hover:gap-3 transition-all">
-                        DEVAMINI OKU <i class="fas fa-long-arrow-alt-right"></i>
-                    </span>
-                    <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                        <i class="fas fa-arrow-up transform rotate-45"></i>
-                    </span>
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="px-3 py-1 bg-calith-orange/20 text-calith-orange text-[10px] font-bold uppercase tracking-wider rounded-full">${p.category}</span>
+                    <span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest">${p.date}</span>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-3 group-hover:text-calith-orange transition-colors">${p.title}</h3>
+                <p class="text-gray-400 text-sm line-clamp-2 mb-6">${p.excerpt}</p>
+                <div class="flex items-center gap-2 text-sm font-bold text-calith-orange opacity-0 group-hover:opacity-100 transition-all">
+                    OKU <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </div>
             </div>
         </article>
     `).join('');
+    if (window.lucide) lucide.createIcons();
 }
 
 function filterBlog(cat) {
@@ -575,27 +573,21 @@ function previewPost() {
     w.document.write(`<html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-black text-white p-8 max-w-3xl mx-auto">${document.getElementById('editor').innerHTML}</body></html>`); 
 }
 
-function addToCart(id) { 
-    console.log('Adding to cart, ID:', id);
+function addToCart(id, qty = 1) { 
     const p = products.find(item => String(item.id) === String(id)); 
-    
-    if (!p) {
-        console.error('Product not found for ID:', id);
-        return; 
-    }
+    if (!p) return; 
     
     const existing = cart.find(i => String(i.id) === String(id)); 
     if (existing) { 
-        existing.qty++; 
+        existing.qty += qty; 
     } else { 
-        cart.push({ ...p, qty: 1 }); 
+        cart.push({ ...p, qty }); 
     } 
     
     saveCart(); 
     updateCartUI(); 
     showToast(`${p.name} sepete eklendi`); 
     
-    // Explicitly open the cart
     const drawer = document.getElementById('cart-sidebar');
     const overlay = document.getElementById('cart-overlay');
     if (drawer && overlay) {
