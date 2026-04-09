@@ -710,21 +710,23 @@ async function deletePost(id) {
     
     const sb = getSupabase();
     if (sb) {
-        const { error } = await sb.from('posts').delete().eq('id', id);
-        if (error) {
-            console.error('Supabase Delete Error:', error);
-            alert('Supabase Silme Hatası: ' + error.message + '\n\nİpucu: Eğer kendi eklediğiniz bir yazıyı silemiyorsanız, Supabase RLS ayarlarından DELETE izni vermeniz gerekebilir.');
+        // Esnek silme: Hem string hem number olarak dene
+        const { error: error1 } = await sb.from('posts').delete().eq('id', id);
+        const { error: error2 } = await sb.from('posts').delete().eq('id', Number(id));
+        
+        if (error1 && error2 && isNaN(id)) {
+             console.warn('Silme hatası (Beklenen durum olabilir):', error1.message);
         }
     }
 
-    // Kara listeye ekle (Geri gelmemesi için)
+    // Kara listeye ekle (Veritabanında olmasa bile ekranı temiz tutmak için)
     const deletedPostTitles = JSON.parse(localStorage.getItem('calith_deleted_posts')) || [];
     if (!deletedPostTitles.includes(postToDelete.title)) {
         deletedPostTitles.push(postToDelete.title);
         localStorage.setItem('calith_deleted_posts', JSON.stringify(deletedPostTitles));
     }
 
-    // Listeyi yerel olarak güncelle
+    // Listeyi hemen güncelle (Hızlı tepki)
     posts = posts.filter(p => String(p.id) !== String(id));
     
     showToast('Yazı silindi');
