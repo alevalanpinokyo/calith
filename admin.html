@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script>
         tailwind.config = {
@@ -42,115 +41,157 @@
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
-            <!-- Logo -->
-            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
                 <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
                     <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
                 </div>
                 <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
             </div>
-
             <div class="hidden md:flex items-center gap-8">
-                <a href="index.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">ANA SAYFA</a>
-                <a href="blog.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium text-white uppercase font-bold tracking-widest">ADMIN PANEL</a>
+                <a href="index.html" class="text-gray-400 hover:text-white text-sm font-medium">ANA SAYFA</a>
+                <span class="text-white uppercase font-bold tracking-widest text-sm">ADMIN PANEL</span>
             </div>
-
             <button onclick="logoutAdmin()" class="text-sm text-gray-400 hover:text-red-500 transition-colors">ÇIKIŞ →</button>
         </div>
     </div>
 </nav>
 
-<section id="admin" class="min-h-screen pt-32 pb-20 fade-in">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<section id="admin" class="min-h-screen pt-32 pb-20">
+    <div class="max-w-6xl mx-auto px-4">
         
-        <!-- Login -->
+        <!-- Login Section -->
         <div id="admin-login" class="max-w-md mx-auto space-y-8 py-20 text-center">
             <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <i data-lucide="lock" class="w-10 h-10 text-calith-orange"></i>
             </div>
             <h1 class="font-display text-4xl font-bold uppercase tracking-widest">GİRİŞ YAP</h1>
-            <p class="text-gray-500 mb-8">Yalnızca yetkili personel erişimi içindir.</p>
-            
             <input type="password" id="admin-pass" placeholder="••••••••" class="w-full bg-calith-gray border border-white/10 px-6 py-5 rounded-2xl text-center text-3xl tracking-[1em] focus:outline-none focus:border-calith-orange transition-all">
             <button onclick="checkAdmin()" class="w-full btn-primary h-16 rounded-2xl font-bold text-lg mt-6">ADMİN PANELİNE GİR</button>
-            <p class="text-xs text-gray-600 mt-6">İpucu: Logo'ya 5 saniye basılı tutarak da erişebilirsiniz</p>
         </div>
 
-        <!-- Editor -->
-        <div id="admin-editor" class="hidden space-y-8 py-10">
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-white/10 pb-8">
+        <!-- Editor Section -->
+        <div id="admin-editor" class="hidden">
+            <!-- TABS -->
+            <div class="flex flex-wrap gap-4 mb-12 p-1 bg-white/5 rounded-2xl border border-white/5 w-fit">
+                <button onclick="switchAdminTab('blog')" id="tab-blog" class="px-8 py-3 rounded-xl font-bold text-sm transition-all bg-calith-orange text-white shadow-lg">BLOG YÖNETİMİ</button>
+                <button onclick="switchAdminTab('products')" id="tab-products" class="px-8 py-3 rounded-xl font-bold text-sm transition-all text-gray-400 hover:text-white">ÜRÜN YÖNETİMİ</button>
+            </div>
+
+            <!-- BLOG CONTENT -->
+            <div id="section-blog" class="space-y-8 fade-in active">
                 <div>
-                    <span class="text-calith-orange font-bold text-xs tracking-widest uppercase">Editor</span>
-                    <h2 class="font-display text-4xl font-bold mt-2">YENİ YAZI <span class="gradient-text">EKLE</span></h2>
+                    <span class="text-calith-orange font-bold text-xs tracking-widest uppercase mb-2 block">Content Manager</span>
+                    <h2 class="font-display text-4xl font-bold">YENİ YAZI <span class="gradient-text">YAYINLA</span></h2>
+                </div>
+                <div class="space-y-6">
+                    <input type="text" id="post-title" placeholder="Yazı Başlığı..." class="w-full bg-transparent text-4xl md:text-5xl font-display font-bold placeholder-white/5 border-none focus:outline-none focus:ring-0">
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <select id="post-category" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:border-calith-orange outline-none">
+                            <option value="temel">Temel Bilgiler</option>
+                            <option value="ileri">İleri Teknikler</option>
+                            <option value="beslenme">Beslenme</option>
+                            <option value="ekipman">Ekipman Tanıtım</option>
+                        </select>
+                        <input type="date" id="post-date" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:border-calith-orange outline-none">
+                        <input type="url" id="post-cover" placeholder="Kapak Görseli URL" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:border-calith-orange outline-none">
+                    </div>
+                    <textarea id="post-excerpt" placeholder="Kısa özet..." rows="2" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:border-calith-orange outline-none resize-none"></textarea>
+                    <div id="editor" contenteditable="true" class="bg-calith-gray border border-white/10 rounded-2xl p-8 min-h-[400px] outline-none prose prose-invert max-w-none shadow-inner">
+                        <p>İçeriği buraya yazın...</p>
+                    </div>
+                    <button onclick="savePost()" class="w-full btn-primary h-16 rounded-2xl font-bold text-xl uppercase tracking-widest shadow-xl">YAZIYI PAYLAŞ</button>
                 </div>
             </div>
 
-            <div class="space-y-6">
-                <input type="text" id="post-title" placeholder="Yazı Başlığı..." class="w-full bg-transparent text-4xl md:text-5xl font-display font-bold placeholder-white/10 border-none focus:outline-none focus:ring-0">
-                
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">KATEGORİ</label>
-                        <select id="post-category" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:outline-none focus:border-calith-orange">
-                            <option value="temel">Temel</option>
-                            <option value="ileri">İleri Seviye</option>
-                            <option value="beslenme">Beslenme</option>
-                            <option value="ekipman">Ekipman</option>
-                        </select>
+            <!-- PRODUCT CONTENT -->
+            <div id="section-products" class="hidden space-y-12 fade-in">
+                <div class="grid lg:grid-cols-3 gap-12">
+                    <!-- Form Side -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-calith-gray/50 border border-white/10 p-8 rounded-3xl">
+                            <h3 class="font-display text-2xl font-bold mb-6">ÜRÜN <span class="text-calith-orange">EKLE / DÜZENLE</span></h3>
+                            <input type="hidden" id="prod-edit-id">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Ürün Adı</label>
+                                    <input type="text" id="prod-name" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori</label>
+                                        <select id="prod-category" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                            <option value="bar">Barfiks</option>
+                                            <option value="parallettes">Paralel</option>
+                                            <option value="rings">Halka</option>
+                                            <option value="band">Band</option>
+                                            <option value="bundle">Set</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fiyat (TL)</label>
+                                        <input type="number" id="prod-price" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Görsel URL</label>
+                                    <input type="url" id="prod-image-url" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
+                                    <textarea id="prod-desc" rows="3" class="w-full bg-calith-dark border border-white/5 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 resize-none"></textarea>
+                                </div>
+                                <div class="flex gap-3 pt-4">
+                                    <button onclick="saveProduct()" class="flex-1 btn-primary py-4 rounded-xl font-bold uppercase tracking-widest text-sm">Ürünü Kaydet</button>
+                                    <button onclick="resetProductForm()" class="px-6 border border-white/10 rounded-xl hover:bg-white/5 transition-colors text-xs font-bold">İPTAL</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">TARİH</label>
-                        <input type="date" id="post-date" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:outline-none focus:border-calith-orange">
+                    <!-- List Side -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-display text-2xl font-bold uppercase tracking-tight">Ürün Listesi</h3>
+                            <span id="prod-count" class="text-xs font-bold px-3 py-1 bg-white/5 rounded-full text-gray-500">0 Ürün</span>
+                        </div>
+                        <div id="admin-product-list" class="grid sm:grid-cols-2 gap-4">
+                            <!-- JS will render products here -->
+                            <div class="p-8 border border-white/5 rounded-3xl text-center text-gray-600">Yükleniyor...</div>
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">KAPAK GÖRSELİ (URL)</label>
-                        <input type="url" id="post-cover" placeholder="https://..." class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:outline-none focus:border-calith-orange">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-2">ÖZET</label>
-                    <textarea id="post-excerpt" placeholder="Yazının kısa bir özeti..." rows="2" class="w-full bg-calith-gray border border-white/10 px-4 py-4 rounded-xl focus:outline-none focus:border-calith-orange resize-none"></textarea>
-                </div>
-
-                <!-- Web Editor Toolbar -->
-                <div class="flex flex-wrap gap-2 bg-calith-gray/50 p-2 rounded-xl border border-white/5 backdrop-blur">
-                    <button onclick="insertFormat('bold')" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" title="Kalın"><i data-lucide="bold" class="w-4 h-4"></i></button>
-                    <button onclick="insertFormat('h2')" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" title="Başlık 2"><i data-lucide="heading-2" class="w-4 h-4"></i></button>
-                    <button onclick="insertFormat('ul')" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" title="Liste"><i data-lucide="list" class="w-4 h-4"></i></button>
-                    <div class="w-px h-6 bg-white/10 my-2 mx-1"></div>
-                    <button onclick="insertImage()" class="px-4 h-10 flex items-center justify-center gap-2 rounded-lg hover:bg-white/10 transition-colors" title="Görsel Ekle"><i data-lucide="image" class="w-4 h-4"></i> <span class="text-xs font-bold">GÖRSEL</span></button>
-                    <button onclick="insertVideo()" class="px-4 h-10 flex items-center justify-center gap-2 rounded-lg hover:bg-white/10 transition-colors" title="Video Ekle"><i data-lucide="play" class="w-4 h-4"></i> <span class="text-xs font-bold">VİDEO</span></button>
-                </div>
-
-                <div id="editor" contenteditable="true" class="bg-calith-gray border border-white/10 rounded-2xl p-8 min-h-[500px] focus:outline-none focus:border-white/20 prose prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-calith-orange"><p>Yazına başla...</p></div>
-
-                <div class="flex gap-4 pt-8">
-                    <button onclick="savePost()" class="flex-1 btn-primary h-16 rounded-2xl font-bold text-xl uppercase tracking-widest">YAYINLA</button>
-                    <button onclick="previewPost()" class="px-8 border border-white/10 rounded-2xl hover:bg-white/5 transition-colors group" title="Önizle">
-                        <i data-lucide="eye" class="w-6 h-6 group-hover:text-calith-orange transition-colors"></i>
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-gray-500 text-sm">© 2025 CALITH Admin. Güvenli Erişim.</p>
-    </div>
-</footer>
+<!-- Toast Message -->
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-[100] transform translate-y-32 transition-transform duration-500 flex items-center gap-3">
+    <i data-lucide="check-circle" class="w-5 h-5"></i>
+    <span id="toast-msg" class="font-bold text-sm uppercase tracking-widest">İşlem Başarılı</span>
+</div>
 
 <script src="js/app.js"></script>
 <script>
     lucide.createIcons();
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-    }, observerOptions);
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    function switchAdminTab(tab) {
+        const blogSec = document.getElementById('section-blog');
+        const prodSec = document.getElementById('section-products');
+        const blogTab = document.getElementById('tab-blog');
+        const prodTab = document.getElementById('tab-products');
+
+        if (tab === 'blog') {
+            blogSec.classList.remove('hidden');
+            prodSec.classList.add('hidden');
+            blogTab.className = "px-8 py-3 rounded-xl font-bold text-sm transition-all bg-calith-orange text-white shadow-lg";
+            prodTab.className = "px-8 py-3 rounded-xl font-bold text-sm transition-all text-gray-400 hover:text-white";
+        } else {
+            blogSec.classList.add('hidden');
+            prodSec.classList.remove('hidden');
+            prodTab.className = "px-8 py-3 rounded-xl font-bold text-sm transition-all bg-calith-orange text-white shadow-lg";
+            blogTab.className = "px-8 py-3 rounded-xl font-bold text-sm transition-all text-gray-400 hover:text-white";
+            renderAdminProducts();
+        }
+    }
 </script>
 </body>
 </html>

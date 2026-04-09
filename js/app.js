@@ -10,7 +10,7 @@ function getSupabase() {
     return null;
 }
 
-const products = [
+let products = JSON.parse(localStorage.getItem('calith_products_fallback')) || [
     { id: 1, name: "Kapı Barfiks Barı", category: "bar", price: 349, oldPrice: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
     { id: 2, name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
     { id: 3, name: "Ahşap Paralel Bar", category: "parallettes", price: 599, image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop", desc: "Kayın ağacı, el yapımı. Kaymaz taban.", badge: "YENİ" },
@@ -18,6 +18,29 @@ const products = [
     { id: 5, name: "Direnç Bandı Seti", category: "band", price: 249, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=800&auto=format&fit=crop", desc: "5 farklı direnç. Pull-up assist.", badge: "SET" },
     { id: 6, name: "Sokak Workout Seti", category: "bundle", price: 1499, oldPrice: 1799, image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop", desc: "Barfiks + Paralel + Halka + Band.", badge: "İNDİRİM" }
 ];
+
+async function loadProducts() {
+    const sb = getSupabase();
+    if (!sb) {
+        console.warn('Supabase henüz hazır değil, varsayılan ürünler yükleniyor.');
+        renderShop();
+        return;
+    }
+
+    const { data, error } = await sb
+        .from('products')
+        .select('*')
+        .order('id', { ascending: true });
+
+    if (error) {
+        console.error('Supabase Ürünler hata:', error);
+    } else if (data && data.length > 0) {
+        products = data;
+        localStorage.setItem('calith_products_fallback', JSON.stringify(data));
+    }
+    renderShop();
+    renderAdminProducts();
+}
 
 const defaultPosts = [
     { id: 1, title: "Calisthenics'e Başlarken: Temel 5 Hareket", slug: "calisthenics-baslarken", category: "temel", excerpt: "Vücut ağırlığı eğitimine başlamak için bilmen gereken temel hareketler ve form ipuçları.", content: `<p>Calisthenics, sadece vücut ağırlığını kullanarak yapılan en etkili antrenman şekillerinden biridir. İşte başlaman için 5 temel hareket:</p><h2>1. Pull-Up (Barfiks)</h2><p>Sırt ve biceps kaslarını çalıştıran temel hareket. Barfiks barına asıl ve kendini yukarı çek.</p><h2>2. Push-Up (Şınav)</h2><p>Göğüs, omuz ve triceps için klasik hareket. Vücudun düz bir hat olsun.</p><h2>3. Bodyweight Squat</h2><p>Bacak ve kalça kasları için. Ayaklar omuz genişliğinde.</p><h2>4. Plank</h2><p>Core ve karın kasları için. Dirsekler omuz hizasında.</p><h2>5. Dips</h2><p>Paralel bar veya sandalye kenarında. Göğüs altı ve triceps için.</p>`, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", date: "2024-03-10" },
@@ -30,7 +53,6 @@ let posts = [];
 async function loadPosts() {
     const sb = getSupabase();
     if (!sb) {
-        console.warn('Supabase henüz hazır değil, varsayılan yazılar yükleniyor.');
         posts = defaultPosts;
         renderLandingBlog();
         renderBlog();
@@ -44,17 +66,15 @@ async function loadPosts() {
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Supabase hata:', error);
         posts = defaultPosts;
     } else {
         posts = data.map(p => ({
             ...p,
             category: p.category || 'temel',
             image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
-            date: (p.created_at || '').slice(0, 10)
+            date: (p.created_at || p.date || '').slice(0, 10)
         }));
     }
-
     renderLandingBlog();
     renderBlog();
 }
@@ -278,13 +298,18 @@ function showAdmin() {
 }
 
 function checkAdmin() {
-    if (btoa(document.getElementById('admin-pass').value) === ADMIN_HASH) {
-        document.getElementById('admin-login').classList.add('hidden'); 
+    const pass = document.getElementById('admin-pass').value;
+    if (btoa(pass) === ADMIN_HASH) {
+        document.getElementById('admin-login').classList.add('hidden');
         document.getElementById('admin-editor').classList.remove('hidden');
-        document.getElementById('post-date').valueAsDate = new Date();
         isAdminMode = true;
-    } else { 
-        alert('Hatalı şifre'); 
+        localStorage.setItem('admin_token', 'true');
+        showToast('Yönetici girişi başarılı');
+        // Reset tabs to default visually
+        if (typeof switchAdminTab === 'function') switchAdminTab('blog');
+        if (window.lucide) lucide.createIcons();
+    } else {
+        alert('Hatalı şifre!');
     }
 }
 
@@ -417,6 +442,99 @@ function insertVideo() {
     const url = prompt('YouTube URL:');
     const id = url.match(/(?:youtu\.be\/|v\/|watch\?v=)([^&?]+)/)?.[1];
     if (id) document.execCommand('insertHTML', false, `<iframe src="https://www.youtube.com/embed/${id}" style="width:100%;aspect-ratio:16/9;border-radius:0.5rem;"></iframe>`);
+}
+
+async function saveProduct() {
+    const sb = getSupabase();
+    if (!sb) return alert('Supabase bağlantısı yok.');
+
+    const productData = {
+        name: document.getElementById('prod-name').value,
+        category: document.getElementById('prod-category').value,
+        price: parseFloat(document.getElementById('prod-price').value),
+        old_price: parseFloat(document.getElementById('prod-old-price').value) || null,
+        image: document.getElementById('prod-image-url').value,
+        desc: document.getElementById('prod-desc').value,
+        badge: document.getElementById('prod-badge').value || null
+    };
+
+    if (!productData.name || !productData.price) return alert('İsim ve fiyat zorunludur.');
+
+    const editId = document.getElementById('prod-edit-id').value;
+    
+    let result;
+    if (editId) {
+        result = await sb.from('products').update(productData).eq('id', editId);
+    } else {
+        result = await sb.from('products').insert([productData]);
+    }
+
+    if (result.error) {
+        alert('Hata: ' + result.error.message);
+    } else {
+        showToast(editId ? 'Ürün güncellendi' : 'Ürün eklendi');
+        resetProductForm();
+        loadProducts();
+    }
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return;
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { error } = await sb.from('products').delete().eq('id', id);
+    if (error) alert('Silme hatası: ' + error.message);
+    else {
+        showToast('Ürün silindi');
+        loadProducts();
+    }
+}
+
+function editProduct(id) {
+    const p = products.find(item => item.id == id);
+    if (!p) return;
+    
+    document.getElementById('prod-edit-id').value = p.id;
+    document.getElementById('prod-name').value = p.name;
+    document.getElementById('prod-category').value = p.category;
+    document.getElementById('prod-price').value = p.price;
+    document.getElementById('prod-old-price').value = p.old_price || p.oldPrice || '';
+    document.getElementById('prod-image-url').value = p.image;
+    document.getElementById('prod-desc').value = p.desc;
+    document.getElementById('prod-badge').value = p.badge || '';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetProductForm() {
+    document.getElementById('prod-edit-id').value = '';
+    document.getElementById('prod-name').value = '';
+    document.getElementById('prod-price').value = '';
+    document.getElementById('prod-old-price').value = '';
+    document.getElementById('prod-image-url').value = '';
+    document.getElementById('prod-desc').value = '';
+    document.getElementById('prod-badge').value = '';
+}
+
+function renderAdminProducts() {
+    const container = document.getElementById('admin-product-list');
+    if (!container) return;
+    
+    container.innerHTML = products.map(p => `
+        <div class="flex items-center gap-4 p-4 bg-calith-gray rounded-2xl border border-white/5">
+            <img src="${p.image}" class="w-16 h-16 object-cover rounded-xl">
+            <div class="flex-1">
+                <h4 class="font-bold">${p.name}</h4>
+                <p class="text-xs text-gray-500">${p.price}₺ - ${p.category}</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editProduct(${p.id})" class="p-2 hover:text-calith-orange"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                <button onclick="deleteProduct(${p.id})" class="p-2 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
 }
 
 async function savePost() {
@@ -556,6 +674,7 @@ function showToast(msg) {
 
 function init() {
     loadPosts();
+    loadProducts(); // Dinamik ürünleri yükle
     updateCartUI();
     
     // Auto-login admin if token exists (simplified)
