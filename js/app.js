@@ -21,23 +21,44 @@ let products = JSON.parse(localStorage.getItem('calith_products_fallback')) || [
 
 async function loadProducts() {
     const sb = getSupabase();
+    
+    // Kodun içindeki örnek ürünler
+    const defaultProducts = [
+        { id: 'def1', name: "Kapı Barfiks Barı", category: "bar", price: 349, old_price: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
+        { id: 'def2', name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
+        { id: 'def3', name: "Ahşap Paralel Bar", category: "parallettes", price: 599, image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop", desc: "Kayın ağacı, el yapımı. Kaymaz taban.", badge: "YENİ" },
+        { id: 'def4', name: "Jimnastik Halkası", category: "rings", price: 449, image: "https://images.unsplash.com/photo-1576678927484-cc907957088c?q=80&w=800&auto=format&fit=crop", desc: "ABS veya ahşap. Ayarlanabilir kayış.", badge: null },
+        { id: 'def5', name: "Direnç Bandı Seti", category: "band", price: 249, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=800&auto=format&fit=crop", desc: "5 farklı direnç. Pull-up assist.", badge: "SET" },
+        { id: 'def6', name: "Sokak Workout Seti", category: "bundle", price: 1499, old_price: 1799, image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop", desc: "Barfiks + Paralel + Halka + Band.", badge: "İNDİRİM" }
+    ];
+
     if (!sb) {
-        console.warn('Supabase henüz hazır değil, varsayılan ürünler yükleniyor.');
+        products = defaultProducts;
         renderShop();
         return;
     }
 
-    const { data, error } = await sb.from('products').select('*').order('id', { ascending: true });
+    const { data, error } = await sb.from('products').select('*').order('id', { ascending: false });
 
     if (error) {
-        console.error('Supabase Ürünler hata:', error);
-    } else if (data && data.length > 0) {
-        products = data;
-        localStorage.setItem('calith_products_fallback', JSON.stringify(data));
+        console.error('Supabase error:', error);
+        products = defaultProducts;
     } else {
-        // Eğer veritabanı boşsa, örnek ürünleri kullan ama listeyi temizleme
-        console.log('Veritabanı boş, örnek ürünler korunuyor.');
+        // Veritabanı verileri + Varsayılanlar (Veritabanındakiler öncelikli)
+        const dbProducts = data || [];
+        // Eğer veritabanında ürün varsa, sadece veritabanındakileri göster (senin istediğin bu olabilir)
+        // Ama "diğerleri gitti" dediğin için ikisini BİRLEŞTİRİYORUM:
+        const combined = [...dbProducts];
+        
+        defaultProducts.forEach(def => {
+            const exists = dbProducts.some(db => db.name === def.name);
+            if (!exists) combined.push(def);
+        });
+        
+        products = combined;
+        localStorage.setItem('calith_products_fallback', JSON.stringify(combined));
     }
+    
     renderShop();
     renderAdminProducts();
 }
