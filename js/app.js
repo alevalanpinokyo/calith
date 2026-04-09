@@ -47,6 +47,7 @@ async function importDefaults() {
     if (!sb) return alert('Supabase hazır değil.');
     if (!confirm('Örnek ürünleri veritabanına aktarmak istediğinize emin misiniz?')) return;
     
+    // ID'siz gönderiyoruz ki veritabanı otomatik atasın ve çakışma olmasın
     const defaults = [
         { name: "Kapı Barfiks Barı", category: "bar", price: 349, old_price: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
         { name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
@@ -57,10 +58,12 @@ async function importDefaults() {
     ];
 
     const { error } = await sb.from('products').insert(defaults);
-    if (error) alert('Aktarım hatası: ' + error.message);
-    else {
-        showToast('Varsayılan ürünler aktarıldı');
-        loadProducts();
+    if (error) {
+        console.error('Import error:', error);
+        alert('Aktarım hatası: ' + error.message);
+    } else {
+        showToast('Varsayılan ürünler başarıyla aktarıldı');
+        loadProducts(); // Listeyi yenile
     }
 }
 
@@ -727,14 +730,12 @@ function init() {
     loadProducts(); // Dinamik ürünleri yükle
     updateCartUI();
     
-    // Auto-login admin if token exists (simplified)
-    if (localStorage.getItem('admin_token')) {
-        const editor = document.getElementById('admin-editor');
-        const login = document.getElementById('admin-login');
-        if (editor && login) {
-            editor.classList.remove('hidden');
-            login.classList.add('hidden');
-        }
+    // Removed auto-login for security as per user request
+    const editor = document.getElementById('admin-editor');
+    const login = document.getElementById('admin-login');
+    if (editor && login) {
+        editor.classList.add('hidden');
+        login.classList.remove('hidden');
     }
 
     // Scroll reveal observe
