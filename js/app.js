@@ -44,19 +44,19 @@ async function loadProducts() {
         console.error('Supabase error:', error);
         products = defaultProducts;
     } else {
-        // Veritabanı verileri + Varsayılanlar (Veritabanındakiler öncelikli)
+        const deletedProducts = JSON.parse(localStorage.getItem('calith_deleted_products')) || [];
         const dbProducts = data || [];
-        // Eğer veritabanında ürün varsa, sadece veritabanındakileri göster (senin istediğin bu olabilir)
-        // Ama "diğerleri gitti" dediğin için ikisini BİRLEŞTİRİYORUM:
         const combined = [...dbProducts];
         
         defaultProducts.forEach(def => {
             const exists = dbProducts.some(db => db.name === def.name);
-            if (!exists) combined.push(def);
+            const isManuallyDeleted = deletedProducts.includes(def.name);
+            if (!exists && !isManuallyDeleted) combined.push(def);
         });
         
-        products = combined;
-        localStorage.setItem('calith_products_fallback', JSON.stringify(combined));
+        // TÜM listeyi süzgeçten geçir (DB'den silinse de silinmese de gizle)
+        products = combined.filter(p => !deletedProducts.includes(p.name));
+        localStorage.setItem('calith_products_fallback', JSON.stringify(products));
     }
     
     renderShop();
@@ -120,12 +120,15 @@ async function loadPosts() {
             if (!existsInDb && !isManuallyDeleted) combined.push(def);
         });
 
-        posts = combined.map(p => ({
-            ...p,
-            category: p.category || 'temel',
-            image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
-            date: (p.created_at || p.date || '').slice(0, 10)
-        }));
+        // TÜM listeyi süzgeçten geçir (Veritabanından silinemediyse bile ekranda GİZLE)
+        posts = combined
+            .filter(p => !deletedPostTitles.includes(p.title))
+            .map(p => ({
+                ...p,
+                category: p.category || 'temel',
+                image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
+                date: (p.created_at || p.date || '').slice(0, 10)
+            }));
     }
     renderLandingBlog(); renderBlog(); renderAdminPosts();
 }
