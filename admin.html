@@ -63,12 +63,34 @@
                 <button onclick="switchAdminTab('products')" id="tab-products" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ÜRÜN YÖNETİMİ</button>
             </div>
             
-            <div id="section-blog" class="space-y-8">
-                <h2 class="font-display text-4xl font-bold">YENİ YAZI <span class="gradient-text">YAYINLA</span></h2>
-                <div class="space-y-6">
-                    <input type="text" id="post-title" placeholder="Başlık..." class="w-full bg-transparent text-4xl font-display font-bold border-none outline-none">
-                    <div id="editor" contenteditable="true" class="bg-calith-gray border border-white/10 rounded-2xl p-8 min-h-[400px] outline-none prose prose-invert max-w-none"></div>
-                    <button onclick="savePost()" class="w-full btn-primary h-16 rounded-2xl font-bold text-xl uppercase tracking-widest">YAYINLA</button>
+            <div id="section-blog" class="grid lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10">
+                    <h3 class="font-display text-2xl font-bold uppercase">YAZI <span class="text-calith-orange">OLUŞTUR / DÜZENLE</span></h3>
+                    <input type="hidden" id="post-edit-id">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Başlık</label>
+                            <input type="text" id="post-title" placeholder="Yazı Başlığı..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori</label>
+                            <select id="post-category" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                                <option value="temel">Temel Bilgiler</option>
+                                <option value="ekipman">Ekipman Rehberi</option>
+                                <option value="beslenme">Beslenme</option>
+                                <option value="program">Programlar</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İçerik (Zengin Metin)</label>
+                            <div id="editor" contenteditable="true" class="bg-black/40 border border-white/10 rounded-xl p-4 min-h-[300px] outline-none prose prose-invert max-w-none text-sm overflow-y-auto"></div>
+                        </div>
+                        <button onclick="savePost()" id="btn-save-post" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">YAZIYI YAYINLA</button>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="font-display text-2xl font-bold uppercase">MEVCUT YAZILAR</h2>
+                    <div id="admin-post-list" class="grid gap-4"></div>
                 </div>
             </div>
 

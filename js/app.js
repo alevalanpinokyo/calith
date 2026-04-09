@@ -123,6 +123,7 @@ async function loadPosts() {
     }
     renderLandingBlog();
     renderBlog();
+    renderAdminPosts(); // Admin listesini de tazele
 }
 let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
 let currentPd = null;
@@ -621,34 +622,100 @@ function renderAdminProducts() {
 async function savePost() {
     const title = document.getElementById('post-title').value;
     const content = document.getElementById('editor').innerHTML;
+    const category = document.getElementById('post-category').value;
+    const editId = document.getElementById('post-edit-id').value;
+    
     if (!title) { alert('Başlık gerekli!'); return; }
 
-    const newPost = {
+    const postData = {
         title,
         slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        category: document.getElementById('post-category').value,
-        excerpt: document.getElementById('post-excerpt').value || 'Yeni bir yazı...',
+        category,
+        excerpt: title.substring(0, 50) + '...', // Otomatik özet
         content,
-        image: document.getElementById('post-cover').value || null,
         published: true
     };
 
     const sb = getSupabase();
     if (!sb) { alert('Hata: Supabase bağlantısı kurulamadı.'); return; }
-    const { error } = await sb.from('posts').insert(newPost);
-    if (error) {
-        alert('Kayıt hatası: ' + error.message);
-        console.error(error);
+    
+    let result;
+    if (editId) {
+        result = await sb.from('posts').update(postData).eq('id', editId);
+    } else {
+        result = await sb.from('posts').insert([postData]);
+    }
+
+    if (result.error) {
+        alert('Hata: ' + result.error.message);
         return;
     }
 
     await loadPosts();
-    showToast('Yazı yayınlandı!');
-    document.getElementById('post-title').value = ''; 
-    document.getElementById('post-excerpt').value = ''; 
-    document.getElementById('post-cover').value = ''; 
-    document.getElementById('editor').innerHTML = '<p>Yazına başla...</p>';
-    showSection('blog');
+    showToast(editId ? 'Yazı güncellendi' : 'Yazı yayınlandı');
+    resetPostForm();
+}
+
+function renderAdminPosts() {
+    const list = document.getElementById('admin-post-list');
+    if (!list) return;
+
+    if (!posts || posts.length === 0) {
+        list.innerHTML = '<div class="py-12 text-center text-gray-500">Yazı bulunamadı.</div>';
+        return;
+    }
+
+    list.innerHTML = posts.map(p => `
+        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex-1">
+                <h4 class="font-bold text-sm line-clamb-1">${p.title}</h4>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">${p.category} • ${p.date || ''}</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editPost('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all group/btn">
+                    <i data-lucide="edit-2" class="w-4 h-4 pointer-events-none"></i>
+                </button>
+                <button onclick="deletePost('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all group/btn">
+                    <i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    if (window.lucide) lucide.createIcons();
+}
+
+function editPost(id) {
+    const p = posts.find(post => String(post.id) === String(id));
+    if (!p) return;
+
+    document.getElementById('post-edit-id').value = p.id;
+    document.getElementById('post-title').value = p.title;
+    document.getElementById('post-category').value = p.category;
+    document.getElementById('editor').innerHTML = p.content;
+    document.getElementById('btn-save-post').textContent = 'YAZIYI GÜNCELLE';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Yazı düzenleme moduna alındı');
+}
+
+async function deletePost(id) {
+    if (!confirm('Bu yazıyı silmek istediğinizden emin misiniz?')) return;
+    const sb = getSupabase();
+    const { error } = await sb.from('posts').delete().eq('id', id);
+    if (error) {
+        alert('Hata: ' + error.message);
+    } else {
+        showToast('Yazı silindi');
+        loadPosts();
+    }
+}
+
+function resetPostForm() {
+    document.getElementById('post-edit-id').value = '';
+    document.getElementById('post-title').value = '';
+    document.getElementById('editor').innerHTML = '';
+    document.getElementById('btn-save-post').textContent = 'YAZIYI YAYINLA';
 }
 
 function previewPost() { 
