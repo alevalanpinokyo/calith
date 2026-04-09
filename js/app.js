@@ -485,19 +485,27 @@ async function deleteProduct(id) {
 }
 
 function editProduct(id) {
-    const p = products.find(item => item.id == id);
-    if (!p) return;
+    console.log('Editing product ID:', id);
+    const p = products.find(item => String(item.id) === String(id));
+    if (!p) {
+        console.error('Edit failed: Product not found for ID:', id);
+        return;
+    }
     
     document.getElementById('prod-edit-id').value = p.id;
-    document.getElementById('prod-name').value = p.name;
-    document.getElementById('prod-category').value = p.category;
-    document.getElementById('prod-price').value = p.price;
+    document.getElementById('prod-name').value = p.name || '';
+    document.getElementById('prod-category').value = p.category || 'bar';
+    document.getElementById('prod-price').value = p.price || '';
     document.getElementById('prod-old-price').value = p.old_price || p.oldPrice || '';
-    document.getElementById('prod-image-url').value = p.image;
-    document.getElementById('prod-desc').value = p.desc;
+    document.getElementById('prod-image-url').value = p.image || '';
+    document.getElementById('prod-desc').value = p.desc || '';
     document.getElementById('prod-badge').value = p.badge || '';
     
+    // Switch to product tab if not active
+    if (typeof switchAdminTab === 'function') switchAdminTab('products');
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Ürün bilgileri yüklendi');
 }
 
 function resetProductForm() {
