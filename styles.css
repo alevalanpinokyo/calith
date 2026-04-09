@@ -142,3 +142,17 @@ body {
 .theme-light #global-nav { background: rgba(255, 255, 255, 0.8); border-bottom-color: #e5e5e5; }
 .theme-light .product-card { background: white; border-color: #e5e5e5; color: #0a0a0a; }
 .theme-light .text-gray-400 { color: #666; }
+
+/* Toast Notification Logic */
+#toast {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+    transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+#toast.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+}
