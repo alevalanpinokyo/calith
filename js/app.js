@@ -142,14 +142,18 @@ const ADMIN_HASH = 'Y2FsaXRoMjAyNA==';
 function showSection(section) {
     const target = document.getElementById(section);
     
+    // Farklı sayfaya yönlendirme gerekiyorsa (Zaten o sayfada değilsek)
+    const isBlogPage = window.location.pathname.includes('blog.html');
+    const isShopPage = window.location.pathname.includes('shop.html');
+    const isAdminPage = window.location.pathname.includes('admin.html');
+    const isIndexPage = window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '';
+
     if (!target) {
-        // Eğer bölüm bu sayfada yoksa, ilgili sayfaya yönlendir
-        if (section === 'landing') window.location.href = 'index.html';
-        else if (section === 'shop') window.location.href = 'shop.html';
-        else if (section === 'blog') window.location.href = 'blog.html';
-        else if (section === 'admin') window.location.href = 'admin.html';
-        else if (section === 'product-detail' && currentPd) window.location.href = `shop.html?p=${currentPd.id}`;
-        else if (section === 'blog-detail' && currentBlogId) window.location.href = `blog.html?b=${currentBlogId}`;
+        if (section === 'shop' && !isShopPage) window.location.href = 'shop.html';
+        else if (section === 'blog' && !isBlogPage) window.location.href = 'blog.html';
+        else if (section === 'admin' && !isAdminPage) window.location.href = 'admin.html';
+        else if (section === 'product-detail' && currentPd && !isShopPage) window.location.href = `shop.html?p=${currentPd.id}`;
+        else if (section === 'blog-detail' && currentBlogId && !isBlogPage) window.location.href = `blog.html?b=${currentBlogId}`;
         return;
     }
 
@@ -306,6 +310,11 @@ function filterBlog(cat) {
 
 function showBlogDetail(id) {
     currentBlogId = id;
+    if (!posts || posts.length === 0) {
+        // Postlar henüz yüklenmemişse yüklenmesini bekle ve tekrar dene
+        setTimeout(() => showBlogDetail(id), 100);
+        return;
+    }
     const p = posts.find(post => post.id.toString() === id.toString());
     if (!p) return;
     const contentDiv = document.getElementById('blog-detail-content');
