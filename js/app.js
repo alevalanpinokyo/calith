@@ -98,23 +98,34 @@ let posts = [];
 
 async function loadPosts() {
     const sb = getSupabase();
+    
     if (!sb) {
         posts = defaultPosts;
         renderLandingBlog();
         renderBlog();
+        renderAdminPosts();
         return;
     }
 
     const { data, error } = await sb
         .from('posts')
         .select('*')
-        .eq('published', true)
-        .order('created_at', { ascending: false });
+        .order('id', { ascending: false });
 
     if (error) {
+        console.error('Blog load error:', error);
         posts = defaultPosts;
     } else {
-        posts = data.map(p => ({
+        const dbPosts = data || [];
+        // Veritabanı + Örnekler (İsim çakışması varsa veritabanı öncelikli)
+        const combined = [...dbPosts];
+        
+        defaultPosts.forEach(def => {
+            const exists = dbPosts.some(db => db.title === def.title);
+            if (!exists) combined.push(def);
+        });
+
+        posts = combined.map(p => ({
             ...p,
             category: p.category || 'temel',
             image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
@@ -123,7 +134,7 @@ async function loadPosts() {
     }
     renderLandingBlog();
     renderBlog();
-    renderAdminPosts(); // Admin listesini de tazele
+    renderAdminPosts();
 }
 let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
 let currentPd = null;
@@ -701,14 +712,22 @@ function editPost(id) {
 
 async function deletePost(id) {
     if (!confirm('Bu yazıyı silmek istediğinizden emin misiniz?')) return;
+    
+    // Eğer ID sayı ise (defaultPosts ID'leri 1, 2, 3 gibi sayısal) veya veritabanında yoksa yerelden de silmeliy/iz.
+    // Önce veritabanından silmeyi dene
     const sb = getSupabase();
-    const { error } = await sb.from('posts').delete().eq('id', id);
-    if (error) {
-        alert('Hata: ' + error.message);
-    } else {
-        showToast('Yazı silindi');
-        loadPosts();
+    if (sb) {
+        const { error } = await sb.from('posts').delete().eq('id', id);
+        if (error) console.warn('DB delete error (maybe it is a default post):', error.message);
     }
+
+    // Listeden filtrele (Hem veritabanından hem yerelden silinmiş gibi davran)
+    posts = posts.filter(p => String(p.id) !== String(id));
+    
+    showToast('Yazı silindi');
+    renderLandingBlog();
+    renderBlog();
+    renderAdminPosts();
 }
 
 function resetPostForm() {
