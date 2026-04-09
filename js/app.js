@@ -575,22 +575,34 @@ function resetProductForm() {
 }
 
 function renderAdminProducts() {
-    const container = document.getElementById('admin-product-list');
-    if (!container) return;
-    
-    container.innerHTML = products.map(p => `
-        <div class="flex items-center gap-4 p-4 bg-calith-gray rounded-2xl border border-white/5">
-            <img src="${p.image}" class="w-16 h-16 object-cover rounded-xl">
-            <div class="flex-1">
-                <h4 class="font-bold">${p.name}</h4>
-                <p class="text-xs text-gray-500">${p.price}₺ - ${p.category}</p>
+    const list = document.getElementById('admin-product-list');
+    if (!list) return;
+
+    if (!products || products.length === 0) {
+        list.innerHTML = '<div class="col-span-full py-12 text-center text-gray-500">Ürün bulunamadı.</div>';
+        return;
+    }
+
+    list.innerHTML = products.map(p => `
+        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex items-center gap-4">
+                <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
+                <div>
+                    <h4 class="font-bold text-sm">${p.name}</h4>
+                    <p class="text-xs text-gray-500">${p.price} TL ${p.category ? `• ${p.category}` : ''}</p>
+                </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="editProduct(${p.id})" class="p-2 hover:text-calith-orange"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                <button onclick="deleteProduct(${p.id})" class="p-2 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                <button onclick="editProduct('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all group/btn" title="Düzenle">
+                    <i data-lucide="edit-2" class="w-4 h-4 pointer-events-none"></i>
+                </button>
+                <button onclick="deleteProduct('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all group/btn" title="Sil">
+                    <i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i>
+                </button>
             </div>
         </div>
     `).join('');
+    
     if (window.lucide) lucide.createIcons();
 }
 
