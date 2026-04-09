@@ -143,10 +143,10 @@ function showSection(section) {
     const target = document.getElementById(section);
     
     // Farklı sayfaya yönlendirme gerekiyorsa (Zaten o sayfada değilsek)
-    const isBlogPage = window.location.pathname.includes('blog.html');
-    const isShopPage = window.location.pathname.includes('shop.html');
-    const isAdminPage = window.location.pathname.includes('admin.html');
-    const isIndexPage = window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '';
+    const path = window.location.pathname.toLowerCase();
+    const isBlogPage = path.includes('blog');
+    const isShopPage = path.includes('shop');
+    const isAdminPage = path.includes('admin');
 
     if (!target) {
         if (section === 'shop' && !isShopPage) window.location.href = 'shop.html';
@@ -318,8 +318,9 @@ function showBlogDetail(id) {
     const p = posts.find(post => post.id.toString() === id.toString());
     if (!p) return;
     const contentDiv = document.getElementById('blog-detail-content');
+    const isBlogPage = window.location.pathname.toLowerCase().includes('blog');
     
-    if (!contentDiv) {
+    if (!contentDiv && !isBlogPage) {
         window.location.href = `blog.html?b=${id}`;
         return;
     }
@@ -726,12 +727,15 @@ async function deletePost(id) {
     
     const sb = getSupabase();
     if (sb) {
-        // Esnek silme: Hem string hem number olarak dene
-        const { error: error1 } = await sb.from('posts').delete().eq('id', id);
-        const { error: error2 } = await sb.from('posts').delete().eq('id', Number(id));
+        const idToTry = isNaN(id) ? id : Number(id);
+        // .select() ekleyerek silme işleminin sonucunu doğrula
+        const { data, error } = await sb.from('posts').delete().eq('id', idToTry).select();
         
-        if (error1 && error2 && isNaN(id)) {
-             console.warn('Silme hatası (Beklenen durum olabilir):', error1.message);
+        if (error) {
+            console.error('Supabase Delete Error:', error);
+            alert(`SİLME HATASI: ${error.message}\n\nLütfen Supabase Dashboard'dan DELETE izinlerini kontrol edin.`);
+        } else if (data && data.length === 0) {
+            console.warn('Veritabanında eşleşen satır bulunamadı veya silinemedi.');
         }
     }
 
