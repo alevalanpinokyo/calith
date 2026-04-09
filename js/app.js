@@ -27,19 +27,41 @@ async function loadProducts() {
         return;
     }
 
-    const { data, error } = await sb
-        .from('products')
-        .select('*')
-        .order('id', { ascending: true });
+    const { data, error } = await sb.from('products').select('*').order('id', { ascending: true });
 
     if (error) {
         console.error('Supabase Ürünler hata:', error);
     } else if (data && data.length > 0) {
         products = data;
         localStorage.setItem('calith_products_fallback', JSON.stringify(data));
+    } else {
+        // Eğer veritabanı boşsa, örnek ürünleri kullan ama listeyi temizleme
+        console.log('Veritabanı boş, örnek ürünler korunuyor.');
     }
     renderShop();
     renderAdminProducts();
+}
+
+async function importDefaults() {
+    const sb = getSupabase();
+    if (!sb) return alert('Supabase hazır değil.');
+    if (!confirm('Örnek ürünleri veritabanına aktarmak istediğinize emin misiniz?')) return;
+    
+    const defaults = [
+        { name: "Kapı Barfiks Barı", category: "bar", price: 349, old_price: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
+        { name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
+        { name: "Ahşap Paralel Bar", category: "parallettes", price: 599, image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop", desc: "Kayın ağacı, el yapımı. Kaymaz taban.", badge: "YENİ" },
+        { name: "Jimnastik Halkası", category: "rings", price: 449, image: "https://images.unsplash.com/photo-1576678927484-cc907957088c?q=80&w=800&auto=format&fit=crop", desc: "ABS veya ahşap. Ayarlanabilir kayış.", badge: null },
+        { name: "Direnç Bandı Seti", category: "band", price: 249, image: "https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=800&auto=format&fit=crop", desc: "5 farklı direnç. Pull-up assist.", badge: "SET" },
+        { name: "Sokak Workout Seti", category: "bundle", price: 1499, old_price: 1799, image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop", desc: "Barfiks + Paralel + Halka + Band.", badge: "İNDİRİM" }
+    ];
+
+    const { error } = await sb.from('products').insert(defaults);
+    if (error) alert('Aktarım hatası: ' + error.message);
+    else {
+        showToast('Varsayılan ürünler aktarıldı');
+        loadProducts();
+    }
 }
 
 const defaultPosts = [
@@ -260,6 +282,13 @@ function showBlogDetail(id) {
         ${p.image ? `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">` : ''}
         <div class="prose prose-invert prose-lg max-w-none">
             ${p.content}
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display text-2xl font-bold uppercase">Ürün Listesi</h3>
+                            <button onclick="importDefaults()" class="text-[10px] font-bold text-gray-400 hover:text-white border border-white/10 px-4 py-2 rounded-lg transition-all">VARSYILANLARI YÜKLE</button>
+                        </div>
+                        <div id="admin-product-list" class="grid sm:grid-cols-2 gap-4"></div>
+                    </div>
         </div>
         <div class="mt-12 pt-8 border-t border-primary">
             <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
