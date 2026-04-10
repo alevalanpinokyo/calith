@@ -172,10 +172,12 @@ textarea:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Enforce text color on inputs */
+/* Enforce valid text color on inputs regardless of state */
 textarea, input, [contenteditable="true"] {
-    color: #0A0A0A !important;
+    color: white !important;
+    background-color: transparent;
 }
 textarea:focus, input:focus, [contenteditable="true"]:focus {
-    color: #0A0A0A !important;
+    color: white !important;
+    background-color: rgba(0,0,0,0.6) !important;
 }
