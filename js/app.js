@@ -137,7 +137,6 @@ let currentPd = null;
 let currentBlogId = null;
 let pdQty = 1;
 let isAdminMode = false;
-const ADMIN_HASH = 'Y2FsaXRoMjAyNA==';
 
 function showSection(section) {
     const target = document.getElementById(section);
@@ -384,26 +383,57 @@ function showAdmin() {
     window.scrollTo(0, 0);
 }
 
-function checkAdmin() {
-    const pass = document.getElementById('admin-pass').value;
-    if (btoa(pass) === ADMIN_HASH) {
-        document.getElementById('admin-login').classList.add('hidden');
-        document.getElementById('admin-editor').classList.remove('hidden');
+async function checkAdmin() {
+    const emailInput = document.getElementById('admin-email');
+    const passInput = document.getElementById('admin-pass');
+    
+    if (!emailInput || !passInput) return;
+    
+    const email = emailInput.value.trim();
+    const pass = passInput.value;
+    const sb = getSupabase();
+    
+    if (!sb) {
+        alert("Veritabanı bağlantısı yok. Giriş yapılamıyor.");
+        return;
+    }
+
+    // Supabase Authentication
+    const { data, error } = await sb.auth.signInWithPassword({
+        email: email,
+        password: pass
+    });
+
+    if (error) {
+        alert('Giriş başarısız: ' + error.message);
+    } else {
+        const loginEl = document.getElementById('admin-login');
+        const editorEl = document.getElementById('admin-editor');
+        if (loginEl) loginEl.classList.add('hidden');
+        if (editorEl) editorEl.classList.remove('hidden');
+        
         isAdminMode = true;
-        localStorage.setItem('admin_token', 'true');
         showToast('Yönetici girişi başarılı');
-        // Reset tabs to default visually
+        
         if (typeof switchAdminTab === 'function') switchAdminTab('blog');
         if (window.lucide) lucide.createIcons();
-    } else {
-        alert('Hatalı şifre!');
     }
 }
 
-function logoutAdmin() { 
-    document.getElementById('admin-login').classList.remove('hidden'); 
-    document.getElementById('admin-editor').classList.add('hidden'); 
-    document.getElementById('admin-pass').value = ''; 
+async function logoutAdmin() { 
+    const sb = getSupabase();
+    if (sb) await sb.auth.signOut();
+    
+    const loginEl = document.getElementById('admin-login');
+    const editorEl = document.getElementById('admin-editor');
+    if (loginEl) loginEl.classList.remove('hidden'); 
+    if (editorEl) editorEl.classList.add('hidden'); 
+    
+    const passInput = document.getElementById('admin-pass');
+    const emailInput = document.getElementById('admin-email');
+    if (passInput) passInput.value = ''; 
+    if (emailInput) emailInput.value = '';
+    
     isAdminMode = false;
     showSection('blog'); 
 }
@@ -920,12 +950,23 @@ function init() {
     loadProducts(); // Dinamik ürünleri yükle
     updateCartUI();
     
-    // Removed auto-login for security as per user request
-    const editor = document.getElementById('admin-editor');
-    const login = document.getElementById('admin-login');
-    if (editor && login) {
-        editor.classList.add('hidden');
-        login.classList.remove('hidden');
+    // Supabase Auto-Session Check
+    const sb = getSupabase();
+    if (sb) {
+        sb.auth.getSession().then(({ data: { session } }) => {
+            isAdminMode = !!session;
+            const editor = document.getElementById('admin-editor');
+            const login = document.getElementById('admin-login');
+            if (editor && login) {
+                if (isAdminMode) {
+                    editor.classList.remove('hidden');
+                    login.classList.add('hidden');
+                } else {
+                    editor.classList.add('hidden');
+                    login.classList.remove('hidden');
+                }
+            }
+        });
     }
 
     // Scroll reveal observe
