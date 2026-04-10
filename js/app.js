@@ -758,13 +758,12 @@ async function deletePost(id) {
     const sb = getSupabase();
     let deletedFromDb = false;
 
-    if (sb && !isNaN(id)) { // Örnek verilerin IDleri genellikle küçüktür veya stringdir, DB idleri sayısal veya uuid'dir
-        const idToTry = Number(id);
-        const { data, error } = await sb.from('posts').delete().eq('id', idToTry).select();
+    if (sb && isNaN(id)) { // Veritabanı ID'leri UUID formatındadır (harf/tire içerir), taslak yazılar ise numaradır (1, 2, 3).
+        const { data, error } = await sb.from('posts').delete().eq('id', id).select();
         
         if (error) {
             console.error('Supabase Delete Error:', error);
-            alert(`VERİTABANI SİLME HATASI: ${error.message}\n\nNot: Supabase Dashboard -> "posts" tablosu -> RLS Policies kısmından DELETE izni vermeniz gerekir.`);
+            alert(`VERİTABANI SİLME HATASI: ${error.message}\n\nNot: Supabase Dashboard -> "posts" tablosu -> RLS Policies kısmından DELETE izni vermeniz gerekir. Veya eklenmiş UUID formatı gereklidir.`);
         } else if (data && data.length > 0) {
             deletedFromDb = true;
         }
