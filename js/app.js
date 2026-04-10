@@ -390,7 +390,7 @@ async function checkAdmin() {
     if (!emailInput || !passInput) return;
     
     const email = emailInput.value.trim();
-    const pass = passInput.value;
+    const pass = passInput.value.trim();
     const sb = getSupabase();
     
     if (!sb) {

@@ -53,8 +53,13 @@
         <div id="admin-login" class="max-w-md mx-auto py-20 text-center space-y-8">
             <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center mx-auto"><i data-lucide="lock" class="w-10 h-10 text-calith-orange"></i></div>
             <h1 class="font-display text-4xl font-bold uppercase tracking-widest">GİRİŞ YAP</h1>
-            <input type="email" id="admin-email" placeholder="E-posta Adresiniz" autocomplete="off" class="w-full bg-calith-gray border border-white/10 px-6 py-5 rounded-2xl text-center text-2xl text-white focus:outline-none focus:border-calith-orange transition-all hover:bg-white/5 mb-4" onkeypress="if(event.key === 'Enter') document.getElementById('admin-pass').focus()">
-            <input type="password" id="admin-pass" placeholder="Şifrenizi Girin" autocomplete="new-password" class="w-full bg-calith-gray border border-white/10 px-6 py-5 rounded-2xl text-center text-2xl text-white focus:outline-none focus:border-calith-orange transition-all hover:bg-white/5" onkeypress="if(event.key === 'Enter') checkAdmin()">
+            
+            <!-- Autofill engellemek için sahte giriş alanları -->
+            <input type="text" style="display:none" autocomplete="username">
+            <input type="password" style="display:none" autocomplete="current-password">
+            
+            <input type="email" id="admin-email" placeholder="E-posta Adresiniz" autocomplete="off" class="w-full border border-gray-300 px-6 py-5 rounded-2xl text-center text-2xl focus:outline-none focus:border-calith-orange mb-4" onkeypress="if(event.key === 'Enter') document.getElementById('admin-pass').focus()">
+            <input type="password" id="admin-pass" placeholder="Şifrenizi Girin" autocomplete="new-password" class="w-full border border-gray-300 px-6 py-5 rounded-2xl text-center text-2xl focus:outline-none focus:border-calith-orange" onkeypress="if(event.key === 'Enter') checkAdmin()">
             <button onclick="checkAdmin()" class="w-full btn-primary h-16 rounded-2xl font-bold text-lg mt-6">ADMİN PANELİNE GİR</button>
         </div>
 

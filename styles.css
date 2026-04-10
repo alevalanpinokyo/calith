@@ -158,7 +158,8 @@ body {
     transform: translate(-50%, -20px) scale(1);
 }
 
-/* Fix for Browser Autofill / Input Backgrounds turning white */
+/* Enforce explicit White Background and Black Text for ALL Form Fields */
+input, textarea, select, [contenteditable="true"],
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
@@ -167,12 +168,15 @@ textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
 textarea:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    background-color: white !important;
+    color: #0A0A0A !important;
     -webkit-text-fill-color: #0A0A0A !important;
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Normal input appearance */
-textarea, input, [contenteditable="true"] {
-    color: white;
+/* Ensure placeholder visibility against white background */
+input::placeholder, textarea::placeholder {
+    color: #888888 !important;
+    opacity: 1 !important;
 }
