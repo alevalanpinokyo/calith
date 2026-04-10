@@ -18,7 +18,7 @@
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
                 <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
                     <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
                 </div>
@@ -37,7 +37,7 @@
                     <i data-lucide="shopping-cart" class="w-6 h-6"></i>
                     <span id="cart-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-calith-orange text-white text-xs rounded-full flex items-center justify-center font-bold hidden">0</span>
                 </button>
-                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()">
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
@@ -76,11 +76,25 @@
     <p>© 2025 CALITH. Tüm hakları saklıdır.</p>
 </footer>
 
+<!-- Cart Elements -->
 <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-calith-gray z-50 transform translate-x-full transition-transform duration-300 shadow-2xl">
-    <div class="h-full flex flex-col p-6"><button onclick="toggleCart()" class="self-end mb-4"><i data-lucide="x" class="w-6 h-6"></i></button><div id="cart-items" class="flex-1 overflow-y-auto"></div></div>
+    <div class="h-full flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b border-white/10">
+            <h3 class="font-display text-xl font-bold uppercase">SEPETİN</h3>
+            <button onclick="toggleCart()" class="p-2 hover:bg-white/10 rounded-full transition-colors" aria-label="Sepeti Kapat"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6"></div>
+        <div class="border-t border-white/10 p-6 space-y-4">
+            <div class="flex justify-between text-sm"><span class="text-gray-400">Ara Toplam</span><span id="cart-subtotal" class="font-semibold">0₺</span></div>
+            <div class="flex justify-between text-lg font-bold border-t border-white/10 pt-4"><span>Toplam</span><span id="cart-total">0₺</span></div>
+            <button onclick="checkout()" class="w-full btn-primary py-4 rounded-full font-bold">ÖDEMEYE GEÇ</button>
+        </div>
+    </div>
 </div>
 <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleCart()"></div>
-<div id="toast" class="toast fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-gray text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i><span id="toast-msg"></span></div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-50 transform translate-y-32 transition-transform duration-500 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i><span id="toast-msg" class="font-bold text-sm"></span></div>
 
 <script src="js/app.js"></script>
 <script>lucide.createIcons();</script>

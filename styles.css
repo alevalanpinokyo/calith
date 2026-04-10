@@ -89,6 +89,7 @@ body {
 .stagger-3 { animation-delay: 0.3s; }
 
 .nav-blur {
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     background: rgba(10, 10, 10, 0.8);
 }
@@ -147,12 +148,12 @@ body {
 #toast {
     opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, 20px);
-    transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    transform: translate(-50%, 100%) scale(0.9);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #toast.show {
     opacity: 1;
     pointer-events: auto;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, -20px) scale(1);
 }

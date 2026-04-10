@@ -149,15 +149,23 @@ function showSection(section) {
     const isAdminPage = path.includes('admin');
 
     if (!target) {
-        if (section === 'shop' && !isShopPage) window.location.href = 'shop.html';
-        else if (section === 'blog' && !isBlogPage) window.location.href = 'blog.html';
-        else if (section === 'admin' && !isAdminPage) window.location.href = 'admin.html';
-        else if (section === 'product-detail' && currentPd && !isShopPage) window.location.href = `shop.html?p=${currentPd.id}`;
-        else if (section === 'blog-detail' && currentBlogId && !isBlogPage) window.location.href = `blog.html?b=${currentBlogId}`;
+        // Hedef element bu sayfada yoksa ve başka bir sayfaya aitse yönlendir
+        if (section === 'shop' && !isShopPage) return window.location.href = 'shop.html';
+        if (section === 'blog' && !isBlogPage) return window.location.href = 'blog.html';
+        if (section === 'admin' && !isAdminPage) return window.location.href = 'admin.html';
+        if (section === 'landing' && !path.includes('index.html') && path !== '/') return window.location.href = 'index.html';
+        
+        if (section === 'product-detail' && currentPd && !isShopPage) return window.location.href = `shop.html?p=${currentPd.id}`;
+        if (section === 'blog-detail' && currentBlogId && !isBlogPage) return window.location.href = `blog.html?b=${currentBlogId}`;
+        
+        console.warn(`Section "${section}" bu sayfada bulunamadı.`);
         return;
     }
 
-    document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active'); });
+    document.querySelectorAll('section').forEach(s => { 
+        s.classList.add('hidden'); 
+        s.classList.remove('active'); 
+    });
     target.classList.remove('hidden');
     setTimeout(() => target.classList.add('active'), 50);
     
@@ -308,12 +316,19 @@ function filterBlog(cat) {
     renderBlog(cat);
 }
 
+let blogRetryCount = 0;
 function showBlogDetail(id) {
     currentBlogId = id;
     if (!posts || posts.length === 0) {
-        setTimeout(() => showBlogDetail(id), 100);
+        if (blogRetryCount < 10) {
+            blogRetryCount++;
+            setTimeout(() => showBlogDetail(id), 200);
+        } else {
+            console.error('Blog yazıları yüklenemedi, zaman aşımı.');
+        }
         return;
     }
+    blogRetryCount = 0; // Başarılıysa sıfırla
     const p = posts.find(post => String(post.id) === String(id));
     if (!p) return;
     
@@ -554,16 +569,35 @@ async function saveProduct() {
 }
 
 async function deleteProduct(id) {
-    if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return;
+    const productToDelete = products.find(p => String(p.id) === String(id));
+    if (!productToDelete) return;
+    if (!confirm(`"${productToDelete.name}" ürününü silmek istediğinize emin misiniz?`)) return;
+    
     const sb = getSupabase();
-    if (!sb) return;
+    let deletedFromDb = false;
 
-    const { error } = await sb.from('products').delete().eq('id', id);
-    if (error) alert('Silme hatası: ' + error.message);
-    else {
-        showToast('Ürün silindi');
-        loadProducts();
+    if (sb && !String(id).startsWith('def')) {
+        const { data, error } = await sb.from('products').delete().eq('id', id).select();
+        
+        if (error) {
+            console.error('Supabase Delete Error:', error);
+            alert(`VERİTABANI SİLME HATASI: ${error.message}\n\nNot: Supabase Dashboard -> Policies kısmından DELETE izni vermeniz gerekebilir.`);
+        } else if (data && data.length > 0) {
+            deletedFromDb = true;
+        }
     }
+
+    // Kara listeye ekle (Özellikle örnek veriler veya DB'den silinemeyenler için)
+    const deletedProducts = JSON.parse(localStorage.getItem('calith_deleted_products')) || [];
+    if (!deletedProducts.includes(productToDelete.name)) {
+        deletedProducts.push(productToDelete.name);
+        localStorage.setItem('calith_deleted_products', JSON.stringify(deletedProducts));
+    }
+
+    products = products.filter(p => String(p.id) !== String(id));
+    
+    showToast(deletedFromDb ? 'Ürün veritabanından silindi' : 'Ürün yerel listeden kaldırıldı');
+    loadProducts();
 }
 
 function editProduct(id) {
@@ -722,20 +756,21 @@ async function deletePost(id) {
     if (!confirm(`"${postToDelete.title}" yazısını silmek istediğinizden emin misiniz?`)) return;
     
     const sb = getSupabase();
-    if (sb) {
-        const idToTry = isNaN(id) ? id : Number(id);
-        // .select() ekleyerek silme işleminin sonucunu doğrula
+    let deletedFromDb = false;
+
+    if (sb && !isNaN(id)) { // Örnek verilerin IDleri genellikle küçüktür veya stringdir, DB idleri sayısal veya uuid'dir
+        const idToTry = Number(id);
         const { data, error } = await sb.from('posts').delete().eq('id', idToTry).select();
         
         if (error) {
             console.error('Supabase Delete Error:', error);
-            alert(`SİLME HATASI: ${error.message}\n\nLütfen Supabase Dashboard'dan DELETE izinlerini kontrol edin.`);
-        } else if (data && data.length === 0) {
-            console.warn('Veritabanında eşleşen satır bulunamadı veya silinemedi.');
+            alert(`VERİTABANI SİLME HATASI: ${error.message}\n\nNot: Supabase Dashboard -> "posts" tablosu -> RLS Policies kısmından DELETE izni vermeniz gerekir.`);
+        } else if (data && data.length > 0) {
+            deletedFromDb = true;
         }
     }
 
-    // Kara listeye ekle (Veritabanında olmasa bile ekranı temiz tutmak için)
+    // Kara listeye ekle (Veritabanında olmasa bile (örnek veriler) ekranı temiz tutmak için)
     const deletedPostTitles = JSON.parse(localStorage.getItem('calith_deleted_posts')) || [];
     if (!deletedPostTitles.includes(postToDelete.title)) {
         deletedPostTitles.push(postToDelete.title);
@@ -745,7 +780,7 @@ async function deletePost(id) {
     // Listeyi hemen güncelle (Hızlı tepki)
     posts = posts.filter(p => String(p.id) !== String(id));
     
-    showToast('Yazı silindi');
+    showToast(deletedFromDb ? 'Yazı veritabanından silindi' : 'Yazı yerel listeden kaldırıldı');
     renderLandingBlog();
     renderBlog();
     renderAdminPosts();

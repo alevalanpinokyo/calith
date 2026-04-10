@@ -18,7 +18,7 @@
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
                 <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
                     <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
                 </div>
@@ -30,7 +30,7 @@
             </div>
             <div class="flex items-center gap-4">
                 <button onclick="logoutAdmin()" class="text-sm text-gray-400 hover:text-red-500 transition-colors">ÇIKIŞ →</button>
-                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()">
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
@@ -74,7 +74,7 @@
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori</label>
-                            <select id="post-category" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                            <select id="post-category" title="Yazı Kategorisi" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
                                 <option value="temel">Temel Bilgiler</option>
                                 <option value="ekipman">Ekipman Rehberi</option>
                                 <option value="beslenme">Beslenme</option>
@@ -115,7 +115,7 @@
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori</label>
-                            <select id="prod-category" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                            <select id="prod-category" title="Ürün Kategorisi" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
                                 <option value="bar">Barfiks</option>
                                 <option value="parallettes">Paralel</option>
                                 <option value="rings">Halka</option>
@@ -126,26 +126,26 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fiyat (TL)</label>
-                                <input type="number" id="prod-price" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
+                                <input type="number" id="prod-price" placeholder="0" title="Ürün Fiyatı" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Eski Fiyat (Opsiyonel)</label>
-                                <input type="number" id="prod-old-price" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
+                                <input type="number" id="prod-old-price" placeholder="0" title="Eski Fiyat" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Rozet (Örn: Yeni)</label>
-                                <input type="text" id="prod-badge" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
+                                <input type="text" id="prod-badge" placeholder="Yeni" title="Ürün Rozeti" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Görsel URL</label>
-                                <input type="url" id="prod-image-url" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
+                                <input type="url" id="prod-image-url" placeholder="Görsel Linki" title="Görsel URL" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white placeholder-gray-600">
                             </div>
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
-                            <textarea id="prod-desc" rows="3" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white resize-none placeholder-gray-600"></textarea>
+                            <textarea id="prod-desc" rows="3" placeholder="Ürün açıklaması..." title="Ürün Açıklaması" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white resize-none placeholder-gray-600"></textarea>
                         </div>
                         <button onclick="saveProduct()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">Ürünü Kaydet</button>
                     </div>
