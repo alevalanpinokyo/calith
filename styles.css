@@ -172,11 +172,10 @@ textarea:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Enforce dark background on content editables and textareas */
+/* Enforce text color on inputs */
 textarea, input, [contenteditable="true"] {
-    color: white !important;
-    background-color: transparent;
+    color: #0A0A0A !important;
 }
 textarea:focus, input:focus, [contenteditable="true"]:focus {
-    background-color: rgba(0,0,0,0.6) !important;
+    color: #0A0A0A !important;
 }
