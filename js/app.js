@@ -350,10 +350,17 @@ function showBlogDetail(id) {
     let mediaHtml = '';
     if (videoUrl) {
         let embedUrl = videoUrl;
-        if(videoUrl.includes('youtube.com/watch?v=')) {
-            embedUrl = videoUrl.replace('watch?v=', 'embed/').split('&')[0];
-        } else if(videoUrl.includes('youtu.be/')) {
-            embedUrl = videoUrl.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0];
+        
+        // Eğer kullanıcı direkt embed (iframe) kodu yapıştırdıysa içindeki src'yi çekelim
+        const iframeMatch = videoUrl.match(/src=["'](.*?)["']/);
+        if (iframeMatch) {
+            embedUrl = iframeMatch[1];
+        }
+
+        if(embedUrl.includes('youtube.com/watch?v=')) {
+            embedUrl = embedUrl.replace('watch?v=', 'embed/').split('&')[0];
+        } else if(embedUrl.includes('youtu.be/')) {
+            embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0];
         }
         mediaHtml = `<div class="w-full aspect-video rounded-2xl mb-12 overflow-hidden shadow-2xl border border-white/10">
             <iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
