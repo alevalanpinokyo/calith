@@ -547,11 +547,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('p');
         const blogId = params.get('b');
+        const blogCat = params.get('c');
 
         if (productId) {
             showProductDetail(productId);
         } else if (blogId) {
             showBlogDetail(blogId);
+        } else if (blogCat && window.location.pathname.includes('blog.html')) {
+            filterBlog(blogCat);
         }
     });
     
