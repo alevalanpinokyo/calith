@@ -341,6 +341,27 @@ function showBlogDetail(id) {
     }
 
     if (!contentDiv) return;
+    
+    let displayContent = p.content || '';
+    let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
+    let videoUrl = videoMatch ? videoMatch[1] : '';
+    displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
+    
+    let mediaHtml = '';
+    if (videoUrl) {
+        let embedUrl = videoUrl;
+        if(videoUrl.includes('youtube.com/watch?v=')) {
+            embedUrl = videoUrl.replace('watch?v=', 'embed/').split('&')[0];
+        } else if(videoUrl.includes('youtu.be/')) {
+            embedUrl = videoUrl.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0];
+        }
+        mediaHtml = `<div class="w-full aspect-video rounded-2xl mb-12 overflow-hidden shadow-2xl border border-white/10">
+            <iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+        </div>`;
+    } else if (p.image) {
+        mediaHtml = `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">`;
+    }
+
     contentDiv.innerHTML = `
         <div class="mb-8">
             <span class="inline-block px-4 py-1 bg-white/10 rounded-full text-sm font-medium uppercase tracking-wider mb-4">${p.category}</span>
@@ -350,9 +371,9 @@ function showBlogDetail(id) {
                 <span><i class="far fa-clock mr-2"></i>5 dk okuma</span>
             </div>
         </div>
-        ${p.image ? `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">` : ''}
+        ${mediaHtml}
         <div class="prose prose-invert prose-lg max-w-none">
-            ${p.content}
+            ${displayContent}
         </div>
         <div class="mt-12 pt-8 border-t border-primary">
             <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
@@ -698,13 +719,19 @@ function renderAdminProducts() {
 
 async function savePost() {
     const title = document.getElementById('post-title').value;
-    const content = document.getElementById('editor').innerHTML;
+    let content = document.getElementById('editor').innerHTML;
     const category = document.getElementById('post-category').value;
     const image = document.getElementById('post-cover').value;
     const video = document.getElementById('post-video').value;
     const editId = document.getElementById('post-edit-id').value;
     
     if (!title) { alert('Başlık gerekli!'); return; }
+
+    // Video URL'sini içeriğin sonuna gizli bir etiket olarak ekliyoruz
+    content = content.replace(/<!-- VIDEO: (.*?) -->/g, ''); // Varsa temizle
+    if (video && video.trim() !== '') {
+        content += `<!-- VIDEO: ${video.trim()} -->`;
+    }
 
     const postData = {
         title,
@@ -769,11 +796,17 @@ function editPost(id) {
     const p = posts.find(post => String(post.id) === String(id));
     if (!p) return;
 
+    let displayContent = p.content || '';
+    let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
+    let videoUrl = videoMatch ? videoMatch[1] : '';
+    displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
+
     document.getElementById('post-edit-id').value = p.id;
     document.getElementById('post-title').value = p.title;
     document.getElementById('post-category').value = p.category;
     document.getElementById('post-cover').value = p.image || '';
-    document.getElementById('editor').innerHTML = p.content;
+    document.getElementById('post-video').value = videoUrl;
+    document.getElementById('editor').innerHTML = displayContent;
     document.getElementById('btn-save-post').textContent = 'YAZIYI GÜNCELLE';
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
