@@ -1249,9 +1249,4 @@ function showProgramDetail(id) {
     `;
     window.scrollTo(0,0);
 }
-    if (blogId) {
-        setTimeout(() => showBlogDetail(blogId), 500);
-    }
-}
-
 document.addEventListener('DOMContentLoaded', init);
