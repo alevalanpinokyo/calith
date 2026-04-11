@@ -1130,7 +1130,7 @@ function editProgram(id) {
 async function deleteProgram(id) {
     const progToDelete = programPosts.find(p => String(p.id) === String(id));
     if (!progToDelete) return;
-    if (!confirm(\`"\${progToDelete.title}" programını silmek istediğinizden emin misiniz?\`)) return;
+    if (!confirm(`"\${progToDelete.title}" programını silmek istediğinizden emin misiniz?`)) return;
     
     const sb = getSupabase();
     let deletedFromDb = false;
