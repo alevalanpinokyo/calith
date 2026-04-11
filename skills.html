@@ -111,7 +111,7 @@
                 </div>
                 <h3 class="font-display text-2xl font-bold mb-3">BAŞLANGIÇ</h3>
                 <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">Temel vücut ağırlığı egzersizleri, form teknikleri ve ilk barfiks/şınavın için gereken tüm adımlar.</p>
-                <button onclick="window.location.href='blog.html?c=program_baslangic'" class="w-full bg-white/5 hover:bg-calith-accent hover:text-black text-white font-bold py-4 rounded-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                <button onclick="showProgramLevel('baslangic', 'Başlangıç')" class="w-full bg-white/5 hover:bg-calith-accent hover:text-black text-white font-bold py-4 rounded-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
             </div>
 
             <!-- Orta Seviye -->
@@ -123,7 +123,7 @@
                 </div>
                 <h3 class="font-display text-2xl font-bold mb-3">ORTA SEVİYE</h3>
                 <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">Muscle-up hazırlığı, L-sit, handstand temelleri ve daha karmaşık rutinlerle hacim ve güç kazanımı.</p>
-                <button onclick="window.location.href='blog.html?c=program_orta'" class="w-full btn-primary py-4 rounded-xl font-bold transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                <button onclick="showProgramLevel('orta', 'Orta Seviye')" class="w-full btn-primary py-4 rounded-xl font-bold transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
             </div>
 
             <!-- İleri Seviye -->
@@ -134,9 +134,33 @@
                 </div>
                 <h3 class="font-display text-2xl font-bold mb-3">İLERİ SEVİYE</h3>
                 <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">Planche, Front Lever, tek kol barfiks aşamaları ve yer çekimine meydan okuyan elit seviye antrenmanlar.</p>
-                <button onclick="window.location.href='blog.html?c=program_ileri'" class="w-full bg-white/5 hover:bg-red-500 hover:text-white text-white font-bold py-4 rounded-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                <button onclick="showProgramLevel('ileri', 'İleri Seviye')" class="w-full bg-white/5 hover:bg-red-500 hover:text-white text-white font-bold py-4 rounded-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- DINAMIK PROGRAM LISTESI VE DETAY EKRANI (JS ile kontrol edilir) -->
+<section id="program-list-view" class="hidden min-h-screen pt-32 pb-20 fade-in">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+            <div>
+                <button onclick="document.getElementById('program-list-view').classList.add('hidden'); document.getElementById('programs').classList.remove('hidden');" class="mb-4 text-calith-orange hover:text-white flex items-center gap-2 group font-semibold text-sm">
+                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> SEVİYELERE DÖN
+                </button>
+                <h2 id="program-list-title" class="font-display text-4xl md:text-5xl font-bold tracking-tight uppercase">Programlar</h2>
+            </div>
+        </div>
+        <div id="dynamic-programs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+</section>
+
+<section id="blog-detail" class="hidden min-h-screen pt-32 pb-20 fade-in">
+    <div class="max-w-4xl mx-auto px-4">
+        <button onclick="document.getElementById('blog-detail').classList.add('hidden'); document.getElementById('program-list-view').classList.remove('hidden');" class="mb-10 text-gray-400 hover:text-white flex items-center gap-2 group">
+            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Listeye Dön
+        </button>
+        <div id="post-content" class="bg-calith-gray/30 border border-white/5 p-8 md:p-12 rounded-3xl"></div>
     </div>
 </section>
 

@@ -70,6 +70,7 @@
             <div class="flex flex-wrap gap-4 p-1 bg-white/5 rounded-2xl border border-white/5 w-fit">
                 <button onclick="switchAdminTab('blog')" id="tab-blog" class="px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white">BLOG YÖNETİMİ</button>
                 <button onclick="switchAdminTab('products')" id="tab-products" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ÜRÜN YÖNETİMİ</button>
+                <button onclick="switchAdminTab('programs')" id="tab-programs" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">PROGRAM YÖNETİMİ</button>
             </div>
             
             <div id="section-blog" class="grid lg:grid-cols-3 gap-12">
@@ -87,9 +88,6 @@
                                 <option value="temel">Temel Bilgiler</option>
                                 <option value="ekipman">Ekipman Rehberi</option>
                                 <option value="beslenme">Beslenme</option>
-                                <option value="program_baslangic">Program (Başlangıç)</option>
-                                <option value="program_orta">Program (Orta Seviye)</option>
-                                <option value="program_ileri">Program (İleri Seviye)</option>
                             </select>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
@@ -112,6 +110,46 @@
                 <div class="lg:col-span-2 space-y-6">
                     <h2 class="font-display text-2xl font-bold uppercase">MEVCUT YAZILAR</h2>
                     <div id="admin-post-list" class="grid gap-4"></div>
+                </div>
+            </div>
+
+            <div id="section-programs" class="hidden grid lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10">
+                    <h3 class="font-display text-2xl font-bold uppercase">PROGRAM <span class="text-calith-orange">OLUŞTUR</span></h3>
+                    <input type="hidden" id="prog-edit-id">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Program Başlığı</label>
+                            <input type="text" id="prog-title" placeholder="Program Adı..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Seviye (Kategori)</label>
+                            <select id="prog-category" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                                <option value="program_baslangic">Başlangıç Seviye</option>
+                                <option value="program_orta">Orta Seviye</option>
+                                <option value="program_ileri">İleri Seviye</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kapak Görseli URL</label>
+                                <input type="url" id="prog-cover" placeholder="https://..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Video URL (YouTube)</label>
+                                <input type="url" id="prog-video" placeholder="Video Linki" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Program İçeriği (Günler, setler...)</label>
+                            <div id="prog-editor" contenteditable="true" class="bg-black/40 border border-white/10 rounded-xl p-4 min-h-[250px] outline-none prose prose-invert max-w-none text-sm overflow-y-auto"></div>
+                        </div>
+                        <button onclick="saveProgram()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">PROGRAMI YAYINLA</button>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="font-display text-2xl font-bold uppercase">MEVCUT PROGRAMLAR</h2>
+                    <div id="admin-prog-list" class="grid gap-4"></div>
                 </div>
             </div>
 
@@ -178,9 +216,12 @@
     function switchAdminTab(tab) {
         document.getElementById('section-blog').classList.toggle('hidden', tab !== 'blog');
         document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
+        document.getElementById('section-programs').classList.toggle('hidden', tab !== 'programs');
         document.getElementById('tab-blog').className = tab === 'blog' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
         document.getElementById('tab-products').className = tab === 'products' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+        document.getElementById('tab-programs').className = tab === 'programs' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
         if (tab === 'products') renderAdminProducts();
+        if (tab === 'programs') renderAdminPrograms();
     }
 </script>
 </body>

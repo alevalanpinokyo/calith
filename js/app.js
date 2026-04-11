@@ -95,42 +95,45 @@ const defaultPosts = [
 ];
 
 let posts = [];
+let blogPosts = [];
+let programPosts = [];
 
 async function loadPosts() {
     const sb = getSupabase();
     const deletedPostTitles = JSON.parse(localStorage.getItem('calith_deleted_posts')) || [];
     
+    let allData = [];
     if (!sb) {
-        posts = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
-        renderLandingBlog(); renderBlog(); renderAdminPosts();
-        return;
-    }
-
-    const { data, error } = await sb.from('posts').select('*').order('id', { ascending: false });
-
-    if (error) {
-        posts = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
+        allData = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
     } else {
-        const dbPosts = data || [];
-        const combined = [...dbPosts];
-        
-        defaultPosts.forEach(def => {
-            const existsInDb = dbPosts.some(db => db.title === def.title);
-            const isManuallyDeleted = deletedPostTitles.includes(def.title);
-            if (!existsInDb && !isManuallyDeleted) combined.push(def);
-        });
-
-        // TÜM listeyi süzgeçten geçir (Veritabanından silinemediyse bile ekranda GİZLE)
-        posts = combined
-            .filter(p => !deletedPostTitles.includes(p.title))
-            .map(p => ({
+        const { data, error } = await sb.from('posts').select('*').order('id', { ascending: false });
+        if (error) {
+            allData = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
+        } else {
+            const dbPosts = data || [];
+            const combined = [...dbPosts];
+            defaultPosts.forEach(def => {
+                const existsInDb = dbPosts.some(db => db.title === def.title);
+                const isManuallyDeleted = deletedPostTitles.includes(def.title);
+                if (!existsInDb && !isManuallyDeleted) combined.push(def);
+            });
+            allData = combined.filter(p => !deletedPostTitles.includes(p.title)).map(p => ({
                 ...p,
                 category: p.category || 'temel',
                 image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
                 date: (p.created_at || p.date || '').slice(0, 10)
             }));
+        }
     }
-    renderLandingBlog(); renderBlog(); renderAdminPosts();
+    
+    posts = allData;
+    programPosts = allData.filter(p => p.category.startsWith('program_'));
+    blogPosts = allData.filter(p => !p.category.startsWith('program_'));
+
+    renderLandingBlog(); 
+    if (typeof renderBlog === 'function') renderBlog(); 
+    if (typeof renderAdminPosts === 'function') renderAdminPosts();
+    if (typeof renderAdminPrograms === 'function') renderAdminPrograms();
 }
 let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
 let currentPd = null;
@@ -184,7 +187,7 @@ function showSection(section) {
 function renderLandingBlog() {
     const container = document.getElementById('landing-blog-preview');
     if (!container) return;
-    container.innerHTML = posts.slice(0, 3).map(p => `
+    container.innerHTML = blogPosts.slice(0, 3).map(p => `
         <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
             <div class="aspect-video relative overflow-hidden">
                 <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
@@ -278,7 +281,7 @@ function renderBlog(filter = 'all') {
     const list = document.getElementById('blog-list');
     if (!list) return;
     
-    const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
+    const filtered = filter === 'all' ? blogPosts : blogPosts.filter(p => p.category === filter);
     
     if (filtered.length === 0) { 
         list.innerHTML = '<div class="col-span-3 text-center py-20 text-gray-500 font-bold uppercase tracking-widest">Henüz yazı yok.</div>'; 
@@ -383,9 +386,9 @@ function showBlogDetail(id) {
             ${displayContent}
         </div>
         <div class="mt-12 pt-8 border-t border-primary">
-            <h3 class="text-2xl font-bold mb-4">Benzer Yazılar</h3>
+            <h3 class="text-2xl font-bold mb-4">İlgini Çekebilir</h3>
             <div class="grid md:grid-cols-2 gap-4">
-                ${posts.filter(post => post.id.toString() !== p.id.toString()).slice(0, 2).map(post => `
+                ${posts.filter(post => post.id.toString() !== p.id.toString() && ((p.category.startsWith('program_') && post.category.startsWith('program_')) || (!p.category.startsWith('program_') && !post.category.startsWith('program_')))).slice(0, 2).map(post => `
                     <div onclick="showBlogDetail('${post.id}')" class="cursor-pointer bg-secondary border border-primary p-4 rounded-xl hover:border-white/30 transition-colors">
                         <h4 class="font-bold mb-1">${post.title}</h4>
                         <p class="text-sm text-secondary">${post.excerpt.substring(0, 60)}...</p>
@@ -777,12 +780,12 @@ function renderAdminPosts() {
     const list = document.getElementById('admin-post-list');
     if (!list) return;
 
-    if (!posts || posts.length === 0) {
+    if (!blogPosts || blogPosts.length === 0) {
         list.innerHTML = '<div class="py-12 text-center text-gray-500">Yazı bulunamadı.</div>';
         return;
     }
 
-    list.innerHTML = posts.map(p => `
+    list.innerHTML = blogPosts.map(p => `
         <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
             <div class="flex-1">
                 <h4 class="font-bold text-sm line-clamb-1">${p.title}</h4>
@@ -1028,6 +1031,224 @@ function init() {
     // Check URL for blog post detail
     const params = new URLSearchParams(window.location.search);
     const blogId = params.get('b');
+}
+
+// ============================================
+// PROGRAM YÖNETİMİ FONKSİYONLARI (ADMIN)
+// ============================================
+async function saveProgram() {
+    const title = document.getElementById('prog-title').value;
+    let content = document.getElementById('prog-editor').innerHTML;
+    const category = document.getElementById('prog-category').value;
+    const image = document.getElementById('prog-cover').value;
+    const video = document.getElementById('prog-video').value;
+    const editId = document.getElementById('prog-edit-id').value;
+    
+    if (!title) return alert('Başlık gerekli!');
+
+    content = content.replace(/<!-- VIDEO: (.*?) -->/g, ''); 
+    if (video && video.trim() !== '') {
+        content += `<!-- VIDEO: ${video.trim()} -->`;
+    }
+
+    const postData = {
+        title,
+        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        category,
+        excerpt: title.substring(0, 50) + '...',
+        content,
+        image: image || null,
+        published: true
+    };
+
+    const sb = getSupabase();
+    if (!sb) return alert('Hata: Supabase bağlantısı kurulamadı.');
+    
+    let result;
+    if (editId) {
+        result = await sb.from('posts').update(postData).eq('id', editId);
+    } else {
+        result = await sb.from('posts').insert([postData]);
+    }
+
+    if (result.error) return alert('Hata: ' + result.error.message);
+
+    await loadPosts();
+    showToast(editId ? 'Program güncellendi' : 'Program eklendi');
+    resetProgramForm();
+}
+
+function renderAdminPrograms() {
+    const list = document.getElementById('admin-prog-list');
+    if (!list) return;
+
+    if (!programPosts || programPosts.length === 0) {
+        list.innerHTML = '<div class="py-12 text-center text-gray-500">Program bulunamadı.</div>';
+        return;
+    }
+
+    list.innerHTML = programPosts.map(p => `
+        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex-1">
+                <h4 class="font-bold text-sm line-clamb-1">${p.title}</h4>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">${p.category.replace('program_', '')}</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editProgram('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all group/btn">
+                    <i data-lucide="edit-2" class="w-4 h-4 pointer-events-none"></i>
+                </button>
+                <button onclick="deleteProgram('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all group/btn">
+                    <i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    if (window.lucide) lucide.createIcons();
+}
+
+function editProgram(id) {
+    const p = programPosts.find(post => String(post.id) === String(id));
+    if (!p) return;
+
+    let displayContent = p.content || '';
+    let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
+    let videoUrl = videoMatch ? videoMatch[1] : '';
+    displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
+
+    document.getElementById('prog-edit-id').value = p.id;
+    document.getElementById('prog-title').value = p.title;
+    document.getElementById('prog-category').value = p.category;
+    document.getElementById('prog-cover').value = p.image || '';
+    document.getElementById('prog-video').value = videoUrl;
+    document.getElementById('prog-editor').innerHTML = displayContent;
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Program düzenleniyor');
+}
+
+async function deleteProgram(id) {
+    const progToDelete = programPosts.find(p => String(p.id) === String(id));
+    if (!progToDelete) return;
+    if (!confirm(\`"\${progToDelete.title}" programını silmek istediğinizden emin misiniz?\`)) return;
+    
+    const sb = getSupabase();
+    let deletedFromDb = false;
+
+    if (sb && isNaN(id)) { 
+        const { data, error } = await sb.from('posts').delete().eq('id', id).select();
+        if (error) console.error(error);
+        else if (data && data.length > 0) deletedFromDb = true;
+    }
+
+    const deletedPostTitles = JSON.parse(localStorage.getItem('calith_deleted_posts')) || [];
+    if (!deletedPostTitles.includes(progToDelete.title)) {
+        deletedPostTitles.push(progToDelete.title);
+        localStorage.setItem('calith_deleted_posts', JSON.stringify(deletedPostTitles));
+    }
+
+    programPosts = programPosts.filter(p => String(p.id) !== String(id));
+    showToast(deletedFromDb ? 'Veritabanından silindi' : 'Listeden kaldırıldı');
+    renderAdminPrograms();
+}
+
+function resetProgramForm() {
+    document.getElementById('prog-edit-id').value = '';
+    document.getElementById('prog-title').value = '';
+    document.getElementById('prog-cover').value = '';
+    document.getElementById('prog-video').value = '';
+    document.getElementById('prog-editor').innerHTML = '';
+}
+
+// ============================================
+// PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
+// ============================================
+function showProgramLevel(level, titleStr) {
+    const mainSec = document.getElementById('programs');
+    const listSec = document.getElementById('program-list-view');
+    const detailSec = document.getElementById('blog-detail');
+    
+    if (mainSec) mainSec.classList.add('hidden');
+    if (detailSec) detailSec.classList.add('hidden');
+    if (listSec) listSec.classList.remove('hidden');
+
+    const titleEl = document.getElementById('program-list-title');
+    if (titleEl) titleEl.innerHTML = titleStr + ' <span class="gradient-text">PROGRAMLARI</span>';
+
+    const grid = document.getElementById('dynamic-programs-grid');
+    if (!grid) return;
+    
+    const levelPrograms = programPosts.filter(p => p.category === 'program_' + level);
+    
+    if (levelPrograms.length === 0) {
+        grid.innerHTML = '<div class="col-span-3 text-center py-20 text-gray-400">Bu seviyede henüz program bulunmuyor.</div>';
+        return;
+    }
+
+    grid.innerHTML = levelPrograms.map(p => `
+        <article onclick="showProgramDetail('${p.id}')" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover border border-white/5 bg-calith-dark/50">
+            <div class="aspect-video relative overflow-hidden">
+                <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent opacity-80"></div>
+            </div>
+            <div class="p-6">
+                <h3 class="font-display text-2xl font-bold mb-3 group-hover:text-calith-orange transition-colors">${p.title}</h3>
+                <p class="text-gray-400 text-sm line-clamp-2 mb-6">${p.excerpt}</p>
+                <div class="flex items-center gap-2 text-sm font-bold text-calith-orange opacity-0 group-hover:opacity-100 transition-all">
+                    BAŞLA <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+        </article>
+    `).join('');
+    
+    if (window.lucide) lucide.createIcons();
+    window.scrollTo(0,0);
+}
+
+function showProgramDetail(id) {
+    const listSec = document.getElementById('program-list-view');
+    const detailSec = document.getElementById('blog-detail');
+    
+    if (listSec) listSec.classList.add('hidden');
+    if (detailSec) detailSec.classList.remove('hidden');
+
+    const p = programPosts.find(post => String(post.id) === String(id));
+    if (!p) return;
+
+    const contentDiv = document.getElementById('post-content');
+    if (!contentDiv) return;
+
+    let displayContent = p.content || '';
+    let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
+    let videoUrl = videoMatch ? videoMatch[1] : '';
+    displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
+    
+    let mediaHtml = '';
+    if (videoUrl) {
+        let embedUrl = videoUrl;
+        const iframeMatch = videoUrl.match(/src=["'](.*?)["']/);
+        if (iframeMatch) embedUrl = iframeMatch[1];
+        if(embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/').split('&')[0];
+        else if(embedUrl.includes('youtu.be/')) embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0];
+
+        mediaHtml = `<div class="w-full aspect-video rounded-2xl mb-12 overflow-hidden shadow-2xl border border-white/10">
+            <iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+        </div>`;
+    } else if (p.image) {
+        mediaHtml = `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">`;
+    }
+
+    contentDiv.innerHTML = `
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-6 leading-tight">${p.title}</h1>
+        </div>
+        ${mediaHtml}
+        <div class="prose prose-invert prose-lg max-w-none">
+            ${displayContent}
+        </div>
+    `;
+    window.scrollTo(0,0);
+}
     if (blogId) {
         setTimeout(() => showBlogDetail(blogId), 500);
     }
