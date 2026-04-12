@@ -1563,22 +1563,25 @@ function editAnnouncement(id) {
 let homecards = [];
 
 function toggleHomecardLinkFields() {
-    const section = document.getElementById('hc-section');
-    const linkText = document.getElementById('hc-link-text');
-    const linkUrl = document.getElementById('hc-link-url');
-    if(section && linkText && linkUrl) {
-        if(section.value === 'benefits') {
-            linkText.disabled = true;
-            linkUrl.disabled = true;
-            linkText.classList.add('opacity-30', 'cursor-not-allowed');
-            linkUrl.classList.add('opacity-30', 'cursor-not-allowed');
-            linkText.value = '';
-            linkUrl.value = '';
+    const hiddenEl = document.getElementById('hc-section');
+    const section = hiddenEl ? hiddenEl.value : 'hero';
+    
+    const iconBadgeBlock = document.getElementById('hc-fields-icon-badge');
+    const linkBlock = document.getElementById('hc-fields-link');
+    
+    if(iconBadgeBlock) {
+        if(section === 'hero' || section === 'schedule') {
+            iconBadgeBlock.classList.add('hidden');
         } else {
-            linkText.disabled = false;
-            linkUrl.disabled = false;
-            linkText.classList.remove('opacity-30', 'cursor-not-allowed');
-            linkUrl.classList.remove('opacity-30', 'cursor-not-allowed');
+            iconBadgeBlock.classList.remove('hidden');
+        }
+    }
+    
+    if(linkBlock) {
+        if(section === 'hero' || section === 'benefits' || section === 'schedule') {
+            linkBlock.classList.add('hidden');
+        } else {
+            linkBlock.classList.remove('hidden');
         }
     }
 }

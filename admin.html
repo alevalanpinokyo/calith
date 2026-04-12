@@ -281,7 +281,7 @@
                     <input type="hidden" id="hc-edit-id">
                     <input type="hidden" id="hc-section" value="hero">
                     <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4" id="hc-fields-icon-badge">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon (Emoji veya Metin)</label>
                                 <input type="text" id="hc-icon" placeholder="💪, 🌱, 01..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
@@ -291,22 +291,22 @@
                                 <input type="text" id="hc-badge" placeholder="En Popüler" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
                             </div>
                         </div>
-                        <div>
+                        <div id="hc-fields-title">
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Başlık</label>
                             <input type="text" id="hc-title" placeholder="Kas İnşa..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
                         </div>
-                        <div>
+                        <div id="hc-fields-desc">
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
                             <textarea id="hc-desc" rows="3" placeholder="Kısa alt metin..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white resize-none placeholder-gray-600"></textarea>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4" id="hc-fields-link">
                             <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Buton Yazısı <span class="text-calith-orange/50 text-[9px] lowercase">(Sana Ne Kazandırır için opsiyonel)</span></label>
-                                <input type="text" id="hc-link-text" placeholder="İncele →" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Buton Yazısı</label>
+                                <input type="text" id="hc-link-text" placeholder="Örn: İncele →" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Yönlenecek Link <span class="text-calith-orange/50 text-[9px] lowercase">(Sana Ne Kazandırır bölümünde çalışmaz)</span></label>
-                                <input type="text" id="hc-link-url" placeholder="skills.html" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Yönlenecek Link</label>
+                                <input type="text" id="hc-link-url" placeholder="Örn: skills.html" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
                             </div>
                         </div>
                         <button onclick="saveHomecard()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">KAYDET VE GÜNCELLE</button>
