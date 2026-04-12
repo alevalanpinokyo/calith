@@ -1366,8 +1366,8 @@ function renderAdminAnnouncements() {
                 <button onclick="deleteAnnouncement('${a.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4 text-white hover:text-white"></i></button>
             </div>
         </div>
-    `).join('');
-    
+        `;
+    }).join('');
     if (window.lucide) lucide.createIcons();
 }
 
