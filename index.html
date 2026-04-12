@@ -63,13 +63,16 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 md:gap-4">
                 
                 <button class="hidden md:block btn-outline px-6 py-2.5 rounded-full font-semibold text-sm" onclick="showAuthModal()">
                     Giriş Yap
                 </button>
                 <button class="hidden md:block btn-primary px-6 py-2.5 rounded-full font-semibold text-sm" onclick="window.location.href='skills.html'">
                     Hemen Başla
+                </button>
+                <button class="md:hidden p-2 text-white" onclick="showAuthModal()" aria-label="Giriş Yap / Üye Ol">
+                    <i data-lucide="user" class="w-6 h-6"></i>
                 </button>
                 <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
                     <i data-lucide="menu" class="w-6 h-6"></i>
