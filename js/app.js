@@ -1478,9 +1478,170 @@ function editAnnouncement(id) {
     if (annImageEl) annImageEl.value = a.image || '';
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
+// --- AUTH LOGIC ---
+let currentUser = null;
+
+function showAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if(modal) {
+        modal.classList.remove('hidden');
+        toggleAuthView('login'); // Default is login
+    }
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if(modal) modal.classList.add('hidden');
+}
+
+function toggleAuthView(view) {
+    const loginView = document.getElementById('login-form-view');
+    const registerView = document.getElementById('register-form-view');
+    const title = document.getElementById('auth-title');
+    
+    if (view === 'login') {
+        loginView.classList.remove('hidden');
+        registerView.classList.add('hidden');
+        title.textContent = 'Hoş Geldin';
+    } else {
+        loginView.classList.add('hidden');
+        registerView.classList.remove('hidden');
+        title.textContent = 'Aramıza Katıl';
+    }
+}
+
+async function submitLogin() {
+    const email = document.getElementById('auth-login-email').value.trim();
+    const pass = document.getElementById('auth-login-pass').value.trim();
+    if(!email || !pass) return showToast('Lütfen bilgileri girin.');
+
+    const sb = getSupabase();
+    if(!sb) return;
+
+    const btnTxt = document.getElementById('btn-login-txt');
+    if(btnTxt) btnTxt.textContent = 'Giriş Yapılıyor...';
+    
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    
+    if(btnTxt) btnTxt.textContent = 'Giriş Yap';
+
+    if (error) {
+        alert('Hata: ' + error.message);
+    } else {
+        currentUser = data.user;
+        
+        // Eğer girilen hesap admin ise, standart paneli değil admini açalım
+        if (currentUser?.user_metadata?.role === 'admin') {
+            showToast('Yönetici yetkisi algılandı. Lütfen logoya uzun basarak admin panele geçin.');
+        } else {
+            showToast('Başarıyla giriş yaptınız!');
+        }
+        
+        closeAuthModal();
+        updateAuthUI();
+    }
+}
+
+async function submitRegister() {
+    const name = document.getElementById('auth-reg-name').value.trim();
+    const email = document.getElementById('auth-reg-email').value.trim();
+    const pass = document.getElementById('auth-reg-pass').value.trim();
+    const levelRadio = document.querySelector('input[name="fitness_level"]:checked');
+    const level = levelRadio ? levelRadio.value : 'baslangic';
+
+    if(!name || !email || !pass) return showToast('Lütfen tüm bilgileri girin!');
+    if(pass.length < 6) return alert('Şifre en az 6 karakter olmalı');
+
+    const sb = getSupabase();
+    if(!sb) return;
+
+    const btnTxt = document.getElementById('btn-reg-txt');
+    if(btnTxt) btnTxt.textContent = 'Kayıt Olunuyor...';
+
+    // Supabase Sign Up - Metadata dahil
+    const { data, error } = await sb.auth.signUp({
+        email,
+        password: pass,
+        options: {
+            data: {
+                full_name: name,
+                fitness_level: level,
+                role: 'user' // Default normal user role
+            }
+        }
+    });
+
+    if(btnTxt) btnTxt.textContent = 'Topluluğa Katıl';
+
+    if (error) {
+        alert('Kayıt Hatası: ' + error.message);
+    } else {
+        showToast('Kayıt başarılı! Aramıza hoş geldin.');
+        currentUser = data.user;
+        closeAuthModal();
+        updateAuthUI();
+    }
+}
+
+async function handleLogout() {
+    const sb = getSupabase();
+    if(sb) await sb.auth.signOut();
+    currentUser = null;
+    showToast('Çıkış yapıldı');
+    updateAuthUI();
+}
+
+async function checkCurrentUser() {
+    const sb = getSupabase();
+    if(sb) {
+        const { data: { session } } = await sb.auth.getSession();
+        if(session) {
+            currentUser = session.user;
+        }
+    }
+    updateAuthUI();
+}
+
+function updateAuthUI() {
+    // Desktop Nav Auth Button
+    const deskBtns = document.querySelectorAll('button[onclick="showAuthModal()"], button[onclick="handleLogout()"]');
+    deskBtns.forEach(btn => {
+        // İndex sayfası desktop butonları genelde btn-outline içerir
+        if(!btn.classList.contains('w-full') && btn.classList.contains('hidden')) {
+            if(currentUser) {
+                btn.textContent = 'Çıkış Yap';
+                btn.setAttribute('onclick', 'handleLogout()');
+                btn.classList.add('text-red-400', 'border-red-500/30');
+                btn.classList.remove('text-white', 'btn-outline');
+            } else {
+                btn.textContent = 'Giriş Yap';
+                btn.setAttribute('onclick', 'showAuthModal()');
+                btn.classList.remove('text-red-400', 'border-red-500/30');
+                btn.classList.add('text-white', 'btn-outline');
+            }
+        }
+    });
+
+    // Mobile Menu Auth Button
+    const mobileAuthBtn = document.querySelector('#mobile-menu button[onclick="showAuthModal()"], #mobile-menu button[onclick="handleLogout()"]');
+    if(mobileAuthBtn) {
+        if(currentUser) {
+            mobileAuthBtn.textContent = 'ÇIKIŞ YAP';
+            mobileAuthBtn.setAttribute('onclick', 'handleLogout()');
+            mobileAuthBtn.classList.add('text-red-500');
+            mobileAuthBtn.classList.remove('text-white');
+        } else {
+            mobileAuthBtn.textContent = 'GİRİŞ YAP / ÜYE OL';
+            mobileAuthBtn.setAttribute('onclick', 'showAuthModal()');
+            mobileAuthBtn.classList.remove('text-red-500');
+            mobileAuthBtn.classList.add('text-white');
+        }
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
+    checkCurrentUser();
     if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
         setTimeout(() => {
             loadAnnouncements();
