@@ -1694,13 +1694,19 @@ function renderFrontendHomecards() {
         const grid = document.getElementById('benefits-grid');
         if (grid) {
             grid.innerHTML = benefits.map((b, i) => `
-                <div class="card-hover product-card rounded-3xl p-8 fade-in stagger-${i+1} active block">
-                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                <div class="card-hover product-card rounded-3xl p-8 fade-in stagger-${i+1} active block group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); const icon = this.querySelector('.chevron-icon'); if(icon) icon.classList.toggle('rotate-180')">
+                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-[.is-open]:scale-90 group-[.is-open]:opacity-50">
                         <div class="text-4xl">${b.icon || '💪'}</div>
                     </div>
-                    <h3 class="font-display text-2xl font-bold mb-3 uppercase">${b.title}</h3>
-                    <p class="text-gray-400 leading-relaxed mb-6 whitespace-pre-line">${b.desc_text || ''}</p>
-                    <button onclick="window.location.href='${b.link_url || 'skills.html'}'" class="font-bold text-calith-orange flex items-center gap-2 text-sm uppercase tracking-widest hover:text-white transition-colors">${b.link_text || 'İncele'} <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                    <h3 class="font-display text-2xl font-bold mb-3 uppercase group-[.is-open]:text-calith-orange transition-colors">${b.title}</h3>
+                    <div class="grid grid-rows-[0fr] group-[.is-open]:grid-rows-[1fr] transition-all duration-300 ease-in-out w-full">
+                        <div class="overflow-hidden">
+                            <p class="text-gray-400 leading-relaxed mb-6 whitespace-pre-line opacity-0 group-[.is-open]:opacity-100 transition-opacity duration-300">${b.desc_text || ''}</p>
+                        </div>
+                    </div>
+                    <button class="font-bold text-calith-orange flex items-center gap-2 text-sm uppercase tracking-widest mt-auto group-hover:text-white transition-colors">
+                        ${b.link_text || 'Açıklamayı Oku'} <i data-lucide="chevron-down" class="chevron-icon w-4 h-4 transition-transform duration-300"></i>
+                    </button>
                 </div>
             `).join('');
         }
