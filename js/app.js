@@ -1323,14 +1323,25 @@ function renderAnnouncementsSlider() {
         const isYoutube = ann.link && (ann.link.includes('youtube.com') || ann.link.includes('youtu.be'));
         const onClickAction = isYoutube ? `openVideoModal('${ann.link}')` : `window.location.href='${ann.link}'`;
         
+        let ytId = '';
+        if(isYoutube) {
+            if(ann.link.includes('watch?v=')) ytId = ann.link.split('v=')[1].split('&')[0];
+            else if(ann.link.includes('youtu.be/')) ytId = ann.link.split('youtu.be/')[1].split('?')[0];
+        }
+
+        let imageUrl = ann.image;
+        if ((!imageUrl || imageUrl.trim() === '') && isYoutube && ytId) {
+            imageUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+        }
+
         let mediaHtml;
-        if (ann.image && ann.image.trim() !== '') {
-            mediaHtml = `<div class="${isYoutube ? 'w-32 h-20 md:w-48 md:h-28' : 'w-16 h-16'} rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_20px_${hShadow}] group-hover:scale-105 transition-all border border-white/10 overflow-hidden bg-black/50 relative">
-                <img src="${ann.image}" class="w-full h-full object-cover" alt="Media">
+        if (imageUrl && imageUrl.trim() !== '') {
+            mediaHtml = `<div class="${isYoutube ? 'w-full max-w-[280px] aspect-video' : 'w-16 h-16'} rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_30px_${hShadow}] group-hover:scale-105 transition-all border border-white/10 overflow-hidden bg-black/50 relative">
+                <img src="${imageUrl}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" alt="Media">
                 ${isYoutube ? `
-                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">
-                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.3)] group-hover:scale-110 group-hover:bg-calith-orange transition-all border border-white/30">
-                        <i data-lucide="play" class="w-4 h-4 text-white ml-1"></i>
+                <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all flex items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] group-hover:scale-110 group-hover:bg-calith-orange group-hover:text-black transition-all border border-white/30 text-white">
+                        <i data-lucide="play" class="w-5 h-5 ml-1"></i>
                     </div>
                 </div>
                 ` : ''}
