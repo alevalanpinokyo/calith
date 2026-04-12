@@ -1674,6 +1674,24 @@ async function deleteHomecard(id) {
     }
 }
 
+let currentHomecardFilter = 'all';
+
+function filterAdminHomecards(section) {
+    currentHomecardFilter = section;
+    renderAdminHomecards();
+    const btnIds = ['all', 'hero', 'benefits', 'levels', 'schedule'];
+    btnIds.forEach(id => {
+        const btn = document.getElementById('hc-filter-' + id);
+        if(btn) {
+            if(id === section) {
+                btn.className = "text-xs font-bold uppercase py-2 px-4 rounded-lg bg-calith-orange text-white transition-colors";
+            } else {
+                btn.className = "text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors";
+            }
+        }
+    });
+}
+
 function renderAdminHomecards() {
     const list = document.getElementById('admin-hc-list');
     if(!list) return;
@@ -1683,7 +1701,17 @@ function renderAdminHomecards() {
         return;
     }
 
-    list.innerHTML = homecards.map(hc => `
+    let filtered = homecards;
+    if(currentHomecardFilter !== 'all') {
+        filtered = homecards.filter(hc => hc.section === currentHomecardFilter);
+    }
+    
+    if(filtered.length === 0) {
+        list.innerHTML = '<div class="text-gray-500 py-4 text-sm font-bold uppercase tracking-widest text-center">Bu bölümde henüz kart yok.</div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(hc => `
         <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl font-bold">${hc.icon || '📌'}</div>

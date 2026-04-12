@@ -312,6 +312,13 @@
             </div>
             <div class="lg:col-span-2 space-y-6">
                 <h2 class="font-display text-2xl font-bold uppercase">MEVCUT KARTLAR</h2>
+                <div class="flex flex-wrap gap-2 mb-4" id="hc-filter-buttons">
+                    <button onclick="filterAdminHomecards('all')" id="hc-filter-all" class="text-xs font-bold uppercase py-2 px-4 rounded-lg bg-calith-orange text-white transition-colors">Tümü</button>
+                    <button onclick="filterAdminHomecards('hero')" id="hc-filter-hero" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Ana Başlık</button>
+                    <button onclick="filterAdminHomecards('benefits')" id="hc-filter-benefits" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Kazançlar</button>
+                    <button onclick="filterAdminHomecards('levels')" id="hc-filter-levels" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Seviyeler</button>
+                    <button onclick="filterAdminHomecards('schedule')" id="hc-filter-schedule" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Program</button>
+                </div>
                 <div id="admin-hc-list" class="grid gap-4"></div>
             </div>
         </div>
