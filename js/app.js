@@ -1562,6 +1562,27 @@ function editAnnouncement(id) {
 // --- HOMECARDS LOGIC ---
 let homecards = [];
 
+function toggleHomecardLinkFields() {
+    const section = document.getElementById('hc-section');
+    const linkText = document.getElementById('hc-link-text');
+    const linkUrl = document.getElementById('hc-link-url');
+    if(section && linkText && linkUrl) {
+        if(section.value === 'benefits') {
+            linkText.disabled = true;
+            linkUrl.disabled = true;
+            linkText.classList.add('opacity-30', 'cursor-not-allowed');
+            linkUrl.classList.add('opacity-30', 'cursor-not-allowed');
+            linkText.value = '';
+            linkUrl.value = '';
+        } else {
+            linkText.disabled = false;
+            linkUrl.disabled = false;
+            linkText.classList.remove('opacity-30', 'cursor-not-allowed');
+            linkUrl.classList.remove('opacity-30', 'cursor-not-allowed');
+        }
+    }
+}
+
 async function loadHomecards() {
     const sb = getSupabase();
     if(!sb) return;
@@ -1620,6 +1641,7 @@ function resetHomecardForm() {
     document.getElementById('hc-desc').value = '';
     document.getElementById('hc-link-text').value = '';
     document.getElementById('hc-link-url').value = '';
+    if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
 }
 
 function editHomecard(id) {
@@ -1634,6 +1656,7 @@ function editHomecard(id) {
     document.getElementById('hc-desc').value = hc.desc_text || '';
     document.getElementById('hc-link-text').value = hc.link_text || '';
     document.getElementById('hc-link-url').value = hc.link_url || '';
+    if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
