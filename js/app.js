@@ -1266,10 +1266,21 @@ let defaultAnnouncements = [
     { id: '3', title: '100 Şınav Challenge', desc: 'Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!', label: '🏆 HAFTANIN GÖREVİ', icon: 'target', color: 'green-500', link: 'premium.html' }
 ];
 
-let announcements = JSON.parse(localStorage.getItem('calith_announcements')) || defaultAnnouncements;
+let announcements = [];
 
-function saveAnnouncementsToStorage() {
-    localStorage.setItem('calith_announcements', JSON.stringify(announcements));
+async function loadAnnouncements() {
+    try {
+        const { data, error } = await sb.from('announcements').select('*').order('created_at', { ascending: false });
+        if (error || !data || data.length === 0) {
+            announcements = defaultAnnouncements;
+            if (error) console.warn("Supabase duyuru tablosu hazır değil. Varsayılanlar devrede.");
+        } else {
+            announcements = data;
+        }
+    } catch(e) {
+        announcements = defaultAnnouncements;
+    }
+    
     if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
     if (document.getElementById('hero-slider-track')) renderAnnouncementsSlider();
 }
@@ -1354,7 +1365,7 @@ function resetAnnouncementForm() {
     document.getElementById('ann-link').value = '';
 }
 
-function saveAnnouncement() {
+async function saveAnnouncement() {
     const id = document.getElementById('ann-edit-id').value;
     const label = document.getElementById('ann-label').value.trim();
     const title = document.getElementById('ann-title').value.trim();
@@ -1368,28 +1379,50 @@ function saveAnnouncement() {
         return;
     }
 
-    const ann = {
-        id: id || Date.now().toString(),
-        label, title, desc, icon, color, link
-    };
-
-    if (id) {
-        const idx = announcements.findIndex(a => a.id === id);
-        if (idx !== -1) announcements[idx] = ann;
-    } else {
-        announcements.unshift(ann);
+    const session = await sb.auth.getSession();
+    if (!session.data.session) {
+        showToast('Yetkisiz işlem! Lütfen giriş yapın.', true);
+        return;
     }
 
-    saveAnnouncementsToStorage();
-    resetAnnouncementForm();
-    showToast(id ? 'Duyuru güncellendi!' : 'Duyuru eklendi!');
+    const annData = { label, title, desc, icon, color, link };
+    let error;
+
+    if (id && id.length > 5) {
+        const { error: updErr } = await sb.from('announcements').update(annData).eq('id', id);
+        error = updErr;
+    } else {
+        const { error: insErr } = await sb.from('announcements').insert([annData]);
+        error = insErr;
+    }
+
+    if (error) {
+        showToast('HATA: ' + error.message, true);
+    } else {
+        await loadAnnouncements();
+        resetAnnouncementForm();
+        showToast(id ? 'Duyuru güncellendi!' : 'Duyuru eklendi!');
+    }
 }
 
-function deleteAnnouncement(id) {
+async function deleteAnnouncement(id) {
     if(!confirm("Duyuruyu silmek istediğinize emin misiniz?")) return;
-    announcements = announcements.filter(a => a.id !== id);
-    saveAnnouncementsToStorage();
-    showToast('Duyuru silindi!');
+    
+    if (id.length <= 5) {
+        showToast("Varsayılan duyurular silinemez. Önce tabloyu ayarlamalısınız.");
+        return;
+    }
+
+    const session = await sb.auth.getSession();
+    if (!session.data.session) return;
+    
+    const { error } = await sb.from('announcements').delete().eq('id', id);
+    if (error) {
+        showToast('HATA: ' + error.message, true);
+    } else {
+        await loadAnnouncements();
+        showToast('Duyuru silindi!');
+    }
 }
 
 function editAnnouncement(id) {
@@ -1409,8 +1442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
         setTimeout(() => {
-            renderAnnouncementsSlider();
-            if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
+            loadAnnouncements();
         }, 300);
     }
 });
