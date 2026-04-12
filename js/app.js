@@ -1320,17 +1320,18 @@ function renderAnnouncementsSlider() {
     track.innerHTML = announcements.map((ann, index) => {
         const hShadow = ann.color === 'calith-orange' ? 'rgba(255,107,53,0.3)' : (ann.color === 'calith-accent' ? 'rgba(0,217,255,0.3)' : (ann.color === 'green-500' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'));
         
-        const isYoutube = ann.link && (ann.link.includes('youtube.com') || ann.link.includes('youtu.be'));
-        const onClickAction = isYoutube ? `openVideoModal('${ann.link}')` : `window.location.href='${ann.link}'`;
+        const ytRegex = /(?:youtube\\.com\\/(?:[^/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/|youtube\\.com\\/shorts\\/)([^"&?\/\\s]{11})/i;
+        const ytMatch = ann.link ? ann.link.match(ytRegex) : null;
+        let ytId = ytMatch ? ytMatch[1] : '';
+        const isYoutube = !!ytId;
         
-        let ytId = '';
-        if(isYoutube) {
-            if(ann.link.includes('watch?v=')) ytId = ann.link.split('v=')[1].split('&')[0];
-            else if(ann.link.includes('youtu.be/')) ytId = ann.link.split('youtu.be/')[1].split('?')[0];
-        }
+        const onClickAction = isYoutube ? `openVideoModal('${ytId}')` : `window.location.href='${ann.link}'`;
 
         let imageUrl = ann.image;
-        if ((!imageUrl || imageUrl.trim() === '') && isYoutube && ytId) {
+        if ((!imageUrl || imageUrl.trim() === '') && isYoutube) {
+            imageUrl = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+            // maxresdefault bazen boş dönebilir hqdefault garantidir ama maxres varsa çok kalitelidir. Fallback olarak image onerr olabilir ama css yeterlidir.
+            // Şimdilik hqdefault kullanalım ki her videoda sorunsuz çıksın:
             imageUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
         }
 
@@ -1373,12 +1374,14 @@ function renderAnnouncementsSlider() {
     }
 }
 
-function openVideoModal(url) {
-    let videoId = '';
-    if(url.includes('youtube.com/watch?v=')) videoId = url.split('v=')[1].split('&')[0];
-    else if(url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-    
-    if(!videoId) return window.location.href = url;
+function openVideoModal(videoId) {
+    if(!videoId || videoId.includes('http')) {
+        // Fallback in case a full url somehow passes here
+        const ytRegex = /(?:youtube\\.com\\/(?:[^/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/|youtube\\.com\\/shorts\\/)([^"&?\/\\s]{11})/i;
+        const ytMatch = videoId.match(ytRegex);
+        if(ytMatch) videoId = ytMatch[1];
+        else return window.location.href = videoId;
+    }
 
     const modal = document.getElementById('video-modal');
     const content = document.getElementById('video-modal-content');
