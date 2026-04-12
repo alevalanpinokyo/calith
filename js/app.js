@@ -862,13 +862,10 @@ async function deletePost(id) {
         localStorage.setItem('calith_deleted_posts', JSON.stringify(deletedPostTitles));
     }
 
-    // Listeyi hemen güncelle (Hızlı tepki)
-    posts = posts.filter(p => String(p.id) !== String(id));
+    // Listeyi baştan güncelleyerek blogPosts ve programPosts alt dizelerini de düzeltelim.
+    await loadPosts();
     
-    showToast(deletedFromDb ? 'Yazı veritabanından silindi' : 'Yazı yerel listeden kaldırıldı');
-    renderLandingBlog();
-    renderBlog();
-    renderAdminPosts();
+    showToast(deletedFromDb ? 'Yazı veritabanından silindi' : 'Yazı listelerden kaldırıldı');
 }
 
 function resetPostForm() {
@@ -1157,9 +1154,8 @@ async function deleteProgram(id) {
         localStorage.setItem('calith_deleted_posts', JSON.stringify(deletedPostTitles));
     }
 
-    programPosts = programPosts.filter(p => String(p.id) !== String(id));
+    await loadPosts();
     showToast(deletedFromDb ? 'Veritabanından silindi' : 'Listeden kaldırıldı');
-    renderAdminPrograms();
 }
 
 function resetProgramForm() {
