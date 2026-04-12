@@ -88,11 +88,7 @@ async function importDefaults() {
     }
 }
 
-const defaultPosts = [
-    { id: 1, title: "Calisthenics'e Başlarken: Temel 5 Hareket", slug: "calisthenics-baslarken", category: "temel", excerpt: "Vücut ağırlığı eğitimine başlamak için bilmen gereken temel hareketler ve form ipuçları.", content: `<p>Calisthenics, sadece vücut ağırlığını kullanarak yapılan en etkili antrenman şekillerinden biridir. İşte başlaman için 5 temel hareket:</p><h2>1. Pull-Up (Barfiks)</h2><p>Sırt ve biceps kaslarını çalıştıran temel hareket. Barfiks barına asıl ve kendini yukarı çek.</p><h2>2. Push-Up (Şınav)</h2><p>Göğüs, omuz ve triceps için klasik hareket. Vücudun düz bir hat olsun.</p><h2>3. Bodyweight Squat</h2><p>Bacak ve kalça kasları için. Ayaklar omuz genişliğinde.</p><h2>4. Plank</h2><p>Core ve karın kasları için. Dirsekler omuz hizasında.</p><h2>5. Dips</h2><p>Paralel bar veya sandalye kenarında. Göğüs altı ve triceps için.</p>`, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", date: "2024-03-10" },
-    { id: 2, title: "Evde Pull-Up Barı Kurulum Rehberi", slug: "evde-pull-up-bari-kurulum", category: "ekipman", excerpt: "Kapı barfiks barı nasıl kurulur? Duvara montaj ipuçları ve güvenlik önlemleri.", content: `<p>Kapı barfiks barı, evde calisthenics yapmanın en kolay yoludur.</p><h2>1. Kapı Seçimi</h2><p>Kapı kasası sağlam olmalı. Metal kasalar idealdir.</p><h2>2. Montaj</h2><p>Barı kapı kasasına yerleştir. Ayarlanabilir mekanizmayı sık.</p><h2>3. Güvenlik Testi</h2><p>Önce hafif ağırlıkla test et. 130kg taşıma kapasitesi var.</p>`, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", date: "2024-03-15" },
-    { id: 3, title: "Muscle-Up Teknik Rehberi", slug: "muscle-up-teknik", category: "ileri", excerpt: "Barfiksten muscle-up geçişi için detaylı teknik analiz ve egzersizler.", content: `<p>Muscle-up, calisthenics'in en etkileyici hareketlerinden biridir.</p><h2>Teknik Adımlar</h2><p>Kuvvetli bir pull-up ile başla, hızlan ve dirseklerini döndür.</p>`, image: "https://images.unsplash.com/photo-1581009146145-b5ef050c149a?q=80&w=800&auto=format&fit=crop", date: "2024-03-20" }
-];
+const defaultPosts = [];
 
 let posts = [];
 let blogPosts = [];
@@ -107,20 +103,11 @@ async function loadPosts() {
         allData = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
     } else {
         const { data, error } = await sb.from('posts').select('*').order('id', { ascending: false });
-        if (error) {
-            allData = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
-        } else {
-            const dbPosts = data || [];
-            const combined = [...dbPosts];
-            defaultPosts.forEach(def => {
-                const existsInDb = dbPosts.some(db => db.title === def.title);
-                const isManuallyDeleted = deletedPostTitles.includes(def.title);
-                if (!existsInDb && !isManuallyDeleted) combined.push(def);
-            });
-            allData = combined.filter(p => !deletedPostTitles.includes(p.title)).map(p => ({
+        if (!error && data) {
+            allData = data.map(p => ({
                 ...p,
                 category: p.category || 'temel',
-                image: p.image || 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop',
+                image: p.image || 'https://a.pinatafarm.com/295x340/0406bd5408/borat.jpg',
                 date: (p.created_at || p.date || '').slice(0, 10)
             }));
         }
