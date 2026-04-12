@@ -551,6 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const productId = params.get('p');
         const blogId = params.get('b');
         const blogCat = params.get('c');
+        const levelCode = params.get('level');
 
         if (productId) {
             showProductDetail(productId);
@@ -558,6 +559,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showBlogDetail(blogId);
         } else if (blogCat && window.location.pathname.includes('blog.html')) {
             filterBlog(blogCat);
+        } else if (levelCode && window.location.pathname.includes('skills.html')) {
+            const levelMap = {
+                'baslangic': 'Başlangıç',
+                'orta': 'Orta Seviye',
+                'ileri': 'İleri Seviye'
+            };
+            if (levelMap[levelCode]) {
+                setTimeout(() => showProgramLevel(levelCode, levelMap[levelCode]), 100);
+            }
         }
     });
     

@@ -109,7 +109,7 @@
                     Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Şimdi başla, tamamen ücretsiz.
                 </p>
                 <div class="flex flex-wrap gap-4 mb-12">
-                    <button onclick="window.location.href='skills.html'" class="btn-primary px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 shadow-xl shadow-calith-orange/20">
+                    <button onclick="document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})" class="btn-primary px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 shadow-xl shadow-calith-orange/20">
                         <span>Başlangıç Rehberini İndir</span>
                         <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </button>
@@ -205,7 +205,7 @@
             <p class="text-gray-400 max-w-2xl mx-auto text-lg">Doğru başlangıç, bırakma riskini azaltır.</p>
         </div>
         <div class="grid md:grid-cols-3 gap-8">
-            <div onclick="window.location.href='skills.html'" class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col fade-in stagger-1 hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center">
+            <div onclick="window.location.href='skills.html?level=baslangic'" class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col fade-in stagger-1 hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center">
                 <div class="text-5xl mb-6">🌱</div>
                 <h3 class="font-display text-2xl font-bold mb-2">SIFIRDAN</h3>
                 <p class="text-gray-500 text-sm mb-6 font-medium">"Hiç şınav yapamıyorum"</p>
@@ -218,7 +218,7 @@
                     <span class="text-xs text-calith-orange font-bold uppercase tracking-widest">→ 4 Haftalık Plan</span>
                 </div>
             </div>
-            <div onclick="window.location.href='skills.html'" class="bg-calith-dark/50 border border-calith-orange/30 rounded-3xl p-8 flex flex-col fade-in stagger-2 hover:border-calith-orange/60 transition-all card-hover group cursor-pointer text-center relative shadow-2xl shadow-calith-orange/5">
+            <div onclick="window.location.href='skills.html?level=orta'" class="bg-calith-dark/50 border border-calith-orange/30 rounded-3xl p-8 flex flex-col fade-in stagger-2 hover:border-calith-orange/60 transition-all card-hover group cursor-pointer text-center relative shadow-2xl shadow-calith-orange/5">
                 <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">En Popüler</div>
                 <div class="text-5xl mb-6">🌿</div>
                 <h3 class="font-display text-2xl font-bold mb-2">TEMEL ATILDI</h3>
@@ -232,7 +232,7 @@
                     <span class="text-xs text-calith-orange font-bold uppercase tracking-widest">→ 8 Haftalık Güç Planı</span>
                 </div>
             </div>
-            <div onclick="window.location.href='skills.html'" class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col fade-in stagger-3 hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center">
+            <div onclick="window.location.href='skills.html?level=ileri'" class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col fade-in stagger-3 hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center">
                 <div class="text-5xl mb-6">🔥</div>
                 <h3 class="font-display text-2xl font-bold mb-2">GÜÇLENİYORUM</h3>
                 <p class="text-gray-500 text-sm mb-6 font-medium">"20+ şınav yapabiliyorum"</p>
@@ -305,7 +305,7 @@
             </div>
         </div>
         <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4 fade-in">
-            <button class="btn-outline px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest flex justify-center items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> PDF Olarak İndir</button>
+            <button onclick="document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})" class="btn-outline px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest flex justify-center items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> PDF Olarak İndir</button>
             <button onclick="window.location.href='skills.html'" class="btn-primary px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest flex justify-center items-center gap-2 shadow-calith-orange/20 shadow-lg">4 Haftalık Tam Programı Al <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
         </div>
     </div>
@@ -354,7 +354,7 @@
                         <p class="text-white text-xl font-bold">~400-600₺</p>
                     </div>
                 </div>
-                <button onclick="window.location.href='shop.html'" class="w-full btn-primary py-4 rounded-xl font-bold text-sm uppercase tracking-widest">Ürünleri İncele →</button>
+                <button onclick="window.location.href='blog.html?c=ekipman'" class="w-full btn-primary py-4 rounded-xl font-bold text-sm uppercase tracking-widest">Ürünleri İncele →</button>
             </div>
             
             <div class="bg-black/40 border border-white/5 rounded-3xl p-8 fade-in stagger-3 hover:border-white/10 transition-colors">
@@ -374,7 +374,7 @@
                         <p class="text-white text-xl font-bold">~1.200-1.800₺</p>
                     </div>
                 </div>
-                <button onclick="window.location.href='shop.html'" class="w-full btn-outline border-white/10 py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-white/5">Ürünleri İncele →</button>
+                <button onclick="window.location.href='blog.html?c=ekipman'" class="w-full btn-outline border-white/10 py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-white/5">Ürünleri İncele →</button>
             </div>
         </div>
         
@@ -466,7 +466,7 @@
 </section>
 
 <!-- Final CTA Section (Replaces old CTA) -->
-<section class="py-24 bg-gradient-to-br from-calith-orange to-orange-600 relative overflow-hidden">
+<section id="lead-form" class="py-24 bg-gradient-to-br from-calith-orange to-orange-600 relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-multiply"></div>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <h2 class="font-display text-4xl md:text-6xl font-bold text-black mb-6 uppercase tracking-tight">BU HAFTA BAŞLAMAYA HAZIR MISIN?</h2>
