@@ -1924,6 +1924,50 @@ function updateAuthUI() {
     }
 }
 
+// --- LEAD OR EMAIL COLLECTION ---
+async function submitLeadForm() {
+    const emailEl = document.getElementById('lead-email');
+    if(!emailEl) return;
+    
+    const email = emailEl.value.trim();
+    if(!email) return showToast('Lütfen e-posta adresinizi girin.');
+    if(!email.includes('@') || !email.includes('.')) return showToast('Lütfen geçerli bir e-posta girin.');
+
+    const btn = document.getElementById('btn-lead-submit');
+    const oldHtml = btn ? btn.innerHTML : 'Şimdi İndir';
+    if(btn) btn.innerHTML = 'Kaydediliyor... <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+
+    const sb = getSupabase();
+    if(sb) {
+        const { error } = await sb.from('leads').insert([{ email }]);
+        if(error) {
+            console.error('Lead error:', error);
+            if(error.code === '23505') {
+                showToast('Bu e-posta adresi ile zaten kayıt oluşturulmuş.');
+            } else {
+                showToast('Kayıt başarısız, tablo ayarlarınızı kontrol edin.');
+            }
+        } else {
+            // Başarılı olduğunda indirme linkini aç veya uyarı ver. 
+            // Burada örnek olarak Toast veriyoruz ama aslında gerçek bir PDF URL verilmeli.
+            showToast('Tebrikler! PDF Rehberi e-postanıza yönlendirilecektir.');
+            // Ya da anında indirmek için:
+            // window.open('/assets/baslangic-rehberi.pdf', '_blank');
+            
+            const modal = document.getElementById('lead-modal');
+            if(modal) modal.classList.add('hidden');
+            emailEl.value = '';
+        }
+    } else {
+        showToast('Veritabanı bağlantısı bulunamadı.');
+    }
+    
+    if(btn) {
+        btn.innerHTML = oldHtml;
+        if (window.lucide) lucide.createIcons();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     init();
     checkCurrentUser();

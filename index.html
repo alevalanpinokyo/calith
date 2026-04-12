@@ -626,9 +626,9 @@
         <p class="text-sm text-gray-400 mb-6">PDF rehberini indirmek için e-postanı gir. Antrenman programın hemen e-postana gelsin.</p>
         
         <div class="space-y-4">
-            <input type="email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            <input type="email" id="lead-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
             
-            <button onclick="alert('Demo: Rehber e-posta adresinize gönderildi!'); document.getElementById('lead-modal').classList.add('hidden')" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+            <button id="btn-lead-submit" onclick="submitLeadForm()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
                 Şimdi İndir
             </button>
         </div>
