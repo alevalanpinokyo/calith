@@ -1494,9 +1494,9 @@ async function loadHomecards() {
     const { data, error } = await sb.from('homecards').select('*');
     if(!error && data) {
         homecards = data;
-        if(typeof renderAdminHomecards === 'function') renderAdminHomecards();
-        // İlerisi için frontend tarafında kartların dinamik oluşturulacağı fonksiyon buraya eklenebilir.
-        // if(typeof renderFrontendHomecards === 'function') renderFrontendHomecards();
+        if(typeof renderFrontendHomecards === 'function' && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
+            renderFrontendHomecards();
+        }
     }
 }
 
@@ -1603,6 +1603,92 @@ function renderAdminHomecards() {
     `).join('');
     if(window.lucide) lucide.createIcons();
 }
+
+function renderFrontendHomecards() {
+    if(!homecards || homecards.length === 0) return;
+
+    const hero = homecards.find(h => h.section === 'hero');
+    if (hero) {
+        const titleEl = document.getElementById('hero-title');
+        const subEl = document.getElementById('hero-subtitle');
+        if (titleEl) titleEl.innerHTML = hero.title;
+        if (subEl) subEl.innerHTML = hero.desc_text;
+    }
+
+    const benefits = homecards.filter(h => h.section === 'benefits').sort((a,b)=> (a.id > b.id ? 1 : -1));
+    if (benefits.length > 0) {
+        const grid = document.getElementById('benefits-grid');
+        if (grid) {
+            grid.innerHTML = benefits.map((b, i) => `
+                <div class="card-hover product-card rounded-3xl p-8 fade-in stagger-${i+1} active block">
+                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                        <div class="text-4xl">${b.icon || '💪'}</div>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-3 uppercase">${b.title}</h3>
+                    <p class="text-gray-400 leading-relaxed mb-6 whitespace-pre-line">${b.desc_text || ''}</p>
+                    <button onclick="window.location.href='${b.link_url || 'skills.html'}'" class="font-bold text-calith-orange flex items-center gap-2 text-sm uppercase tracking-widest hover:text-white transition-colors">${b.link_text || 'İncele'} <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+        }
+    }
+
+    const levels = homecards.filter(h => h.section === 'levels').sort((a,b)=> (a.id > b.id ? 1 : -1));
+    if (levels.length > 0) {
+        const grid = document.getElementById('levels-grid');
+        if (grid) {
+            grid.innerHTML = levels.map((lvl, i) => {
+                const isPop = lvl.badge ? true : false;
+                const borderClass = isPop ? 'border-calith-orange/30 shadow-2xl shadow-calith-orange/5' : 'border-white/5';
+                const hoverClass = isPop ? 'hover:border-calith-orange/60' : 'hover:border-calith-orange/30';
+                
+                return `
+                <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col fade-in stagger-${i+1} active block ${hoverClass} transition-all card-hover group cursor-pointer text-center relative">
+                    ${isPop ? '<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">'+lvl.badge+'</div>' : ''}
+                    <div class="text-5xl mb-6">${lvl.icon || '🌱'}</div>
+                    <h3 class="font-display text-2xl font-bold mb-2 uppercase">${lvl.title}</h3>
+                    <div class="bg-black/30 rounded-2xl p-4 w-full mb-8 text-left border border-white/5">
+                        <p class="text-sm text-gray-300 leading-relaxed whitespace-pre-line">${lvl.desc_text || ''}</p>
+                    </div>
+                    <div class="mt-auto">
+                        <button class="w-full ${isPop ? 'btn-primary' : 'btn-outline border-white/10 group-hover:border-calith-orange group-hover:bg-calith-orange group-hover:text-white'} py-4 rounded-xl font-bold text-sm transition-all uppercase tracking-widest mb-3">Ben Buradayım</button>
+                        <span class="text-xs ${isPop ? 'text-calith-orange' : 'text-gray-500'} font-bold uppercase tracking-widest group-hover:text-calith-orange transition-colors">→ ${lvl.link_text || 'İncele'}</span>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+    }
+
+    const schedule = homecards.filter(h => h.section === 'schedule').sort((a,b)=> (a.id > b.id ? 1 : -1));
+    if (schedule.length > 0) {
+        const grid = document.getElementById('schedule-grid');
+        if (grid) {
+            grid.innerHTML = schedule.map((sch, i) => {
+                const colorMap = ['calith-orange', 'calith-accent', 'red-500', 'green-500'];
+                const c = colorMap[i % colorMap.length];
+                const listItems = (sch.desc_text || '').split('\\n').filter(l => l.trim().length > 0).map(l => '<li><span class="text-'+c+' mr-2">✓</span>'+l.trim().replace(/^[-✓* ]+/, '')+'</li>').join('');
+
+                return `
+                <div class="bg-calith-gray border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 justify-between hover:border-white/20 transition-colors active block">
+                    <div class="flex items-center gap-6 w-full md:w-auto">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center font-display font-bold text-2xl text-${c}">${sch.icon || ('0' + (i+1))}</div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">${sch.title.toUpperCase()} <span class="text-gray-500 font-normal ml-2 text-sm">${sch.badge ? '- '+sch.badge : ''}</span></h4>
+                            <ul class="text-sm text-gray-400 space-y-1 mt-3">
+                                ${listItems}
+                            </ul>
+                        </div>
+                    </div>
+                    <button onclick="window.location.href='${sch.link_url || 'blog.html'}'" class="btn-outline px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest w-full md:w-auto whitespace-nowrap">${sch.link_text || 'İncele →'}</button>
+                </div>
+                `;
+            }).join('');
+        }
+    }
+    
+    if (window.lucide) lucide.createIcons();
+}
+
 // --- AUTH LOGIC ---
 let currentUser = null;
 
