@@ -1265,6 +1265,14 @@ let defaultAnnouncements = [
 let announcements = [];
 
 async function loadAnnouncements() {
+    const sb = getSupabase();
+    if (!sb) {
+        announcements = defaultAnnouncements;
+        if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
+        if (document.getElementById('hero-slider-track')) renderAnnouncementsSlider();
+        return;
+    }
+    
     try {
         const { data, error } = await sb.from('announcements').select('*').order('created_at', { ascending: false });
         if (error || !data || data.length === 0) {
@@ -1375,6 +1383,12 @@ async function saveAnnouncement() {
         return;
     }
 
+    const sb = getSupabase();
+    if (!sb) {
+        showToast('Supabase yapılandırılmamış!', true);
+        return;
+    }
+
     const session = await sb.auth.getSession();
     if (!session.data.session) {
         showToast('Yetkisiz işlem! Lütfen giriş yapın.', true);
@@ -1408,6 +1422,9 @@ async function deleteAnnouncement(id) {
         showToast("Varsayılan duyurular silinemez. Önce tabloyu ayarlamalısınız.");
         return;
     }
+
+    const sb = getSupabase();
+    if (!sb) return;
 
     const session = await sb.auth.getSession();
     if (!session.data.session) return;
