@@ -58,8 +58,8 @@
             <h1 class="font-display text-4xl font-bold uppercase tracking-widest">GİRİŞ YAP</h1>
             
             <!-- Autofill engellemek için sahte giriş alanları -->
-            <input type="text" class="hidden" autocomplete="username">
-            <input type="password" class="hidden" autocomplete="current-password">
+            <input type="text" title="username autofill prevention" aria-label="Username" class="hidden" autocomplete="username">
+            <input type="password" title="password autofill prevention" aria-label="Password" class="hidden" autocomplete="current-password">
             
             <input type="email" id="admin-email" placeholder="E-posta Adresiniz" autocomplete="off" class="w-full border border-gray-300 px-6 py-5 rounded-2xl text-center text-2xl focus:outline-none focus:border-calith-orange mb-4" onkeypress="if(event.key === 'Enter') document.getElementById('admin-pass').focus()">
             <input type="password" id="admin-pass" placeholder="Şifrenizi Girin" autocomplete="new-password" class="w-full border border-gray-300 px-6 py-5 rounded-2xl text-center text-2xl focus:outline-none focus:border-calith-orange" onkeypress="if(event.key === 'Enter') checkAdmin()">
