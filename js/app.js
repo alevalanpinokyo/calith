@@ -1259,4 +1259,158 @@ function showProgramDetail(id) {
     `;
     window.scrollTo(0,0);
 }
-document.addEventListener('DOMContentLoaded', init);
+// ====== DUYURU YÖNETİMİ (ANNOUNCEMENTS) ======
+let defaultAnnouncements = [
+    { id: '1', title: 'Pazar Günü Soru-Cevap', desc: 'Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.', label: '🔴 YAKLAŞAN ETKİNLİK', icon: 'video', color: 'calith-orange', link: 'premium.html' },
+    { id: '2', title: 'Sıfırdan İlk Barfiks', desc: 'Asla çekemem diyenler için hazırladığımız özel eğitim serisi yayında.', label: 'YENİ İÇERİK EKLENDİ', icon: 'flame', color: 'calith-accent', link: 'blog.html' },
+    { id: '3', title: '100 Şınav Challenge', desc: 'Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!', label: '🏆 HAFTANIN GÖREVİ', icon: 'target', color: 'green-500', link: 'premium.html' }
+];
+
+let announcements = JSON.parse(localStorage.getItem('calith_announcements')) || defaultAnnouncements;
+
+function saveAnnouncementsToStorage() {
+    localStorage.setItem('calith_announcements', JSON.stringify(announcements));
+    if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
+    if (document.getElementById('hero-slider-track')) renderAnnouncementsSlider();
+}
+
+function renderAnnouncementsSlider() {
+    const track = document.getElementById('hero-slider-track');
+    const dotsContainer = document.getElementById('hero-slider-dots');
+    if (!track) return;
+
+    if (announcements.length === 0) {
+        track.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500 font-bold p-8">Henüz duyuru yok.</div>';
+        if (dotsContainer) dotsContainer.innerHTML = '';
+        if (window.heroSlider) window.heroSlider.init(0);
+        return;
+    }
+
+    track.style.width = (announcements.length * 100) + '%';
+    const percentPerSlide = 100 / announcements.length;
+
+    track.innerHTML = announcements.map((ann, index) => {
+        const hShadow = ann.color === 'calith-orange' ? 'rgba(255,107,53,0.3)' : (ann.color === 'calith-accent' ? 'rgba(0,217,255,0.3)' : (ann.color === 'green-500' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'));
+        return `
+        <div class="h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="window.location.href='${ann.link}'">
+            <div class="w-16 h-16 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}]">
+                <i data-lucide="${ann.icon}" class="w-8 h-8"></i>
+            </div>
+            <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block">${ann.label}</span>
+            <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight">${ann.title}</h4>
+            <p class="text-sm text-gray-400 leading-relaxed px-2">${ann.desc}</p>
+        </div>
+        `;
+    }).join('');
+
+    if (dotsContainer) {
+        dotsContainer.innerHTML = announcements.map((_, i) => `<span class="w-2 h-2 rounded-full bg-white/20 hover:bg-white/50 transition-all cursor-pointer" onclick="window.heroSlider && window.heroSlider.go(${i})"></span>`).join('');
+    }
+
+    if (window.lucide) lucide.createIcons();
+
+    if (window.heroSlider) {
+        window.heroSlider.init(announcements.length);
+    }
+}
+
+function renderAdminAnnouncements() {
+    const list = document.getElementById('admin-ann-list');
+    if (!list) return;
+
+    if (announcements.length === 0) {
+        list.innerHTML = '<div class="col-span-full py-12 text-center text-gray-500 bg-white/5 rounded-2xl">Duyuru bulunamadı.</div>';
+        return;
+    }
+
+    list.innerHTML = announcements.map(a => `
+        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-${a.color}">
+                    <i data-lucide="${a.icon}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-white">${a.title}</h4>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest">${a.label} • Link: ${a.link}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editAnnouncement('${a.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all"><i data-lucide="edit-2" class="w-4 h-4 text-white hover:text-white"></i></button>
+                <button onclick="deleteAnnouncement('${a.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4 text-white hover:text-white"></i></button>
+            </div>
+        </div>
+    `).join('');
+    
+    if (window.lucide) lucide.createIcons();
+}
+
+function resetAnnouncementForm() {
+    document.getElementById('ann-edit-id').value = '';
+    document.getElementById('ann-label').value = '';
+    document.getElementById('ann-title').value = '';
+    document.getElementById('ann-desc').value = '';
+    document.getElementById('ann-icon').value = 'video';
+    document.getElementById('ann-color').value = 'calith-orange';
+    document.getElementById('ann-link').value = '';
+}
+
+function saveAnnouncement() {
+    const id = document.getElementById('ann-edit-id').value;
+    const label = document.getElementById('ann-label').value.trim();
+    const title = document.getElementById('ann-title').value.trim();
+    const desc = document.getElementById('ann-desc').value.trim();
+    const icon = document.getElementById('ann-icon').value;
+    const color = document.getElementById('ann-color').value;
+    const link = document.getElementById('ann-link').value.trim();
+
+    if (!title || !desc || !label) {
+        showToast('Lütfen başlık, etiket ve açıklamayı doldurun!');
+        return;
+    }
+
+    const ann = {
+        id: id || Date.now().toString(),
+        label, title, desc, icon, color, link
+    };
+
+    if (id) {
+        const idx = announcements.findIndex(a => a.id === id);
+        if (idx !== -1) announcements[idx] = ann;
+    } else {
+        announcements.unshift(ann);
+    }
+
+    saveAnnouncementsToStorage();
+    resetAnnouncementForm();
+    showToast(id ? 'Duyuru güncellendi!' : 'Duyuru eklendi!');
+}
+
+function deleteAnnouncement(id) {
+    if(!confirm("Duyuruyu silmek istediğinize emin misiniz?")) return;
+    announcements = announcements.filter(a => a.id !== id);
+    saveAnnouncementsToStorage();
+    showToast('Duyuru silindi!');
+}
+
+function editAnnouncement(id) {
+    const a = announcements.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('ann-edit-id').value = a.id;
+    document.getElementById('ann-label').value = a.label;
+    document.getElementById('ann-title').value = a.title;
+    document.getElementById('ann-desc').value = a.desc;
+    document.getElementById('ann-icon').value = a.icon;
+    document.getElementById('ann-color').value = a.color;
+    document.getElementById('ann-link').value = a.link;
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
+        setTimeout(() => {
+            renderAnnouncementsSlider();
+            if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
+        }, 300);
+    }
+});
