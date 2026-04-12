@@ -1320,7 +1320,7 @@ function renderAnnouncementsSlider() {
     track.innerHTML = announcements.map((ann, index) => {
         const hShadow = ann.color === 'calith-orange' ? 'rgba(255,107,53,0.3)' : (ann.color === 'calith-accent' ? 'rgba(0,217,255,0.3)' : (ann.color === 'green-500' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'));
         
-        const ytRegex = /(?:youtube\\.com\\/(?:[^/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/|youtube\\.com\\/shorts\\/)([^"&?\/\\s]{11})/i;
+        const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
         const ytMatch = ann.link ? ann.link.match(ytRegex) : null;
         let ytId = ytMatch ? ytMatch[1] : '';
         const isYoutube = !!ytId;
@@ -1377,7 +1377,7 @@ function renderAnnouncementsSlider() {
 function openVideoModal(videoId) {
     if(!videoId || videoId.includes('http')) {
         // Fallback in case a full url somehow passes here
-        const ytRegex = /(?:youtube\\.com\\/(?:[^/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/|youtube\\.com\\/shorts\\/)([^"&?\/\\s]{11})/i;
+        const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
         const ytMatch = videoId.match(ytRegex);
         if(ytMatch) videoId = ytMatch[1];
         else return window.location.href = videoId;
