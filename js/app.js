@@ -438,6 +438,13 @@ async function checkAdmin() {
     if (error) {
         alert('Giriş başarısız: ' + error.message);
     } else {
+        // YENİ: Kullanıcı admin rolüne sahip mi kontrol et
+        if (data.user?.user_metadata?.role !== 'admin') {
+            alert('Bu panele girmek için yönetici (admin) yetkiniz bulunmamaktadır!');
+            await sb.auth.signOut();
+            return;
+        }
+
         const loginEl = document.getElementById('admin-login');
         const editorEl = document.getElementById('admin-editor');
         if (loginEl) loginEl.classList.add('hidden');
