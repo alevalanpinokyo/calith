@@ -1376,7 +1376,9 @@ async function saveAnnouncement() {
     const desc = document.getElementById('ann-desc').value.trim();
     const icon = document.getElementById('ann-icon').value;
     const color = document.getElementById('ann-color').value;
-    const link = document.getElementById('ann-link').value.trim();
+    let link = document.getElementById('ann-link').value.trim();
+    if (link.startsWith('www.')) link = 'https://' + link;
+    else if (link.length > 0 && !link.startsWith('http') && !link.startsWith('/') && !link.includes('.html') && link.includes('.')) link = 'https://' + link;
 
     if (!title || !desc || !label) {
         showToast('Lütfen başlık, etiket ve açıklamayı doldurun!');
