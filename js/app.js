@@ -1014,7 +1014,13 @@ function init() {
     const sb = getSupabase();
     if (sb) {
         sb.auth.getSession().then(({ data: { session } }) => {
-            isAdminMode = !!session;
+            if (session) {
+                const role = session.user?.user_metadata?.role || 'user';
+                isAdminMode = (role === 'admin');
+            } else {
+                isAdminMode = false;
+            }
+            
             const editor = document.getElementById('admin-editor');
             const login = document.getElementById('admin-login');
             if (editor && login) {
