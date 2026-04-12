@@ -1648,8 +1648,9 @@ function editHomecard(id) {
     const hc = homecards.find(x => x.id === id);
     if(!hc) return;
 
+    filterAdminHomecards(hc.section, true);
+
     document.getElementById('hc-edit-id').value = hc.id;
-    document.getElementById('hc-section').value = hc.section;
     document.getElementById('hc-icon').value = hc.icon || '';
     document.getElementById('hc-badge').value = hc.badge || '';
     document.getElementById('hc-title').value = hc.title;
@@ -1674,12 +1675,29 @@ async function deleteHomecard(id) {
     }
 }
 
-let currentHomecardFilter = 'all';
+let currentHomecardFilter = 'hero';
 
-function filterAdminHomecards(section) {
+const hcSectionLabels = {
+    'hero': 'AİT OLDUĞU BÖLÜM: ANA BAŞLIK',
+    'benefits': 'AİT OLDUĞU BÖLÜM: KAZANÇLAR (SANA NE KAZANDIRIR)',
+    'levels': 'AİT OLDUĞU BÖLÜM: 3 SEVİYE',
+    'schedule': 'AİT OLDUĞU BÖLÜM: HAFTALIK PROGRAM'
+};
+
+function filterAdminHomecards(section, skipReset = false) {
+    if(!section || section === 'all') section = 'hero';
     currentHomecardFilter = section;
+    
+    const hiddenEl = document.getElementById('hc-section');
+    const labelEl = document.getElementById('hc-section-label');
+    if(hiddenEl) hiddenEl.value = section;
+    if(labelEl) labelEl.textContent = hcSectionLabels[section] || 'BÖLÜM SEÇİLDİ';
+
+    if(!skipReset) resetHomecardForm();
+    if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
+    
     renderAdminHomecards();
-    const btnIds = ['all', 'hero', 'benefits', 'levels', 'schedule'];
+    const btnIds = ['hero', 'benefits', 'levels', 'schedule'];
     btnIds.forEach(id => {
         const btn = document.getElementById('hc-filter-' + id);
         if(btn) {

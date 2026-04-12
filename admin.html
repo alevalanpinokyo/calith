@@ -264,62 +264,61 @@
             </div>
         </div>
         <!-- ANA SAYFA KARTLARI SECTION -->
-        <div id="section-homecards" class="hidden grid lg:grid-cols-3 gap-12 mt-12">
-            <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10">
-                <h3 class="font-display text-2xl font-bold uppercase">KART <span class="text-calith-orange">DÜZENLE</span></h3>
-                <input type="hidden" id="hc-edit-id">
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Bölüm</label>
-                        <select id="hc-section" title="Kartın Bulunduğu Bölüm" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white" onchange="if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields()">
-                            <option value="hero">Ana Başlık ve Alt Metin (İlk Giriş)</option>
-                            <option value="benefits">Sana Ne Kazandırır?</option>
-                            <option value="levels">3 Seviye</option>
-                            <option value="schedule">Haftalık Program</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon (Emoji veya Metin)</label>
-                            <input type="text" id="hc-icon" placeholder="💪, 🌱, 01..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Rozet (Opsiyonel)</label>
-                            <input type="text" id="hc-badge" placeholder="En Popüler" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Başlık</label>
-                        <input type="text" id="hc-title" placeholder="Kas İnşa..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
-                        <textarea id="hc-desc" rows="3" placeholder="Kısa alt metin..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white resize-none placeholder-gray-600"></textarea>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Buton Yazısı <span class="text-calith-orange/50 text-[9px] lowercase">(Sana Ne Kazandırır için opsiyonel)</span></label>
-                            <input type="text" id="hc-link-text" placeholder="İncele → veya Açıklamayı Oku" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Yönlenecek Link <span class="text-calith-orange/50 text-[9px] lowercase">(Sana Ne Kazandırır bölümünde çalışmaz)</span></label>
-                            <input type="text" id="hc-link-url" placeholder="skills.html" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
-                        </div>
-                    </div>
-                    <button onclick="saveHomecard()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">KAYDET VE GÜNCELLE</button>
-                    <button onclick="resetHomecardForm()" class="w-full btn-outline border-white/10 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Temizle & Yeni Ekle</button>
-                </div>
+        <div id="section-homecards" class="hidden space-y-8 mt-12">
+            <!-- TABS -->
+            <div class="flex flex-wrap gap-2 border-b border-white/5 pb-4" id="hc-filter-buttons">
+                <button onclick="filterAdminHomecards('hero')" id="hc-filter-hero" class="text-xs font-bold uppercase py-2 px-4 rounded-lg bg-calith-orange text-white transition-colors">Ana Başlık (Hero)</button>
+                <button onclick="filterAdminHomecards('benefits')" id="hc-filter-benefits" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Kazançlar</button>
+                <button onclick="filterAdminHomecards('levels')" id="hc-filter-levels" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Seviyeler</button>
+                <button onclick="filterAdminHomecards('schedule')" id="hc-filter-schedule" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Program</button>
             </div>
-            <div class="lg:col-span-2 space-y-6">
-                <h2 class="font-display text-2xl font-bold uppercase">MEVCUT KARTLAR</h2>
-                <div class="flex flex-wrap gap-2 mb-4" id="hc-filter-buttons">
-                    <button onclick="filterAdminHomecards('all')" id="hc-filter-all" class="text-xs font-bold uppercase py-2 px-4 rounded-lg bg-calith-orange text-white transition-colors">Tümü</button>
-                    <button onclick="filterAdminHomecards('hero')" id="hc-filter-hero" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Ana Başlık</button>
-                    <button onclick="filterAdminHomecards('benefits')" id="hc-filter-benefits" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Kazançlar</button>
-                    <button onclick="filterAdminHomecards('levels')" id="hc-filter-levels" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Seviyeler</button>
-                    <button onclick="filterAdminHomecards('schedule')" id="hc-filter-schedule" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Program</button>
+
+            <div class="grid lg:grid-cols-3 gap-12">
+                <!-- FORM -->
+                <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10 relative">
+                    <h3 class="font-display text-2xl font-bold uppercase">KART <span class="text-calith-orange">DÜZENLE</span></h3>
+                    <p class="text-[10px] text-calith-orange font-bold uppercase tracking-widest mb-4" id="hc-section-label">AİT OLDUĞU BÖLÜM: ANA BAŞLIK</p>
+                    <input type="hidden" id="hc-edit-id">
+                    <input type="hidden" id="hc-section" value="hero">
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon (Emoji veya Metin)</label>
+                                <input type="text" id="hc-icon" placeholder="💪, 🌱, 01..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Rozet (Opsiyonel)</label>
+                                <input type="text" id="hc-badge" placeholder="En Popüler" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Başlık</label>
+                            <input type="text" id="hc-title" placeholder="Kas İnşa..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
+                            <textarea id="hc-desc" rows="3" placeholder="Kısa alt metin..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white resize-none placeholder-gray-600"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Buton Yazısı <span class="text-calith-orange/50 text-[9px] lowercase">(Sana Ne Kazandırır için opsiyonel)</span></label>
+                                <input type="text" id="hc-link-text" placeholder="İncele →" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Yönlenecek Link <span class="text-calith-orange/50 text-[9px] lowercase">(Sana Ne Kazandırır bölümünde çalışmaz)</span></label>
+                                <input type="text" id="hc-link-url" placeholder="skills.html" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            </div>
+                        </div>
+                        <button onclick="saveHomecard()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">KAYDET VE GÜNCELLE</button>
+                        <button onclick="resetHomecardForm()" class="w-full btn-outline border-white/10 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Formu Temizle</button>
+                    </div>
                 </div>
-                <div id="admin-hc-list" class="grid gap-4"></div>
+                
+                <!-- LIST -->
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="font-display text-2xl font-bold uppercase">MEVCUT KARTLAR</h2>
+                    <div id="admin-hc-list" class="grid gap-4"></div>
+                </div>
             </div>
         </div>
     </div>
