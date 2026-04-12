@@ -72,6 +72,7 @@
                 <button onclick="switchAdminTab('products')" id="tab-products" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ÜRÜN YÖNETİMİ</button>
                 <button onclick="switchAdminTab('programs')" id="tab-programs" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">PROGRAM YÖNETİMİ</button>
                 <button onclick="switchAdminTab('announcements')" id="tab-announcements" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">DUYURU PANO</button>
+                <button onclick="switchAdminTab('homecards')" id="tab-homecards" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ANA SAYFA KARTLARI</button>
             </div>
             
             <div id="section-blog" class="grid lg:grid-cols-3 gap-12">
@@ -262,6 +263,57 @@
                 <div id="admin-ann-list" class="grid gap-4"></div>
             </div>
         </div>
+        <!-- ANA SAYFA KARTLARI SECTION -->
+        <div id="section-homecards" class="hidden grid lg:grid-cols-3 gap-12 mt-12">
+            <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10">
+                <h3 class="font-display text-2xl font-bold uppercase">KART <span class="text-calith-orange">DÜZENLE</span></h3>
+                <input type="hidden" id="hc-edit-id">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Bölüm</label>
+                        <select id="hc-section" title="Kartın Bulunduğu Bölüm" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                            <option value="benefits">Sana Ne Kazandırır?</option>
+                            <option value="levels">3 Seviye</option>
+                            <option value="schedule">Haftalık Program</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon (Emoji veya Metin)</label>
+                            <input type="text" id="hc-icon" placeholder="💪, 🌱, 01..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Rozet (Opsiyonel)</label>
+                            <input type="text" id="hc-badge" placeholder="En Popüler" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Başlık</label>
+                        <input type="text" id="hc-title" placeholder="Kas İnşa..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
+                        <textarea id="hc-desc" rows="3" placeholder="Kısa alt metin..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white resize-none placeholder-gray-600"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Buton Yazısı</label>
+                            <input type="text" id="hc-link-text" placeholder="İncele →" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Yönlenecek Link</label>
+                            <input type="text" id="hc-link-url" placeholder="skills.html" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                    </div>
+                    <button onclick="saveHomecard()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">KAYDET VE GÜNCELLE</button>
+                    <button onclick="resetHomecardForm()" class="w-full btn-outline border-white/10 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Temizle & Yeni Ekle</button>
+                </div>
+            </div>
+            <div class="lg:col-span-2 space-y-6">
+                <h2 class="font-display text-2xl font-bold uppercase">MEVCUT KARTLAR</h2>
+                <div id="admin-hc-list" class="grid gap-4"></div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -275,13 +327,18 @@
         document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
         document.getElementById('section-programs').classList.toggle('hidden', tab !== 'programs');
         document.getElementById('section-announcements').classList.toggle('hidden', tab !== 'announcements');
+        document.getElementById('section-homecards').classList.toggle('hidden', tab !== 'homecards');
+        
         document.getElementById('tab-blog').className = tab === 'blog' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
         document.getElementById('tab-products').className = tab === 'products' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
         document.getElementById('tab-programs').className = tab === 'programs' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
         document.getElementById('tab-announcements').className = tab === 'announcements' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+        document.getElementById('tab-homecards').className = tab === 'homecards' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+        
         if (tab === 'products') renderAdminProducts();
         if (tab === 'programs') renderAdminPrograms();
         if (tab === 'announcements') renderAdminAnnouncements();
+        if (tab === 'homecards') renderAdminHomecards();
     }
 </script>
 </body>

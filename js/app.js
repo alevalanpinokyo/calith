@@ -1478,6 +1478,125 @@ function editAnnouncement(id) {
     if (annImageEl) annImageEl.value = a.image || '';
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
+// --- HOMECARDS LOGIC ---
+let homecards = [];
+
+async function loadHomecards() {
+    const sb = getSupabase();
+    if(!sb) return;
+    const { data, error } = await sb.from('homecards').select('*');
+    if(!error && data) {
+        homecards = data;
+        if(typeof renderAdminHomecards === 'function') renderAdminHomecards();
+        // İlerisi için frontend tarafında kartların dinamik oluşturulacağı fonksiyon buraya eklenebilir.
+        // if(typeof renderFrontendHomecards === 'function') renderFrontendHomecards();
+    }
+}
+
+async function saveHomecard() {
+    const section = document.getElementById('hc-section').value;
+    const title = document.getElementById('hc-title').value.trim();
+    if(!title) return alert('Başlık zorunludur!');
+
+    const hcData = {
+        section: section,
+        icon: document.getElementById('hc-icon').value.trim(),
+        badge: document.getElementById('hc-badge').value.trim(),
+        title: title,
+        desc_text: document.getElementById('hc-desc').value.trim(),
+        link_text: document.getElementById('hc-link-text').value.trim(),
+        link_url: document.getElementById('hc-link-url').value.trim()
+    };
+
+    const editId = document.getElementById('hc-edit-id').value;
+    const sb = getSupabase();
+    if(!sb) return;
+
+    let result;
+    if(editId) {
+        result = await sb.from('homecards').update(hcData).eq('id', editId);
+    } else {
+        // Yeni bir id oluştur
+        const generatedId = section + '_' + Date.now();
+        hcData.id = generatedId;
+        result = await sb.from('homecards').insert([hcData]);
+    }
+
+    if(result.error) {
+        alert('Hata: ' + result.error.message);
+    } else {
+        showToast(editId ? 'Ana Sayfa Kartı Güncellendi' : 'Yeni Kart Eklendi');
+        resetHomecardForm();
+        loadHomecards();
+    }
+}
+
+function resetHomecardForm() {
+    document.getElementById('hc-edit-id').value = '';
+    document.getElementById('hc-title').value = '';
+    document.getElementById('hc-icon').value = '';
+    document.getElementById('hc-badge').value = '';
+    document.getElementById('hc-desc').value = '';
+    document.getElementById('hc-link-text').value = '';
+    document.getElementById('hc-link-url').value = '';
+}
+
+function editHomecard(id) {
+    const hc = homecards.find(x => x.id === id);
+    if(!hc) return;
+
+    document.getElementById('hc-edit-id').value = hc.id;
+    document.getElementById('hc-section').value = hc.section;
+    document.getElementById('hc-icon').value = hc.icon || '';
+    document.getElementById('hc-badge').value = hc.badge || '';
+    document.getElementById('hc-title').value = hc.title;
+    document.getElementById('hc-desc').value = hc.desc_text || '';
+    document.getElementById('hc-link-text').value = hc.link_text || '';
+    document.getElementById('hc-link-url').value = hc.link_url || '';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+async function deleteHomecard(id) {
+    if(!confirm('Bu ana sayfa kartını silmek istediğinize emin misiniz?')) return;
+    const sb = getSupabase();
+    if(sb) {
+        const { error } = await sb.from('homecards').delete().eq('id', id);
+        if(!error) {
+            showToast('Kart Silindi');
+            loadHomecards();
+        } else {
+            alert('Silme Hatası: ' + error.message);
+        }
+    }
+}
+
+function renderAdminHomecards() {
+    const list = document.getElementById('admin-hc-list');
+    if(!list) return;
+
+    if(!homecards || homecards.length === 0) {
+        list.innerHTML = '<div class="text-gray-500 py-4 text-sm font-bold uppercase tracking-widest text-center">Kayıtlı ana sayfa kartı yok.</div>';
+        return;
+    }
+
+    list.innerHTML = homecards.map(hc => `
+        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl font-bold">${hc.icon || '📌'}</div>
+                <div>
+                    <h4 class="font-bold text-sm text-white">${hc.title}</h4>
+                    <p class="text-[10px] text-calith-orange uppercase font-bold tracking-widest mt-1">${hc.section}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editHomecard('${hc.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all" title="Düzenle"><i data-lucide="edit-2" class="w-4 h-4 pointer-events-none"></i></button>
+                <button onclick="deleteHomecard('${hc.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all" title="Sil"><i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i></button>
+            </div>
+        </div>
+    `).join('');
+    if(window.lucide) lucide.createIcons();
+}
 // --- AUTH LOGIC ---
 let currentUser = null;
 
@@ -1645,6 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
         setTimeout(() => {
             loadAnnouncements();
+            loadHomecards();
         }, 300);
     }
 });
