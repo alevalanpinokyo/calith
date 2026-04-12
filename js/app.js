@@ -1604,15 +1604,15 @@ async function checkCurrentUser() {
 
 function updateAuthUI() {
     // Desktop Nav Auth Button
-    const deskBtns = document.querySelectorAll('button[onclick="showAuthModal()"], button[onclick="handleLogout()"]');
+    const deskBtns = document.querySelectorAll('button[onclick="showAuthModal()"], button[onclick="window.location.href=\'profile.html\'"], button[onclick="handleLogout()"]');
     deskBtns.forEach(btn => {
         // İndex sayfası desktop butonları genelde btn-outline içerir
         if(!btn.classList.contains('w-full') && btn.classList.contains('hidden')) {
             if(currentUser) {
-                btn.textContent = 'Çıkış Yap';
-                btn.setAttribute('onclick', 'handleLogout()');
-                btn.classList.add('text-red-400', 'border-red-500/30');
-                btn.classList.remove('text-white', 'btn-outline');
+                btn.textContent = 'Profilim';
+                btn.setAttribute('onclick', "window.location.href='profile.html'");
+                btn.classList.remove('text-red-400', 'border-red-500/30');
+                btn.classList.add('text-white', 'btn-outline');
             } else {
                 btn.textContent = 'Giriş Yap';
                 btn.setAttribute('onclick', 'showAuthModal()');
@@ -1623,17 +1623,17 @@ function updateAuthUI() {
     });
 
     // Mobile Menu Auth Button
-    const mobileAuthBtn = document.querySelector('#mobile-menu button[onclick="showAuthModal()"], #mobile-menu button[onclick="handleLogout()"]');
+    const mobileAuthBtn = document.querySelector('#mobile-menu button[onclick="showAuthModal()"], #mobile-menu button[onclick="window.location.href=\'profile.html\'"], #mobile-menu button[onclick="handleLogout()"]');
     if(mobileAuthBtn) {
         if(currentUser) {
-            mobileAuthBtn.textContent = 'ÇIKIŞ YAP';
-            mobileAuthBtn.setAttribute('onclick', 'handleLogout()');
-            mobileAuthBtn.classList.add('text-red-500');
-            mobileAuthBtn.classList.remove('text-white');
+            mobileAuthBtn.textContent = 'PROFİLİM';
+            mobileAuthBtn.setAttribute('onclick', "window.location.href='profile.html'");
+            mobileAuthBtn.classList.add('text-calith-accent');
+            mobileAuthBtn.classList.remove('text-red-500', 'text-white');
         } else {
             mobileAuthBtn.textContent = 'GİRİŞ YAP / ÜYE OL';
             mobileAuthBtn.setAttribute('onclick', 'showAuthModal()');
-            mobileAuthBtn.classList.remove('text-red-500');
+            mobileAuthBtn.classList.remove('text-red-500', 'text-calith-accent');
             mobileAuthBtn.classList.add('text-white');
         }
     }

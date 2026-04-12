@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim | CALITH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calith: {
+                            orange: '#FF6B35',
+                            dark: '#0A0A0A',
+                            gray: '#1A1A1A',
+                            light: '#2A2A2A',
+                            accent: '#00D9FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-calith-dark text-white pt-24 min-h-screen flex flex-col">
+
+<!-- Navigation -->
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+                <div class="w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
+                <a href="skills.html" class="text-white font-medium text-sm">PROGRAMLAR</a>
+                <a href="blog.html" class="text-white font-medium text-sm">ÖĞREN</a>
+                <a href="about.html" class="text-white font-medium text-sm">HAKKIMIZDA</a>
+                <a href="premium.html" class="text-calith-orange font-bold text-sm tracking-widest hover:text-white transition-colors uppercase">KOÇLUK</a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <button class="hidden md:block btn-outline px-6 py-2.5 rounded-full font-semibold text-sm" onclick="showAuthModal()">
+                    Giriş Yap
+                </button>
+                <button class="md:hidden p-2 text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" aria-label="Menü">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3">
+            <a href="index.html" class="block text-white py-2">ANA SAYFA</a>
+            <a href="skills.html" class="block text-white py-2">PROGRAMLAR</a>
+            <a href="blog.html" class="block text-white py-2">ÖĞREN</a>
+            <a href="about.html" class="block text-white py-2">HAKKIMIZDA</a>
+            <a href="premium.html" class="block text-calith-orange font-bold py-2 uppercase tracking-widest">KOÇLUK</a>
+            <button onclick="showAuthModal()" class="w-full text-left py-2 font-bold text-white border-t border-white/10 mt-2 pt-4">GİRİŞ YAP / ÜYE OL</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Profile Section -->
+<main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-20">
+    <div class="flex flex-col md:flex-row gap-8 mt-12">
+        <!-- Sidebar Profile -->
+        <aside class="md:w-1/3">
+            <div class="bg-calith-gray border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-calith-orange/10 blur-[100px] w-full h-full pointer-events-none"></div>
+                
+                <div class="w-24 h-24 bg-gradient-to-br from-calith-orange to-calith-accent rounded-full flex items-center justify-center text-3xl font-display font-bold mb-6 text-white" id="profile-avatar">
+                    C
+                </div>
+                
+                <h2 class="font-display text-2xl font-bold mb-1" id="profile-name">Kullanıcı</h2>
+                <p class="text-gray-400 text-sm mb-6" id="profile-email">email@mail.com</p>
+                
+                <div class="w-full bg-black/30 border border-white/10 rounded-2xl p-4 mb-8">
+                    <div class="text-xs text-gray-500 uppercase tracking-widest mb-1 font-bold">Mevcut Seviye</div>
+                    <div class="text-calith-orange font-display text-xl font-bold uppercase" id="profile-level">Başlangıç</div>
+                </div>
+
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 btn-outline border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white py-4 rounded-xl font-bold text-sm tracking-widest uppercase transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Çıkış Yap
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <div class="md:w-2/3 space-y-6">
+            <!-- Stats overview -->
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-calith-gray border border-white/5 rounded-3xl p-6">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-2 font-bold flex items-center gap-2"><i data-lucide="play-circle" class="w-4 h-4 text-calith-orange"></i> Kayıtlı Program</div>
+                    <div class="font-display text-3xl font-bold">1</div>
+                </div>
+                <div class="bg-calith-gray border border-white/5 rounded-3xl p-6">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-2 font-bold flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-calith-accent"></i> Toplam Puan</div>
+                    <div class="font-display text-3xl font-bold">0</div>
+                </div>
+            </div>
+
+            <!-- Current Program -->
+            <div class="bg-calith-dark border border-white/10 rounded-3xl p-8 relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-64 h-64 bg-[url('https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=600&auto=format&fit=crop')] bg-cover opacity-10 group-hover:scale-105 transition-transform duration-700"></div>
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-calith-orange/30 text-calith-orange text-xs font-bold uppercase tracking-widest mb-6 bg-calith-orange/10">Aktif Plan</div>
+                    <h3 class="font-display text-3xl font-bold mb-2">Başlangıç: Sıfırdan Adım Adım</h3>
+                    <p class="text-gray-400 mb-8 max-w-md">Şu anda sistem tarafından seviyeniz için önerilen temel kuvvet inşa programındasınız.</p>
+                    <button onclick="window.location.href='skills.html'" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm tracking-widest uppercase inline-flex items-center gap-2 shadow-lg shadow-calith-orange/20">
+                        Programa Git <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</main>
+
+<script src="js/app.js"></script>
+<script>
+    lucide.createIcons();
+
+    // Sayfa yüklendiğinde Profile Özel Veriyi Çek
+    document.addEventListener('DOMContentLoaded', async () => {
+        const sb = getSupabase();
+        if(!sb) return;
+
+        const { data: { session } } = await sb.auth.getSession();
+        
+        if (!session) {
+            // Oturum yoksa zorunlu anasayfaya at
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const user = session.user;
+        const metadata = user.user_metadata || {};
+        
+        const fullName = metadata.full_name || 'Kullanıcı';
+        const email = user.email || '';
+        const level = metadata.fitness_level || 'Belirtilmedi';
+
+        document.getElementById('profile-name').textContent = fullName;
+        document.getElementById('profile-email').textContent = email;
+        document.getElementById('profile-avatar').textContent = fullName.charAt(0).toUpperCase();
+
+        const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta', 'ileri': 'İleri'};
+        document.getElementById('profile-level').textContent = levelMap[level] || level;
+    });
+</script>
+</body>
+</html>
