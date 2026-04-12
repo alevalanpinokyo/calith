@@ -1319,19 +1319,30 @@ function renderAnnouncementsSlider() {
 
     track.innerHTML = announcements.map((ann, index) => {
         const hShadow = ann.color === 'calith-orange' ? 'rgba(255,107,53,0.3)' : (ann.color === 'calith-accent' ? 'rgba(0,217,255,0.3)' : (ann.color === 'green-500' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'));
+        
+        const isYoutube = ann.link && (ann.link.includes('youtube.com') || ann.link.includes('youtu.be'));
+        const onClickAction = isYoutube ? `openVideoModal('${ann.link}')` : `window.location.href='${ann.link}'`;
+        
         let mediaHtml;
         if (ann.image && ann.image.trim() !== '') {
-            mediaHtml = `<div class="w-16 h-16 rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_20px_${hShadow}] group-hover:scale-110 transition-all border border-white/10 overflow-hidden bg-black/50">
+            mediaHtml = `<div class="${isYoutube ? 'w-32 h-20 md:w-48 md:h-28' : 'w-16 h-16'} rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_20px_${hShadow}] group-hover:scale-105 transition-all border border-white/10 overflow-hidden bg-black/50 relative">
                 <img src="${ann.image}" class="w-full h-full object-cover" alt="Media">
+                ${isYoutube ? `
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.3)] group-hover:scale-110 group-hover:bg-calith-orange transition-all border border-white/30">
+                        <i data-lucide="play" class="w-4 h-4 text-white ml-1"></i>
+                    </div>
+                </div>
+                ` : ''}
             </div>`;
         } else {
-            mediaHtml = `<div class="w-16 h-16 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0">
+            mediaHtml = `<div class="w-16 h-16 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0 relative">
                 <i data-lucide="${ann.icon}" class="w-8 h-8"></i>
             </div>`;
         }
 
         return `
-        <div class="h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="window.location.href='${ann.link}'">
+        <div class="h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
             ${mediaHtml}
             <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block">${ann.label}</span>
             <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight">${ann.title}</h4>
@@ -1350,6 +1361,55 @@ function renderAnnouncementsSlider() {
         window.heroSlider.init(announcements.length);
     }
 }
+
+function openVideoModal(url) {
+    let videoId = '';
+    if(url.includes('youtube.com/watch?v=')) videoId = url.split('v=')[1].split('&')[0];
+    else if(url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+    
+    if(!videoId) return window.location.href = url;
+
+    const modal = document.getElementById('video-modal');
+    const content = document.getElementById('video-modal-content');
+    const container = document.getElementById('video-container');
+    
+    if(modal && container) {
+        document.body.style.overflow = 'hidden';
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }, 10);
+    }
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('video-modal');
+    const content = document.getElementById('video-modal-content');
+    const container = document.getElementById('video-container');
+    
+    if(modal && container) {
+        document.body.style.overflow = '';
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        content.classList.remove('scale-100');
+        content.classList.add('scale-95');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            container.innerHTML = '';
+        }, 300);
+    }
+}
+
+// Escape key to close modal
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeVideoModal();
+});
 
 function renderAdminAnnouncements() {
     const list = document.getElementById('admin-ann-list');
