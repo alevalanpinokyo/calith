@@ -1829,7 +1829,7 @@ function renderFrontendHomecards() {
         const grid = document.getElementById('benefits-grid');
         if (grid) {
             grid.innerHTML = benefits.map((b, i) => `
-                <div class="relative card-hover product-card rounded-3xl p-8 fade-in stagger-${i+1} active block group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
+                <div class="relative card-hover product-card rounded-3xl p-8 group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
                     <div class="absolute top-8 right-8 rounded-full bg-white/5 w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-white group-[.is-open]:text-calith-orange transition-all">
                         <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 transition-transform duration-300"></i>
                     </div>
@@ -1855,7 +1855,7 @@ function renderFrontendHomecards() {
                 const hoverClass = isPop ? 'hover:border-calith-orange/60' : 'hover:border-calith-orange/30';
                 
                 return `
-                <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col fade-in stagger-${i+1} active block ${hoverClass} transition-all card-hover group cursor-pointer text-center relative">
+                <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative">
                     ${isPop ? '<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">'+lvl.badge+'</div>' : ''}
                     <div class="text-5xl mb-6">${lvl.icon || '🌱'}</div>
                     <h3 class="font-display text-2xl font-bold mb-2 uppercase">${lvl.title}</h3>
@@ -1882,7 +1882,7 @@ function renderFrontendHomecards() {
                 const listItems = (sch.desc_text || '').split('\\n').filter(l => l.trim().length > 0).map(l => '<li><span class="text-'+c+' mr-2">✓</span>'+l.trim().replace(/^[-✓* ]+/, '')+'</li>').join('');
 
                 return `
-                <div class="bg-calith-gray border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 justify-between hover:border-white/20 transition-colors active block">
+                <div class="bg-calith-gray border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 justify-between hover:border-white/20 transition-colors">
                     <div class="flex items-center gap-6 w-full md:w-auto">
                         <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center font-display font-bold text-2xl text-${c}">${sch.icon || ('0' + (i+1))}</div>
                         <div>
@@ -1929,7 +1929,7 @@ function renderFrontendHomecards() {
                 });
 
                 return `
-                <div class="bg-black/40 border ${borderClass} rounded-3xl p-8 fade-in stagger-${i+1} active block ${hoverClass} transition-colors relative flex flex-col h-full">
+                <div class="bg-black/40 border ${borderClass} rounded-3xl p-8 ${hoverClass} transition-colors relative flex flex-col h-full">
                     <div class="self-start w-max inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-[10px] font-black uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
                         ${eq.badge || ('Aşama ' + (i+1))}
                     </div>
