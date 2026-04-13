@@ -1671,7 +1671,8 @@ const hcSectionLabels = {
     'hero': 'AİT OLDUĞU BÖLÜM: ANA BAŞLIK',
     'benefits': 'AİT OLDUĞU BÖLÜM: KAZANÇLAR (SANA NE KAZANDIRIR)',
     'levels': 'AİT OLDUĞU BÖLÜM: 3 SEVİYE',
-    'schedule': 'AİT OLDUĞU BÖLÜM: HAFTALIK PROGRAM'
+    'schedule': 'AİT OLDUĞU BÖLÜM: HAFTALIK PROGRAM',
+    'equipment': 'AİT OLDUĞU BÖLÜM: EKİPMAN YOL HARİTASI'
 };
 
 function filterAdminHomecards(section, skipReset = false) {
@@ -1687,7 +1688,7 @@ function filterAdminHomecards(section, skipReset = false) {
     if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
     
     renderAdminHomecards();
-    const btnIds = ['hero', 'benefits', 'levels', 'schedule'];
+    const btnIds = ['hero', 'benefits', 'levels', 'schedule', 'equipment'];
     btnIds.forEach(id => {
         const btn = document.getElementById('hc-filter-' + id);
         if(btn) {
@@ -1817,6 +1818,51 @@ function renderFrontendHomecards() {
                         </div>
                     </div>
                     <button onclick="window.location.href='${sch.link_url || 'blog.html'}'" class="btn-outline px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest w-full md:w-auto whitespace-nowrap">${sch.link_text || 'İncele →'}</button>
+                </div>
+                `;
+            }).join('');
+        }
+    }
+    const equipment = homecards.filter(h => h.section === 'equipment').sort((a,b)=> (a.id > b.id ? 1 : -1));
+    if (equipment.length > 0) {
+        const grid = document.getElementById('equipment-grid');
+        if (grid) {
+            grid.innerHTML = equipment.map((eq, i) => {
+                const isOdd = i % 2 !== 0; 
+                const borderClass = isOdd ? 'border-calith-orange/20 shadow-2xl shadow-calith-orange/5' : 'border-white/5';
+                const hoverClass = isOdd ? 'hover:border-calith-orange/40' : 'hover:border-white/10';
+                const btnClass = isOdd ? 'btn-primary' : 'btn-outline border-white/10 hover:bg-white/5';
+                
+                let badgeColor = 'calith-orange';
+                if (eq.badge) {
+                    if (eq.badge.includes('1')) badgeColor = 'green';
+                    else if (eq.badge.includes('2')) badgeColor = 'yellow';
+                    else if (eq.badge.includes('3')) badgeColor = 'red';
+                }
+                
+                const lines = (eq.desc_text || '').split('\\n');
+                let descHtml = '';
+                lines.forEach(line => {
+                    const parts = line.split(':');
+                    if(parts.length > 1) {
+                        const key = parts[0].trim();
+                        const val = parts.slice(1).join(':').trim();
+                        descHtml += `<div><p class="text-xs text-gray-500 uppercase tracking-widest mb-1">${key}:</p><p class="${key.toLowerCase() === 'maliyet' ? 'text-white text-xl font-bold' : 'text-gray-300 text-sm font-medium'}">${val}</p></div>`;
+                    } else {
+                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-2">${line.trim()}</p>`;
+                    }
+                });
+
+                return `
+                <div class="bg-black/40 border ${borderClass} rounded-3xl p-8 fade-in stagger-${i+1} active block ${hoverClass} transition-colors relative flex flex-col h-full">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-xs font-bold uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
+                        ${eq.icon || '🟢'} ${eq.badge || ('Aşama ' + (i+1))}
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4 uppercase">${eq.title}</h3>
+                    <div class="space-y-4 mb-8">
+                        ${descHtml}
+                    </div>
+                    ${eq.link_text ? `<button onclick="window.location.href='${eq.link_url || 'shop.html'}'" class="w-full ${btnClass} py-4 rounded-xl font-bold text-sm uppercase tracking-widest mt-auto">${eq.link_text}</button>` : ''}
                 </div>
                 `;
             }).join('');
