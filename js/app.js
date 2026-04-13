@@ -1553,8 +1553,8 @@ function toggleHomecardLinkFields() {
     const hiddenEl = document.getElementById('hc-section');
     const section = hiddenEl ? hiddenEl.value : 'hero';
     
-    const iconBadgeBlock = document.getElementById('hc-fields-icon-badge');
-    const linkBlock = document.getElementById('hc-fields-link');
+    const equipmentBlock = document.getElementById('hc-fields-equipment');
+    const descBlock = document.getElementById('hc-fields-desc');
     
     if(iconBadgeBlock) {
         if(section === 'hero' || section === 'schedule') {
@@ -1564,6 +1564,16 @@ function toggleHomecardLinkFields() {
         }
     }
     
+    if(descBlock && equipmentBlock) {
+        if(section === 'equipment') {
+            descBlock.classList.add('hidden');
+            equipmentBlock.classList.remove('hidden');
+        } else {
+            descBlock.classList.remove('hidden');
+            equipmentBlock.classList.add('hidden');
+        }
+    }
+
     if(linkBlock) {
         if(section === 'hero' || section === 'benefits' || section === 'schedule') {
             linkBlock.classList.add('hidden');
@@ -1590,12 +1600,20 @@ async function saveHomecard() {
     const title = document.getElementById('hc-title').value.trim();
     if(!title) return alert('Başlık zorunludur!');
 
+    let desc = document.getElementById('hc-desc').value.trim();
+    if (section === 'equipment') {
+        const needs = document.getElementById('hc-eq-needs').value.trim();
+        const cost = document.getElementById('hc-eq-cost').value.trim();
+        const reason = document.getElementById('hc-eq-reason').value.trim();
+        desc = `İhtiyacın: ${needs}\\nMaliyet: ${cost}${reason ? `\\nNeden: ${reason}` : ''}`;
+    }
+
     const hcData = {
         section: section,
         icon: document.getElementById('hc-icon').value.trim(),
         badge: document.getElementById('hc-badge').value.trim(),
         title: title,
-        desc_text: document.getElementById('hc-desc').value.trim(),
+        desc_text: desc,
         link_text: document.getElementById('hc-link-text').value.trim(),
         link_url: document.getElementById('hc-link-url').value.trim()
     };
@@ -1629,6 +1647,9 @@ function resetHomecardForm() {
     document.getElementById('hc-icon').value = '';
     document.getElementById('hc-badge').value = '';
     document.getElementById('hc-desc').value = '';
+    document.getElementById('hc-eq-needs').value = '';
+    document.getElementById('hc-eq-cost').value = '';
+    document.getElementById('hc-eq-reason').value = '';
     document.getElementById('hc-link-text').value = '';
     document.getElementById('hc-link-url').value = '';
     if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
@@ -1645,6 +1666,16 @@ function editHomecard(id) {
     document.getElementById('hc-badge').value = hc.badge || '';
     document.getElementById('hc-title').value = hc.title;
     document.getElementById('hc-desc').value = hc.desc_text || '';
+    
+    if (hc.section === 'equipment' && hc.desc_text) {
+        const lines = hc.desc_text.split('\\n');
+        lines.forEach(line => {
+            if(line.includes('İhtiyacın:')) document.getElementById('hc-eq-needs').value = line.replace('İhtiyacın:', '').trim();
+            else if(line.includes('Maliyet:')) document.getElementById('hc-eq-cost').value = line.replace('Maliyet:', '').trim();
+            else if(line.includes('Neden:')) document.getElementById('hc-eq-reason').value = line.replace('Neden:', '').trim();
+        });
+    }
+
     document.getElementById('hc-link-text').value = hc.link_text || '';
     document.getElementById('hc-link-url').value = hc.link_url || '';
     if(typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
@@ -1855,8 +1886,9 @@ function renderFrontendHomecards() {
 
                 return `
                 <div class="bg-black/40 border ${borderClass} rounded-3xl p-8 fade-in stagger-${i+1} active block ${hoverClass} transition-colors relative flex flex-col h-full">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-xs font-bold uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
-                        ${eq.icon || '🟢'} ${eq.badge || ('Aşama ' + (i+1))}
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-[10px] font-black uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                        ${eq.badge || ('Aşama ' + (i+1))}
                     </div>
                     <h3 class="font-display text-2xl font-bold mb-4 uppercase">${eq.title}</h3>
                     <div class="space-y-4 mb-8">
