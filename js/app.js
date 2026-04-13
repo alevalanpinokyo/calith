@@ -1646,6 +1646,45 @@ async function saveHomecard() {
     }
 }
 
+async function importHomecardDefaults() {
+    const sb = getSupabase();
+    if(!sb) return alert('Supabase hazır değil.');
+    if(!confirm('Ana sayfa için tüm varsayılan kartları (Hero, Kazançlar, Seviyeler, Program ve Aşamalar) yüklemek istediğinize emin misiniz?')) return;
+
+    const defaults = [
+        // HERO
+        { id: 'hero_1', section: 'hero', title: 'Kendi Vücudunla Çalış.<br><span class="gradient-text">Sınırlarını</span> Zorla.', desc_text: 'Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Şimdi başla, tamamen ücretsiz.' },
+        
+        // BENEFITS
+        { id: 'ben_1', section: 'benefits', icon: '💪', title: 'Kas İnşa', desc_text: 'Ağırlık salonu gerektirmez. Vücut ağırlığın yeterli.' },
+        { id: 'ben_2', section: 'benefits', icon: '🏠', title: 'Evde Yap', desc_text: 'Seyahatte, parkta, odanda. Her yer spor salonun olur.' },
+        { id: 'ben_3', section: 'benefits', icon: '⏱️', title: 'Zaman Tasarrufu', desc_text: 'Günde sadece 20-30 dakika. Uzun saatler gerektirmez.' },
+
+        // LEVELS
+        { id: 'lvl_1', section: 'levels', icon: '🌱', title: 'SIFIRDAN', desc_text: 'Hiç şınav yapamıyorum.\\nHareketler: Duvar şınavı, Koltuk dips\'i, Air squat', link_text: 'İncele', link_url: 'skills.html?level=baslangic' },
+        { id: 'lvl_2', section: 'levels', icon: '🌿', badge: 'En Popüler', title: 'TEMEL ATILDI', desc_text: '10-15 şınav yapabiliyorum.\\nHareketler: Normal şınav, Negatif barfiks, Jackknife', link_text: 'İncele', link_url: 'skills.html?level=orta' },
+        { id: 'lvl_3', section: 'levels', icon: '🔥', title: 'GÜÇLENİYORUM', desc_text: '20+ şınav yapabiliyorum.\\nHareketler: Tek kol şınav, Muscle-up denemeleri, Front lever', link_text: 'İncele', link_url: 'skills.html?level=ileri' },
+
+        // SCHEDULE
+        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: '✓ Duvar şınavı: 3 set\\n✓ Koltuk dips\'i: 3 set\\n✓ Superman: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
+        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: '✓ Air squat: 3 set\\n✓ Lunges: 3 set\\n✓ Calf raises: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
+        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: '✓ Duvar şınavı: 3 set\\n✓ Glute bridge: 3 set\\n✓ Plank: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
+
+        // EQUIPMENT (AŞAMALAR)
+        { id: 'eq_1', section: 'equipment', badge: '🟢 Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\\nMaliyet: 0₺', link_text: 'Programı İndir →', link_url: 'skills.html' },
+        { id: 'eq_2', section: 'equipment', badge: '🟡 Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\\nMaliyet: ~400-600₺\\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele →', link_url: 'shop.html' },
+        { id: 'eq_3', section: 'equipment', badge: '🔴 Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\\nMaliyet: ~1.200-1.800₺\\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele →', link_url: 'shop.html' }
+    ];
+
+    const { error } = await sb.from('homecards').upsert(defaults);
+    if(error) {
+        alert('Hata: ' + error.message);
+    } else {
+        showToast('Varsayılan kartlar başarıyla yüklendi');
+        loadHomecards();
+    }
+}
+
 function resetHomecardForm() {
     document.getElementById('hc-edit-id').value = '';
     document.getElementById('hc-title').value = '';
