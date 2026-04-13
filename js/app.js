@@ -1937,6 +1937,13 @@ async function handleLogout() {
     currentUser = null;
     showToast('Çıkış yapıldı');
     updateAuthUI();
+    
+    // Yalnızca profil veya admin sayfasındayken çıkış yapılıyorsa anasayfaya yönlendir
+    if (window.location.pathname.endsWith('profile.html') || window.location.pathname.endsWith('admin.html')) {
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 500); // Kullanıcı "Çıkış yapıldı" toast mesajını görebilsin diye ufak bir bekleme
+    }
 }
 
 async function checkCurrentUser() {
