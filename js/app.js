@@ -1930,8 +1930,8 @@ function renderFrontendHomecards() {
 
                 return `
                 <div class="bg-black/40 border ${borderClass} rounded-3xl p-8 fade-in stagger-${i+1} active block ${hoverClass} transition-colors relative flex flex-col h-full">
-                    <div class="w-fit inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-[10px] font-black uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
-                        <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                    <div class="self-start inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-[10px] font-black uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current shrink-0"></span>
                         ${eq.badge || ('Aşama ' + (i+1))}
                     </div>
                     <h3 class="font-display text-2xl font-bold mb-4 uppercase">${eq.title}</h3>
