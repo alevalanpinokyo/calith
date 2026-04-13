@@ -1555,15 +1555,19 @@ function toggleHomecardLinkFields() {
     
     const equipmentBlock = document.getElementById('hc-fields-equipment');
     const descBlock = document.getElementById('hc-fields-desc');
+    const iconBadgeBlock = document.getElementById('hc-fields-icon-badge');
+    const linkBlock = document.getElementById('hc-fields-link');
     
+    // İkon ve Rozet (Her ikisi de bir arada)
     if(iconBadgeBlock) {
-        if(section === 'hero' || section === 'schedule') {
+        if(section === 'hero') {
             iconBadgeBlock.classList.add('hidden');
         } else {
             iconBadgeBlock.classList.remove('hidden');
         }
     }
     
+    // Ekipman Özel Alanları vs Normal Açıklama
     if(descBlock && equipmentBlock) {
         if(section === 'equipment') {
             descBlock.classList.add('hidden');
@@ -1574,8 +1578,9 @@ function toggleHomecardLinkFields() {
         }
     }
 
+    // Buton ve Link Alanları
     if(linkBlock) {
-        if(section === 'hero' || section === 'benefits' || section === 'schedule') {
+        if(section === 'hero' || section === 'benefits') {
             linkBlock.classList.add('hidden');
         } else {
             linkBlock.classList.remove('hidden');

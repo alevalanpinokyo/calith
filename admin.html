@@ -360,7 +360,13 @@
         if (tab === 'products') renderAdminProducts();
         if (tab === 'programs') renderAdminPrograms();
         if (tab === 'announcements') renderAdminAnnouncements();
-        if (tab === 'homecards') renderAdminHomecards();
+        if (tab === 'homecards') {
+            if (typeof filterAdminHomecards === 'function') {
+                filterAdminHomecards(typeof currentHomecardFilter !== 'undefined' ? currentHomecardFilter : 'hero', true);
+            } else {
+                renderAdminHomecards();
+            }
+        }
     }
 </script>
 </body>
