@@ -1,4 +1,4 @@
-﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 let supabaseClient = null;
 function getSupabase() {
@@ -108,6 +108,7 @@ async function loadPosts() {
                 ...p,
                 category: p.category || 'temel',
                 image: p.image || 'https://a.pinatafarm.com/295x340/0406bd5408/borat.jpg',
+                excerpt: p.excerpt || (p.title ? p.title.substring(0, 50) + '...' : ''),
                 date: (p.created_at || p.date || '').slice(0, 10)
             }));
         }
@@ -1158,6 +1159,7 @@ async function loadAnnouncements() {
         announcements = defaultAnnouncements;
         if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
         if (document.getElementById('hero-slider-track')) renderAnnouncementsSlider();
+        hideAdminLoading(); // Hata durumunda bile gizle
         return;
     }
     
@@ -1175,6 +1177,7 @@ async function loadAnnouncements() {
     
     if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
     if (document.getElementById('hero-slider-track')) renderAnnouncementsSlider();
+    hideAdminLoading();
 }
 
 function renderAnnouncementsSlider() {
@@ -1492,7 +1495,10 @@ async function loadHomecards() {
         if (typeof renderAdminHomecards === 'function' && window.location.pathname.endsWith('admin.html')) renderAdminHomecards();
     }
 
-    if(!sb) return;
+    if(!sb) {
+        hideAdminLoading();
+        return;
+    }
     const { data, error } = await sb.from('homecards').select('*');
     if(!error && data) {
         homecards = data;
@@ -1505,6 +1511,7 @@ async function loadHomecards() {
             renderAdminHomecards();
         }
     }
+    hideAdminLoading();
 }
 
 async function saveHomecard() {
@@ -2064,6 +2071,46 @@ async function checkCurrentUser() {
         }
     }
     updateAuthUI();
+    
+    // Eğer admin sayfasındaysak ve kullanıcı logged in ise admin paneli yetkisini kontrol et
+    if (window.location.pathname.endsWith('admin.html')) {
+        initAdminPanel();
+    }
+}
+
+function initAdminPanel() {
+    const loadingEl = document.getElementById('admin-loading');
+    const loginEl = document.getElementById('admin-login');
+    const editorEl = document.getElementById('admin-editor');
+    
+    if (!loadingEl) return; // Admin sayfasında değiliz demektir
+
+    if (currentUser) {
+        if (currentUser.user_metadata?.role === 'admin') {
+            if (loadingEl) loadingEl.classList.add('hidden');
+            if (loginEl) loginEl.classList.add('hidden');
+            if (editorEl) editorEl.classList.remove('hidden');
+            isAdminMode = true;
+            if (typeof switchAdminTab === 'function') switchAdminTab('blog');
+        } else {
+            // Logged in ama admin değil
+            alert('Bu panele erişim yetkiniz yok.');
+            handleLogout();
+        }
+    } else {
+        // Giriş yapılmamış
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (loginEl) loginEl.classList.remove('hidden');
+        if (editorEl) editorEl.classList.add('hidden');
+    }
+}
+
+function hideAdminLoading() {
+    const loadingEl = document.getElementById('admin-loading');
+    if (loadingEl && announcements.length > 0 && homecards.length > 0) {
+        // Veriler yüklendiyse (veya hata ile sonlandıysa) loading'i kaldırabiliriz
+        // Ancak initAdminPanel asıl kontrolü yapacaktır.
+    }
 }
 
 function updateAuthUI() {
@@ -2163,8 +2210,9 @@ async function submitLeadForm() {
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Initial page state & logic
     if (typeof init === 'function') init();
-    checkCurrentUser();
+    await checkCurrentUser();
     updateCartUI();
+    updateHappyMembersStats(); 
 
     // 2. Navigation Active State
     const path = window.location.pathname;
@@ -2307,15 +2355,4 @@ function toggleScheduleCard() {
     grid.dataset.expanded = isExpanded ? '0' : '1';
 }
 
-async function updateHappyMembersStats() { const el = document.getElementById("happy-members-count"); if (!el) return; const sb = getSupabase(); if (!sb) return; try { let { count, error } = await sb.from("profiles").select("*", { count: "exact", head: true }); if (error || count === null || count === 0) { const { data } = await sb.from("profiles").select("id"); if (data) count = data.length; } if (count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } } = await sb.from('profiles').select('*', { count: 'exact', head: true });
-        if (!error && count !== null) {
-            el.textContent = (count + 500).toLocaleString();
-        } else {
-            const { count: lCount, error: lErr } = await sb.from('leads').select('*', { count: 'exact', head: true });
-            if (!lErr && lCount !== null) {
-                el.textContent = (lCount + 500).toLocaleString();
-            }
-        }
-    } catch (e) { }
-}
-
+async function updateHappyMembersStats() { const el = document.getElementById('happy-members-count'); if (!el) return; const sb = getSupabase(); if (!sb) return; try { let { count, error } = await sb.from('profiles').select('*', { count: 'exact', head: true }); if (error || count === null || count === 0) { const { data } = await sb.from('profiles').select('id'); if (data) count = data.length; } if (count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } }
