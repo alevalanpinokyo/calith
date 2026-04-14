@@ -1615,11 +1615,23 @@ function editHomecard(id) {
     document.getElementById('hc-desc').value = hc.desc_text || '';
     
     if (hc.section === 'equipment' && hc.desc_text) {
-        const lines = hc.desc_text.split('\\n');
+        // Hem fiziksel hem escape edilmi satr sonlarn destekle
+        const raw = hc.desc_text.replace(/\\n/g, '\n');
+        const lines = raw.split('\n');
+        
         lines.forEach(line => {
-            if(line.includes('İhtiyacın:')) document.getElementById('hc-eq-needs').value = line.replace('İhtiyacın:', '').trim();
-            else if(line.includes('Maliyet:')) document.getElementById('hc-eq-cost').value = line.replace('Maliyet:', '').trim();
-            else if(line.includes('Neden:')) document.getElementById('hc-eq-reason').value = line.replace('Neden:', '').trim();
+            const clean = line.trim();
+            const lowerLine = clean.toLowerCase();
+            
+            if(lowerLine.includes('ihtiyacın:') || lowerLine.includes('ihtiyaç:')) {
+                document.getElementById('hc-eq-needs').value = clean.split(':').slice(1).join(':').trim();
+            }
+            else if(lowerLine.includes('maliyet:')) {
+                document.getElementById('hc-eq-cost').value = clean.split(':').slice(1).join(':').trim();
+            }
+            else if(lowerLine.includes('neden:')) {
+                document.getElementById('hc-eq-reason').value = clean.split(':').slice(1).join(':').trim();
+            }
         });
     }
 
