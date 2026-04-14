@@ -1227,7 +1227,7 @@ function renderAnnouncementsSlider() {
 
         return `
         <div class="flex-shrink-0 h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] mx-auto">
+            <div class="flex flex-col items-center justify-center w-full max-w-[360px] mx-auto">
                 ${mediaHtml}
                 <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block mx-auto">${ann.label}</span>
                 <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
