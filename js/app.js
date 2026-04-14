@@ -2042,7 +2042,9 @@ async function submitRegister() {
         console.error('Registration Error Details:', error);
         alert('Kayıt Hatası: ' + error.message + ' (Kod: ' + (error.status || 'DB') + ')');
     } else {
-        showToast('Kayıt başarılı! Aramıza hoş geldin.');
+        showToast('Kayıt işlemini tamamlamak için e-posta adresini onayla!');
+        alert('Kayıt başarılı! Hesabını aktifleştirmek için e-postana gönderilen onay linkine tıklamalısın. Üye sayacı, onay işlemin bittiğinde güncellenecektir.');
+        
         currentUser = data.user;
         closeAuthModal();
         updateAuthUI();
