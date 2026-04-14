@@ -2046,6 +2046,11 @@ async function submitRegister() {
         currentUser = data.user;
         closeAuthModal();
         updateAuthUI();
+        
+        // Kayıt sonrası üye sayısını anlık güncelle (500ms delay ile DB trigger bekletilir)
+        setTimeout(() => {
+            updateHappyMembersStats();
+        }, 500);
     }
 }
 
