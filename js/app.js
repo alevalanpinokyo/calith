@@ -2029,6 +2029,7 @@ async function submitRegister() {
         options: {
             data: {
                 full_name: name,
+                username: email.split('@')[0] + '_' + Math.floor(Math.random() * 999), 
                 role: 'user',
                 fitness_level: level
             }
