@@ -1,4 +1,4 @@
-﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 let supabaseClient = null;
 function getSupabase() {
@@ -1179,8 +1179,9 @@ function renderAnnouncementsSlider() {
         return;
     }
 
-    track.style.width = (announcements.length * 100) + '%';
-    const percentPerSlide = 100 / announcements.length;
+    const slideCount = announcements.length;
+    track.style.setProperty('width', (slideCount * 100) + '%', 'important');
+    const percentPerSlide = 100 / slideCount;
 
     track.innerHTML = announcements.map((ann, index) => {
         const hShadow = ann.color === 'calith-orange' ? 'rgba(255,107,53,0.3)' : (ann.color === 'calith-accent' ? 'rgba(0,217,255,0.3)' : (ann.color === 'green-500' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'));
@@ -1194,9 +1195,6 @@ function renderAnnouncementsSlider() {
 
         let imageUrl = ann.image;
         if ((!imageUrl || imageUrl.trim() === '') && isYoutube) {
-            imageUrl = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
-            // maxresdefault bazen boş dönebilir hqdefault garantidir ama maxres varsa çok kalitelidir. Fallback olarak image onerr olabilir ama css yeterlidir.
-            // Şimdilik hqdefault kullanalım ki her videoda sorunsuz çıksın:
             imageUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
         }
 
@@ -1213,17 +1211,19 @@ function renderAnnouncementsSlider() {
                 ` : ''}
             </div>`;
         } else {
-            mediaHtml = `<div class="w-16 h-16 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0 relative">
-                <i data-lucide="${ann.icon}" class="w-8 h-8"></i>
+            mediaHtml = `<div class="w-20 h-20 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0 relative">
+                <i data-lucide="${ann.icon || 'bell'}" class="w-10 h-10"></i>
             </div>`;
         }
 
         return `
-        <div class="h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
-            ${mediaHtml}
-            <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block">${ann.label}</span>
-            <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight">${ann.title}</h4>
-            <p class="text-sm text-gray-400 leading-relaxed px-2">${ann.desc}</p>
+        <div class="flex-shrink-0 h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
+            <div class="flex flex-col items-center justify-center w-full">
+                ${mediaHtml}
+                <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block">${ann.label}</span>
+                <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight">${ann.title}</h4>
+                <p class="text-sm text-gray-400 leading-relaxed px-4 opacity-70 group-hover:opacity-100 transition-opacity">${ann.desc}</p>
+            </div>
         </div>
         `;
     }).join('');
@@ -1240,12 +1240,17 @@ function renderAnnouncementsSlider() {
 }
 
 function openVideoModal(videoId) {
-    if(!videoId || videoId.includes('http')) {
-        // Fallback in case a full url somehow passes here
+    if(!videoId) return;
+    
+    // Eğer videoId bir YouTube ID'si değil de tam URL ise ID'yi ayıkla
+    if(videoId.includes('http') || videoId.includes('youtube') || videoId.includes('youtu.be')) {
         const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
         const ytMatch = videoId.match(ytRegex);
         if(ytMatch) videoId = ytMatch[1];
-        else return window.location.href = videoId;
+        else {
+            window.open(videoId, '_blank');
+            return;
+        }
     }
 
     const modal = document.getElementById('video-modal');
@@ -1260,8 +1265,10 @@ function openVideoModal(videoId) {
         setTimeout(() => {
             modal.classList.remove('opacity-0');
             modal.classList.add('opacity-100');
-            content.classList.remove('scale-95');
-            content.classList.add('scale-100');
+            if(content) {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }
         }, 10);
     }
 }
@@ -1271,16 +1278,18 @@ function closeVideoModal() {
     const content = document.getElementById('video-modal-content');
     const container = document.getElementById('video-container');
     
-    if(modal && container) {
+    if(modal) {
         document.body.style.overflow = '';
         modal.classList.remove('opacity-100');
         modal.classList.add('opacity-0');
-        content.classList.remove('scale-100');
-        content.classList.add('scale-95');
+        if(content) {
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+        }
         
         setTimeout(() => {
             modal.classList.add('hidden');
-            container.innerHTML = '';
+            if(container) container.innerHTML = '';
         }, 300);
     }
 }
@@ -2164,32 +2173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.lucide) lucide.createIcons();
 });
 
-// Video Modal Functions
-function openVideoModal(url) {
-    const modal = document.getElementById('video-modal');
-    const frame = document.getElementById('video-frame');
-    const content = document.getElementById('video-content');
-    if (modal && frame && content) {
-        frame.src = url;
-        modal.classList.remove('hidden');
-        setTimeout(() => content.classList.remove('scale-95'), 10);
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeVideoModal() {
-    const modal = document.getElementById('video-modal');
-    const frame = document.getElementById('video-frame');
-    const content = document.getElementById('video-content');
-    if (modal && frame && content) {
-        content.classList.add('scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            frame.src = '';
-            document.body.style.overflow = 'auto';
-        }, 300);
-    }
-}
+// Utility functions moved to primary definitions above.
 
 // PDF Export Logic
 function exportProgramPDF() {
