@@ -1,4 +1,4 @@
-const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 let supabaseClient = null;
 function getSupabase() {
@@ -461,7 +461,6 @@ async function logoutAdmin() {
     if (emailInput) emailInput.value = '';
     
     isAdminMode = false;
-    updateCartUI();
 }
     
 function insertFormat(type) {
@@ -766,7 +765,6 @@ function addToCart(id, qty = 1) {
     } 
     
     saveCart(); 
-    updateCartUI(); 
     showToast(`${p.name} sepete eklendi`); 
     
     const drawer = document.getElementById('cart-sidebar');
@@ -829,14 +827,12 @@ function updateCartQty(id, delta) {
     if (item) { 
         item.qty = Math.max(1, item.qty + delta); 
         saveCart(); 
-        updateCartUI(); 
     } 
 }
 
 function removeFromCart(id) { 
     cart = cart.filter(i => i.id !== id); 
     saveCart(); 
-    updateCartUI(); 
 }
 
 function toggleCart() {
@@ -874,7 +870,6 @@ function toggleMobileMenu() {
 function init() {
     loadPosts();
     loadProducts(); // Dinamik ürünleri yükle
-    updateCartUI();
     
     // Supabase Auto-Session Check
     const sb = getSupabase();
@@ -2162,8 +2157,7 @@ async function submitLeadForm() {
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Initial page state & logic
     if (typeof init === 'function') init();
-    checkCurrentUser();
-    updateCartUI();
+    checkCurrentUser(); updateHappyMembersStats();
 
     // 2. Navigation Active State
     const path = window.location.pathname;
@@ -2306,3 +2300,25 @@ function toggleScheduleCard() {
     grid.dataset.expanded = isExpanded ? '0' : '1';
 }
 
+
+    const el = document.getElementById('happy-members-count');
+    if (!el) return;
+    
+    const sb = getSupabase();
+    if (!sb) return;
+
+    try {
+        // Profil tablosundan �ye say�s�n� �ekelim
+        const { count, error } = await sb
+            .from('profiles')
+            .select('*', { count: 'exact', head: true });
+
+        if (!error && count !== null) {
+        }
+    } catch (e) {
+        console.error('�ye say�s� �ekilemedi:', e);
+    }
+}
+
+
+async function updateHappyMembersStats() { const el = document.getElementById('happy-members-count'); if (!el) return; const sb = getSupabase(); if (!sb) return; try { const { count, error } = await sb.from('profiles').select('*', { count: 'exact', head: true }); if (!error && count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } }
