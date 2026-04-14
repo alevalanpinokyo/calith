@@ -213,29 +213,39 @@ body {
     }
 }
 
-/* Expandable Program Cards (Centralized) */
+/* Expandable Program Cards (Fluid & Centralized) */
+.program-card {
+    cursor: pointer;
+    min-height: initial !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .program-list-container {
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: hidden;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #schedule-grid.all-expanded .program-list-container {
-    max-height: 600px;
+    max-height: 800px;
     opacity: 1;
+    visibility: visible;
     margin-top: 1.5rem;
 }
 
 .program-card .chevron-icon {
-    transition: transform 0.4s ease;
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #schedule-grid.all-expanded .chevron-icon {
     transform: rotate(180deg);
+    color: var(--calith-orange);
 }
 
-.program-card {
-    cursor: pointer;
-    min-height: initial !important;
+#schedule-grid.all-expanded .program-card {
+    border-color: rgba(255, 107, 53, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
