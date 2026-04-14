@@ -1,4 +1,4 @@
-const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 let supabaseClient = null;
 function getSupabase() {
@@ -2307,13 +2307,7 @@ function toggleScheduleCard() {
     grid.dataset.expanded = isExpanded ? '0' : '1';
 }
 
-async function updateHappyMembersStats() {
-    const el = document.getElementById('happy-members-count');
-    if (!el) return;
-    const sb = getSupabase();
-    if (!sb) return;
-    try {
-        const { count, error } = await sb.from('profiles').select('*', { count: 'exact', head: true });
+async function updateHappyMembersStats() { const el = document.getElementById("happy-members-count"); if (!el) return; const sb = getSupabase(); if (!sb) return; try { let { count, error } = await sb.from("profiles").select("*", { count: "exact", head: true }); if (error || count === null || count === 0) { const { data } = await sb.from("profiles").select("id"); if (data) count = data.length; } if (count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } } = await sb.from('profiles').select('*', { count: 'exact', head: true });
         if (!error && count !== null) {
             el.textContent = (count + 500).toLocaleString();
         } else {
