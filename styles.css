@@ -213,7 +213,7 @@ body {
     }
 }
 
-/* Expandable Program Cards */
+/* Expandable Program Cards (Centralized) */
 .program-list-container {
     max-height: 0;
     opacity: 0;
@@ -221,8 +221,8 @@ body {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.program-card.expanded .program-list-container {
-    max-height: 500px;
+#schedule-grid.all-expanded .program-list-container {
+    max-height: 600px;
     opacity: 1;
     margin-top: 1.5rem;
 }
@@ -231,11 +231,11 @@ body {
     transition: transform 0.4s ease;
 }
 
-.program-card.expanded .chevron-icon {
+#schedule-grid.all-expanded .chevron-icon {
     transform: rotate(180deg);
 }
 
 .program-card {
     cursor: pointer;
-    min-height: initial !important; /* Remove fixed min-height for accordion style */
+    min-height: initial !important;
 }
