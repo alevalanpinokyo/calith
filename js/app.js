@@ -2217,17 +2217,20 @@ function addToMyPrograms() {
     showToast('Program başarıyla kütüphanenize eklendi! (Gelecek Özellik)');
 }
 
-// Program Card Toggle (Synchronized)
+// Program Card Toggle (Preview + Expand)
 function toggleScheduleCard() {
     const containers = document.querySelectorAll('#schedule-grid .program-list-container');
+    const fades      = document.querySelectorAll('#schedule-grid .program-list-fade');
     const chevrons   = document.querySelectorAll('#schedule-grid .chevron-icon');
     const grid       = document.getElementById('schedule-grid');
     if (!grid) return;
     const isExpanded = grid.dataset.expanded === '1';
     containers.forEach(function(c) {
-        c.style.transition = 'all 0.5s ease';
-        if (isExpanded) { c.style.maxHeight = '0'; c.style.opacity = '0'; }
-        else { c.style.maxHeight = (c.scrollHeight + 300) + 'px'; c.style.opacity = '1'; }
+        c.style.transition = 'max-height 0.5s ease';
+        c.style.maxHeight  = isExpanded ? '90px' : (c.scrollHeight + 40) + 'px';
+    });
+    fades.forEach(function(f) {
+        f.style.opacity = isExpanded ? '1' : '0';
     });
     chevrons.forEach(function(ch) {
         ch.style.transition = 'transform 0.5s ease';
