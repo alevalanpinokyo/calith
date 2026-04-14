@@ -2355,4 +2355,26 @@ function toggleScheduleCard() {
     grid.dataset.expanded = isExpanded ? '0' : '1';
 }
 
-async function updateHappyMembersStats() { const el = document.getElementById('happy-members-count'); if (!el) return; const sb = getSupabase(); if (!sb) return; try { let { count, error } = await sb.from('profiles').select('*', { count: 'exact', head: true }); if (error || count === null || count === 0) { const { data } = await sb.from('profiles').select('id'); if (data) count = data.length; } if (count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } }
+async function updateHappyMembersStats() {
+    const el = document.getElementById('happy-members-count');
+    if (!el) return;
+    
+    const sb = getSupabase();
+    if (!sb) return;
+
+    try {
+        const { data: userCount, error } = await sb.rpc('get_profile_count');
+        
+        if (error) {
+            console.error('Supabase RPC error:', error);
+            el.textContent = '---';
+        } else {
+            // userCount bir integer döner, üzerine optimize edilmiş +500 ekleyip formatlıyoruz
+            const total = (userCount || 0) + 500;
+            el.textContent = total.toLocaleString() + '+';
+        }
+    } catch (e) {
+        console.error('Happy Members update failed:', e);
+        el.textContent = '0';
+    }
+}
