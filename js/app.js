@@ -2359,22 +2359,23 @@ async function updateHappyMembersStats() {
     const el = document.getElementById('happy-members-count');
     if (!el) return;
     
+    // Önceki yüklemeden kalan değeri hemen göster (flicker önleme)
+    const cached = localStorage.getItem('calith_member_count');
+    if (cached) el.textContent = cached;
+
     const sb = getSupabase();
     if (!sb) return;
 
     try {
         const { data: userCount, error } = await sb.rpc('get_profile_count');
         
-        if (error) {
-            console.error('Supabase RPC error:', error);
-            el.textContent = '---';
-        } else {
-            // userCount bir integer döner, üzerine optimize edilmiş +500 ekleyip formatlıyoruz
+        if (!error) {
             const total = (userCount || 0) + 500;
-            el.textContent = total.toLocaleString() + '+';
+            const finalValue = total.toLocaleString() + '+';
+            el.textContent = finalValue;
+            localStorage.setItem('calith_member_count', finalValue); // Bir sonraki açılış için hafızaya al
         }
     } catch (e) {
         console.error('Happy Members update failed:', e);
-        el.textContent = '0';
     }
 }
