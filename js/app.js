@@ -1505,8 +1505,14 @@ async function saveHomecard() {
     let desc = document.getElementById('hc-desc').value.trim();
     if (section === 'equipment') {
         const needs = document.getElementById('hc-eq-needs').value.trim();
-        const cost = document.getElementById('hc-eq-cost').value.trim();
+        let cost = document.getElementById('hc-eq-cost').value.trim();
         const reason = document.getElementById('hc-eq-reason').value.trim();
+        
+        // Otomatik TL (₺) işareti ekleme
+        if (cost && !cost.includes('₺') && !cost.toLowerCase().includes('tl')) {
+            cost = cost + '₺';
+        }
+        
         desc = `İhtiyacın: ${needs}\nMaliyet: ${cost}${reason ? `\nNeden: ${reason}` : ''}`;
     }
 
