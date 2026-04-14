@@ -45,13 +45,14 @@ body {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--calith-orange) 0%, var(--calith-orange-hover) 100%);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     color: white;
 }
 
 .btn-primary:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
 }
 
 .btn-outline {
@@ -75,18 +76,19 @@ body {
 }
 
 .fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
     opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-@keyframes fadeIn {
-    to { opacity: 1; transform: translateY(0); }
-    from { opacity: 0; transform: translateY(20px); }
+.fade-in.active {
+    opacity: 1; 
+    transform: translateY(0);
 }
 
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
 
 .nav-blur {
     -webkit-backdrop-filter: blur(20px);
@@ -158,25 +160,55 @@ body {
     transform: translate(-50%, -20px) scale(1);
 }
 
-/* Enforce explicit White Background and Black Text for ALL Form Fields */
-input, textarea, select, [contenteditable="true"],
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-textarea:-webkit-autofill:active {
-    background-color: white !important;
+/* targeted styles for lead forms / white background inputs */
+.lead-input {
+    background-color: rgba(255, 255, 255, 0.9) !important;
     color: #0A0A0A !important;
-    -webkit-text-fill-color: #0A0A0A !important;
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Ensure placeholder visibility against white background */
-input::placeholder, textarea::placeholder {
-    color: #888888 !important;
-    opacity: 1 !important;
+/* Glassmorphism Classes */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-badge {
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+/* Modal Animations */
+#video-content.scale-95 {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+#video-content {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #print-area, #print-area * {
+        visibility: visible;
+    }
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+    }
+    .no-print {
+        display: none !important;
+    }
 }

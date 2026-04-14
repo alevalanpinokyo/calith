@@ -460,130 +460,8 @@ async function logoutAdmin() {
     if (emailInput) emailInput.value = '';
     
     isAdminMode = false;
-    showSection('blog'); 
-}
-
-// Logo'ya uzun basma olayı - DÜZELTİLMİŞ VERSİYON
-document.addEventListener('DOMContentLoaded', () => {
-    const logo = document.getElementById('logo-container');
-    let pressTimer;
-    let isPressing = false;
-    
-    if (logo) {
-        // Normal tıklama - Ana sayfaya git
-        logo.addEventListener('click', (e) => {
-            if (!isPressing) {
-                window.location.href = 'index.html';
-            }
-        });
-
-        // Mouse events
-        logo.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            isPressing = true;
-            logo.style.transform = 'scale(0.95)';
-            logo.style.transition = 'transform 0.2s ease';
-            
-            pressTimer = setTimeout(() => {
-                if (isPressing) {
-                    isPressing = false;
-                    logo.style.transform = 'scale(1)';
-                    showToast('Admin modu açılıyor...');
-                    setTimeout(() => showAdmin(), 500);
-                }
-            }, 5000);
-        });
-        
-        logo.addEventListener('mouseup', () => {
-            isPressing = false;
-            clearTimeout(pressTimer);
-            logo.style.transform = 'scale(1)';
-        });
-        
-        logo.addEventListener('mouseleave', () => {
-            isPressing = false;
-            clearTimeout(pressTimer);
-            logo.style.transform = 'scale(1)';
-        });
-        
-        // Touch events - Mobil için
-        logo.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isPressing = true;
-            logo.style.transform = 'scale(0.95)';
-            logo.style.transition = 'transform 0.2s ease';
-            
-            pressTimer = setTimeout(() => {
-                if (isPressing) {
-                    isPressing = false;
-                    logo.style.transform = 'scale(1)';
-                    showToast('Admin modu açılıyor...');
-                    setTimeout(() => showAdmin(), 500);
-                }
-            }, 5000);
-        });
-        
-        logo.addEventListener('touchend', () => {
-            isPressing = false;
-            clearTimeout(pressTimer);
-            logo.style.transform = 'scale(1)';
-        });
-        
-        logo.addEventListener('touchcancel', () => {
-            isPressing = false;
-            clearTimeout(pressTimer);
-            logo.style.transform = 'scale(1)';
-        });
-    }
-    
-    loadPosts().then(() => {
-        // Eğer blog sayfasındaysak blogu tekrar render et (garanti olsun)
-        if (window.location.pathname.includes('blog.html')) renderBlog();
-        
-        // URL parametrelerini kontrol et
-        const params = new URLSearchParams(window.location.search);
-        const productId = params.get('p');
-        const blogId = params.get('b');
-        const blogCat = params.get('c');
-        const levelCode = params.get('level');
-
-        if (productId) {
-            showProductDetail(productId);
-        } else if (blogId) {
-            showBlogDetail(blogId);
-        } else if (blogCat && window.location.pathname.includes('blog.html')) {
-            filterBlog(blogCat);
-        } else if (levelCode && window.location.pathname.includes('skills.html')) {
-            const levelMap = {
-                'baslangic': 'Başlangıç',
-                'orta': 'Orta Seviye',
-                'ileri': 'İleri Seviye'
-            };
-            if (levelMap[levelCode]) {
-                setTimeout(() => showProgramLevel(levelCode, levelMap[levelCode]), 100);
-            }
-        }
-    });
-    
-    // Eğer shop sayfasındaysak dükkanı render et
-    if (window.location.pathname.includes('shop.html')) renderShop();
-    
     updateCartUI();
-
-    // Aktif menü öğesini vurgula
-    const path = window.location.pathname;
-    let fileName = path.split('/').pop() || 'index.html';
-    if (fileName === '') fileName = 'index.html';
-    
-    document.querySelectorAll('nav button, #mobile-menu button').forEach(btn => {
-        const onclick = btn.getAttribute('onclick') || '';
-        if (onclick.includes(fileName)) {
-            btn.classList.add('text-accent');
-        } else if (fileName === 'index.html' && (onclick.includes('landing') || onclick.includes('index.html'))) {
-             btn.classList.add('text-accent');
-        }
-    });
-});
+}
     
 function insertFormat(type) {
     document.getElementById('editor').focus();
@@ -1547,9 +1425,7 @@ function editAnnouncement(id) {
 }
 
 // --- HOMECARDS LOGIC ---
-let homecards = [];
-
-function toggleHomecardLinkFields() {
+let homecards = JSON.parse(localStorage.getItem('calith_homecards_cache')) || [];function toggleHomecardLinkFields() {
     const hiddenEl = document.getElementById('hc-section');
     const section = hiddenEl ? hiddenEl.value : 'hero';
     
@@ -1590,12 +1466,24 @@ function toggleHomecardLinkFields() {
 
 async function loadHomecards() {
     const sb = getSupabase();
+    
+    // Eğer önbellekte veri varsa ilk render'ı hemen yapalım (titremeyi önlemek için)
+    if(homecards.length > 0 && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html'))) {
+        if (typeof renderFrontendHomecards === 'function' && !window.location.pathname.endsWith('admin.html')) renderFrontendHomecards();
+        if (typeof renderAdminHomecards === 'function' && window.location.pathname.endsWith('admin.html')) renderAdminHomecards();
+    }
+
     if(!sb) return;
     const { data, error } = await sb.from('homecards').select('*');
     if(!error && data) {
         homecards = data;
+        localStorage.setItem('calith_homecards_cache', JSON.stringify(data));
+        
         if(typeof renderFrontendHomecards === 'function' && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
             renderFrontendHomecards();
+        }
+        if(typeof renderAdminHomecards === 'function' && window.location.pathname.endsWith('admin.html')) {
+            renderAdminHomecards();
         }
     }
 }
@@ -1610,7 +1498,7 @@ async function saveHomecard() {
         const needs = document.getElementById('hc-eq-needs').value.trim();
         const cost = document.getElementById('hc-eq-cost').value.trim();
         const reason = document.getElementById('hc-eq-reason').value.trim();
-        desc = `İhtiyacın: ${needs}\\nMaliyet: ${cost}${reason ? `\\nNeden: ${reason}` : ''}`;
+        desc = `İhtiyacın: ${needs}\nMaliyet: ${cost}${reason ? `\nNeden: ${reason}` : ''}`;
     }
 
     const hcData = {
@@ -1796,17 +1684,20 @@ function renderAdminHomecards() {
     }
 
     list.innerHTML = filtered.map(hc => `
-        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl font-bold">${hc.icon || '📌'}</div>
+        <div class="glass-card hover:bg-white/5 p-5 rounded-2xl flex items-center justify-between group transition-all duration-300">
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-calith-orange/10 flex items-center justify-center text-3xl shadow-inner">${hc.icon || '📌'}</div>
                 <div>
-                    <h4 class="font-bold text-sm text-white">${hc.title}</h4>
-                    <p class="text-[10px] text-calith-orange uppercase font-bold tracking-widest mt-1">${hc.section}</p>
+                    <h4 class="font-bold text-base text-white tracking-tight">${hc.title}</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[9px] bg-white/5 text-gray-500 px-2 py-0.5 rounded-full uppercase font-black tracking-widest border border-white/5">${hc.section}</span>
+                        ${hc.badge ? `<span class="text-[9px] bg-calith-orange/10 text-calith-orange px-2 py-0.5 rounded-full uppercase font-black tracking-widest border border-calith-orange/20">${hc.badge}</span>` : ''}
+                    </div>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="editHomecard('${hc.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all" title="Düzenle"><i data-lucide="edit-2" class="w-4 h-4 pointer-events-none"></i></button>
-                <button onclick="deleteHomecard('${hc.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all" title="Sil"><i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i></button>
+                <button onclick="editHomecard('${hc.id}')" class="w-11 h-11 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all shadow-lg" title="Düzenle"><i data-lucide="edit-2" class="w-5 h-5 pointer-events-none"></i></button>
+                <button onclick="deleteHomecard('${hc.id}')" class="w-11 h-11 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-xl transition-all shadow-lg" title="Sil"><i data-lucide="trash-2" class="w-5 h-5 pointer-events-none"></i></button>
             </div>
         </div>
     `).join('');
@@ -1876,23 +1767,29 @@ function renderFrontendHomecards() {
     if (schedule.length > 0) {
         const grid = document.getElementById('schedule-grid');
         if (grid) {
+            grid.className = "grid lg:grid-cols-3 gap-8 fade-in";
             grid.innerHTML = schedule.map((sch, i) => {
                 const colorMap = ['calith-orange', 'calith-accent', 'red-500', 'green-500'];
                 const c = colorMap[i % colorMap.length];
-                const listItems = (sch.desc_text || '').split('\\n').filter(l => l.trim().length > 0).map(l => '<li><span class="text-'+c+' mr-2">✓</span>'+l.trim().replace(/^[-✓* ]+/, '')+'</li>').join('');
+                const listItems = (sch.desc_text || '').split(/\n|\\n/).filter(l => l.trim().length > 0).map(l => 
+                    `<li class="flex items-start gap-4 pb-3 border-b border-white/[0.05] last:border-0"><span class="text-${c} shrink-0 mt-1 font-bold text-xl">✓</span><span class="text-gray-400 font-medium">${l.trim().replace(/^[-✓* ]+/, '')}</span></li>`
+                ).join('');
 
                 return `
-                <div class="bg-calith-gray border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 justify-between hover:border-white/20 transition-colors">
-                    <div class="flex items-center gap-6 w-full md:w-auto">
-                        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center font-display font-bold text-2xl text-${c}">${sch.icon || ('0' + (i+1))}</div>
-                        <div>
-                            <h4 class="font-bold text-xl mb-1">${sch.title.toUpperCase()} <span class="text-gray-500 font-normal ml-2 text-sm">${sch.badge ? '- '+sch.badge : ''}</span></h4>
-                            <ul class="text-sm text-gray-400 space-y-1 mt-3">
-                                ${listItems}
-                            </ul>
+                <div class="bg-calith-gray border border-white/5 rounded-[2rem] p-10 lg:p-12 flex flex-col gap-8 hover:border-white/20 transition-all duration-500 min-h-[520px] group shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-${c}/5 blur-3xl rounded-full"></div>
+                    <div class="flex flex-col gap-6 w-full relative z-10">
+                        <div class="flex items-center gap-5">
+                            <div class="w-16 h-16 rounded-2xl bg-${c}/10 flex items-center justify-center font-display font-bold text-3xl text-${c} shrink-0 shadow-lg shadow-${c}/10">${sch.icon || ('0' + (i+1))}</div>
+                            <div>
+                                <h4 class="font-bold text-2xl mb-1 text-white tracking-tight uppercase">${sch.title}</h4>
+                                <span class="text-gray-500 font-bold text-xs uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full">${sch.badge || ''}</span>
+                            </div>
                         </div>
+                        <ul class="text-[15px] space-y-4 mt-4">
+                            ${listItems}
+                        </ul>
                     </div>
-                    <button onclick="window.location.href='${sch.link_url || 'blog.html'}'" class="btn-outline px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest w-full md:w-auto whitespace-nowrap">${sch.link_text || 'İncele →'}</button>
                 </div>
                 `;
             }).join('');
@@ -1902,42 +1799,45 @@ function renderFrontendHomecards() {
     if (equipment.length > 0) {
         const grid = document.getElementById('equipment-grid');
         if (grid) {
+            // Ensure grid classes are consistent
+            grid.className = "grid md:grid-cols-3 gap-8 fade-in";
             grid.innerHTML = equipment.map((eq, i) => {
-                const isOdd = i % 2 !== 0; 
-                const borderClass = isOdd ? 'border-calith-orange/20 shadow-2xl shadow-calith-orange/5' : 'border-white/5';
-                const hoverClass = isOdd ? 'hover:border-calith-orange/40' : 'hover:border-white/10';
-                const btnClass = isOdd ? 'btn-primary' : 'btn-outline border-white/10 hover:bg-white/5';
+                const isPop = i === 1; // Stage 2 is usually centered/highlighted
+                const borderClass = isPop ? 'border-calith-orange/30 shadow-2xl shadow-calith-orange/10' : 'border-white/5';
+                const hoverClass = isPop ? 'hover:border-calith-orange/50' : 'hover:border-white/20';
+                const btnClass = isPop ? 'btn-primary' : 'btn-outline border-white/10 hover:bg-white/5';
                 
                 let badgeColor = 'calith-orange';
                 if (eq.badge) {
-                    if (eq.badge.includes('1')) badgeColor = 'green';
-                    else if (eq.badge.includes('2')) badgeColor = 'yellow';
-                    else if (eq.badge.includes('3')) badgeColor = 'red';
+                    if (eq.badge.includes('1')) badgeColor = 'green-500';
+                    else if (eq.badge.includes('2')) badgeColor = 'yellow-500';
+                    else if (eq.badge.includes('3')) badgeColor = 'red-500';
                 }
                 
-                const lines = (eq.desc_text || '').split('\\n');
+                const lines = (eq.desc_text || '').split(/\n|\\n/);
                 let descHtml = '';
                 lines.forEach(line => {
                     const parts = line.split(':');
                     if(parts.length > 1) {
                         const key = parts[0].trim();
                         const val = parts.slice(1).join(':').trim();
-                        descHtml += `<div><p class="text-xs text-gray-500 uppercase tracking-widest mb-1">${key}:</p><p class="${key.toLowerCase() === 'maliyet' ? 'text-white text-xl font-bold' : 'text-gray-300 text-sm font-medium'}">${val}</p></div>`;
+                        descHtml += `<div><p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">${key}:</p><p class="${key.toLowerCase() === 'maliyet' ? 'text-white text-2xl font-black font-display' : 'text-gray-300 text-sm font-semibold leading-relaxed'}">${val}</p></div>`;
                     } else {
-                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-2">${line.trim()}</p>`;
+                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-2 opacity-80 italic">${line.trim()}</p>`;
                     }
                 });
 
                 return `
-                <div class="bg-black/40 border ${borderClass} rounded-3xl p-8 ${hoverClass} transition-colors relative flex flex-col h-full">
-                    <div class="self-start w-max inline-flex items-center gap-2 px-3 py-1 rounded-full border border-${badgeColor === 'calith-orange' ? 'calith-orange/30' : badgeColor+'-500/30'} ${badgeColor === 'calith-orange' ? 'text-calith-orange' : 'text-'+badgeColor+'-500'} text-[10px] font-black uppercase tracking-widest mb-6 bg-${badgeColor === 'calith-orange' ? 'calith-orange' : badgeColor+'-500'}/10">
+                <div class="product-card backdrop-blur-3xl bg-white/5 border ${borderClass} rounded-[2.5rem] p-10 ${hoverClass} transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
+                    <div class="self-start w-max inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-${badgeColor}/30 text-${badgeColor} text-[10px] font-black uppercase tracking-widest mb-8 bg-${badgeColor}/10 backdrop-blur-md">
+                        <span class="w-1.5 h-1.5 rounded-full bg-${badgeColor} animate-pulse"></span>
                         ${eq.badge || ('Aşama ' + (i+1))}
                     </div>
-                    <h3 class="font-display text-2xl font-bold mb-4 uppercase">${eq.title}</h3>
-                    <div class="space-y-4 mb-8">
+                    <h3 class="font-display text-3xl font-bold mb-6 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">${eq.title}</h3>
+                    <div class="space-y-6 mb-10">
                         ${descHtml}
                     </div>
-                    ${eq.link_text ? `<button onclick="window.location.href='${eq.link_url || 'shop.html'}'" class="w-full ${btnClass} py-4 rounded-xl font-bold text-sm uppercase tracking-widest mt-auto">${eq.link_text}</button>` : ''}
+                    ${eq.link_text ? `<button onclick="window.location.href='${eq.link_url || 'shop.html'}'" class="w-full ${btnClass} py-5 rounded-2xl font-bold text-sm uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">${eq.link_text}</button>` : ''}
                 </div>
                 `;
             }).join('');
@@ -2172,13 +2072,141 @@ async function submitLeadForm() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    init();
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Initial page state & logic
+    if (typeof init === 'function') init();
     checkCurrentUser();
-    if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
+    updateCartUI();
+
+    // 2. Navigation Active State
+    const path = window.location.pathname;
+    let fileName = path.split('/').pop() || 'index.html';
+    if (fileName === '' || fileName === 'Calith') fileName = 'index.html';
+    
+    document.querySelectorAll('nav a, #mobile-menu a').forEach(link => {
+        const href = link.getAttribute('href') || '';
+        if (href === fileName || (fileName === 'index.html' && href === '/')) {
+            link.classList.add('text-calith-orange');
+            link.classList.add('font-black');
+        }
+    });
+
+    // 3. Admin Logo Logic (Long Press)
+    const logo = document.getElementById('logo-container');
+    if (logo) {
+        let pressTimer;
+        let isPressing = false;
+        
+        const startPress = (e) => {
+            isPressing = true;
+            logo.style.transform = 'scale(0.95)';
+            pressTimer = setTimeout(() => {
+                if (isPressing) {
+                    isPressing = false;
+                    logo.style.transform = 'scale(1)';
+                    showToast('Admin modu açılıyor...');
+                    setTimeout(() => showAdmin(), 500);
+                }
+            }, 5000);
+        };
+        
+        const endPress = () => {
+            isPressing = false;
+            clearTimeout(pressTimer);
+            logo.style.transform = 'scale(1)';
+        };
+
+        logo.addEventListener('mousedown', startPress);
+        logo.addEventListener('mouseup', endPress);
+        logo.addEventListener('mouseleave', endPress);
+        logo.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(e); }, {passive: false});
+        logo.addEventListener('touchend', endPress);
+    }
+
+    // 4. Data Loading (Posts & Homecards)
+    // Run these in parallel for speed
+    const loadOps = [
+        loadPosts().then(() => {
+            if (window.location.pathname.includes('blog.html')) renderBlog();
+            
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('p');
+            const blogId = params.get('b');
+            const blogCat = params.get('c');
+            const levelCode = params.get('level');
+
+            if (productId) showProductDetail(productId);
+            else if (blogId) showBlogDetail(blogId);
+            else if (blogCat && window.location.pathname.includes('blog.html')) filterBlog(blogCat);
+            else if (levelCode && window.location.pathname.includes('skills.html')) {
+                const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta Seviye', 'ileri': 'İleri Seviye' };
+                if (levelMap[levelCode]) setTimeout(() => showProgramLevel(levelCode, levelMap[levelCode]), 100);
+            }
+        }),
+        (async () => {
+            if(window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
+                await loadAnnouncements();
+                await loadHomecards();
+            }
+        })()
+    ];
+
+    await Promise.all(loadOps);
+
+    // 5. Finishing Touches
+    if (window.location.pathname.includes('shop.html')) renderShop();
+    if (window.lucide) lucide.createIcons();
+});
+
+// Video Modal Functions
+function openVideoModal(url) {
+    const modal = document.getElementById('video-modal');
+    const frame = document.getElementById('video-frame');
+    const content = document.getElementById('video-content');
+    if (modal && frame && content) {
+        frame.src = url;
+        modal.classList.remove('hidden');
+        setTimeout(() => content.classList.remove('scale-95'), 10);
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('video-modal');
+    const frame = document.getElementById('video-frame');
+    const content = document.getElementById('video-content');
+    if (modal && frame && content) {
+        content.classList.add('scale-95');
         setTimeout(() => {
-            loadAnnouncements();
-            loadHomecards();
+            modal.classList.add('hidden');
+            frame.src = '';
+            document.body.style.overflow = 'auto';
         }, 300);
     }
-});
+}
+
+// PDF Export Logic
+function exportProgramPDF() {
+    const printArea = document.getElementById('print-area');
+    const printContent = document.getElementById('print-content');
+    const scheduleGrid = document.getElementById('schedule-grid');
+    
+    if (printArea && printContent && scheduleGrid) {
+        showToast('PDF Hazırlanıyor...');
+        // Clone the grid for simple printing
+        printContent.innerHTML = scheduleGrid.innerHTML;
+        // Basic cleanup for print
+        const items = printContent.querySelectorAll('div');
+        items.forEach(el => {
+            el.className = "mb-8 p-6 border rounded-lg";
+            el.style.pageBreakInside = "avoid";
+        });
+        
+        window.print();
+    }
+}
+
+// Global Add to Programs Placeholder
+function addToMyPrograms() {
+    showToast('Program başarıyla kütüphanenize eklendi! (Gelecek Özellik)');
+}
