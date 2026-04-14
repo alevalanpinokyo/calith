@@ -212,3 +212,30 @@ body {
         display: none !important;
     }
 }
+
+/* Expandable Program Cards */
+.program-list-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.program-card.expanded .program-list-container {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 1.5rem;
+}
+
+.program-card .chevron-icon {
+    transition: transform 0.4s ease;
+}
+
+.program-card.expanded .chevron-icon {
+    transform: rotate(180deg);
+}
+
+.program-card {
+    cursor: pointer;
+    min-height: initial !important; /* Remove fixed min-height for accordion style */
+}

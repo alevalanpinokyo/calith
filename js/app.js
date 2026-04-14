@@ -1776,19 +1776,25 @@ function renderFrontendHomecards() {
                 ).join('');
 
                 return `
-                <div class="bg-calith-gray border border-white/5 rounded-[1.5rem] p-8 lg:p-10 flex flex-col gap-6 hover:border-white/20 transition-all duration-500 min-h-[440px] group shadow-2xl relative overflow-hidden">
+                <div onclick="toggleScheduleCard(this)" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-${c}/5 blur-3xl rounded-full"></div>
-                    <div class="flex flex-col gap-4 w-full relative z-10">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-xl bg-${c}/10 flex items-center justify-center font-display font-bold text-2xl text-${c} shrink-0">${sch.icon || ('0' + (i+1))}</div>
-                            <div>
-                                <h4 class="font-bold text-xl mb-0.5 text-white tracking-tight uppercase">${sch.title}</h4>
-                                <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">${sch.badge || ''}</span>
+                    <div class="flex flex-col w-full relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-${c}/10 flex items-center justify-center font-display font-bold text-xl text-${c} shrink-0">${sch.icon || ('0' + (i+1))}</div>
+                                <div>
+                                    <h4 class="font-bold text-lg text-white tracking-tight uppercase">${sch.title}</h4>
+                                    <span class="text-gray-500 font-bold text-[9px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">${sch.badge || ''}</span>
+                                </div>
                             </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
-                        <ul class="text-sm space-y-3 mt-4">
-                            ${listItems}
-                        </ul>
+                        
+                        <div class="program-list-container">
+                            <ul class="text-sm space-y-3">
+                                ${listItems}
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 `;
@@ -2209,4 +2215,18 @@ function exportProgramPDF() {
 // Global Add to Programs Placeholder
 function addToMyPrograms() {
     showToast('Program başarıyla kütüphanenize eklendi! (Gelecek Özellik)');
+}
+
+// Program Card Toggle
+function toggleScheduleCard(card) {
+    const isExpanded = card.classList.contains('expanded');
+    
+    // Optional: Close other cards
+    if (!isExpanded) {
+        document.querySelectorAll('.program-card.expanded').forEach(other => {
+            other.classList.remove('expanded');
+        });
+    }
+
+    card.classList.toggle('expanded');
 }
