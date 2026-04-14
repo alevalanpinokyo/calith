@@ -2371,7 +2371,7 @@ async function updateHappyMembersStats() {
         
         if (!error) {
             const total = (userCount || 0) + 500;
-            const finalValue = total.toLocaleString() + '+';
+            const finalValue = total.toLocaleString();
             el.textContent = finalValue;
             localStorage.setItem('calith_member_count', finalValue); // Bir sonraki açılış için hafızaya al
         }
