@@ -1742,6 +1742,7 @@ function renderFrontendHomecards() {
                     </div>
                 </div>
             `).join('');
+            if (window.lucide) lucide.createIcons();
         }
     }
 
@@ -1752,7 +1753,6 @@ function renderFrontendHomecards() {
             grid.innerHTML = levels.map((lvl, i) => {
                 const isPop = lvl.badge ? true : false;
                 const borderClass = isPop ? 'border-calith-orange/30 shadow-2xl shadow-calith-orange/5' : 'border-white/5';
-                const hoverClass = isPop ? 'hover:border-calith-orange/60' : 'hover:border-calith-orange/30';
                 
                 return `
                 <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative">
@@ -1814,8 +1814,7 @@ function renderFrontendHomecards() {
     if (equipment.length > 0) {
         const grid = document.getElementById('equipment-grid');
         if (grid) {
-            // Ensure grid classes are consistent
-            grid.className = "grid md:grid-cols-3 gap-8 fade-in";
+            grid.className = "grid md:grid-cols-3 gap-8"; // fade-in kaldrld
             grid.innerHTML = equipment.map((eq, i) => {
                 const isPop = i === 1; // Stage 2 is usually centered/highlighted
                 const borderClass = isPop ? 'border-calith-orange/30 shadow-2xl shadow-calith-orange/10' : 'border-white/5';
@@ -1829,30 +1828,34 @@ function renderFrontendHomecards() {
                     else if (eq.badge.includes('3')) badgeColor = 'red-500';
                 }
                 
+                // Metni satr satr temizleyelim ve dzenleyelim
                 const lines = (eq.desc_text || '').split(/\n|\\n/);
                 let descHtml = '';
                 lines.forEach(line => {
-                    const parts = line.split(':');
+                    const cleanLine = line.trim().replace(/^[-*• ]+/, ''); // Bataki sama karakterleri temizle
+                    const parts = cleanLine.split(':');
                     if(parts.length > 1) {
                         const key = parts[0].trim();
                         const val = parts.slice(1).join(':').trim();
-                        descHtml += `<div><p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">${key}:</p><p class="${key.toLowerCase() === 'maliyet' ? 'text-white text-2xl font-black font-display' : 'text-gray-300 text-sm font-semibold leading-relaxed'}">${val}</p></div>`;
-                    } else {
-                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-2 opacity-80 italic">${line.trim()}</p>`;
+                        descHtml += `<div class="mb-4 last:mb-0"><p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1">${key}</p><p class="${key.toLowerCase() === 'maliyet' ? 'text-white text-2xl font-black font-display' : 'text-gray-300 text-sm font-semibold leading-relaxed'}">${val}</p></div>`;
+                    } else if (cleanLine.length > 0) {
+                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-4 opacity-70 italic border-l-2 border-white/10 pl-3">${cleanLine}</p>`;
                     }
                 });
 
                 return `
                 <div class="product-card backdrop-blur-3xl bg-white/5 border ${borderClass} rounded-[2.5rem] p-10 ${hoverClass} transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
                     <div class="self-start w-max inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-${badgeColor}/30 text-${badgeColor} text-[10px] font-black uppercase tracking-widest mb-8 bg-${badgeColor}/10 backdrop-blur-md">
-                        <span class="w-1.5 h-1.5 rounded-full bg-${badgeColor} animate-pulse"></span>
-                        ${eq.badge || ('Aşama ' + (i+1))}
+                        <span class="w-1.5 h-1.5 rounded-full bg-${badgeColor} animate-pulse shrink-0"></span>
+                        ${eq.badge ? eq.badge.replace(/[^a-zA-Z0-9İıĞğÜüŞşÖöÇç ]/g, '').trim() : ('AŞAMA ' + (i+1))}
                     </div>
-                    <h3 class="font-display text-3xl font-bold mb-6 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">${eq.title}</h3>
-                    <div class="space-y-6 mb-10">
-                        ${descHtml}
+                    <h3 class="font-display text-3xl font-bold mb-8 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">${eq.title}</h3>
+                    <div class="flex-1">
+                        <div class="space-y-5">
+                            ${descHtml}
+                        </div>
                     </div>
-                    ${eq.link_text ? `<button onclick="window.location.href='${eq.link_url || 'shop.html'}'" class="w-full ${btnClass} py-5 rounded-2xl font-bold text-sm uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">${eq.link_text}</button>` : ''}
+                    ${eq.link_text ? `<button onclick="window.location.href='${eq.link_url || 'shop.html'}'" class="w-full ${btnClass} py-5 rounded-2xl font-bold text-sm uppercase tracking-widest mt-10 shadow-xl transition-all hover:scale-[1.02]">${eq.link_text}</button>` : ''}
                 </div>
                 `;
             }).join('');
@@ -2173,9 +2176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.lucide) lucide.createIcons();
 });
 
-// Utility functions moved to primary definitions above.
-
-// PDF Export Logic
+// PDF Export Logic (Cleaned for Printers)
 function exportProgramPDF() {
     const printArea = document.getElementById('print-area');
     const printContent = document.getElementById('print-content');
@@ -2183,18 +2184,31 @@ function exportProgramPDF() {
     
     if (printArea && printContent && scheduleGrid) {
         showToast('PDF Hazırlanıyor...');
-        // Clone the grid for simple printing
-        printContent.innerHTML = scheduleGrid.innerHTML;
-        // Basic cleanup for print
-        const items = printContent.querySelectorAll('div');
-        items.forEach(el => {
-            el.className = "mb-8 p-6 border rounded-lg";
-            el.style.pageBreakInside = "avoid";
-        });
         
+        // Sadece gerekli kısımları al (temiz içerik)
+        const cards = Array.from(scheduleGrid.querySelectorAll('.program-card'));
+        
+        printContent.innerHTML = cards.map(card => {
+            const title = card.querySelector('h4').innerText;
+            const subtitle = card.querySelector('span').innerText;
+            const list = card.querySelector('ul').innerHTML;
+            
+            return `
+            <div style="margin-bottom: 30px; border: 1px solid #000; padding: 20px; border-radius: 10px;">
+                <h2 style="font-size: 20px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px;">${title} (${subtitle})</h2>
+                <ul style="list-style: none; padding: 0;">${list}</ul>
+            </div>
+            `;
+        }).join('');
+        
+        // Gereksiz "✓" sembollerini ve stil sınıflarını temizle
+        const checkmarks = printContent.querySelectorAll('.text-red-500, .text-calith-orange');
+        checkmarks.forEach(c => c.style.color = 'black');
+
         window.print();
     }
 }
+
 
 // Global Add to Programs Placeholder
 function addToMyPrograms() {
