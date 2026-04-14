@@ -1828,18 +1828,30 @@ function renderFrontendHomecards() {
                     else if (eq.badge.includes('3')) badgeColor = 'red-500';
                 }
                 
-                // Metni satr satr temizleyelim ve dzenleyelim
-                const lines = (eq.desc_text || '').split(/\n|\\n/);
+                // Akıllı Metin Ayıklama ve Bölme Algoritması
+                let rawText = (eq.desc_text || '');
+                // Anahtar kelimelerin önüne gizli satır sonları ekleyelim (yan yana yazılmışsa bile bölebilmek için)
+                rawText = rawText.replace(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/gi, '\n$1');
+                
+                const lines = rawText.split(/\n|\\n/);
                 let descHtml = '';
                 lines.forEach(line => {
-                    const cleanLine = line.trim().replace(/^[-*• ]+/, ''); // Bataki sama karakterleri temizle
+                    const cleanLine = line.trim().replace(/^[-*•● ]+/, ''); 
+                    if (!cleanLine) return;
+
                     const parts = cleanLine.split(':');
                     if(parts.length > 1) {
                         const key = parts[0].trim();
                         const val = parts.slice(1).join(':').trim();
-                        descHtml += `<div class="mb-4 last:mb-0"><p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1">${key}</p><p class="${key.toLowerCase() === 'maliyet' ? 'text-white text-2xl font-black font-display' : 'text-gray-300 text-sm font-semibold leading-relaxed'}">${val}</p></div>`;
-                    } else if (cleanLine.length > 0) {
-                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-4 opacity-70 italic border-l-2 border-white/10 pl-3">${cleanLine}</p>`;
+                        // Anahtar kelimeye göre özel stil
+                        const isMaliyet = key.toLowerCase().includes('maliyet');
+                        descHtml += `
+                        <div class="mb-5 last:mb-0">
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1.5 opacity-60">${key}</p>
+                            <p class="${isMaliyet ? 'text-white text-2xl font-black font-display tracking-tight' : 'text-gray-200 text-sm font-semibold leading-relaxed'}">${val}</p>
+                        </div>`;
+                    } else {
+                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-4 opacity-70 italic border-l-2 border-calith-orange/30 pl-3">${cleanLine}</p>`;
                     }
                 });
 
@@ -1851,7 +1863,7 @@ function renderFrontendHomecards() {
                     </div>
                     <h3 class="font-display text-3xl font-bold mb-8 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">${eq.title}</h3>
                     <div class="flex-1">
-                        <div class="space-y-5">
+                        <div class="flex flex-col">
                             ${descHtml}
                         </div>
                     </div>
