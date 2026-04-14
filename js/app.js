@@ -2029,9 +2029,7 @@ async function submitRegister() {
         options: {
             data: {
                 full_name: name,
-                name: name,
-                display_name: name,
-                username: name.toLowerCase().replace(/\s/g, '_'),
+                role: 'user',
                 fitness_level: level
             }
         }
@@ -2040,7 +2038,8 @@ async function submitRegister() {
     if(btnTxt) btnTxt.textContent = 'Topluluğa Katıl';
 
     if (error) {
-        alert('Kayıt Hatası: ' + error.message);
+        console.error('Registration Error Details:', error);
+        alert('Kayıt Hatası: ' + error.message + ' (Kod: ' + (error.status || 'DB') + ')');
     } else {
         showToast('Kayıt başarılı! Aramıza hoş geldin.');
         currentUser = data.user;
