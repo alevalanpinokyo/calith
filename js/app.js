@@ -1767,26 +1767,26 @@ function renderFrontendHomecards() {
     if (schedule.length > 0) {
         const grid = document.getElementById('schedule-grid');
         if (grid) {
-            grid.className = "grid lg:grid-cols-3 gap-8 fade-in";
+            grid.className = "grid lg:grid-cols-3 gap-6 fade-in";
             grid.innerHTML = schedule.map((sch, i) => {
                 const colorMap = ['calith-orange', 'calith-accent', 'red-500', 'green-500'];
                 const c = colorMap[i % colorMap.length];
                 const listItems = (sch.desc_text || '').split(/\n|\\n/).filter(l => l.trim().length > 0).map(l => 
-                    `<li class="flex items-start gap-4 pb-3 border-b border-white/[0.05] last:border-0"><span class="text-${c} shrink-0 mt-1 font-bold text-xl">✓</span><span class="text-gray-400 font-medium">${l.trim().replace(/^[-✓* ]+/, '')}</span></li>`
+                    `<li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-${c} shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">${l.trim().replace(/^[-✓* ]+/, '')}</span></li>`
                 ).join('');
 
                 return `
-                <div class="bg-calith-gray border border-white/5 rounded-[2rem] p-10 lg:p-12 flex flex-col gap-8 hover:border-white/20 transition-all duration-500 min-h-[520px] group shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-${c}/5 blur-3xl rounded-full"></div>
-                    <div class="flex flex-col gap-6 w-full relative z-10">
-                        <div class="flex items-center gap-5">
-                            <div class="w-16 h-16 rounded-2xl bg-${c}/10 flex items-center justify-center font-display font-bold text-3xl text-${c} shrink-0 shadow-lg shadow-${c}/10">${sch.icon || ('0' + (i+1))}</div>
+                <div class="bg-calith-gray border border-white/5 rounded-[1.5rem] p-8 lg:p-10 flex flex-col gap-6 hover:border-white/20 transition-all duration-500 min-h-[440px] group shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-${c}/5 blur-3xl rounded-full"></div>
+                    <div class="flex flex-col gap-4 w-full relative z-10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-xl bg-${c}/10 flex items-center justify-center font-display font-bold text-2xl text-${c} shrink-0">${sch.icon || ('0' + (i+1))}</div>
                             <div>
-                                <h4 class="font-bold text-2xl mb-1 text-white tracking-tight uppercase">${sch.title}</h4>
-                                <span class="text-gray-500 font-bold text-xs uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full">${sch.badge || ''}</span>
+                                <h4 class="font-bold text-xl mb-0.5 text-white tracking-tight uppercase">${sch.title}</h4>
+                                <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">${sch.badge || ''}</span>
                             </div>
                         </div>
-                        <ul class="text-[15px] space-y-4 mt-4">
+                        <ul class="text-sm space-y-3 mt-4">
                             ${listItems}
                         </ul>
                     </div>
