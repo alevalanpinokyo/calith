@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -53,7 +53,13 @@
 
 <section id="admin" class="min-h-screen pt-32 pb-20 px-4">
     <div class="max-w-6xl mx-auto">
-        <div id="admin-login" class="max-w-md mx-auto py-20 text-center space-y-8">
+        <!-- YÜKLEME EKRANI (Titremeyi önlemek için) -->
+        <div id="admin-loading" class="py-20 text-center space-y-4">
+            <div class="w-12 h-12 border-4 border-calith-orange border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p class="text-gray-400 font-bold uppercase tracking-widest text-sm">Yönetici Yetkisi Kontrol Ediliyor...</p>
+        </div>
+
+        <div id="admin-login" class="hidden max-w-md mx-auto py-20 text-center space-y-8">
             <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center mx-auto"><i data-lucide="lock" class="w-10 h-10 text-calith-orange"></i></div>
             <h1 class="font-display text-4xl font-bold uppercase tracking-widest">GİRİŞ YAP</h1>
             

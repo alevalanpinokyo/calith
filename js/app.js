@@ -275,8 +275,8 @@ function renderBlog(filter = 'all') {
         return; 
     }
     
-    list.innerHTML = filtered.map(p => `
-        <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
+    list.innerHTML = filtered.map((p, i) => `
+        <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover fade-in stagger-${(i % 3) + 1}">
             <div class="aspect-video relative overflow-hidden">
                 <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent opacity-60"></div>
@@ -295,6 +295,7 @@ function renderBlog(filter = 'all') {
         </article>
     `).join('');
     if (window.lucide) lucide.createIcons();
+    initScrollReveal();
 }
 
 function filterBlog(cat) {
@@ -888,6 +889,10 @@ function init() {
             
             const editor = document.getElementById('admin-editor');
             const login = document.getElementById('admin-login');
+            const loading = document.getElementById('admin-loading');
+            
+            if (loading) loading.classList.add('hidden');
+
             if (editor && login) {
                 if (isAdminMode) {
                     editor.classList.remove('hidden');
@@ -901,6 +906,17 @@ function init() {
     }
 
     // Scroll reveal observe
+    initScrollReveal();
+
+    // Lucide support
+    if (window.lucide) lucide.createIcons();
+    
+    // Check URL for blog post detail
+    const params = new URLSearchParams(window.location.search);
+    const blogId = params.get('b');
+}
+
+function initScrollReveal() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -909,13 +925,6 @@ function init() {
         });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal, .fade-in').forEach(el => observer.observe(el));
-
-    // Lucide support
-    if (window.lucide) lucide.createIcons();
-    
-    // Check URL for blog post detail
-    const params = new URLSearchParams(window.location.search);
-    const blogId = params.get('b');
 }
 
 // ============================================
@@ -1762,7 +1771,7 @@ function renderFrontendHomecards() {
         const grid = document.getElementById('benefits-grid');
         if (grid) {
             grid.innerHTML = benefits.map((b, i) => `
-                <div class="relative card-hover product-card rounded-3xl p-8 group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
+                <div class="relative card-hover product-card rounded-3xl p-8 group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start fade-in stagger-${(i % 3) + 1}" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
                     <div class="absolute top-8 right-8 rounded-full bg-white/5 w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-white group-[.is-open]:text-calith-orange transition-all">
                         <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 transition-transform duration-300"></i>
                     </div>
@@ -1776,6 +1785,7 @@ function renderFrontendHomecards() {
                 </div>
             `).join('');
             if (window.lucide) lucide.createIcons();
+            initScrollReveal();
         }
     }
 
@@ -1788,7 +1798,7 @@ function renderFrontendHomecards() {
                 const borderClass = isPop ? 'border-calith-orange/30 shadow-2xl shadow-calith-orange/5' : 'border-white/5';
                 
                 return `
-                <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative">
+                <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative fade-in stagger-${(i % 3) + 1}">
                     ${isPop ? '<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">'+lvl.badge+'</div>' : ''}
                     <div class="text-5xl mb-6">${lvl.icon || '🌱'}</div>
                     <h3 class="font-display text-2xl font-bold mb-2 uppercase">${lvl.title}</h3>
@@ -1802,6 +1812,8 @@ function renderFrontendHomecards() {
                 </div>
                 `;
             }).join('');
+            if (window.lucide) lucide.createIcons();
+            initScrollReveal();
         }
     }
 
@@ -1818,7 +1830,7 @@ function renderFrontendHomecards() {
                 ).join('');
 
                 return `
-                <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
+                <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden fade-in stagger-${(i % 3) + 1}">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-${c}/5 blur-3xl rounded-full"></div>
                     <div class="flex flex-col w-full relative z-10">
                         <div class="flex items-center justify-between">
@@ -1841,6 +1853,8 @@ function renderFrontendHomecards() {
                 </div>
                 `;
             }).join('');
+            if (window.lucide) lucide.createIcons();
+            initScrollReveal();
         }
     }
     const equipment = homecards.filter(h => h.section === 'equipment').sort((a,b)=> (a.id > b.id ? 1 : -1));
