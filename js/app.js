@@ -2157,7 +2157,7 @@ async function submitLeadForm() {
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Initial page state & logic
     if (typeof init === 'function') init();
-    checkCurrentUser(); updateHappyMembersStats();
+    checkCurrentUser(); updateHappyMembersStats(); 
 
     // 2. Navigation Active State
     const path = window.location.pathname;
@@ -2321,4 +2321,6 @@ function toggleScheduleCard() {
 }
 
 
-async function updateHappyMembersStats() { const el = document.getElementById('happy-members-count'); if (!el) return; const sb = getSupabase(); if (!sb) return; try { const { count, error } = await sb.from('profiles').select('*', { count: 'exact', head: true }); if (!error && count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } }
+ = await sb.from('profiles').select('*', { count: 'exact', head: true }); if (!error && count !== null) { el.textContent = (count + 500).toLocaleString(); } } catch (e) { } }
+
+async function updateHappyMembersStats() { const el = document.getElementById('happy-members-count'); if (!el) return; const sb = getSupabase(); if (!sb) return; try { const { count, error } = await sb.from('profiles').select('*', { count: 'exact', head: true }); if (!error && count !== null) { el.textContent = (count + 500).toLocaleString(); } else { const { count: lCount, error: lErr } = await sb.from('leads').select('*', { count: 'exact', head: true }); if (!lErr && lCount !== null) { el.textContent = (lCount + 500).toLocaleString(); } } } catch (e) { } }
