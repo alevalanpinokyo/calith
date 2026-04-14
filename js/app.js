@@ -1628,12 +1628,12 @@ function editHomecard(id) {
         
         lines.forEach(line => {
             const clean = line.trim();
-            const lowerLine = clean.toLowerCase();
+            if(!clean) return;
+            const lowerLine = clean.toLocaleLowerCase('tr-TR');
             
-            // Her satr sadece kendi anahtarnn verisini alsn (dier anahtarlar temizlensin)
+            // Her satır sadece kendi anahtarının verisini alsın
             if(lowerLine.includes('ihtiyacın:') || lowerLine.includes('ihtiyaç:')) {
                 let val = clean.split(':').slice(1).join(':').trim();
-                // Eer iinde baka anahtar kelime kalmssa onu da kes
                 val = val.split(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/i)[0].trim();
                 document.getElementById('hc-eq-needs').value = val;
             }
@@ -1877,7 +1877,7 @@ function renderFrontendHomecards() {
                     if(parts.length > 1) {
                         const key = parts[0].trim();
                         const val = parts.slice(1).join(':').trim();
-                        if (val) blocks[key.toLowerCase()] = { key, val }; // Son gelen eskisinizerine yazar
+                        if (val) blocks[key.toLocaleLowerCase('tr-TR')] = { key, val }; // Son gelen eskisinizerine yazar
                     } else {
                         infoLines.push(cleanLine);
                     }
@@ -1886,7 +1886,7 @@ function renderFrontendHomecards() {
                 let descHtml = '';
                 // nce anahtar bloklar dzelim
                 Object.values(blocks).forEach(block => {
-                    const isMaliyet = block.key.toLowerCase().includes('maliyet');
+                    const isMaliyet = block.key.toLocaleLowerCase('tr-TR').includes('maliyet');
                     descHtml += `
                     <div class="mb-5 last:mb-0">
                         <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1.5 opacity-60">${block.key}</p>
