@@ -1828,13 +1828,14 @@ function renderFrontendHomecards() {
                     else if (eq.badge.includes('3')) badgeColor = 'red-500';
                 }
                 
-                // Akıllı Metin Ayıklama ve Bölme Algoritması
+                // En Akll Metin Ayklama (Son girilen veriyi nceler)
                 let rawText = (eq.desc_text || '');
-                // Anahtar kelimelerin önüne gizli satır sonları ekleyelim (yan yana yazılmışsa bile bölebilmek için)
                 rawText = rawText.replace(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/gi, '\n$1');
                 
                 const lines = rawText.split(/\n|\\n/);
-                let descHtml = '';
+                const blocks = {}; 
+                const infoLines = [];
+
                 lines.forEach(line => {
                     const cleanLine = line.trim().replace(/^[-*•● ]+/, ''); 
                     if (!cleanLine) return;
@@ -1843,17 +1844,26 @@ function renderFrontendHomecards() {
                     if(parts.length > 1) {
                         const key = parts[0].trim();
                         const val = parts.slice(1).join(':').trim();
-                        // Anahtar kelimeye göre özel stil
-                        const isMaliyet = key.toLowerCase().includes('maliyet');
-                        descHtml += `
-                        <div class="mb-5 last:mb-0">
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1.5 opacity-60">${key}</p>
-                            <p class="${isMaliyet ? 'text-white text-2xl font-black font-display tracking-tight' : 'text-gray-200 text-sm font-semibold leading-relaxed'}">${val}</p>
-                        </div>`;
+                        if (val) blocks[key.toLowerCase()] = { key, val }; // Son gelen eskisinizerine yazar
                     } else {
-                        descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-4 opacity-70 italic border-l-2 border-calith-orange/30 pl-3">${cleanLine}</p>`;
+                        infoLines.push(cleanLine);
                     }
                 });
+
+                let descHtml = '';
+                // nce anahtar bloklar dzelim
+                Object.values(blocks).forEach(block => {
+                    const isMaliyet = block.key.toLowerCase().includes('maliyet');
+                    descHtml += `
+                    <div class="mb-5 last:mb-0">
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1.5 opacity-60">${block.key}</p>
+                        <p class="${isMaliyet ? 'text-white text-2xl font-black font-display tracking-tight' : 'text-gray-200 text-sm font-semibold leading-relaxed'}">${block.val}</p>
+                    </div>`;
+                });
+                // Sonra ekstra info satrlarn ekleyelim
+                if (infoLines.length > 0) {
+                    descHtml += `<p class="text-gray-400 text-xs leading-relaxed mt-4 opacity-70 italic border-l-2 border-calith-orange/30 pl-3">${infoLines.join(' ')}</p>`;
+                }
 
                 return `
                 <div class="product-card backdrop-blur-3xl bg-white/5 border ${borderClass} rounded-[2.5rem] p-10 ${hoverClass} transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
