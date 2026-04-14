@@ -2029,8 +2029,10 @@ async function submitRegister() {
         options: {
             data: {
                 full_name: name,
-                fitness_level: level,
-                role: 'user' // Default normal user role
+                name: name,
+                display_name: name,
+                username: name.toLowerCase().replace(/\s/g, '_'),
+                fitness_level: level
             }
         }
     });
