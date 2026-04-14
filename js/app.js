@@ -1615,22 +1615,37 @@ function editHomecard(id) {
     document.getElementById('hc-desc').value = hc.desc_text || '';
     
     if (hc.section === 'equipment' && hc.desc_text) {
-        // Hem fiziksel hem escape edilmi satr sonlarn destekle
-        const raw = hc.desc_text.replace(/\\n/g, '\n');
+        // Kutular nce bir temizleyelim
+        document.getElementById('hc-eq-needs').value = '';
+        document.getElementById('hc-eq-cost').value = '';
+        document.getElementById('hc-eq-reason').value = '';
+
+        // Akll Blme: Anahtar kelimelerin nne satr sonu ekleyerek parala
+        let raw = hc.desc_text.replace(/\\n/g, '\n');
+        raw = raw.replace(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/gi, '\n$1');
+        
         const lines = raw.split('\n');
         
         lines.forEach(line => {
             const clean = line.trim();
             const lowerLine = clean.toLowerCase();
             
+            // Her satr sadece kendi anahtarnn verisini alsn (dier anahtarlar temizlensin)
             if(lowerLine.includes('ihtiyacın:') || lowerLine.includes('ihtiyaç:')) {
-                document.getElementById('hc-eq-needs').value = clean.split(':').slice(1).join(':').trim();
+                let val = clean.split(':').slice(1).join(':').trim();
+                // Eer iinde baka anahtar kelime kalmssa onu da kes
+                val = val.split(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/i)[0].trim();
+                document.getElementById('hc-eq-needs').value = val;
             }
             else if(lowerLine.includes('maliyet:')) {
-                document.getElementById('hc-eq-cost').value = clean.split(':').slice(1).join(':').trim();
+                let val = clean.split(':').slice(1).join(':').trim();
+                val = val.split(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/i)[0].trim();
+                document.getElementById('hc-eq-cost').value = val;
             }
             else if(lowerLine.includes('neden:')) {
-                document.getElementById('hc-eq-reason').value = clean.split(':').slice(1).join(':').trim();
+                let val = clean.split(':').slice(1).join(':').trim();
+                val = val.split(/(Maliyet:|Neden:|İhtiyacın:|İhtiyaç:)/i)[0].trim();
+                document.getElementById('hc-eq-reason').value = val;
             }
         });
     }
