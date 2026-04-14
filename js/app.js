@@ -1200,7 +1200,7 @@ function renderAnnouncementsSlider() {
 
         let mediaHtml;
         if (imageUrl && imageUrl.trim() !== '') {
-            mediaHtml = `<div class="${isYoutube ? 'w-full max-w-[280px] aspect-video' : 'w-16 h-16'} rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_30px_${hShadow}] group-hover:scale-105 transition-all border border-white/10 overflow-hidden bg-black/50 relative">
+            mediaHtml = `<div class="${isYoutube ? 'w-full max-w-[280px] aspect-video' : 'w-16 h-16'} rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_30px_${hShadow}] group-hover:scale-105 transition-all border border-white/10 overflow-hidden bg-black/50 relative mx-auto">
                 <img src="${imageUrl}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" alt="Media">
                 ${isYoutube ? `
                 <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all flex items-center justify-center">
@@ -1211,18 +1211,18 @@ function renderAnnouncementsSlider() {
                 ` : ''}
             </div>`;
         } else {
-            mediaHtml = `<div class="w-20 h-20 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0 relative">
+            mediaHtml = `<div class="w-20 h-20 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0 relative mx-auto">
                 <i data-lucide="${ann.icon || 'bell'}" class="w-10 h-10"></i>
             </div>`;
         }
 
         return `
         <div class="flex-shrink-0 h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
-            <div class="flex flex-col items-center justify-center w-full">
+            <div class="flex flex-col items-center justify-center w-full max-w-[320px] mx-auto">
                 ${mediaHtml}
-                <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block">${ann.label}</span>
-                <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight">${ann.title}</h4>
-                <p class="text-sm text-gray-400 leading-relaxed px-4 opacity-70 group-hover:opacity-100 transition-opacity">${ann.desc}</p>
+                <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block mx-auto">${ann.label}</span>
+                <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
+                <p class="text-sm text-gray-400 leading-relaxed px-2 opacity-70 group-hover:opacity-100 transition-opacity text-center mx-auto">${ann.desc}</p>
             </div>
         </div>
         `;
