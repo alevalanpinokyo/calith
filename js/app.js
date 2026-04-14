@@ -1776,7 +1776,7 @@ function renderFrontendHomecards() {
                 ).join('');
 
                 return `
-                <div onclick="toggleScheduleCard(this)" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
+                <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-${c}/5 blur-3xl rounded-full"></div>
                     <div class="flex flex-col w-full relative z-10">
                         <div class="flex items-center justify-between">
@@ -2217,16 +2217,22 @@ function addToMyPrograms() {
     showToast('Program başarıyla kütüphanenize eklendi! (Gelecek Özellik)');
 }
 
-// Program Card Toggle
-function toggleScheduleCard(card) {
-    const isExpanded = card.classList.contains('expanded');
-    
-    // Optional: Close other cards
-    if (!isExpanded) {
-        document.querySelectorAll('.program-card.expanded').forEach(other => {
-            other.classList.remove('expanded');
-        });
-    }
-
-    card.classList.toggle('expanded');
+// Program Card Toggle (Synchronized)
+function toggleScheduleCard() {
+    const containers = document.querySelectorAll('#schedule-grid .program-list-container');
+    const chevrons   = document.querySelectorAll('#schedule-grid .chevron-icon');
+    const grid       = document.getElementById('schedule-grid');
+    if (!grid) return;
+    const isExpanded = grid.dataset.expanded === '1';
+    containers.forEach(function(c) {
+        c.style.transition = 'all 0.5s ease';
+        if (isExpanded) { c.style.maxHeight = '0'; c.style.opacity = '0'; }
+        else { c.style.maxHeight = (c.scrollHeight + 300) + 'px'; c.style.opacity = '1'; }
+    });
+    chevrons.forEach(function(ch) {
+        ch.style.transition = 'transform 0.5s ease';
+        ch.style.transform  = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+    grid.dataset.expanded = isExpanded ? '0' : '1';
 }
+
