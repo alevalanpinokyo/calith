@@ -1,4 +1,4 @@
-const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 let supabaseClient = null;
 function getSupabase() {
