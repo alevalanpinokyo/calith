@@ -234,41 +234,24 @@
             <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">SANA NE <span class="gradient-text">KAZANDIRIR?</span></h2>
         </div>
         <div class="grid md:grid-cols-3 gap-8" id="benefits-grid">
-            <div class="relative card-hover product-card rounded-3xl p-8 fade-in stagger-1 group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
-                <div class="absolute top-8 right-8 rounded-full bg-white/5 w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-white group-[.is-open]:text-calith-orange transition-all">
-                    <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 transition-transform duration-300"></i>
-                </div>
-                <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <div class="text-4xl">💪</div>
-                </div>
-                <h3 class="font-display text-2xl font-bold mb-3 uppercase group-[.is-open]:text-calith-orange transition-colors">Kas İnşa</h3>
-                <div class="w-full">
-                    <p class="text-gray-400 leading-relaxed whitespace-pre-line line-clamp-2 group-[.is-open]:line-clamp-none transition-all">Ağırlık salonu gerektirmez. Vücut ağırlığın yeterli.</p>
-                </div>
+            <!-- Skeleton Loading for Benefits -->
+            <div class="relative card-hover product-card rounded-3xl p-8 animate-pulse">
+                <div class="feature-icon w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div class="h-6 w-3/4 skeleton mb-4"></div>
+                <div class="h-4 w-full skeleton opacity-50 mb-2"></div>
+                <div class="h-4 w-2/3 skeleton opacity-50"></div>
             </div>
-            <div class="relative card-hover product-card rounded-3xl p-8 fade-in stagger-2 group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
-                <div class="absolute top-8 right-8 rounded-full bg-white/5 w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-white group-[.is-open]:text-calith-orange transition-all">
-                    <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 transition-transform duration-300"></i>
-                </div>
-                <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <div class="text-4xl">🏠</div>
-                </div>
-                <h3 class="font-display text-2xl font-bold mb-3 uppercase group-[.is-open]:text-calith-orange transition-colors">Evde Yap</h3>
-                <div class="w-full">
-                    <p class="text-gray-400 leading-relaxed whitespace-pre-line line-clamp-2 group-[.is-open]:line-clamp-none transition-all">Seyahatte, parkta, odanda. Her yer spor salonun olur.</p>
-                </div>
+            <div class="relative card-hover product-card rounded-3xl p-8 animate-pulse">
+                <div class="feature-icon w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div class="h-6 w-3/4 skeleton mb-4"></div>
+                <div class="h-4 w-full skeleton opacity-50 mb-2"></div>
+                <div class="h-4 w-2/3 skeleton opacity-50"></div>
             </div>
-            <div class="relative card-hover product-card rounded-3xl p-8 fade-in stagger-3 group cursor-pointer hover:border-calith-orange/30 transition-all flex flex-col items-start" onclick="this.classList.toggle('is-open'); this.querySelector('.chevron-icon')?.classList.toggle('rotate-180')">
-                <div class="absolute top-8 right-8 rounded-full bg-white/5 w-10 h-10 flex items-center justify-center text-gray-400 group-hover:text-white group-[.is-open]:text-calith-orange transition-all">
-                    <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 transition-transform duration-300"></i>
-                </div>
-                <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                    <div class="text-4xl">⏱️</div>
-                </div>
-                <h3 class="font-display text-2xl font-bold mb-3 uppercase group-[.is-open]:text-calith-orange transition-colors">Zaman Tasarrufu</h3>
-                <div class="w-full">
-                    <p class="text-gray-400 leading-relaxed whitespace-pre-line line-clamp-2 group-[.is-open]:line-clamp-none transition-all">Günde sadece 20-30 dakika. Uzun saatler gerektirmez.</p>
-                </div>
+            <div class="relative card-hover product-card rounded-3xl p-8 animate-pulse">
+                <div class="feature-icon w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div class="h-6 w-3/4 skeleton mb-4"></div>
+                <div class="h-4 w-full skeleton opacity-50 mb-2"></div>
+                <div class="h-4 w-2/3 skeleton opacity-50"></div>
             </div>
         </div>
     </div>
@@ -282,44 +265,38 @@
             <p class="text-gray-400 max-w-2xl mx-auto text-lg">Doğru başlangıç, bırakma riskini azaltır.</p>
         </div>
         <div class="grid md:grid-cols-3 gap-8" id="levels-grid">
-            <div onclick="window.location.href='skills.html?level=baslangic'" class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col fade-in stagger-1 hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center">
-                <div class="text-5xl mb-6">🌱</div>
-                <h3 class="font-display text-2xl font-bold mb-2">SIFIRDAN</h3>
-                <p class="text-gray-500 text-sm mb-6 font-medium">"Hiç şınav yapamıyorum"</p>
-                <div class="bg-black/30 rounded-2xl p-4 w-full mb-8 text-left border border-white/5">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Hareketler:</p>
-                    <p class="text-sm text-gray-300 leading-relaxed">Duvar şınavı, Koltuk dips'i, Air squat</p>
+            <!-- Skeleton Loading for Levels -->
+            <div class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center animate-pulse">
+                <div class="w-20 h-20 rounded-full bg-white/5 mb-6"></div>
+                <div class="h-7 w-1/2 skeleton mb-6"></div>
+                <div class="w-full bg-black/30 rounded-2xl p-4 mb-8">
+                    <div class="h-3 w-full skeleton opacity-30 mb-2"></div>
+                    <div class="h-3 w-4/5 skeleton opacity-30"></div>
                 </div>
-                <div class="mt-auto">
-                    <button class="w-full btn-outline py-4 rounded-xl font-bold text-sm group-hover:bg-calith-orange group-hover:text-white transition-all uppercase tracking-widest mb-3">Ben Buradayım</button>
-                    <span class="text-xs text-calith-orange font-bold uppercase tracking-widest">→ 4 Haftalık Plan</span>
-                </div>
-            </div>
-            <div onclick="window.location.href='skills.html?level=orta'" class="bg-calith-dark/50 border border-calith-orange/30 rounded-3xl p-8 flex flex-col fade-in stagger-2 hover:border-calith-orange/60 transition-all card-hover group cursor-pointer text-center relative shadow-2xl shadow-calith-orange/5">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">En Popüler</div>
-                <div class="text-5xl mb-6">🌿</div>
-                <h3 class="font-display text-2xl font-bold mb-2">TEMEL ATILDI</h3>
-                <p class="text-gray-500 text-sm mb-6 font-medium">"10-15 şınav yapabiliyorum"</p>
-                <div class="bg-black/30 rounded-2xl p-4 w-full mb-8 text-left border border-white/5">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Hareketler:</p>
-                    <p class="text-sm text-gray-300 leading-relaxed">Normal şınav, Negatif barfiks, Jackknife</p>
-                </div>
-                <div class="mt-auto">
-                    <button class="w-full btn-primary py-4 rounded-xl font-bold text-sm transition-all uppercase tracking-widest mb-3">Ben Buradayım</button>
-                    <span class="text-xs text-calith-orange font-bold uppercase tracking-widest">→ 8 Haftalık Güç Planı</span>
+                <div class="mt-auto w-full">
+                    <div class="h-12 w-full skeleton rounded-xl"></div>
                 </div>
             </div>
-            <div onclick="window.location.href='skills.html?level=ileri'" class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col fade-in stagger-3 hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center">
-                <div class="text-5xl mb-6">🔥</div>
-                <h3 class="font-display text-2xl font-bold mb-2">GÜÇLENİYORUM</h3>
-                <p class="text-gray-500 text-sm mb-6 font-medium">"20+ şınav yapabiliyorum"</p>
-                <div class="bg-black/30 rounded-2xl p-4 w-full mb-8 text-left border border-white/5">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Hareketler:</p>
-                    <p class="text-sm text-gray-300 leading-relaxed">Tek kol şınav, Muscle-up denemeleri, Front lever</p>
+            <div class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center animate-pulse">
+                <div class="w-20 h-20 rounded-full bg-white/5 mb-6"></div>
+                <div class="h-7 w-1/2 skeleton mb-6"></div>
+                <div class="w-full bg-black/30 rounded-2xl p-4 mb-8">
+                    <div class="h-3 w-full skeleton opacity-30 mb-2"></div>
+                    <div class="h-3 w-4/5 skeleton opacity-30"></div>
                 </div>
-                <div class="mt-auto">
-                    <button class="w-full btn-outline py-4 rounded-xl font-bold text-sm group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500 transition-all uppercase tracking-widest mb-3">Ben Buradayım</button>
-                    <span class="text-xs text-red-500 font-bold uppercase tracking-widest">→ İleri Seviye Teknikler</span>
+                <div class="mt-auto w-full">
+                    <div class="h-12 w-full skeleton rounded-xl"></div>
+                </div>
+            </div>
+            <div class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center animate-pulse">
+                <div class="w-20 h-20 rounded-full bg-white/5 mb-6"></div>
+                <div class="h-7 w-1/2 skeleton mb-6"></div>
+                <div class="w-full bg-black/30 rounded-2xl p-4 mb-8">
+                    <div class="h-3 w-full skeleton opacity-30 mb-2"></div>
+                    <div class="h-3 w-4/5 skeleton opacity-30"></div>
+                </div>
+                <div class="mt-auto w-full">
+                    <div class="h-12 w-full skeleton rounded-xl"></div>
                 </div>
             </div>
         </div>

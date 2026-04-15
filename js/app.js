@@ -2410,29 +2410,54 @@ function exportProgramPDF() {
     const scheduleGrid = document.getElementById('schedule-grid');
 
     if (printArea && printContent && scheduleGrid) {
-        showToast('PDF Hazırlanıyor...');
+        showToast('PDF Çizelgesi Hazırlanıyor...');
 
-        // Sadece gerekli kısımları al (temiz içerik)
         const cards = Array.from(scheduleGrid.querySelectorAll('.program-card'));
+        
+        // Profesyonel Çizelge Tasarımı (3 Sütun Yan Yana)
+        let html = `
+        <div style="width: 100%; font-family: 'Inter', sans-serif; color: #000;">
+            <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="font-size: 28px; text-transform: uppercase; margin: 0;">CALISTHENICS ANTRENMAN ÇİZELGESİ</h1>
+                <p style="margin: 5px 0 0; font-weight: bold; color: #666;">www.calith.com • Profesyonel Haftalık Program</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+        `;
 
-        printContent.innerHTML = cards.map(card => {
+        html += cards.map(card => {
             const title = card.querySelector('h4').innerText;
             const subtitle = card.querySelector('span').innerText;
-            const list = card.querySelector('ul').innerHTML;
+            const items = Array.from(card.querySelectorAll('ul li')).map(li => {
+                // Sadece metni al, ikonları temizle
+                return li.innerText.replace(/[✓*]/g, '').trim();
+            });
 
             return `
-            <div style="margin-bottom: 30px; border: 1px solid #000; padding: 20px; border-radius: 10px;">
-                <h2 style="font-size: 20px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px;">${title} (${subtitle})</h2>
-                <ul style="list-style: none; padding: 0;">${list}</ul>
+            <div style="border: 2px solid #000; border-radius: 12px; padding: 15px; background: #f9f9f9;">
+                <div style="background: #000; color: #fff; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 12px;">
+                    <h3 style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">${title}</h3>
+                </div>
+                <p style="font-size: 10px; font-weight: bold; text-align: center; color: #555; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${subtitle}</p>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 1.6;">
+                    ${items.map(item => `<li style="padding: 5px 0; border-bottom: 1px dashed #ccc;">• ${item}</li>`).join('')}
+                </ul>
             </div>
             `;
         }).join('');
 
-        // Gereksiz "✓" sembollerini ve stil sınıflarını temizle
-        const checkmarks = printContent.querySelectorAll('.text-red-500, .text-calith-orange');
-        checkmarks.forEach(c => c.style.color = 'black');
+        html += `
+            </div>
+            <div style="margin-top: 40px; border-top: 1px solid #ddd; pt: 10px; text-align: center; font-size: 10px; color: #999;">
+                * Her antrenman öncesi 5-10 dk ısınma yapmayı unutmayın. Form kontrolü için CALITH blog sayfasını ziyaret edin.
+            </div>
+        </div>
+        `;
 
-        window.print();
+        printContent.innerHTML = html;
+        setTimeout(() => {
+            window.print();
+        }, 300);
     }
 }
 
