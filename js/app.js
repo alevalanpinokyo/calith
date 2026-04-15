@@ -1057,6 +1057,18 @@ function resetProgramForm() {
 
 // PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
 // ============================================
+function backToProgramList() {
+    // URL'den p parametresini temizle, level kalsın
+    const url = new URL(window.location.href);
+    url.searchParams.delete('p');
+    window.history.pushState({ path: url.href }, '', url.href);
+
+    const listSec = document.getElementById('program-list-view');
+    const detailSec = document.getElementById('blog-detail');
+    if (detailSec) detailSec.classList.add('hidden');
+    if (listSec) listSec.classList.remove('hidden');
+}
+
 function backToLevels() {
     // URL'den level parametresini temizle
     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -1118,6 +1130,11 @@ function showProgramLevel(level, titleStr) {
 }
 
 function showProgramDetail(id) {
+    // Adres çubuğunu güncelle (Program detay linki için)
+    const url = new URL(window.location.href);
+    url.searchParams.set('p', id);
+    window.history.pushState({ path: url.href }, '', url.href);
+
     const listSec = document.getElementById('program-list-view');
     const detailSec = document.getElementById('blog-detail');
 
