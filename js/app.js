@@ -1901,8 +1901,8 @@ function renderFrontendHomecards() {
                     ${isPop ? '<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">' + lvl.badge + '</div>' : ''}
                     <div class="text-5xl mb-6">${lvl.icon || '🌱'}</div>
                     <h3 class="font-display text-2xl font-bold mb-2 uppercase">${lvl.title}</h3>
-                    <div class="bg-black/30 rounded-2xl p-4 w-full mb-8 text-left border border-white/5">
-                        <p class="text-sm text-gray-300 leading-relaxed whitespace-pre-line">${lvl.desc_text || ''}</p>
+                    <div class="bg-black/30 rounded-2xl p-5 w-full mb-8 text-left border border-white/5">
+                        <p class="text-[15px] text-gray-300 leading-relaxed tracking-wide whitespace-pre-line">${lvl.desc_text || ''}</p>
                     </div>
                     <div class="mt-auto">
                         <button class="w-full ${isPop ? 'btn-primary' : 'btn-outline border-white/10 group-hover:border-calith-orange group-hover:bg-calith-orange group-hover:text-white'} py-4 rounded-xl font-bold text-sm transition-all uppercase tracking-widest mb-3">Ben Buradayım</button>
