@@ -334,76 +334,47 @@
             <p class="text-gray-400 max-w-2xl mx-auto text-lg">Ekipman: Sadece bir duvar ve bir sandalye.</p>
         </div>
         <div class="grid lg:grid-cols-3 gap-6 fade-in" id="schedule-grid">
-            <!-- PZT -->
-            <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-calith-orange/5 blur-3xl rounded-full"></div>
-                <div class="flex flex-col w-full relative z-10">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-calith-orange/10 flex items-center justify-center font-display font-bold text-xl text-calith-orange shrink-0">01</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white tracking-tight uppercase">PAZARTESİ</h4>
-                                <span class="text-gray-500 font-bold text-[9px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">Üst Vücut (20 dk)</span>
-                            </div>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-colors"></i>
+            <!-- Skeleton Loading State (Veriler Supabase'den çekilene kadar görünür) -->
+            <div class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 relative overflow-hidden animate-pulse">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-xl skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-32 skeleton"></div>
+                        <div class="h-2 w-20 skeleton opacity-50"></div>
                     </div>
-                    
-                    <div class="program-list-wrapper mt-8"><div class="program-list-fade"></div><div class="program-list-container">
-                        <ul class="text-sm space-y-3">
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-calith-orange shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Duvar şınavı: 3 x 8-12</span></li>
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-calith-orange shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Koltuk dips'i: 3 x 5-10</span></li>
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-calith-orange shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Superman: 3 x 10</span></li>
-                        </ul>
-                    </div></div>
+                </div>
+                <div class="space-y-4">
+                    <div class="h-2.5 w-full skeleton"></div>
+                    <div class="h-2.5 w-4/5 skeleton"></div>
+                    <div class="h-2.5 w-2/3 skeleton"></div>
                 </div>
             </div>
-            <!-- CARS -->
-            <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-calith-accent/5 blur-3xl rounded-full"></div>
-                <div class="flex flex-col w-full relative z-10">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-calith-accent/10 flex items-center justify-center font-display font-bold text-xl text-calith-accent shrink-0">02</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white tracking-tight uppercase">ÇARŞAMBA</h4>
-                                <span class="text-gray-500 font-bold text-[9px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">Alt Vücut (20 dk)</span>
-                            </div>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-colors"></i>
+            <div class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 relative overflow-hidden animate-pulse">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-xl skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-32 skeleton"></div>
+                        <div class="h-2 w-20 skeleton opacity-50"></div>
                     </div>
-                    
-                    <div class="program-list-wrapper mt-8"><div class="program-list-fade"></div><div class="program-list-container">
-                        <ul class="text-sm space-y-3">
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-calith-accent shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Air squat: 3 x 15-20</span></li>
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-calith-accent shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Lunges: 3 x 10/bacak</span></li>
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-calith-accent shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Calf raises: 3 x 20</span></li>
-                        </ul>
-                    </div></div>
+                </div>
+                <div class="space-y-4">
+                    <div class="h-2.5 w-full skeleton"></div>
+                    <div class="h-2.5 w-4/5 skeleton"></div>
+                    <div class="h-2.5 w-2/3 skeleton"></div>
                 </div>
             </div>
-            <!-- CUMA -->
-            <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-red-500/5 blur-3xl rounded-full"></div>
-                <div class="flex flex-col w-full relative z-10">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center font-display font-bold text-xl text-red-500 shrink-0">03</div>
-                            <div>
-                                <h4 class="font-bold text-lg text-white tracking-tight uppercase">CUMA</h4>
-                                <span class="text-gray-500 font-bold text-[9px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">Tüm Vücut (25 dk)</span>
-                            </div>
-                        </div>
-                        <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-colors"></i>
+            <div class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 relative overflow-hidden animate-pulse">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-xl skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-32 skeleton"></div>
+                        <div class="h-2 w-20 skeleton opacity-50"></div>
                     </div>
-                    
-                    <div class="program-list-wrapper mt-8"><div class="program-list-fade"></div><div class="program-list-container">
-                        <ul class="text-sm space-y-3">
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-red-500 shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Glute bridge: 3 x 15</span></li>
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-red-500 shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Plank: 3 x 45 sn</span></li>
-                            <li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-red-500 shrink-0 mt-0.5 font-bold text-lg">✓</span><span class="text-gray-400 font-medium tracking-tight">Walking pushups: 2 x 10</span></li>
-                        </ul>
-                    </div></div>
+                </div>
+                <div class="space-y-4">
+                    <div class="h-2.5 w-full skeleton"></div>
+                    <div class="h-2.5 w-4/5 skeleton"></div>
+                    <div class="h-2.5 w-2/3 skeleton"></div>
                 </div>
             </div>
         </div>
