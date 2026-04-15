@@ -1055,10 +1055,27 @@ function resetProgramForm() {
     document.getElementById('prog-editor').innerHTML = '';
 }
 
-// ============================================
 // PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
 // ============================================
+function backToLevels() {
+    // URL'den level parametresini temizle
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+
+    const mainSec = document.getElementById('programs');
+    const listSec = document.getElementById('program-list-view');
+    const detailSec = document.getElementById('blog-detail');
+
+    if (mainSec) mainSec.classList.remove('hidden');
+    if (listSec) listSec.classList.add('hidden');
+    if (detailSec) detailSec.classList.add('hidden');
+}
+
 function showProgramLevel(level, titleStr) {
+    // Browser URL'ini güncelle (Paylaşılabilir link için)
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?level=' + level;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+
     const mainSec = document.getElementById('programs');
     const listSec = document.getElementById('program-list-view');
     const detailSec = document.getElementById('blog-detail');
