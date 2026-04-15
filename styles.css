@@ -273,6 +273,7 @@ body {
 }
 
 #print-area { font-family: 'Inter', sans-serif; display: none; }
+#print-content { background: white; min-height: 100vh; }
 
 /* Skeleton Loading Effect */
 .skeleton {
