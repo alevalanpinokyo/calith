@@ -1447,7 +1447,9 @@ function editAnnouncement(id) {
 }
 
 // --- HOMECARDS LOGIC ---
-let homecards = JSON.parse(localStorage.getItem('calith_homecards_cache')) || []; function toggleHomecardLinkFields() {
+let homecards = JSON.parse(localStorage.getItem('calith_homecards_cache')) || [];
+
+function toggleHomecardLinkFields() {
     const hiddenEl = document.getElementById('hc-section');
     const section = hiddenEl ? hiddenEl.value : 'hero';
 
@@ -1493,14 +1495,17 @@ let homecards = JSON.parse(localStorage.getItem('calith_homecards_cache')) || []
         }
     }
 }
-
+// --- HOMECARDS RENDER VE YÜKLEME ---
 async function loadHomecards() {
     const sb = getSupabase();
 
-    // Eğer önbellekte veri varsa ilk render'ı hemen yapalım (titremeyi önlemek için)
-    if (homecards.length > 0 && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html'))) {
-        if (typeof renderFrontendHomecards === 'function' && !window.location.pathname.endsWith('admin.html')) renderFrontendHomecards();
-        if (typeof renderAdminHomecards === 'function' && window.location.pathname.endsWith('admin.html')) renderAdminHomecards();
+    // Önbeylekte veri varsa hemen render et (titremeyi önlemek için)
+    if (homecards.length > 0) {
+        const isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html');
+        const isAdmin = window.location.pathname.endsWith('admin.html');
+        
+        if (isIndex && !isAdmin && typeof renderFrontendHomecards === 'function') renderFrontendHomecards();
+        if (isAdmin && typeof renderAdminHomecards === 'function') renderAdminHomecards();
     }
 
     if (!sb) {
@@ -1627,6 +1632,37 @@ function resetHomecardForm() {
     if (typeof toggleHomecardLinkFields === 'function') toggleHomecardLinkFields();
 }
 
+async function saveScheduleGlobalSettings() {
+    const text = document.getElementById('sch-global-text').value.trim();
+    const url = document.getElementById('sch-global-url').value.trim();
+    
+    if(!text) return alert('Buton metni boş olamaz!');
+
+    const sb = getSupabase();
+    if(!sb) return;
+
+    const btn = document.getElementById('btn-sch-global-save');
+    if(btn) btn.innerHTML = '<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Kaydediliyor...';
+
+    const { error } = await sb.from('homecards').upsert({
+        id: 'schedule_settings',
+        section: 'schedule',
+        title: 'SECTION_SETTINGS_HIDDEN',
+        link_text: text,
+        link_url: url
+    });
+
+    if(error) {
+        alert('Hata: ' + error.message);
+    } else {
+        showToast('Bölüm ayarları güncellendi');
+        await loadHomecards();
+    }
+    
+    if(btn) btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Ayarları Kaydet ve Güncelle';
+    if(window.lucide) lucide.createIcons();
+}
+
 function editHomecard(id) {
     const hc = homecards.find(x => x.id === id);
     if (!hc) return;
@@ -1750,7 +1786,11 @@ function renderAdminHomecards() {
         return;
     }
 
-    list.innerHTML = filtered.map(hc => `
+    // Ayarlar kaydını ana listeden gizle
+    const mainCards = filtered.filter(hc => hc.id !== 'schedule_settings');
+    const scheduleSettings = filtered.find(hc => hc.id === 'schedule_settings');
+
+    list.innerHTML = mainCards.map(hc => `
         <div class="glass-card hover:bg-white/5 p-5 rounded-2xl flex items-center justify-between group transition-all duration-300">
             <div class="flex items-center gap-5">
                 <div class="w-14 h-14 rounded-2xl bg-calith-orange/10 flex items-center justify-center text-3xl shadow-inner">${hc.icon || '📌'}</div>
@@ -1768,6 +1808,41 @@ function renderAdminHomecards() {
             </div>
         </div>
     `).join('');
+
+    // Eğer schedule bölümündeysek, listenin altına özel bir ayar kutusu ekle
+    if (currentHomecardFilter === 'schedule') {
+        const setLink = scheduleSettings ? scheduleSettings.link_url : '';
+        const setTxt = scheduleSettings ? scheduleSettings.link_text : 'Hareketleri İzle';
+
+        list.innerHTML += `
+            <div class="mt-12 pt-8 border-t border-white/10">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-calith-orange/20 flex items-center justify-center text-calith-orange">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                    </div>
+                    <h4 class="font-display text-lg font-bold tracking-tight uppercase">Bölüm Genel Ayarları <span class="text-xs text-gray-500 font-medium normal-case ml-2">(Tüm kartlar için ortak buton)</span></h4>
+                </div>
+                
+                <div class="bg-black/30 border border-white/5 p-8 rounded-3xl space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] text-gray-500 uppercase font-black tracking-widest ml-1">Buton Yazısı</label>
+                            <input type="text" id="sch-global-text" value="${setTxt}" placeholder="Örn: Hareketleri İzle" class="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl focus:border-calith-orange outline-none transition-all placeholder:text-gray-700">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] text-gray-500 uppercase font-black tracking-widest ml-1">Buton Link (URL / YT ID)</label>
+                            <input type="text" id="sch-global-url" value="${setLink}" placeholder="dQw4w9WgXcQ veya URL" class="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl focus:border-calith-orange outline-none transition-all placeholder:text-gray-700">
+                        </div>
+                    </div>
+                    <button id="btn-sch-global-save" onclick="saveScheduleGlobalSettings()" class="w-full btn-primary py-4 rounded-xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-calith-orange/10 flex items-center justify-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        Ayarları Kaydet ve Güncelle
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
     if (window.lucide) lucide.createIcons();
 }
 
@@ -1833,10 +1908,24 @@ function renderFrontendHomecards() {
         }
     }
 
-    const schedule = homecards.filter(h => h.section === 'schedule').sort((a, b) => (a.id > b.id ? 1 : -1));
-    if (schedule.length > 0) {
+    const scheduleData = homecards.filter(h => h.section === 'schedule');
+    if (scheduleData.length > 0) {
+        // Ayarlar kaydını ayır (gerçek kartlardan gizle)
+        const settings = scheduleData.find(h => h.id === 'schedule_settings');
+        const schedule = scheduleData.filter(h => h.id !== 'schedule_settings').sort((a,b)=> (a.id > b.id ? 1 : -1));
+
+        // Global Butonu Güncelle
+        const globalBtn = document.getElementById('schedule-global-btn');
+        const globalBtnText = document.getElementById('schedule-global-btn-text');
+        if (globalBtn && settings) {
+            globalBtn.onclick = () => {
+                if (typeof openVideoModal === 'function') openVideoModal(settings.link_url || '');
+            };
+            if (globalBtnText) globalBtnText.textContent = settings.link_text || 'Hareketleri İzle';
+        }
+
         const grid = document.getElementById('schedule-grid');
-        if (grid) {
+        if (grid && schedule.length > 0) {
             grid.className = "grid lg:grid-cols-3 gap-6 fade-in";
             grid.innerHTML = schedule.map((sch, i) => {
                 const colorMap = ['calith-orange', 'calith-accent', 'red-500', 'green-500'];
@@ -1873,7 +1962,7 @@ function renderFrontendHomecards() {
                 `;
             }).join('');
             if (window.lucide) lucide.createIcons();
-            initScrollReveal();
+            if (typeof initScrollReveal === 'function') initScrollReveal();
         }
     }
     const equipment = homecards.filter(h => h.section === 'equipment').sort((a, b) => (a.id > b.id ? 1 : -1));
