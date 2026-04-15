@@ -1852,10 +1852,13 @@ function renderFrontendHomecards() {
                             <svg xmlns="http://www.w3.org/2000/svg" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         
-                        <div class="program-list-container">
-                            <ul class="text-sm space-y-3">
-                                ${listItems}
-                            </ul>
+                        <div class="program-list-wrapper mt-8">
+                            <div class="program-list-fade"></div>
+                            <div class="program-list-container">
+                                <ul class="text-sm space-y-3">
+                                    ${listItems}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
