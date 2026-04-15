@@ -1512,16 +1512,24 @@ async function loadHomecards() {
         hideAdminLoading();
         return;
     }
+
     const { data, error } = await sb.from('homecards').select('*');
     if (!error && data) {
+        const isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html');
+        
+        // AKILLI KONTROL: Eğer gelen veri önbellektekiyle aynıysa render yapma (Titremeyi önler)
+        const hasChanged = JSON.stringify(data) !== JSON.stringify(homecards);
+        
         homecards = data;
         localStorage.setItem('calith_homecards_cache', JSON.stringify(data));
 
-        if (typeof renderFrontendHomecards === 'function' && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
-            renderFrontendHomecards();
-        }
-        if (typeof renderAdminHomecards === 'function' && window.location.pathname.endsWith('admin.html')) {
-            renderAdminHomecards();
+        if (hasChanged) {
+            if (typeof renderFrontendHomecards === 'function' && (isIndex && !window.location.pathname.endsWith('admin.html'))) {
+                renderFrontendHomecards();
+            }
+            if (typeof renderAdminHomecards === 'function' && window.location.pathname.endsWith('admin.html')) {
+                renderAdminHomecards();
+            }
         }
     }
     hideAdminLoading();
