@@ -122,6 +122,20 @@ async function loadPosts() {
     if (typeof renderBlog === 'function') renderBlog();
     if (typeof renderAdminPosts === 'function') renderAdminPosts();
     if (typeof renderAdminPrograms === 'function') renderAdminPrograms();
+
+    // URL parametrelerine göre detay sayfalarını aç
+    const urlParams = new URLSearchParams(window.location.search);
+    const blogId = urlParams.get('b');      // blog.html?b=ID
+    const programId = urlParams.get('p');   // skills.html?p=ID
+    const levelParam = urlParams.get('level'); // skills.html?level=baslangic
+
+    if (blogId && typeof showBlogDetail === 'function') {
+        showBlogDetail(blogId);
+    } else if (programId && typeof showProgramDetail === 'function') {
+        showProgramDetail(programId);
+    } else if (levelParam && typeof showProgramLevel === 'function') {
+        showProgramLevel(levelParam, levelParam.charAt(0).toUpperCase() + levelParam.slice(1));
+    }
 }
 let cart = JSON.parse(localStorage.getItem('calith_cart')) || [];
 let currentPd = null;
@@ -338,6 +352,8 @@ function showBlogDetail(id) {
     let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
     let videoUrl = videoMatch ? videoMatch[1] : '';
     displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
+    // Supabase'den gelen şişirilmiş HTML'i temizle (eski kayıtlar için de geçerli)
+    if (typeof sanitizeContent === 'function') displayContent = sanitizeContent(displayContent);
 
     let mediaHtml = '';
     if (videoUrl) {
@@ -614,9 +630,57 @@ function renderAdminProducts() {
     if (window.lucide) lucide.createIcons();
 }
 
+/**
+ * Yapıştırılan içerikten inline style, Tailwind class ve gereksiz attribute’ları temizler.
+ * Sadece temel HTML yapısını korur.
+ */
+function sanitizeContent(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+
+    // Yalnızca izin verilen etiketler (daha geniş bir beyaz liste)
+    const ALLOWED_TAGS = new Set(['p','h1','h2','h3','h4','h5','h6','ul','ol','li',
+        'b','strong','i','em','u','s','a','img','br','hr','blockquote',
+        'table','thead','tbody','tr','th','td','span','div','iframe']);
+
+    function cleanNode(node) {
+        // Metin nodları olduğu gibi kalıyor
+        if (node.nodeType === Node.TEXT_NODE) return;
+
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const tag = node.tagName.toLowerCase();
+
+            // İzin verilmeyen etiketleri içerikleriyle birlikte kaldır
+            if (!ALLOWED_TAGS.has(tag)) {
+                // İçindeki metin önemli olabilir, parent'a taş
+                const parent = node.parentNode;
+                while (node.firstChild) parent.insertBefore(node.firstChild, node);
+                parent.removeChild(node);
+                return;
+            }
+
+            // style ve class gibi zararlı attribute’ları temizle
+            // (href, src, alt, width, height, frameborder, allowfullscreen izinli)
+            const ALLOWED_ATTRS = new Set(['href','src','alt','width','height',
+                'frameborder','allowfullscreen','target','rel']);
+            Array.from(node.attributes).forEach(attr => {
+                if (!ALLOWED_ATTRS.has(attr.name.toLowerCase())) {
+                    node.removeAttribute(attr.name);
+                }
+            });
+        }
+
+        // Çocuk nodları temizle (ters sırada çünkü nodlar değişiyor)
+        Array.from(node.childNodes).forEach(child => cleanNode(child));
+    }
+
+    Array.from(tmp.childNodes).forEach(child => cleanNode(child));
+    return tmp.innerHTML;
+}
+
 async function savePost() {
     const title = document.getElementById('post-title').value;
-    let content = document.getElementById('editor').innerHTML;
+    let content = sanitizeContent(document.getElementById('editor').innerHTML);
     const category = document.getElementById('post-category').value;
     const image = document.getElementById('post-cover').value;
     const video = document.getElementById('post-video').value;
@@ -913,9 +977,8 @@ function init() {
     // Lucide support
     if (window.lucide) lucide.createIcons();
 
-    // Check URL for blog post detail
-    const params = new URLSearchParams(window.location.search);
-    const blogId = params.get('b');
+    // URL parametre kontrolü loadPosts() içinde posts yüklendikten sonra yapılıyor
+    // (blog.html?b=ID ve skills.html?p=ID ve skills.html?level=... için)
 }
 
 function initScrollReveal() {
@@ -934,7 +997,7 @@ function initScrollReveal() {
 // ============================================
 async function saveProgram() {
     const title = document.getElementById('prog-title').value;
-    let content = document.getElementById('prog-editor').innerHTML;
+    let content = sanitizeContent(document.getElementById('prog-editor').innerHTML);
     const category = document.getElementById('prog-category').value;
     const image = document.getElementById('prog-cover').value;
     const video = document.getElementById('prog-video').value;
@@ -1151,6 +1214,8 @@ function showProgramDetail(id) {
     let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
     let videoUrl = videoMatch ? videoMatch[1] : '';
     displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
+    // Supabase'den gelen şişirilmiş HTML'i temizle (eski kayıtlar için de geçerli)
+    if (typeof sanitizeContent === 'function') displayContent = sanitizeContent(displayContent);
 
     let mediaHtml = '';
     if (videoUrl) {
