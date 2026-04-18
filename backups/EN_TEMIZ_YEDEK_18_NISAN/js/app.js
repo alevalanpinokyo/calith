@@ -1200,13 +1200,13 @@ async function loadAnnouncements() {
     try {
         const { data, error } = await sb.from('announcements').select('*').order('created_at', { ascending: false });
         if (error || !data || data.length === 0) {
-            announcements = []; // Varsayılanları burada sıfırlıyoruz (sil boş gözüksün isteği)
-            if (error) console.warn("Supabase duyuru tablosu hazır değil.");
+            announcements = defaultAnnouncements;
+            if (error) console.warn("Supabase duyuru tablosu hazır değil. Varsayılanlar devrede.");
         } else {
             announcements = data;
         }
     } catch (e) {
-        announcements = [];
+        announcements = defaultAnnouncements;
     }
 
     if (document.getElementById('admin-ann-list')) renderAdminAnnouncements();
@@ -2449,104 +2449,58 @@ document.addEventListener('DOMContentLoaded', async () => {
 function exportProgramPDF() {
     const printArea = document.getElementById('print-area');
     const printContent = document.getElementById('print-content');
-    if (!printArea || !printContent) return;
+    const scheduleGrid = document.getElementById('schedule-grid');
 
-    // 1. Kaynak: homecards (Supabase'den yüklendi)
-    const scheduleCards = (typeof homecards !== 'undefined')
-        ? homecards.filter(h => h.section === 'schedule' && h.id !== 'schedule_settings')
-                   .sort((a, b) => (a.id > b.id ? 1 : -1))
-        : [];
+    if (printArea && printContent && scheduleGrid) {
+        showToast('PDF Çizelgesi Hazırlanıyor...');
 
-    let data = [];
-
-    if (scheduleCards.length > 0) {
-        // Supabase verisi var → temiz kaynak yolu
-        data = scheduleCards.map(sch => ({
-            title: sch.title || '',
-            badge: sch.badge || '',
-            items: (sch.desc_text || '').split(/\n|\\n/)
-                       .map(l => l.trim().replace(/^[-✓* ]+/, ''))
-                       .filter(l => l.length > 0)
-        }));
-    } else {
-        // 2. Fallback: DOM'dan oku (schedule-grid içindeki gerçek kartlar)
-        const scheduleGrid = document.getElementById('schedule-grid');
-        const cards = scheduleGrid ? Array.from(scheduleGrid.querySelectorAll('.program-card:not(.animate-pulse)')) : [];
-
-        if (cards.length > 0) {
-            data = cards.map(card => {
-                const h4     = card.querySelector('h4');
-                const badge  = card.querySelector('.rounded-full');
-                const items  = Array.from(card.querySelectorAll('ul li span:last-child'))
-                                   .map(s => s.innerText.trim()).filter(Boolean);
-                return {
-                    title: h4 ? h4.innerText.trim() : '',
-                    badge: badge ? badge.innerText.trim() : '',
-                    items
-                };
-            });
-        }
-    }
-
-    // 3. Son Fallback: Statik örnek program (her iki kaynak da boşsa)
-    if (data.length === 0 || data.every(d => d.items.length === 0)) {
-        data = [
-            {
-                title: 'GÜN 1 — ÜST VÜCUT',
-                badge: 'Pazartesi / Çarşamba',
-                items: ['Isınma: 5 dk yürüyüş', '3x10 Şınav', '3x8 Pike Push-up', '3x10 Dips (sandalye)', '3x12 Diamond Push-up', '2x10 Triceps Germe']
-            },
-            {
-                title: 'GÜN 2 — ALT VÜCUT',
-                badge: 'Salı / Perşembe',
-                items: ['Isınma: 5 dk esneme', '4x15 Squat', '3x10 Lunges (her bacak)', '3x15 Glute Bridge', '3x20 Calf Raises', '2x30s Duvar Oturması']
-            },
-            {
-                title: 'GÜN 3 — CORE & DİNAMİK',
-                badge: 'Cuma / Cumartesi',
-                items: ['Isınma: 5 dk hafif koşu', '3x45s Plank', '3x15 Crunch', '3x10 Mountain Climber', '3x10 Leg Raise', '2x20 Flutter Kicks']
-            }
-        ];
-    }
-
-    renderPDF(printContent, data);
-}
-
-function renderPDF(printContent, data) {
-    showToast('PDF Çizelgesi Hazırlanıyor...');
-
-    const colCount = data.length <= 2 ? data.length : 3;
-
-    let html = `
-    <div style="width:100%;font-family:'Inter',Arial,sans-serif;color:#000;padding:20px;box-sizing:border-box;">
-        <div style="text-align:center;border-bottom:3px solid #000;padding-bottom:16px;margin-bottom:24px;">
-            <h1 style="font-size:24px;text-transform:uppercase;margin:0;letter-spacing:2px;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
-            <p style="margin:6px 0 0;font-weight:700;color:#555;font-size:13px;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(${colCount},1fr);gap:12px;">
-    `;
-
-    html += data.map((card, i) => `
-        <div style="border:2px solid #000;border-radius:10px;padding:14px;background:#f9f9f9;break-inside:avoid;">
-            <div style="background:#000;color:#fff;padding:8px 10px;border-radius:6px;text-align:center;margin-bottom:10px;">
-                <h3 style="margin:0;font-size:13px;text-transform:uppercase;letter-spacing:1px;">${card.title || ('GÜN ' + (i + 1))}</h3>
+        const cards = Array.from(scheduleGrid.querySelectorAll('.program-card'));
+        
+        // Profesyonel Çizelge Tasarımı (3 Sütun Yan Yana)
+        let html = `
+        <div style="width: 100%; font-family: 'Inter', sans-serif; color: #000;">
+            <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="font-size: 28px; text-transform: uppercase; margin: 0;">CALISTHENICS ANTRENMAN ÇİZELGESİ</h1>
+                <p style="margin: 5px 0 0; font-weight: bold; color: #666;">www.calith.com • Profesyonel Haftalık Program</p>
             </div>
-            ${card.badge ? `<p style="font-size:9px;font-weight:700;text-align:center;color:#777;margin-bottom:12px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:6px;">${card.badge}</p>` : ''}
-            <ul style="list-style:none;padding:0;margin:0;font-size:11px;line-height:1.6;">
-                ${card.items.map(item => `<li style="padding:4px 0;border-bottom:1px dashed #ddd;">• ${item}</li>`).join('')}
-            </ul>
-        </div>
-    `).join('');
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+        `;
 
-    html += `
-        </div>
-        <div style="margin-top:30px;border-top:1px solid #ddd;padding-top:10px;text-align:center;font-size:9px;color:#aaa;">
-            * Her antrenman öncesi 5-10 dk ısınma yapın. Form rehberi için calith.com/blog adresini ziyaret edin.
-        </div>
-    </div>`;
+        html += cards.map(card => {
+            const title = card.querySelector('h4').innerText;
+            const subtitle = card.querySelector('span').innerText;
+            const items = Array.from(card.querySelectorAll('ul li')).map(li => {
+                // Sadece metni al, ikonları temizle
+                return li.innerText.replace(/[✓*]/g, '').trim();
+            });
 
-    printContent.innerHTML = html;
-    setTimeout(() => { window.print(); }, 400);
+            return `
+            <div style="border: 2px solid #000; border-radius: 12px; padding: 15px; background: #f9f9f9;">
+                <div style="background: #000; color: #fff; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 12px;">
+                    <h3 style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">${title}</h3>
+                </div>
+                <p style="font-size: 10px; font-weight: bold; text-align: center; color: #555; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${subtitle}</p>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 1.6;">
+                    ${items.map(item => `<li style="padding: 5px 0; border-bottom: 1px dashed #ccc;">• ${item}</li>`).join('')}
+                </ul>
+            </div>
+            `;
+        }).join('');
+
+        html += `
+            </div>
+            <div style="margin-top: 40px; border-top: 1px solid #ddd; pt: 10px; text-align: center; font-size: 10px; color: #999;">
+                * Her antrenman öncesi 5-10 dk ısınma yapmayı unutmayın. Form kontrolü için CALITH blog sayfasını ziyaret edin.
+            </div>
+        </div>
+        `;
+
+        printContent.innerHTML = html;
+        setTimeout(() => {
+            window.print();
+        }, 300);
+    }
 }
 
 

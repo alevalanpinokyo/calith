@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- VERSIYON: 1.1.0 - EN KARARLI SÜRÜM (375px Fix + PDF Export Fix) - 18 Nisan 2026 -->
 <html lang="tr">
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -43,8 +42,8 @@
 <div class="grain"></div>
 
 <!-- Navigation -->
-<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-hidden">
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
             <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
@@ -98,7 +97,7 @@
 </nav>
 
 <!-- Hero Section -->
-<section id="landing" class="relative min-h-screen flex items-center pt-20 hero-gradient overflow-x-hidden">
+<section id="landing" class="relative min-h-screen flex items-center pt-20 hero-gradient overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute top-1/4 -left-20 w-96 h-96 bg-calith-orange/20 rounded-full blur-3xl"></div>
         <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-calith-accent/10 rounded-full blur-3xl"></div>
@@ -111,11 +110,11 @@
                     <span class="w-2 h-2 bg-calith-orange rounded-full animate-pulse"></span>
                     <span class="text-sm text-gray-400">Yeni: Pro Series 2025</span>
                 </div>
-                <h1 id="hero-title" class="font-display text-3xl md:text-7xl font-bold leading-tight mb-6 uppercase text-center lg:text-left break-words">
+                <h1 id="hero-title" class="font-display text-5xl md:text-7xl font-bold leading-tight mb-6 uppercase text-center lg:text-left">
                     Kendi Vücudunla Çalış.<br>
                     <span class="gradient-text">Sınırlarını</span> Zorla.
                 </h1>
-                <p id="hero-subtitle" class="text-gray-400 text-lg md:text-xl mb-8 max-w-full lg:max-w-lg leading-relaxed text-center lg:text-left mx-auto lg:mx-0">
+                <p id="hero-subtitle" class="text-gray-400 text-lg md:text-xl mb-8 max-w-lg leading-relaxed text-center lg:text-left mx-auto lg:mx-0">
                     Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Şimdi başla, tamamen ücretsiz.
                 </p>
                 <div class="flex flex-wrap gap-4 mb-12 justify-center lg:justify-start">
@@ -128,23 +127,23 @@
                         <span>Yolculuğa Başla</span>
                     </button>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 pt-8 border-t border-white/10 w-full mx-auto lg:mx-0 lg:max-w-md">
-                    <div class="p-2">
-                        <div id="happy-members-count" class="stat-number text-2xl md:text-4xl font-bold text-white">500+</div>
-                        <div class="text-gray-500 text-[10px] md:text-sm mt-1 uppercase tracking-wider leading-tight">Mutlu Üye</div>
+                <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/10 max-w-md mx-auto lg:mx-0">
+                    <div>
+                        <div id="happy-members-count" class="stat-number text-3xl md:text-4xl font-bold text-white">...</div>
+                        <div class="text-gray-500 text-sm mt-1">Mutlu Üye</div>
                     </div>
-                    <div class="p-2">
-                        <div class="stat-number text-2xl md:text-4xl font-bold text-white">4 Hafta</div>
-                        <div class="text-gray-500 text-[10px] md:text-sm mt-1 uppercase tracking-wider leading-tight">Haftalık Program</div>
+                    <div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-white">4</div>
+                        <div class="text-gray-500 text-sm mt-1">Haftalık Plan</div>
                     </div>
-                    <div class="p-2 col-span-2 md:col-span-1 border-t border-white/5 md:border-t-0 pt-4 md:pt-2">
-                        <div class="stat-number text-2xl md:text-4xl font-bold text-white">0₺</div>
-                        <div class="text-gray-500 text-[10px] md:text-sm mt-1 uppercase tracking-wider leading-tight">Giriş Ücreti</div>
+                    <div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-white">0₺</div>
+                        <div class="text-gray-500 text-sm mt-1">Başlangıç Ücreti</div>
                     </div>
                 </div>
             </div>
-            <div class="relative fade-in stagger-2 h-[500px] mt-12 lg:mt-0">
-                <div class="relative w-full mx-auto h-full lg:max-w-md">
+            <div class="relative fade-in stagger-2 h-[500px]">
+                <div class="relative w-full max-w-md mx-auto h-full">
                     <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/30 to-calith-accent/20 rounded-3xl blur-3xl transform scale-95"></div>
                     
                     <div class="relative bg-[#0d0d0d]/80 backdrop-blur-3xl rounded-3xl border border-white/10 shadow-2xl flex flex-col h-full ring-1 ring-white/5 overflow-hidden">
@@ -219,7 +218,7 @@
 </section>
 
 <!-- Marquee -->
-<div class="bg-calith-orange py-4 overflow-hidden border-y border-white/10 flex flex-nowrap w-full max-w-full">
+<div class="bg-calith-orange py-4 overflow-hidden border-y border-white/10 flex flex-nowrap">
     <div class="marquee flex items-center justify-around gap-8 text-black font-display font-bold text-lg px-4 min-w-full flex-shrink-0">
         <span>ŞINAV</span> <span class="text-black/30">•</span> <span>DIPS</span> <span class="text-black/30">•</span> <span>BARFİKS</span> <span class="text-black/30">•</span> <span>SQUAT</span> <span class="text-black/30">•</span> <span>PLANK</span> <span class="text-black/30">•</span> <span>L-SIT</span> <span class="text-black/30">•</span> <span>HANDSTAND</span> <span class="text-black/30">•</span> <span>MUSCLE-UP</span> <span class="text-black/30">•</span> <span>FRONT-LEVER</span>
     </div>
@@ -536,7 +535,7 @@
         <h2 class="font-display text-4xl md:text-6xl font-bold text-black mb-6 uppercase tracking-tight">BU HAFTA BAŞLAMAYA HAZIR MISIN?</h2>
         <p class="text-black/80 font-semibold text-lg md:text-xl mb-10 max-w-2xl mx-auto">Ücretsiz 4 haftalık başlangıç programını indir, vücut ağırlığının kontrolünü bugün eline al.</p>
         
-        <div class="flex flex-col md:flex-row gap-3 w-full lg:max-w-lg mx-auto mb-10">
+        <div class="flex flex-col md:flex-row gap-3 max-w-lg mx-auto mb-10">
             <input type="email" placeholder="E-posta adresin" class="flex-1 bg-white/90 text-black px-6 py-4 rounded-xl font-medium outline-none border-2 border-transparent focus:border-black placeholder-gray-500 shadow-xl" autocomplete="email">
             <button class="bg-black text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl whitespace-nowrap" onclick="alert('Demo: İndirme linkiniz e-postanıza gönderildi!')">PROGRAMI İNDİR</button>
         </div>
