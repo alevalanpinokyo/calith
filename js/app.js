@@ -1314,29 +1314,31 @@ function renderAnnouncementsSlider() {
 
         let mediaHtml;
         if (imageUrl && imageUrl.trim() !== '') {
-            mediaHtml = `<div class="${isYoutube ? 'w-full max-w-[280px] aspect-video' : 'w-16 h-16'} rounded-2xl mb-5 flex-shrink-0 shadow-[0_0_30px_${hShadow}] group-hover:scale-105 transition-all border border-white/10 overflow-hidden bg-black/50 relative mx-auto">
-                <img src="${imageUrl}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" alt="Media">
+            mediaHtml = `<div class="${isYoutube ? 'w-full aspect-video' : 'w-20 h-20'} rounded-2xl mb-8 flex-shrink-0 shadow-[0_20px_50px_${hShadow}] group-hover:scale-[1.02] transition-all border border-white/20 overflow-hidden bg-black relative mx-auto">
+                <img src="${imageUrl}" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" alt="Media">
                 ${isYoutube ? `
-                <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all flex items-center justify-center">
-                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] group-hover:scale-110 group-hover:bg-calith-orange group-hover:text-black transition-all border border-white/30 text-white">
-                        <i data-lucide="play" class="w-5 h-5 ml-1"></i>
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.3)] group-hover:scale-110 group-hover:bg-calith-orange group-hover:text-black transition-all border border-white/20 text-white">
+                        <i data-lucide="play" class="w-6 h-6 ml-1"></i>
                     </div>
                 </div>
                 ` : ''}
             </div>`;
         } else {
-            mediaHtml = `<div class="w-20 h-20 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-5 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_20px_${hShadow}] flex-shrink-0 relative mx-auto">
-                <i data-lucide="${ann.icon || 'bell'}" class="w-10 h-10"></i>
+            mediaHtml = `<div class="w-24 h-24 rounded-2xl bg-${ann.color}/20 flex items-center justify-center text-${ann.color} mb-8 group-hover:scale-110 group-hover:bg-${ann.color} group-hover:text-white transition-all shadow-[0_0_30px_${hShadow}] flex-shrink-0 relative mx-auto border border-${ann.color}/20">
+                <i data-lucide="${ann.icon || 'bell'}" class="w-12 h-12"></i>
             </div>`;
         }
 
         return `
-        <div class="flex-shrink-0 h-full p-6 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] mx-auto">
+        <div class="flex-shrink-0 h-full p-5 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
+            <div class="flex flex-col items-center justify-center w-full mx-auto">
                 ${mediaHtml}
-                <span class="text-[10px] uppercase font-bold tracking-widest text-${ann.color} mb-2 block mx-auto">${ann.label}</span>
-                <h4 class="font-display text-2xl font-bold mb-3 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
-                <p class="text-sm text-gray-400 leading-relaxed px-2 opacity-70 group-hover:opacity-100 transition-opacity text-center mx-auto">${ann.desc}</p>
+                <div class="space-y-2">
+                    <span class="text-[10px] uppercase font-black tracking-[0.3em] text-${ann.color} mb-1 block mx-auto">${ann.label}</span>
+                    <h4 class="font-display text-2xl sm:text-3xl font-bold mb-2 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
+                    <p class="text-sm text-gray-500 leading-relaxed px-2 line-clamp-2 group-hover:text-gray-300 transition-colors text-center mx-auto">${ann.desc}</p>
+                </div>
             </div>
         </div>
         `;
