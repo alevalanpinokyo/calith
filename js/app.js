@@ -2823,7 +2823,21 @@ function renderFrontendLinks() {
         return;
     }
 
-    container.innerHTML = userLinks.map(l => {
+    // 1. YouTube Modal İndeksini Doldur (Eğer varsa)
+    const ytModalList = document.getElementById('youtube-modal-list');
+    if (ytModalList) {
+        const ytItems = userLinks.filter(l => l.category === 'youtube_item');
+        ytModalList.innerHTML = ytItems.map(l => `
+            <a href="${l.url}" target="_blank" class="bg-black border border-white/10 hover:border-[#FF0000] rounded-2xl p-4 flex flex-col items-center transition-all group">
+                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(l.title)}&background=random" alt="${l.title}" class="w-12 h-12 rounded-full mb-2 border border-white/5">
+                <span class="font-bold text-sm text-white group-hover:text-[#FF0000] transition-colors">${l.title}</span>
+            </a>
+        `).join('');
+    }
+
+    // 2. Ana listeyi oluştur (youtube_item olmayanlar)
+    const mainLinks = userLinks.filter(l => l.category !== 'youtube_item');
+    container.innerHTML = mainLinks.map(l => {
         if (l.category === 'newsletter') {
             return `
                 <div class="w-full max-w-xl mt-8 glass-card rounded-3xl p-6 text-center border-white/10 relative overflow-hidden group">
