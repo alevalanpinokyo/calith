@@ -1314,7 +1314,7 @@ function renderAnnouncementsSlider() {
 
         let mediaHtml;
         if (imageUrl && imageUrl.trim() !== '') {
-            mediaHtml = `<div class="${isYoutube ? 'w-full aspect-video' : 'w-20 h-20'} rounded-2xl mb-8 flex-shrink-0 shadow-[0_20px_50px_${hShadow}] group-hover:scale-[1.02] transition-all border border-white/20 overflow-hidden bg-black relative mx-auto">
+            mediaHtml = `<div class="${isYoutube ? 'w-full aspect-video' : 'w-20 h-20'} rounded-2xl mb-4 sm:mb-6 flex-shrink-0 shadow-[0_20px_50px_${hShadow}] group-hover:scale-[1.02] transition-all border border-white/20 overflow-hidden bg-black relative mx-auto">
                 <img src="${imageUrl}" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" alt="Media">
                 ${isYoutube ? `
                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all flex items-center justify-center">
@@ -1334,10 +1334,10 @@ function renderAnnouncementsSlider() {
         <div class="flex-shrink-0 h-full p-4 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
             <div class="flex flex-col items-center justify-center w-full mx-auto">
                 ${mediaHtml}
-                <div class="space-y-1 sm:space-y-2">
-                    <span class="text-[9px] sm:text-[10px] uppercase font-black tracking-[0.3em] text-${ann.color} mb-1 block mx-auto">${ann.label}</span>
-                    <h4 class="font-display text-xl sm:text-3xl font-bold mb-2 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
-                    <p class="text-[11px] sm:text-sm text-gray-500 leading-relaxed px-2 line-clamp-2 group-hover:text-gray-300 transition-colors text-center mx-auto">${ann.desc}</p>
+                <div class="flex flex-col gap-0.5 sm:gap-1.5">
+                    <span class="text-[9px] sm:text-[10px] uppercase font-black tracking-[0.3em] text-${ann.color} block mx-auto">${ann.label}</span>
+                    <h4 class="font-display text-xl sm:text-3xl font-bold group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
+                    <p class="text-[10px] sm:text-sm text-gray-500 leading-tight px-2 line-clamp-2 group-hover:text-gray-300 transition-colors text-center mx-auto">${ann.desc}</p>
                 </div>
             </div>
         </div>
