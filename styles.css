@@ -326,6 +326,24 @@ body {
 }
 
 /* ==========================================================================
+   MOBIL FORCE FIXED TÜRÜ HATA DÜZELTMELERİ (Başlık Ezilmeleri)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Tüm Ana Başlıkların Aşırı Büyüklükten Kaynaklı Satır Üstüne Binme (Overlapping) Çözümü */
+    h2.font-display {
+        font-size: 32px !important;            /* text-4xl mobilde taşıyor, fontu uygun ölçüye düşürüyoruz */
+        line-height: 1.25 !important;           /* Satır aralığını daraltarak 2. satırın 1. satırın içine girmesini engelliyoruz */
+        padding: 0 10px !important;
+    }
+    
+    /* Samsung Internet ve Eski iOS'larda Gradient Text Altında Gri Hayalet Yazı Oluşma Bug'ı */
+    .gradient-text {
+        display: inline-block !important;      /* Line wrap yaparken gradient kırılmasını önler */
+        white-space: normal !important;
+    }
+}
+
+/* ==========================================================================
    MOBIL FORCE FIXED (BALYOZ) - ÖNEMLİ
    Tailwind breakpoint'leri (md, lg) bazen emülatörlerde/yerel dosyalarda 
    yanlış çalıştığı için bu bölüm Saf CSS ile mobil görünümü kilitler.
