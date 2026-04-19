@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -126,108 +128,12 @@
         </div>
 
         <!-- Links Container -->
-        <div class="w-full space-y-4 flex flex-col items-center">
-            
-            <!-- Ana Site -->
-            <a href="index.html" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-calith-orange to-orange-600 flex items-center justify-center shadow-lg shadow-calith-orange/20">
-                        <i data-lucide="globe" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-calith-orange transition-colors">Resmi Website</h2>
-                        <p class="text-xs text-gray-500">Programlar & Eğitimler</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </a>
-
-            <!-- YouTube (Pop-up Seçim) -->
-            <button onclick="document.getElementById('youtube-modal').classList.remove('hidden')" class="link-item text-left w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-[#FF0000]/10 border border-[#FF0000]/30 flex items-center justify-center group-hover:bg-[#FF0000] transition-colors duration-300">
-                        <i class="fa-brands fa-youtube text-2xl text-[#FF0000] group-hover:text-white transition-colors duration-300"></i>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-[#FF0000] transition-colors">YouTube</h2>
-                        <p class="text-xs text-gray-500">Kanalı Seç</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </button>
-
-            <!-- Instagram -->
-            <a href="#" target="_blank" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 p-[1px]">
-                        <div class="w-full h-full bg-calith-dark rounded-[11px] flex items-center justify-center group-hover:bg-transparent transition-colors duration-300">
-                            <i class="fa-brands fa-instagram text-2xl text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-pink-400 transition-colors">Instagram</h2>
-                        <p class="text-xs text-gray-500">Günlük Motivasyon & Tüyolar</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </a>
-
-            <!-- TikTok -->
-            <a href="#" target="_blank" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-black group-hover:border-white transition-colors duration-300">
-                        <i class="fa-brands fa-tiktok text-2xl text-white group-hover:Drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all"></i>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-gray-300 transition-colors">TikTok</h2>
-                        <p class="text-xs text-gray-500">Kısa Form Videolar</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </a>
-
-            <!-- X / Twitter -->
-            <a href="#" target="_blank" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-gray-500 transition-colors duration-300">
-                        <i class="fa-brands fa-twitter text-2xl text-white"></i>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-gray-300 transition-colors">Twitter</h2>
-                        <p class="text-xs text-gray-500">Bilgi Selileri</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </a>
-
-            <!-- Ekipmanlar / Shop -->
-            <a href="shop.html" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group mt-4 border-calith-accent/20">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-calith-accent/10 border border-calith-accent/30 flex items-center justify-center group-hover:bg-calith-accent transition-colors duration-300">
-                        <i data-lucide="shopping-cart" class="w-6 h-6 text-calith-accent group-hover:text-black transition-colors duration-300"></i>
-                    </div>
-                    <div>
-                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-calith-accent transition-colors">Mağaza</h2>
-                        <p class="text-xs text-gray-400">Calisthenics Ekipmanları</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </a>
-
-            <!-- Newsletter Card -->
-            <div class="w-full max-w-xl mt-8 glass-card rounded-3xl p-6 text-center border-white/10 relative overflow-hidden group">
-                <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div class="relative z-10">
-                    <i data-lucide="mail" class="w-8 h-8 text-calith-orange mx-auto mb-3"></i>
-                    <h3 class="font-bold text-lg mb-2">Başlangıç Rehberini İndir</h3>
-                    <p class="text-sm text-gray-400 mb-4 px-4">Ücretsiz programı hemen e-postana gönderelim.</p>
-                    <form class="flex max-w-sm mx-auto gap-2" onsubmit="event.preventDefault(); alert('Katılımınız alındı!');">
-                        <input type="email" placeholder="E-Posta" required class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-calith-orange transition-colors">
-                        <button type="submit" class="bg-calith-orange text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-orange-600 transition-colors">Gönder</button>
-                    </form>
-                </div>
-            </div>
-
+        <div class="w-full space-y-4 flex flex-col items-center" id="dynamic-links-container">
+            <!-- Skeleton Loading UI -->
+            <div class="w-full max-w-xl h-20 bg-white/5 rounded-2xl animate-pulse"></div>
+            <div class="w-full max-w-xl h-20 bg-white/5 rounded-2xl animate-pulse delay-75"></div>
+            <div class="w-full max-w-xl h-20 bg-white/5 rounded-2xl animate-pulse delay-150"></div>
+            <div class="w-full max-w-xl h-20 bg-white/5 rounded-2xl animate-pulse delay-300"></div>
         </div>
 
     </main>

@@ -940,6 +940,8 @@ function init() {
     loadPosts();
     loadProducts(); // Dinamik ürünleri yükle
     updateCartUI();
+    loadLinks();
+    loadAnnouncements();
 
     // Supabase Auto-Session Check
     const sb = getSupabase();
@@ -2665,4 +2667,199 @@ async function updateHappyMembersStats() {
     } catch (e) {
         console.error('Happy Members update failed:', e);
     }
+}
+
+// --- LINKS LOGIC (links.html) ---
+let userLinks = [];
+
+async function loadLinks() {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    try {
+        const { data, error } = await sb.from('links').select('*').order('order_index', { ascending: true });
+        if (!error && data) {
+            userLinks = data;
+            const isAdmin = window.location.pathname.includes('admin.html');
+            if (isAdmin) renderAdminLinks();
+            if (document.getElementById('dynamic-links-container')) renderFrontendLinks();
+        }
+    } catch (e) {
+        console.warn("Links table may not exist yet.");
+    }
+}
+
+async function saveLink() {
+    const id = document.getElementById('link-edit-id').value;
+    const title = document.getElementById('link-title').value.trim();
+    const subtitle = document.getElementById('link-subtitle').value.trim();
+    const url = document.getElementById('link-url').value.trim();
+    const icon_type = document.getElementById('link-icon-type').value;
+    const icon_name = document.getElementById('link-icon-name').value.trim();
+    const category = document.getElementById('link-category').value;
+    const order_index = parseInt(document.getElementById('link-order').value) || 0;
+
+    if (!title) return alert('Başlık gereklidir!');
+
+    const linkData = { title, subtitle, url, icon_type, icon_name, category, order_index };
+    const sb = getSupabase();
+    if (!sb) return;
+
+    let result;
+    if (id) {
+        result = await sb.from('links').update(linkData).eq('id', id);
+    } else {
+        result = await sb.from('links').insert([linkData]);
+    }
+
+    if (result.error) {
+        alert('Hata: ' + result.error.message);
+    } else {
+        showToast(id ? 'Link güncellendi' : 'Link eklendi');
+        resetLinkForm();
+        await loadLinks();
+    }
+}
+
+function renderAdminLinks() {
+    const list = document.getElementById('admin-link-list');
+    if (!list) return;
+
+    if (!userLinks || userLinks.length === 0) {
+        list.innerHTML = '<div class="py-12 text-center text-gray-500 bg-white/5 rounded-2xl border border-dashed border-white/10 italic">Henüz dinamik link eklenmemiş. "Varsayılanları Yükle" ile başlayabilirsiniz.</div>';
+        return;
+    }
+
+    list.innerHTML = userLinks.map(l => `
+        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-calith-orange">
+                    ${l.icon_type === 'lucide' ? `<i data-lucide="${l.icon_name || 'link'}" class="w-5 h-5"></i>` : `<i class="fa-brands fa-${l.icon_name || 'link'} text-xl"></i>`}
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-white">${l.title}</h4>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">${l.category} • Sıra: ${l.order_index}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editLink('${l.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all"><i data-lucide="edit-2" class="w-4 h-4 text-white"></i></button>
+                <button onclick="deleteLink('${l.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4 text-white"></i></button>
+            </div>
+        </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
+}
+
+function editLink(id) {
+    const l = userLinks.find(x => x.id === id);
+    if (!l) return;
+    document.getElementById('link-edit-id').value = l.id;
+    document.getElementById('link-title').value = l.title;
+    document.getElementById('link-subtitle').value = l.subtitle || '';
+    document.getElementById('link-url').value = l.url || '';
+    document.getElementById('link-icon-type').value = l.icon_type || 'lucide';
+    document.getElementById('link-icon-name').value = l.icon_name || '';
+    document.getElementById('link-category').value = l.category || 'standard';
+    document.getElementById('link-order').value = l.order_index || 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function deleteLink(id) {
+    if (!confirm('Bu linki silmek istediğinize emin misiniz?')) return;
+    const sb = getSupabase();
+    if (!sb) return;
+    const { error } = await sb.from('links').delete().eq('id', id);
+    if (!error) {
+        showToast('Link silindi');
+        await loadLinks();
+    }
+}
+
+function resetLinkForm() {
+    document.getElementById('link-edit-id').value = '';
+    document.getElementById('link-title').value = '';
+    document.getElementById('link-subtitle').value = '';
+    document.getElementById('link-url').value = '';
+    document.getElementById('link-icon-type').value = 'lucide';
+    document.getElementById('link-icon-name').value = '';
+    document.getElementById('link-category').value = 'standard';
+    document.getElementById('link-order').value = 0;
+}
+
+async function importLinkDefaults() {
+    const sb = getSupabase();
+    if (!sb) return;
+    if (!confirm('Varsayılan linkleri (YouTube, Instagram, Website vb.) yüklemek istiyor musunuz?')) return;
+
+    const defaults = [
+        { title: 'Resmi Website', subtitle: 'Programlar & Eğitimler', url: 'index.html', icon_type: 'lucide', icon_name: 'globe', category: 'standard', order_index: 0 },
+        { title: 'YouTube', subtitle: 'Kanalı Seç', url: '#', icon_type: 'fa', icon_name: 'youtube', category: 'youtube_modal', order_index: 1 },
+        { title: 'Instagram', subtitle: 'Günlük Motivasyon & Tüyolar', url: '#', icon_type: 'fa', icon_name: 'instagram', category: 'standard', order_index: 2 },
+        { title: 'TikTok', subtitle: 'Kısa Form Videolar', url: '#', icon_type: 'fa', icon_name: 'tiktok', category: 'standard', order_index: 3 },
+        { title: 'Twitter', subtitle: 'Bilgi Selileri', url: '#', icon_type: 'fa', icon_name: 'twitter', category: 'standard', order_index: 4 },
+        { title: 'Mağaza', subtitle: 'Calisthenics Ekipmanları', url: 'shop.html', icon_type: 'lucide', icon_name: 'shopping-cart', category: 'standard', order_index: 5 },
+        { title: 'Rehberi İndir', subtitle: 'Ücretsiz programı hemen e-postana gönderelim.', url: '#', icon_type: 'lucide', icon_name: 'mail', category: 'newsletter', order_index: 6 }
+    ];
+
+    const { error } = await sb.from('links').insert(defaults);
+    if (error) {
+        alert('Hata: ' + error.message + '\nLütfen "links" tablosunu veritabanında oluşturduğunuzdan emin olun.');
+    } else {
+        showToast('Varsayılanlar başarıyla yüklendi');
+        await loadLinks();
+    }
+}
+
+function renderFrontendLinks() {
+    const container = document.getElementById('dynamic-links-container');
+    if (!container) return;
+
+    if (!userLinks || userLinks.length === 0) {
+        container.innerHTML = '<div class="text-gray-500 py-10 opacity-50 italic">Dinamik içerik henüz yüklenmedi.</div>';
+        return;
+    }
+
+    container.innerHTML = userLinks.map(l => {
+        if (l.category === 'newsletter') {
+            return `
+                <div class="w-full max-w-xl mt-8 glass-card rounded-3xl p-6 text-center border-white/10 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <i data-lucide="mail" class="w-8 h-8 text-calith-orange mx-auto mb-3"></i>
+                        <h3 class="font-bold text-lg mb-2">${l.title}</h3>
+                        <p class="text-sm text-gray-400 mb-4 px-4">${l.subtitle}</p>
+                        <form class="flex max-w-sm mx-auto gap-2" onsubmit="event.preventDefault(); alert('Katılımınız alındı!');">
+                            <input type="email" placeholder="E-Posta" required class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-calith-orange transition-colors">
+                            <button type="submit" class="bg-calith-orange text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-orange-600 transition-colors">Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        const onClick = l.category === 'youtube_modal' 
+            ? "document.getElementById('youtube-modal').classList.remove('hidden')" 
+            : `window.open('${l.url}', '${l.url.includes('.html') ? '_self' : '_blank'}')`;
+        
+        const iconHtml = l.icon_type === 'lucide' 
+            ? `<i data-lucide="${l.icon_name || 'link'}" class="w-6 h-6 text-white"></i>` 
+            : `<i class="fa-brands fa-${l.icon_name || 'link'} text-2xl text-white"></i>`;
+
+        return `
+            <div onclick="${onClick}" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group cursor-pointer transition-all hover:scale-[1.02]">
+                <div class="flex items-center gap-4 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange/20 group-hover:border-calith-orange/50 transition-all">
+                        ${iconHtml}
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-calith-orange transition-colors">${l.title}</h2>
+                        <p class="text-xs text-gray-500">${l.subtitle}</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
+            </div>
+        `;
+    }).join('');
+
+    if (window.lucide) lucide.createIcons();
 }

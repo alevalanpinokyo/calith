@@ -79,6 +79,7 @@
                 <button onclick="switchAdminTab('programs')" id="tab-programs" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">PROGRAM YÖNETİMİ</button>
                 <button onclick="switchAdminTab('announcements')" id="tab-announcements" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">DUYURU PANO</button>
                 <button onclick="switchAdminTab('homecards')" id="tab-homecards" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ANA SAYFA KARTLARI</button>
+                <button onclick="switchAdminTab('links')" id="tab-links" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">LİNKLER</button>
             </div>
             
             <div id="section-blog" class="grid lg:grid-cols-3 gap-12">
@@ -341,6 +342,61 @@
                     <div id="admin-hc-list" class="grid gap-4"></div>
                 </div>
             </div>
+        <!-- LİNKLER SECTION -->
+        <div id="section-links" class="hidden grid lg:grid-cols-3 gap-12 mt-12">
+            <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10 relative">
+                <h3 class="font-display text-2xl font-bold uppercase">LİNK <span class="text-calith-orange">EKLE / DÜZENLE</span></h3>
+                <input type="hidden" id="link-edit-id">
+                <div class="space-y-4">
+                    <div>
+                        <label for="link-title" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kısa Başlık</label>
+                        <input type="text" id="link-title" placeholder="Instagram, TikTok vb." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                    </div>
+                    <div>
+                        <label for="link-subtitle" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Alt Açıklama</label>
+                        <input type="text" id="link-subtitle" placeholder="Günlük paylaşımlar..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                    </div>
+                    <div>
+                        <label for="link-url" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">URL / Link</label>
+                        <input type="text" id="link-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="link-icon-type" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon Tipi</label>
+                            <select id="link-icon-type" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white">
+                                <option value="lucide">Lucide</option>
+                                <option value="fa">FontAwesome</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="link-icon-name" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon Adı</label>
+                            <input type="text" id="link-icon-name" placeholder="instagram, youtube" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="link-category" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori (Tür)</label>
+                        <select id="link-category" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white">
+                            <option value="standard">Standart Link</option>
+                            <option value="youtube_modal">YouTube Modal (Seçim Paneli)</option>
+                            <option value="newsletter">Newsletter (Kayıt Formu)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="link-order" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Sıralama</label>
+                        <input type="number" id="link-order" value="0" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white">
+                    </div>
+                    <button onclick="saveLink()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">LİNKİ KAYDET</button>
+                    <button onclick="resetLinkForm()" class="w-full btn-outline border-white/10 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Formu Temizle</button>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-2 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-display text-2xl font-bold uppercase">MEVCUT LİNKLER</h2>
+                    <button onclick="importLinkDefaults()" class="text-[10px] font-bold text-calith-orange border border-calith-orange/30 px-3 py-1.5 rounded-lg hover:bg-calith-orange hover:text-white transition-all">VARSAYILANLARI YÜKLE</button>
+                </div>
+                <div id="admin-link-list" class="grid gap-4"></div>
+            </div>
         </div>
     </div>
 </section>
@@ -366,6 +422,7 @@
         if (tab === 'products') renderAdminProducts();
         if (tab === 'programs') renderAdminPrograms();
         if (tab === 'announcements') renderAdminAnnouncements();
+        if (tab === 'links') renderAdminLinks();
         if (tab === 'homecards') {
             if (typeof filterAdminHomecards === 'function') {
                 filterAdminHomecards(typeof currentHomecardFilter !== 'undefined' ? currentHomecardFilter : 'hero', true);
