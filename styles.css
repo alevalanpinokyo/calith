@@ -394,7 +394,7 @@ body {
 
     /* Canlı Pano (Slider) */
     .relative.h-\[500px\] {
-        height: 400px !important;                         /* Slider yüksekliğini mobillere göre ayarla */
+        height: 440px !important;                         /* Yüksekliği arttırıyoruz ki textler sığsın */
         width: 100% !important;
         max-width: 100% !important;
         overflow: hidden !important;

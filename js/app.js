@@ -1331,13 +1331,13 @@ function renderAnnouncementsSlider() {
         }
 
         return `
-        <div class="flex-shrink-0 h-full p-5 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
+        <div class="flex-shrink-0 h-full p-4 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer group" style="width: ${percentPerSlide}%" onclick="${onClickAction}">
             <div class="flex flex-col items-center justify-center w-full mx-auto">
                 ${mediaHtml}
-                <div class="space-y-2">
-                    <span class="text-[10px] uppercase font-black tracking-[0.3em] text-${ann.color} mb-1 block mx-auto">${ann.label}</span>
-                    <h4 class="font-display text-2xl sm:text-3xl font-bold mb-2 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
-                    <p class="text-sm text-gray-500 leading-relaxed px-2 line-clamp-2 group-hover:text-gray-300 transition-colors text-center mx-auto">${ann.desc}</p>
+                <div class="space-y-1 sm:space-y-2">
+                    <span class="text-[9px] sm:text-[10px] uppercase font-black tracking-[0.3em] text-${ann.color} mb-1 block mx-auto">${ann.label}</span>
+                    <h4 class="font-display text-xl sm:text-3xl font-bold mb-2 group-hover:text-white text-gray-100 transition-colors leading-tight mx-auto">${ann.title}</h4>
+                    <p class="text-[11px] sm:text-sm text-gray-500 leading-relaxed px-2 line-clamp-2 group-hover:text-gray-300 transition-colors text-center mx-auto">${ann.desc}</p>
                 </div>
             </div>
         </div>
