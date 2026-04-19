@@ -363,15 +363,29 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="link-icon-type" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon Tipi</label>
-                            <select id="link-icon-type" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white">
-                                <option value="lucide">Lucide</option>
-                                <option value="fa">FontAwesome</option>
+                            <select id="link-icon-type" onchange="updateIconPreview()" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white">
+                                <option value="lucide">Lucide (Genel)</option>
+                                <option value="fa">FontAwesome (Markalar)</option>
                             </select>
                         </div>
                         <div>
                             <label for="link-icon-name" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">İkon Adı</label>
-                            <input type="text" id="link-icon-name" placeholder="instagram, youtube" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                            <div class="relative">
+                                <input type="text" id="link-icon-name" oninput="updateIconPreview()" placeholder="Örn: instagram" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                                <div id="icon-preview-box" class="absolute right-3 top-1/2 -translate-y-1/2 text-calith-orange opacity-80"></div>
+                            </div>
                         </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 py-2">
+                        <span class="text-[9px] text-gray-600 font-bold uppercase w-full mb-1">Hızlı Seçim:</span>
+                        <button onclick="setQuickIcon('fa', 'instagram')" title="Instagram" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i class="fa-brands fa-instagram"></i></button>
+                        <button onclick="setQuickIcon('fa', 'youtube')" title="YouTube" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i class="fa-brands fa-youtube"></i></button>
+                        <button onclick="setQuickIcon('fa', 'tiktok')" title="TikTok" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i class="fa-brands fa-tiktok"></i></button>
+                        <button onclick="setQuickIcon('fa', 'twitter')" title="Twitter / X" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i class="fa-brands fa-twitter"></i></button>
+                        <button onclick="setQuickIcon('lucide', 'globe')" title="Web Sitesi" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i data-lucide="globe" class="w-4 h-4"></i></button>
+                        <button onclick="setQuickIcon('lucide', 'shopping-cart')" title="Mağaza" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i data-lucide="shopping-cart" class="w-4 h-4"></i></button>
+                        <button onclick="setQuickIcon('lucide', 'mail')" title="E-posta" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i data-lucide="mail" class="w-4 h-4"></i></button>
+                        <button onclick="setQuickIcon('lucide', 'play-circle')" title="Video/Oynat" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs"><i data-lucide="play-circle" class="w-4 h-4"></i></button>
                     </div>
                     <div>
                         <label for="link-category" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori (Tür)</label>

@@ -2763,6 +2763,7 @@ function editLink(id) {
     document.getElementById('link-icon-name').value = l.icon_name || '';
     document.getElementById('link-category').value = l.category || 'standard';
     document.getElementById('link-order').value = l.order_index || 0;
+    updateIconPreview();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -2786,6 +2787,7 @@ function resetLinkForm() {
     document.getElementById('link-icon-name').value = '';
     document.getElementById('link-category').value = 'standard';
     document.getElementById('link-order').value = 0;
+    updateIconPreview();
 }
 
 async function importLinkDefaults() {
@@ -2864,4 +2866,29 @@ function renderFrontendLinks() {
     }).join('');
 
     if (window.lucide) lucide.createIcons();
+}
+
+function updateIconPreview() {
+    const type = document.getElementById('link-icon-type').value;
+    const name = document.getElementById('link-icon-name').value.trim().toLowerCase();
+    const box = document.getElementById('icon-preview-box');
+    if (!box) return;
+
+    if (!name) {
+        box.innerHTML = '';
+        return;
+    }
+
+    if (type === 'lucide') {
+        box.innerHTML = `<i data-lucide="${name}" class="w-5 h-5"></i>`;
+        if (window.lucide) lucide.createIcons();
+    } else {
+        box.innerHTML = `<i class="fa-brands fa-${name} text-lg"></i>`;
+    }
+}
+
+function setQuickIcon(type, name) {
+    document.getElementById('link-icon-type').value = type;
+    document.getElementById('link-icon-name').value = name;
+    updateIconPreview();
 }
