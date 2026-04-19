@@ -1373,7 +1373,7 @@ function openVideoModal(videoId) {
         document.body.style.overflow = 'hidden';
         container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 
-        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
         setTimeout(() => {
             modal.classList.remove('opacity-0');
             modal.classList.add('opacity-100');
@@ -1400,7 +1400,7 @@ function closeVideoModal() {
         }
 
         setTimeout(() => {
-            modal.classList.add('hidden');
+            modal.style.display = 'none';
             if (container) container.innerHTML = '';
         }, 300);
     }
