@@ -73,6 +73,12 @@
             border-color: rgba(255,107,53,0.5);
             box-shadow: 0 10px 30px -10px rgba(255,107,53,0.3);
         }
+        .link-item:active {
+            transform: scale(0.98);
+            border-color: rgba(255,107,53,0.8);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            transition: all 0.1s;
+        }
         .brand-text {
             background: linear-gradient(to right, #FF6B35, #00D9FF);
             -webkit-background-clip: text;
@@ -132,19 +138,19 @@
                 <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
             </a>
 
-            <!-- YouTube -->
-            <a href="#" target="_blank" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
+            <!-- YouTube (Pop-up Seçim) -->
+            <button onclick="document.getElementById('youtube-modal').classList.remove('hidden')" class="link-item text-left w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-[#FF0000]/10 border border-[#FF0000]/30 flex items-center justify-center group-hover:bg-[#FF0000] transition-colors duration-300">
                         <i class="fa-brands fa-youtube text-2xl text-[#FF0000] group-hover:text-white transition-colors duration-300"></i>
                     </div>
                     <div>
                         <h2 class="font-bold text-white text-lg tracking-wide group-hover:text-[#FF0000] transition-colors">YouTube</h2>
-                        <p class="text-xs text-gray-500">Uzun Antrenman Rehberleri</p>
+                        <p class="text-xs text-gray-500">Kanalı Seç</p>
                     </div>
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all"></i>
-            </a>
+            </button>
 
             <!-- Instagram -->
             <a href="#" target="_blank" class="link-item w-full max-w-xl glass-card rounded-2xl p-4 flex items-center justify-between group">
@@ -221,6 +227,29 @@
         </div>
 
     </main>
+
+    <!-- YOUTUBE MODAL (Yöntem 3) -->
+    <div id="youtube-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('youtube-modal').classList.add('hidden')"></div>
+        <div class="relative w-full max-w-sm bg-[#1A1A1A] border border-white/10 rounded-3xl p-6 shadow-2xl transform transition-all text-center">
+            <button aria-label="Kapat" title="Kapat" onclick="document.getElementById('youtube-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <i class="fa-brands fa-youtube text-4xl text-[#FF0000] mb-4"></i>
+            <h3 class="font-display text-2xl font-bold uppercase mb-1 drop-shadow-md">YOUTUBE</h3>
+            <p class="text-sm text-gray-400 mb-6">Hangi kanalı ziyaret etmek istiyorsun?</p>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="#" aria-label="Hesap 1 YouTube" class="bg-black border border-white/10 hover:border-[#FF0000] rounded-2xl p-4 flex flex-col items-center transition-all group">
+                    <img src="https://ui-avatars.com/api/?name=H+1&background=random" alt="Hesap 1" title="Hesap 1" class="w-12 h-12 rounded-full mb-2 border border-white/5">
+                    <span class="font-bold text-sm text-white group-hover:text-[#FF0000] transition-colors">Hesap 1</span>
+                </a>
+                <a href="#" aria-label="Hesap 2 YouTube" class="bg-black border border-white/10 hover:border-[#FF0000] rounded-2xl p-4 flex flex-col items-center transition-all group">
+                    <img src="https://ui-avatars.com/api/?name=H+2&background=random" alt="Hesap 2" title="Hesap 2" class="w-12 h-12 rounded-full mb-2 border border-white/5">
+                    <span class="font-bold text-sm text-white group-hover:text-[#FF0000] transition-colors">Hesap 2</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script>
         lucide.createIcons();
