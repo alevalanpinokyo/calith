@@ -10,7 +10,6 @@ html, body {
     max-width: 100vw !important;
     overflow-x: hidden !important;
     position: relative;
-    -webkit-overflow-scrolling: touch;
 }
 
 /* Konteyner Kilidi */
@@ -411,4 +410,39 @@ body {
         max-width: 100vw !important;                      /* Vücut boyunu geçme */
         overflow: hidden !important;
     }
+}
+
+/* ==========================================================================
+   VIDEO MODAL STYLES (Moved from Inline)
+   ========================================================================== */
+#video-modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#video-modal-content {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+}
+
+.video-modal-close-btn {
+    position: absolute;
+    top: -45px;
+    right: 20px;
+}
+
+#video-container {
+    aspect-ratio: 16/9;
+    width: 100%;
 }
