@@ -2681,7 +2681,10 @@ function exportProgramPDF() {
     const printContent = document.getElementById('print-content');
     if (!printArea || !printContent) return;
 
-    // 1. Kaynak: homecards (Supabase'den yüklendi)
+    // 0. Yeni Kaynak: Program Detay Ekranı (Eğer açıksa)
+    const detailSec = document.getElementById('blog-detail');
+    const dayCards = detailSec ? Array.from(detailSec.querySelectorAll('.program-day-card')) : [];
+    
     const scheduleCards = (typeof homecards !== 'undefined')
         ? homecards.filter(h => h.section === 'schedule' && h.id !== 'schedule_settings')
                    .sort((a, b) => (a.id > b.id ? 1 : -1))
@@ -2689,8 +2692,20 @@ function exportProgramPDF() {
 
     let data = [];
 
-    if (scheduleCards.length > 0) {
-        // Supabase verisi var → temiz kaynak yolu
+    if (dayCards.length > 0) {
+        data = dayCards.map(card => {
+            const h4 = card.querySelector('h4');
+            const badge = card.querySelector('p');
+            const items = Array.from(card.querySelectorAll('ul li span'))
+                               .map(s => s.innerText.trim()).filter(Boolean);
+            return {
+                title: h4 ? h4.innerText.trim() : '',
+                badge: badge ? badge.innerText.trim() : '',
+                items
+            };
+        });
+    } else if (scheduleCards.length > 0) {
+        // 1. Kaynak: homecards (Anasayfa Çizelgesi)
         data = scheduleCards.map(sch => ({
             title: sch.title || '',
             badge: sch.badge || '',
@@ -2699,7 +2714,7 @@ function exportProgramPDF() {
                        .filter(l => l.length > 0)
         }));
     } else {
-        // 2. Fallback: DOM'dan oku (schedule-grid içindeki gerçek kartlar)
+        // 2. Fallback: Anasayfa DOM'dan oku
         const scheduleGrid = document.getElementById('schedule-grid');
         const cards = scheduleGrid ? Array.from(scheduleGrid.querySelectorAll('.program-card:not(.animate-pulse)')) : [];
 
