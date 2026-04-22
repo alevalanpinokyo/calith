@@ -1388,6 +1388,18 @@ function showProgramDetail(id) {
             </div>
             ${programHtml}
             ${notesHtml}
+
+            <!-- CTA Section -->
+            <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 reveal active">
+                <button onclick="addToMyPrograms()" class="btn-primary px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] shadow-2xl shadow-calith-orange/20 flex items-center gap-3 transform hover:scale-[1.05] transition-all">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span>Programlarıma Ekle</span>
+                </button>
+                <button onclick="exportProgramPDF()" class="btn-outline px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center gap-3 group">
+                    <i data-lucide="download" class="w-5 h-5 text-gray-500 group-hover:text-white transition-colors"></i>
+                    <span>PDF Olarak Kaydet</span>
+                </button>
+            </div>
         </div>
     `;
 
