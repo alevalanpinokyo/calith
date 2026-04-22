@@ -2615,7 +2615,8 @@ function renderPDF(printContent, data) {
     </div>`;
 
     printContent.innerHTML = html;
-    setTimeout(() => { window.print(); }, 400);
+    // iOS/Safari için render süresini uzatıyoruz
+    setTimeout(() => { window.print(); }, 1000);
 }
 
 

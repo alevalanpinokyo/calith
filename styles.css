@@ -271,22 +271,29 @@ body {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 @media print {
-    /* Sadece print-area görünsün */
+    html, body {
+        overflow: visible !important;
+        height: auto !important;
+        background: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
     body > *:not(#print-area) {
         display: none !important;
     }
 
     #print-area {
         display: block !important;
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
         background: white !important;
         color: black !important;
-        z-index: 99999;
+        z-index: auto;
     }
 
     #print-content {
@@ -308,7 +315,7 @@ body {
 }
 
 #print-area { font-family: 'Inter', sans-serif; display: none; }
-#print-content { background: white; min-height: 100vh; }
+#print-content { background: white; min-height: 0; }
 
 /* Skeleton Loading Effect */
 .skeleton {
