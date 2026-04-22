@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<!-- VERSIYON: 1.1.0 - EN KARARLI SÜRÜM (375px Fix + PDF Export Fix) - 18 Nisan 2026 -->
+<html lang="tr">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>CALITH | Sınırlarını Zorla</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+        body { background-color: #0A0A0A; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calith: {
+                            orange: '#FF6B35',
+                            dark: '#0A0A0A',
+                            gray: '#1A1A1A',
+                            light: '#2A2A2A',
+                            accent: '#00D9FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-calith-dark text-white">
+
+<div class="grain"></div>
+
+<!-- Navigation -->
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-hidden">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+                <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
+                <a href="skills.html" class="text-white font-medium text-sm">PROGRAMLAR</a>
+                <a href="shop.html" class="text-white font-medium text-sm">EKİPMAN</a>
+                <a href="blog.html" class="text-white font-medium text-sm">ÖĞREN</a>
+                <a href="about.html" class="text-white font-medium text-sm">HAKKIMIZDA</a>
+                <a href="premium.html" class="text-calith-orange font-bold text-sm tracking-widest hover:text-white transition-colors uppercase">KOÇLUK</a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2 md:gap-4">
+                
+                <button class="hidden md:block btn-outline px-6 py-2.5 rounded-full font-semibold text-sm" onclick="showAuthModal()">
+                    Giriş Yap
+                </button>
+                <button class="hidden md:block btn-primary px-6 py-2.5 rounded-full font-semibold text-sm" onclick="window.location.href='skills.html'">
+                    Hemen Başla
+                </button>
+                <button class="md:hidden p-2 text-white" onclick="showAuthModal()" aria-label="Giriş Yap / Üye Ol">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                </button>
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3">
+            <a href="index.html" class="block text-white py-2">ANA SAYFA</a>
+            <a href="skills.html" class="block text-white py-2">PROGRAMLAR</a>
+            <a href="shop.html" class="block text-white py-2">EKİPMAN</a>
+            <a href="blog.html" class="block text-white py-2">ÖĞREN</a>
+            <a href="about.html" class="block text-white py-2">HAKKIMIZDA</a>
+            <a href="premium.html" class="block text-calith-orange font-bold py-2 uppercase tracking-widest">KOÇLUK</a>
+            <button onclick="showAuthModal()" class="w-full text-left py-2 font-bold text-white border-t border-white/10 mt-2 pt-4">GİRİŞ YAP / ÜYE OL</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="landing" class="relative min-h-screen flex items-center pt-20 hero-gradient overflow-x-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 -left-20 w-96 h-96 bg-calith-orange/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-calith-accent/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="fade-in">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+                    <span class="w-2 h-2 bg-calith-orange rounded-full animate-pulse"></span>
+                    <span class="text-sm text-gray-400">Yeni: Pro Series 2025</span>
+                </div>
+                <h1 id="hero-title" class="font-display text-3xl md:text-7xl font-bold leading-tight mb-6 uppercase text-center lg:text-left break-words">
+                    Kendi Vücudunla Çalış.<br>
+                    <span class="gradient-text">Sınırlarını</span> Zorla.
+                </h1>
+                <p id="hero-subtitle" class="text-gray-400 text-lg md:text-xl mb-8 max-w-full lg:max-w-lg leading-relaxed text-center lg:text-left mx-auto lg:mx-0">
+                    Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Şimdi başla, tamamen ücretsiz.
+                </p>
+                <div class="flex flex-wrap gap-4 mb-12 justify-center lg:justify-start">
+                    <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="btn-primary px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 shadow-xl shadow-calith-orange/20">
+                        <span>Başlangıç Rehberini İndir</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="document.getElementById('levels').scrollIntoView({ behavior: 'smooth' })" class="btn-outline px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i>
+                        <span>Yolculuğa Başla</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-4 md:gap-8 pt-8 border-t border-white/10 w-full mx-auto lg:mx-0 lg:max-w-md">
+                    <div class="p-2">
+                        <div id="happy-members-count" class="stat-number text-2xl md:text-4xl font-bold text-white">500+</div>
+                        <div class="text-gray-500 text-[10px] md:text-sm mt-1 uppercase tracking-wider leading-tight">Mutlu Üye</div>
+                    </div>
+                    <div class="p-2">
+                        <div class="stat-number text-2xl md:text-4xl font-bold text-white">4 Hafta</div>
+                        <div class="text-gray-500 text-[10px] md:text-sm mt-1 uppercase tracking-wider leading-tight">Haftalık Program</div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative fade-in stagger-2 h-[500px] mt-12 lg:mt-0">
+                <div class="relative w-full mx-auto h-full lg:max-w-md">
+                    <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/30 to-calith-accent/20 rounded-3xl blur-3xl transform scale-95"></div>
+                    
+                    <div class="relative bg-[#0d0d0d]/80 backdrop-blur-3xl rounded-3xl border border-white/10 shadow-2xl flex flex-col h-full ring-1 ring-white/5 overflow-hidden">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-black/50 to-transparent p-5 border-b border-white/5 flex items-center justify-between z-10">
+                            <h3 class="font-display text-xl font-bold flex items-center gap-3">
+                                <span class="relative flex h-3 w-3">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-calith-orange opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-3 w-3 bg-calith-orange"></span>
+                                </span>
+                                CANLI PANO
+                            </h3>
+                            <div class="flex gap-2">
+                                <button aria-label="Önceki Slayt" title="Önceki Slayt" onclick="window.heroSlider && window.heroSlider.prev()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button aria-label="Sonraki Slayt" title="Sonraki Slayt" onclick="window.heroSlider && window.heroSlider.next()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Slider Track -->
+                        <div class="flex-1 relative w-full h-full overflow-hidden">
+                            <div id="hero-slider-track" class="relative flex transition-transform duration-500 ease-in-out h-full w-[300%]">
+                                
+                                <!-- Slide 1 -->
+                                <div class="w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center cursor-pointer group" onclick="window.location.href='premium.html'">
+                                    <div class="w-20 h-20 rounded-2xl bg-calith-orange/20 flex items-center justify-center text-calith-orange mb-6 group-hover:scale-110 group-hover:bg-calith-orange group-hover:text-white transition-all shadow-[0_0_20px_rgba(255,107,53,0.3)]">
+                                        <i data-lucide="video" class="w-10 h-10"></i>
+                                    </div>
+                                    <span class="text-xs uppercase font-bold tracking-widest text-calith-orange mb-3 block">ÜCRETSİZ EĞİTİM</span>
+                                    <h4 class="font-display text-3xl font-bold mb-4 group-hover:text-white text-gray-100 transition-colors leading-tight">Canlı Form Analizi</h4>
+                                    <p class="text-base text-gray-400 leading-relaxed px-2">Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.</p>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center cursor-pointer group" onclick="window.location.href='blog.html'">
+                                    <div class="w-20 h-20 rounded-2xl bg-calith-accent/20 flex items-center justify-center text-calith-accent mb-6 group-hover:scale-110 group-hover:bg-calith-accent group-hover:text-white transition-all shadow-[0_0_20px_rgba(0,217,255,0.3)]">
+                                        <i data-lucide="flame" class="w-10 h-10"></i>
+                                    </div>
+                                    <span class="text-xs uppercase font-bold tracking-widest text-calith-accent mb-3 block">YENİ İÇERİK EKLENDİ</span>
+                                    <h4 class="font-display text-3xl font-bold mb-4 group-hover:text-white text-gray-100 transition-colors leading-tight">Sıfırdan İlk Barfiks</h4>
+                                    <p class="text-base text-gray-400 leading-relaxed px-2">Asla çekemem diyenler için hazırladığımız özel eğitim serisi yayında.</p>
+                                </div>
+                                
+                                <!-- Slide 3 -->
+                                <div class="w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center cursor-pointer group" onclick="window.location.href='premium.html'">
+                                    <div class="w-20 h-20 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-500 mb-6 group-hover:scale-110 group-hover:bg-green-500 group-hover:text-white transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                                        <i data-lucide="target" class="w-10 h-10"></i>
+                                    </div>
+                                    <span class="text-xs uppercase font-bold tracking-widest text-green-500 mb-3 block">🏆 HAFTANIN GÖREVİ</span>
+                                    <h4 class="font-display text-3xl font-bold mb-4 group-hover:text-white text-gray-100 transition-colors leading-tight">100 Şınav Challenge</h4>
+                                    <p class="text-base text-gray-400 leading-relaxed px-2">Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <!-- Dots & Footer -->
+                        <div class="px-6 pb-6 pt-2 flex flex-col items-center gap-4 relative z-10 border-t border-white/5 bg-black/20 mt-auto">
+                            <div class="flex gap-2 mt-4" id="hero-slider-dots">
+                                <span class="w-4 h-2 rounded-full bg-calith-orange transition-all cursor-pointer" onclick="window.heroSlider && window.heroSlider.go(0)"></span>
+                                <span class="w-2 h-2 rounded-full bg-white/20 hover:bg-white/50 transition-all cursor-pointer" onclick="window.heroSlider && window.heroSlider.go(1)"></span>
+                                <span class="w-2 h-2 rounded-full bg-white/20 hover:bg-white/50 transition-all cursor-pointer" onclick="window.heroSlider && window.heroSlider.go(2)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Marquee -->
+<div class="bg-calith-orange py-4 overflow-hidden border-y border-white/10 flex flex-nowrap w-full max-w-full">
+    <div class="marquee flex items-center justify-around gap-8 text-black font-display font-bold text-lg px-4 min-w-full flex-shrink-0">
+        <span>ŞINAV</span> <span class="text-black/30">•</span> <span>DIPS</span> <span class="text-black/30">•</span> <span>BARFİKS</span> <span class="text-black/30">•</span> <span>SQUAT</span> <span class="text-black/30">•</span> <span>PLANK</span> <span class="text-black/30">•</span> <span>L-SIT</span> <span class="text-black/30">•</span> <span>HANDSTAND</span> <span class="text-black/30">•</span> <span>MUSCLE-UP</span> <span class="text-black/30">•</span> <span>FRONT-LEVER</span>
+    </div>
+    <div class="marquee flex items-center justify-around gap-8 text-black font-display font-bold text-lg px-4 min-w-full flex-shrink-0" aria-hidden="true">
+        <span>ŞINAV</span> <span class="text-black/30">•</span> <span>DIPS</span> <span class="text-black/30">•</span> <span>BARFİKS</span> <span class="text-black/30">•</span> <span>SQUAT</span> <span class="text-black/30">•</span> <span>PLANK</span> <span class="text-black/30">•</span> <span>L-SIT</span> <span class="text-black/30">•</span> <span>HANDSTAND</span> <span class="text-black/30">•</span> <span>MUSCLE-UP</span> <span class="text-black/30">•</span> <span>FRONT-LEVER</span>
+    </div>
+</div>
+
+<!-- Value Proposition Section -->
+<section class="py-24 bg-calith-dark border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">SANA NE <span class="gradient-text">KAZANDIRIR?</span></h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8" id="benefits-grid">
+            <!-- Skeleton Loading for Benefits -->
+            <div class="relative card-hover product-card rounded-3xl p-8 animate-pulse">
+                <div class="feature-icon w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div class="h-6 w-3/4 skeleton mb-4"></div>
+                <div class="h-4 w-full skeleton opacity-50 mb-2"></div>
+                <div class="h-4 w-2/3 skeleton opacity-50"></div>
+            </div>
+            <div class="relative card-hover product-card rounded-3xl p-8 animate-pulse">
+                <div class="feature-icon w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div class="h-6 w-3/4 skeleton mb-4"></div>
+                <div class="h-4 w-full skeleton opacity-50 mb-2"></div>
+                <div class="h-4 w-2/3 skeleton opacity-50"></div>
+            </div>
+            <div class="relative card-hover product-card rounded-3xl p-8 animate-pulse">
+                <div class="feature-icon w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div class="h-6 w-3/4 skeleton mb-4"></div>
+                <div class="h-4 w-full skeleton opacity-50 mb-2"></div>
+                <div class="h-4 w-2/3 skeleton opacity-50"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hangi Seviyedesin Section -->
+<section id="levels" class="py-24 bg-calith-gray relative overflow-hidden border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">3 SEVİYE. <span class="gradient-text">SEN HANGİSİSİN?</span></h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Doğru başlangıç, bırakma riskini azaltır.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8" id="levels-grid">
+            <!-- Skeleton Loading for Levels -->
+            <div class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center animate-pulse">
+                <div class="w-20 h-20 rounded-full bg-white/5 mb-6"></div>
+                <div class="h-7 w-1/2 skeleton mb-6"></div>
+                <div class="w-full bg-black/30 rounded-2xl p-4 mb-8">
+                    <div class="h-3 w-full skeleton opacity-30 mb-2"></div>
+                    <div class="h-3 w-4/5 skeleton opacity-30"></div>
+                </div>
+                <div class="mt-auto w-full">
+                    <div class="h-12 w-full skeleton rounded-xl"></div>
+                </div>
+            </div>
+            <div class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center animate-pulse">
+                <div class="w-20 h-20 rounded-full bg-white/5 mb-6"></div>
+                <div class="h-7 w-1/2 skeleton mb-6"></div>
+                <div class="w-full bg-black/30 rounded-2xl p-4 mb-8">
+                    <div class="h-3 w-full skeleton opacity-30 mb-2"></div>
+                    <div class="h-3 w-4/5 skeleton opacity-30"></div>
+                </div>
+                <div class="mt-auto w-full">
+                    <div class="h-12 w-full skeleton rounded-xl"></div>
+                </div>
+            </div>
+            <div class="bg-calith-dark/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center animate-pulse">
+                <div class="w-20 h-20 rounded-full bg-white/5 mb-6"></div>
+                <div class="h-7 w-1/2 skeleton mb-6"></div>
+                <div class="w-full bg-black/30 rounded-2xl p-4 mb-8">
+                    <div class="h-3 w-full skeleton opacity-30 mb-2"></div>
+                    <div class="h-3 w-4/5 skeleton opacity-30"></div>
+                </div>
+                <div class="mt-auto w-full">
+                    <div class="h-12 w-full skeleton rounded-xl"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Haftalık Program Section -->
+<section class="py-24 bg-calith-dark border-b border-white/5">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">BU HAFTA BAŞLAYABİLECEĞİN <span class="gradient-text">3 GÜNLÜK PROGRAM</span></h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Ekipman: Sadece bir duvar ve bir sandalye.</p>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-6 fade-in" id="schedule-grid">
+            <!-- Skeleton Loading State (Veriler Supabase'den çekilene kadar görünür) -->
+            <div class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 relative overflow-hidden animate-pulse">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-xl skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-32 skeleton"></div>
+                        <div class="h-2 w-20 skeleton opacity-50"></div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="h-2.5 w-full skeleton"></div>
+                    <div class="h-2.5 w-4/5 skeleton"></div>
+                    <div class="h-2.5 w-2/3 skeleton"></div>
+                </div>
+            </div>
+            <div class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 relative overflow-hidden animate-pulse">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-xl skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-32 skeleton"></div>
+                        <div class="h-2 w-20 skeleton opacity-50"></div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="h-2.5 w-full skeleton"></div>
+                    <div class="h-2.5 w-4/5 skeleton"></div>
+                    <div class="h-2.5 w-2/3 skeleton"></div>
+                </div>
+            </div>
+            <div class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 relative overflow-hidden animate-pulse">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-xl skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                        <div class="h-4 w-32 skeleton"></div>
+                        <div class="h-2 w-20 skeleton opacity-50"></div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="h-2.5 w-full skeleton"></div>
+                    <div class="h-2.5 w-4/5 skeleton"></div>
+                    <div class="h-2.5 w-2/3 skeleton"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 fade-in">
+            <button id="schedule-global-btn" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="btn-outline px-7 py-4 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2.5 group">
+                <i data-lucide="play-circle" class="w-4 h-4 text-calith-orange group-hover:scale-110 transition-transform"></i>
+                <span id="schedule-global-btn-text">Hareketleri İzle</span>
+            </button>
+            <button onclick="exportProgramPDF()" class="btn-outline px-7 py-4 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2.5 group">
+                <i data-lucide="download" class="w-4 h-4 text-white/50 group-hover:text-white transition-colors"></i>
+                <span>PDF Olarak İndir</span>
+            </button>
+            <button onclick="addToMyPrograms()" class="btn-primary px-7 py-4 rounded-xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-calith-orange/20 flex items-center gap-2.5 transform hover:scale-[1.03] transition-all">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>Programlarıma Ekle</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Ekipman Yol Haritası (Aşamalar) -->
+<section class="py-24 bg-calith-gray relative overflow-hidden border-b border-white/5">
+    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1598575440700-0801e06fa536?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-5 mix-blend-overlay pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">NE ZAMAN NE ALMALI? <span class="gradient-text">EKİPMAN YOL HARİTASI</span></h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">Şu an için sadece bilgi, ekipman yatırımı sonraki aşamalarda.</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8" id="equipment-grid">
+            <div class="product-card backdrop-blur-3xl bg-white/5 border border-white/5 rounded-3xl p-8 hover:border-white/20 transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
+                <div class="self-start w-max inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-500/30 text-green-500 text-[10px] font-black uppercase tracking-widest mb-6 bg-green-500/10 backdrop-blur-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    AŞAMA 1
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-5 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">ŞU AN (0-2 AY)</h3>
+                <div class="space-y-5 mb-8">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-2 opacity-60">İhtiyacın:</p>
+                        <div class="skeleton w-3/4 h-4"></div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-2 opacity-60">Maliyet:</p>
+                        <div class="skeleton w-1/2 h-8"></div>
+                    </div>
+                </div>
+                <button onclick="window.location.href='skills.html'" class="w-full btn-outline border-white/10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Programı İndir →</button>
+            </div>
+            
+            <div class="product-card backdrop-blur-3xl bg-white/5 border border-calith-orange/30 rounded-3xl p-8 hover:border-calith-orange/50 transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2 shadow-2xl shadow-calith-orange/10">
+                <div class="self-start w-max inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow-500/30 text-yellow-500 text-[10px] font-black uppercase tracking-widest mb-6 bg-yellow-500/10 backdrop-blur-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>
+                    AŞAMA 2
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-5 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">TEMEL GÜÇ (2-6 AY)</h3>
+                <div class="space-y-5 mb-8">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-2 opacity-60">İhtiyacın:</p>
+                        <div class="skeleton w-full h-4"></div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-2 opacity-60">Maliyet:</p>
+                        <div class="skeleton w-1/2 h-8"></div>
+                    </div>
+                </div>
+                <button onclick="window.location.href='shop.html'" class="w-full btn-primary py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Ürünleri İncele →</button>
+            </div>
+            
+            <div class="product-card backdrop-blur-3xl bg-white/5 border border-white/5 rounded-3xl p-8 hover:border-white/20 transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
+                <div class="self-start w-max inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-widest mb-6 bg-red-500/10 backdrop-blur-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    AŞAMA 3
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-5 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">İLERİ SEVİYE (6+ AY)</h3>
+                <div class="space-y-5 mb-8">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-2 opacity-60">İhtiyacın:</p>
+                        <div class="skeleton w-3/4 h-4"></div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-2 opacity-60">Maliyet:</p>
+                        <div class="skeleton w-1/2 h-8"></div>
+                    </div>
+                </div>
+                <button onclick="window.location.href='shop.html'" class="w-full btn-outline border-white/10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Ürünleri İncele →</button>
+            </div>
+        </div>
+        
+        <div class="mt-12 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 md:p-6 flex items-start gap-4 mx-auto max-w-4xl fade-in">
+            <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-500 shrink-0 mt-0.5"></i>
+            <div>
+                <p class="font-bold text-yellow-500 mb-1 text-sm uppercase tracking-widest">Önemli Not</p>
+                <p class="text-sm text-gray-300">Aşama atlamaya çalışma. Her aşama bir sonrakinin temelini oluşturur. Acele etme, zamanın var.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SSS Section -->
+<section class="py-24 bg-calith-dark border-b border-white/5">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">YENİ BAŞLAYANLARIN <span class="gradient-text">SORDUĞU 5 SORU</span></h2>
+        </div>
+        <div class="space-y-4 fade-in">
+            <div class="bg-calith-gray border border-white/5 rounded-2xl p-6 md:p-8 hover:border-calith-orange/30 transition-colors">
+                <h4 class="text-xl font-bold mb-3 flex items-start gap-3"><span class="text-calith-orange">S.</span> Kas yapabilir miyim sadece vücut ağırlığıyla?</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4 pl-7">Evet. Vücut ağırlığı antrenmanıyla kas kütlesi artırılabilir. Gelişimin tek şartı aşamalı zorluk artışıdır (progressive overload). Ağırlık yerine açıyı veya kaldıracı değiştirirsin.</p>
+                <a href="blog.html" class="pl-7 text-xs font-bold text-calith-orange tracking-widest uppercase hover:text-white transition-colors">Bilimsel Açıklamayı Oku →</a>
+            </div>
+            <div class="bg-calith-gray border border-white/5 rounded-2xl p-6 md:p-8 hover:border-calith-orange/30 transition-colors">
+                <h4 class="text-xl font-bold mb-3 flex items-start gap-3"><span class="text-calith-orange">S.</span> Günde kaç dakika ayırmalıyım?</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4 pl-7">Başlangıç için 20-30 dakika tamamen yeterlidir. Haftada 3 gün düzenli yapmak, bir gün 2 saat yapıp günlerce yapamamaktan çok daha faydalıdır.</p>
+                <a href="skills.html" class="pl-7 text-xs font-bold text-calith-orange tracking-widest uppercase hover:text-white transition-colors">İdeal Programı Gör →</a>
+            </div>
+            <div class="bg-calith-gray border border-white/5 rounded-2xl p-6 md:p-8 hover:border-calith-orange/30 transition-colors">
+                <h4 class="text-xl font-bold mb-3 flex items-start gap-3"><span class="text-calith-orange">S.</span> Ne zaman ekipman almalıyım?</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4 pl-7">Temel yer hareketlerini (şınav, core) 6-8 hafta düzgün yapabildiğinde barfikse geçmek için ilk ekipmanını alabilirsin. Acele etme, önce formu oturt.</p>
+                <a href="shop.html" class="pl-7 text-xs font-bold text-calith-orange tracking-widest uppercase hover:text-white transition-colors">Ekipman Sıralaması →</a>
+            </div>
+            <div class="bg-calith-gray border border-white/5 rounded-2xl p-6 md:p-8 hover:border-calith-orange/30 transition-colors">
+                <h4 class="text-xl font-bold mb-3 flex items-start gap-3"><span class="text-calith-orange">S.</span> Diyet yapmak zorunda mıyım?</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4 pl-7">Hayır. Düzenli protein alımına ve bütünsel (işlenmemiş) gıdaya odaklan. Aşırı kısıtlayıcı diyetler sürdürülemez ve enerjini düşürür.</p>
+                <a href="blog.html" class="pl-7 text-xs font-bold text-calith-orange tracking-widest uppercase hover:text-white transition-colors">Basit Beslenme Rehberi →</a>
+            </div>
+            <div class="bg-calith-gray border border-white/5 rounded-2xl p-6 md:p-8 hover:border-calith-orange/30 transition-colors">
+                <h4 class="text-xl font-bold mb-3 flex items-start gap-3"><span class="text-calith-orange">S.</span> Kaç haftada sonuç görürüm?</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4 pl-7">Güç ve denge artışı 2-3 haftada başlar. Vücudun görsel değişimi ise ortalama 6-8 haftada hissedilir. Sabır şarttır.</p>
+                <a href="blog.html" class="pl-7 text-xs font-bold text-calith-orange tracking-widest uppercase hover:text-white transition-colors">Dönüşüm Hikayeleri →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Topluluk Section -->
+<section class="py-24 bg-calith-gray relative overflow-hidden">
+    <div class="absolute inset-0 bg-calith-orange/5 mix-blend-overlay pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">SEN DE BU <span class="gradient-text">YOLCULUĞA KATIL</span></h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">10.000+ kişi şu an CALITH planları ile çalışıyor.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-calith-dark border border-white/5 rounded-3xl p-8 fade-in stagger-1 relative">
+                <i data-lucide="quote" class="absolute top-6 right-6 w-8 h-8 text-white/5"></i>
+                <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">"3 ay önce duvar şınavıyla başladım, şu an yerde 12 nizami şınav yapıyorum. Bir gün bile spor salonuna gitmedim."</p>
+                <div class="border-t border-white/10 pt-6">
+                    <p class="font-bold text-white mb-1">— Mehmet, 32, İstanbul</p>
+                    <p class="text-xs text-calith-orange">Başlangıç: 0 şınav → Şimdi: 12 şınav</p>
+                </div>
+            </div>
+            <div class="bg-calith-dark border border-calith-orange/20 rounded-3xl p-8 fade-in stagger-2 relative shadow-2xl shadow-calith-orange/5">
+                <i data-lucide="quote" class="absolute top-6 right-6 w-8 h-8 text-white/5"></i>
+                <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">"Evde 20 dakika, haftada 3 gün yetebileceğini düşünmezdim. İşe gidip gelirken zaten zaman yoktu, bu program kurtarıcım oldu."</p>
+                <div class="border-t border-white/10 pt-6">
+                    <p class="font-bold text-white mb-1">— Ayşe, 27, Ankara</p>
+                    <p class="text-xs text-calith-orange">Başlangıç: Hareketsiz → Şimdi: 5 barfiks</p>
+                </div>
+            </div>
+            <div class="bg-calith-dark border border-white/5 rounded-3xl p-8 fade-in stagger-3 relative">
+                <i data-lucide="quote" class="absolute top-6 right-6 w-8 h-8 text-white/5"></i>
+                <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">"Oğlumla birlikte evde başladık. O 8 yaşında şınavı öğrendi, ben 45 yaşında ilk defa barfiksi. Ailecek yapıyoruz."</p>
+                <div class="border-t border-white/10 pt-6">
+                    <p class="font-bold text-white mb-1">— Can, 45, İzmir</p>
+                    <p class="text-xs text-calith-orange">Başlangıç: Sıfır → Şimdi: 3 muscle-up denemesi</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in">
+            <button onclick="window.location.href='blog.html'" class="btn-outline px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest">Sen De Hikayeni Paylaş</button>
+            <button onclick="window.location.href='premium.html'" class="btn-primary px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-calith-orange/20">Topluluğa Katıl →</button>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA Section (Replaces old CTA) -->
+<section id="lead-form" class="py-24 bg-gradient-to-br from-calith-orange to-orange-600 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-multiply"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="font-display text-4xl md:text-6xl font-bold text-black mb-6 uppercase tracking-tight">BU HAFTA BAŞLAMAYA HAZIR MISIN?</h2>
+        <p class="text-black/80 font-semibold text-lg md:text-xl mb-10 max-w-2xl mx-auto">Ücretsiz 4 haftalık başlangıç programını indir, vücut ağırlığının kontrolünü bugün eline al.</p>
+        
+        <div class="flex flex-col md:flex-row gap-3 w-full lg:max-w-lg mx-auto mb-10">
+            <input type="email" placeholder="E-posta adresin" class="flex-1 bg-white/90 text-black px-6 py-4 rounded-xl font-medium outline-none border-2 border-transparent focus:border-black placeholder-gray-500 shadow-xl" autocomplete="email">
+            <button class="bg-black text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl whitespace-nowrap" onclick="alert('Demo: İndirme linkiniz e-postanıza gönderildi!')">PROGRAMI İNDİR</button>
+        </div>
+
+        <ul class="text-black/80 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-sm font-bold">
+            <li class="flex items-center justify-center gap-2"><i data-lucide="check" class="w-5 h-5 text-black"></i> +15 Hareketin Video Anlatımı</li>
+            <li class="flex items-center justify-center gap-2"><i data-lucide="check" class="w-5 h-5 text-black"></i> Haftalık E-posta Hatırlatmaları</li>
+            <li class="flex items-center justify-center gap-2"><i data-lucide="check" class="w-5 h-5 text-black"></i> Özel Topluluk Erişimi</li>
+        </ul>
+        <p class="text-black/60 text-xs mt-8 font-medium">Spam yok. Sadece işine yarayan içerik.</p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+                </div>
+                <p class="text-gray-500 text-sm leading-relaxed">Profesyonel calisthenics ekipmanları ve eğitim kaynakları. Evinde spor salonu deneyimi.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ürünler</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Pull-Up Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Paralel Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Aksesuarlar</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Kaynaklar</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="skills.html" class="hover:text-white transition-colors">Programlar</a></li>
+                    <li><a href="premium.html" class="hover:text-white transition-colors">Premium</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Destek</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="about.html" class="hover:text-white transition-colors">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-gray-500 text-sm">© 2025 CALITH. Tüm hakları saklıdır.</p>
+            <div class="flex items-center gap-4">
+                <!-- Instagram -->
+                <a href="#" target="_blank" class="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all duration-300 hover:scale-110 shadow-lg" title="Instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                </a>
+                <!-- YouTube -->
+                <a href="#" target="_blank" class="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all duration-300 hover:scale-110 shadow-lg" title="YouTube">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.11 1 12 1 12s0 3.89.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.89 23 12 23 12s0-3.89-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon></svg>
+                </a>
+                <!-- TikTok -->
+                <a href="#" target="_blank" class="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all duration-300 hover:scale-110 shadow-lg" title="TikTok">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                </a>
+                <!-- X (Twitter) -->
+                <a href="#" target="_blank" class="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-sky-500 hover:text-white transition-all duration-300 hover:scale-110 shadow-lg" title="X (Twitter)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-50 transform translate-y-32 transition-transform duration-500 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i><span id="toast-msg" class="font-bold text-sm"></span></div>
+
+<!-- Lead/Download Modal -->
+<div id="lead-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('lead-modal').classList.add('hidden')"></div>
+    <div class="relative w-full max-w-md bg-calith-dark border border-white/10 rounded-3xl p-8 shadow-2xl transform transition-all text-center">
+        <button aria-label="Kapat" title="Kapat" onclick="document.getElementById('lead-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        
+        <div class="shrink-0 w-12 h-12 bg-gradient-to-br from-calith-orange to-calith-accent rounded-xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="download" class="w-6 h-6 text-white"></i>
+        </div>
+        <h2 class="font-display text-3xl font-bold uppercase mb-2">Başlangıç Rehberi</h2>
+        <p class="text-sm text-gray-400 mb-6">PDF rehberini indirmek için e-postanı gir. Antrenman programın hemen e-postana gelsin.</p>
+        
+        <div class="space-y-4">
+            <input type="email" id="lead-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            
+            <button id="btn-lead-submit" onclick="submitLeadForm()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+                Şimdi İndir
+            </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-4">Spam yok. Sadece işine yarayan içerik.</p>
+    </div>
+</div>
+
+<!-- Auth Modal (Login / Register) -->
+<div id="auth-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+    <div class="relative w-full max-w-md bg-calith-dark border border-white/10 rounded-3xl p-8 shadow-2xl transform transition-all">
+        <!-- Close Button -->
+        <button aria-label="Kapat" title="Kapat" onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="shrink-0 w-12 h-12 bg-gradient-to-br from-calith-orange to-calith-accent rounded-xl flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+            </div>
+            <h2 class="font-display text-3xl font-bold uppercase" id="auth-title">Hoş Geldin</h2>
+            <p class="text-sm text-gray-400 mt-2" id="auth-subtitle">Devam etmek için giriş yap veya topluluğa katıl.</p>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form-view" class="space-y-4">
+            <input type="email" id="auth-login-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            <input type="password" id="auth-login-pass" placeholder="Şifreniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            
+            <button onclick="submitLogin()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 mt-4 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+                <span id="btn-login-txt">Giriş Yap</span>
+            </button>
+            
+            <p class="text-center text-sm text-gray-400 mt-4">
+                Hesabın yok mu? <button onclick="toggleAuthView('register')" class="text-calith-orange font-bold hover:text-white transition-colors">Hemen Üye Ol</button>
+            </p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form-view" class="space-y-4 hidden">
+            <!-- Temel Bilgiler -->
+            <input type="text" id="auth-reg-name" placeholder="Ad Soyad" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            <input type="email" id="auth-reg-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            <input type="password" id="auth-reg-pass" placeholder="Şifreniz (En az 6 karakter)" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+            
+            <!-- Özel Bilgiler (Sporda Seviyesi vb) -->
+            <div class="mt-4 pt-4 border-t border-white/5">
+                <label class="block text-xs text-gray-400 uppercase tracking-widest mb-2 font-bold">Spor Geçmişin ve Seviyen</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <!-- Radyo Butonu gibi davranacak div/input kombinasyonları -->
+                    <label class="cursor-pointer">
+                        <input type="radio" name="fitness_level" value="baslangic" class="peer sr-only" checked>
+                        <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
+                            <div class="text-xl mb-1">🌱</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Başlangıç</span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="fitness_level" value="orta" class="peer sr-only">
+                        <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
+                            <div class="text-xl mb-1">🔥</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Orta</span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="fitness_level" value="ileri" class="peer sr-only">
+                        <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
+                            <div class="text-xl mb-1">👑</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">İleri</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="submitRegister()" class="w-full bg-white text-black font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-colors shadow-lg mt-6 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+                <span id="btn-reg-txt">Topluluğa Katıl</span>
+            </button>
+            
+            <p class="text-center text-sm text-gray-400 mt-4">
+                Zaten hesabın var mı? <button onclick="toggleAuthView('login')" class="text-white font-bold hover:text-calith-orange transition-colors">Giriş Yap</button>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js?v=2"></script>
+<script>
+    lucide.createIcons();
+    // Intersection Observer for animations
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, observerOptions);
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Hero Slider Logic (Dynamic & Centralized)
+    window.heroSlider = (() => {
+        let current = 0;
+        let total = 0;
+        
+        const update = () => {
+            const track = document.getElementById('hero-slider-track');
+            const dots = document.getElementById('hero-slider-dots') ? document.getElementById('hero-slider-dots').children : null;
+            if(!track || total === 0) return;
+            
+            // Kaydırma yüzdesini toplam slayt sayısına göre hesapla
+            const movePercent = current * (100 / total);
+            track.style.transform = `translateX(-${movePercent}%)`;
+            
+            if(dots) {
+                Array.from(dots).forEach((dot, i) => {
+                    dot.className = i === current 
+                        ? "w-4 h-2 rounded-full bg-calith-orange transition-all cursor-pointer" 
+                        : "w-2 h-2 rounded-full bg-white/20 hover:bg-white/50 transition-all cursor-pointer";
+                });
+            }
+        };
+
+        let interval = null;
+        const startAutoplay = () => {
+            if(interval) clearInterval(interval);
+            if(total <= 1) return;
+            interval = setInterval(() => { window.heroSlider.next() }, 5000);
+        };
+
+        return {
+            init: (count) => {
+                total = count;
+                current = 0;
+                update();
+                startAutoplay();
+            },
+            next: () => { 
+                if(total <= 1) return;
+                current = (current + 1) % total; 
+                update(); 
+                startAutoplay(); 
+            },
+            prev: () => { 
+                if(total <= 1) return;
+                current = (current - 1 + total) % total; 
+                update(); 
+                startAutoplay(); 
+            },
+            go: (idx) => { 
+                current = idx; 
+                update(); 
+                startAutoplay(); 
+            }
+        }
+    })();
+</script>
+
+<!-- Video Modal -->
+<div id="video-modal" class="fixed inset-0 z-[9999] opacity-0 transition-opacity duration-300">
+    <div class="video-modal-backdrop bg-black/95 backdrop-blur-lg" onclick="closeVideoModal()"></div>
+    <div class="relative z-10 w-full px-4" id="video-modal-content">
+        <button onclick="closeVideoModal()" aria-label="Videoyu Kapat" title="Videoyu Kapat" class="video-modal-close-btn text-white hover:text-calith-orange transition-colors">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <div class="w-full rounded-2xl overflow-hidden border border-white/20 bg-black shadow-2xl shadow-calith-orange/10" id="video-container">
+            <!-- iframe will be appended here via JS -->
+        </div>
+    </div>
+</div>
+
+<!-- PDF Export Area (Hidden) -->
+<div id="print-area">
+    <div id="print-content">
+        <!-- JS bu alanı profesyonel çizelge ile dolduracak -->
+    </div>
+</div>
+
+</body>
+</html>
+
