@@ -150,6 +150,14 @@
                                 <input type="url" id="prog-video" placeholder="Video Linki" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
                             </div>
                         </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Medya Boyutu (Görsel/Video)</label>
+                            <select id="prog-media-size" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                                <option value="small">Küçük (30%)</option>
+                                <option value="medium" selected>Orta (60%)</option>
+                                <option value="large">Büyük (Tam Boy)</option>
+                            </select>
+                        </div>
                         <div id="prog-days-container" class="space-y-6 pt-4 border-t border-white/5">
                             <h4 class="text-xs font-black text-calith-orange uppercase tracking-[0.2em] mb-4">Program Günleri (5 Gün)</h4>
                             
@@ -197,6 +205,11 @@
                                 </div>
                                 <textarea id="prog-day-5-exercises" rows="3" placeholder="Hareketler..." class="w-full bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs outline-none focus:border-calith-orange text-gray-300 resize-none"></textarea>
                             </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-white/5">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Program Notları (En altta görünür)</label>
+                            <textarea id="prog-notes" rows="4" placeholder="Beslenme tavsiyeleri, önemli notlar..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600 mt-1 resize-none text-sm"></textarea>
                         </div>
                         <button onclick="saveProgram()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">PROGRAMI YAYINLA</button>
                     </div>

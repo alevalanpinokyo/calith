@@ -1019,7 +1019,11 @@ async function saveProgram() {
         days.push({ name: dayName, badge: dayBadge, exercises: dayExercises });
     }
 
-    let content = JSON.stringify(days);
+    const notes = document.getElementById('prog-notes').value.trim();
+    const mediaSize = document.getElementById('prog-media-size').value;
+
+    const programData = { days, notes, mediaSize };
+    let content = JSON.stringify(programData);
     if (video && video.trim() !== '') {
         content += `<!-- VIDEO: ${video.trim()} -->`;
     }
@@ -1097,16 +1101,19 @@ function editProgram(id) {
 
     // JSON verisini parse etmeye çalış
     try {
-        const days = JSON.parse(displayContent);
-        if (Array.isArray(days)) {
-            days.forEach((day, index) => {
-                const i = index + 1;
-                if (i > 5) return;
-                document.getElementById(`prog-day-${i}-name`).value = day.name || '';
-                document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
-                document.getElementById(`prog-day-${i}-exercises`).value = (day.exercises || []).join('\n');
-            });
-        }
+        const data = JSON.parse(displayContent);
+        const days = Array.isArray(data) ? data : (data.days || []);
+        
+        days.forEach((day, index) => {
+            const i = index + 1;
+            if (i > 5) return;
+            document.getElementById(`prog-day-${i}-name`).value = day.name || '';
+            document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
+            document.getElementById(`prog-day-${i}-exercises`).value = (day.exercises || []).join('\n');
+        });
+
+        if (data.notes) document.getElementById('prog-notes').value = data.notes;
+        if (data.mediaSize) document.getElementById('prog-media-size').value = data.mediaSize;
     } catch (e) {
         // Eski HTML formatındaysa ilk güne koy (veya temizle)
         resetProgramForm();
@@ -1151,6 +1158,8 @@ function resetProgramForm() {
         document.getElementById(`prog-day-${i}-badge`).value = '';
         document.getElementById(`prog-day-${i}-exercises`).value = '';
     }
+    document.getElementById('prog-notes').value = '';
+    document.getElementById('prog-media-size').value = 'medium';
 }
 
 // PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
@@ -1267,8 +1276,19 @@ function showProgramDetail(id) {
     }
 
     let programHtml = '';
+    let notesHtml = '';
+    let mediaWidthClass = 'max-w-none'; // Default large
+
     try {
-        const days = JSON.parse(displayContent);
+        const data = JSON.parse(displayContent);
+        const days = Array.isArray(data) ? data : (data.days || []);
+        const notes = data.notes || '';
+        const mediaSize = data.mediaSize || 'large';
+
+        if (mediaSize === 'small') mediaWidthClass = 'max-w-md mx-auto';
+        else if (mediaSize === 'medium') mediaWidthClass = 'max-w-3xl mx-auto';
+        else mediaWidthClass = 'max-w-none';
+
         if (Array.isArray(days)) {
             programHtml = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1296,6 +1316,18 @@ function showProgramDetail(id) {
                 </div>
             `;
         }
+
+        if (notes) {
+            notesHtml = `
+                <div class="mt-12 p-8 rounded-3xl bg-gradient-to-br from-calith-orange/5 to-transparent border border-calith-orange/10 reveal active">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="info" class="w-5 h-5 text-calith-orange"></i>
+                        <h4 class="text-sm font-black text-white uppercase tracking-widest">Antrenman Notları</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed whitespace-pre-wrap">${notes}</p>
+                </div>
+            `;
+        }
     } catch (e) {
         programHtml = `<div class="prose prose-invert prose-lg max-w-none">${sanitizeContent(displayContent)}</div>`;
     }
@@ -1308,7 +1340,9 @@ function showProgramDetail(id) {
                 <span class="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em]">${p.category.replace('program_', '')} SEVİYE</span>
             </div>
         </div>
-        ${mediaHtml}
+        <div class="${mediaWidthClass}">
+            ${mediaHtml}
+        </div>
         <div class="mt-8">
             <div class="flex items-center gap-4 mb-8">
                 <div class="h-px flex-1 bg-gradient-to-r from-calith-orange/50 to-transparent"></div>
@@ -1316,6 +1350,7 @@ function showProgramDetail(id) {
                 <div class="h-px flex-1 bg-gradient-to-l from-calith-orange/50 to-transparent"></div>
             </div>
             ${programHtml}
+            ${notesHtml}
         </div>
     `;
 
