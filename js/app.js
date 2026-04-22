@@ -1190,6 +1190,28 @@ function backToLevels() {
     if (detailSec) detailSec.classList.add('hidden');
 }
 
+function toggleDayAccordion(index) {
+    const content = document.getElementById(`day-content-${index}`);
+    const card = document.getElementById(`day-card-${index}`);
+    if (!content || !card) return;
+
+    const isExpanded = content.classList.contains('expanded');
+    
+    // Opsiyonel: Diğerlerini kapat (Solo mode)
+    /*
+    document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('expanded'));
+    document.querySelectorAll('.program-day-card').forEach(el => el.classList.remove('expanded-parent'));
+    */
+
+    if (isExpanded) {
+        content.classList.remove('expanded');
+        card.classList.remove('expanded-parent');
+    } else {
+        content.classList.add('expanded');
+        card.classList.add('expanded-parent');
+    }
+}
+
 function showProgramLevel(level, titleStr) {
     // Browser URL'ini güncelle (Paylaşılabilir link için)
     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?level=' + level;
@@ -1293,24 +1315,39 @@ function showProgramDetail(id) {
             programHtml = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     ${days.filter(d => d.name || d.exercises.length > 0).map((day, idx) => `
-                        <div class="bg-calith-gray/40 border border-white/5 p-6 rounded-3xl hover:border-calith-orange/30 transition-all group reveal active">
-                            <div class="flex items-center justify-between mb-6">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-black text-calith-orange/40">0${idx+1}</span>
-                                    <h4 class="font-display text-xl font-bold tracking-tight">${day.name || 'GÜN ' + (idx+1)}</h4>
+                        <div class="program-day-card bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${idx}">
+                            <!-- Header (Clickable Area) -->
+                            <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${idx})">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
+                                        <span class="text-sm font-black text-calith-orange">0${idx+1}</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (idx+1)}</h4>
+                                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${day.badge || 'ANTRENMAN'}</p>
+                                    </div>
                                 </div>
-                                ${day.badge ? `<span class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2.5 py-1 bg-white/5 rounded-lg border border-white/5">${day.badge}</span>` : ''}
+                                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center chevron-icon">
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                                </div>
                             </div>
-                            <ul class="space-y-4">
-                                ${day.exercises.map(ex => `
-                                    <li class="flex items-start gap-3 group/item">
-                                        <div class="w-5 h-5 rounded-full bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-colors">
-                                            <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
-                                        </div>
-                                        <span class="text-sm text-gray-400 group-hover/item:text-gray-200 transition-colors leading-snug">${ex}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
+                            
+                            <!-- Accordion Body -->
+                            <div class="accordion-content ${idx === 0 ? 'expanded' : ''}" id="day-content-${idx}">
+                                <div class="accordion-inner px-6 pb-6">
+                                    <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
+                                    <ul class="space-y-4">
+                                        ${day.exercises.map(ex => `
+                                            <li class="flex items-start gap-4 group/item">
+                                                <div class="w-5 h-5 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-all duration-300">
+                                                    <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
+                                                </div>
+                                                <span class="text-sm text-gray-400 group-hover/item:text-gray-200 transition-colors leading-relaxed">${ex}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
