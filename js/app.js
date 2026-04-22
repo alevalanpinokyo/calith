@@ -1191,24 +1191,19 @@ function backToLevels() {
 }
 
 function toggleDayAccordion(index) {
-    const content = document.getElementById(`day-content-${index}`);
-    const card = document.getElementById(`day-card-${index}`);
-    if (!content || !card) return;
-
-    const isExpanded = content.classList.contains('expanded');
+    // Kullanıcı isteği: Birine tıklayınca hepsi açılsın/kapansın
+    const allContents = document.querySelectorAll('.accordion-content');
+    const allCards = document.querySelectorAll('.program-day-card');
     
-    // Opsiyonel: Diğerlerini kapat (Solo mode)
-    /*
-    document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('expanded'));
-    document.querySelectorAll('.program-day-card').forEach(el => el.classList.remove('expanded-parent'));
-    */
-
-    if (isExpanded) {
-        content.classList.remove('expanded');
-        card.classList.remove('expanded-parent');
+    // Mevcut duruma bak (ilk kartı referans alalım)
+    const isFirstExpanded = allContents[0]?.classList.contains('expanded');
+    
+    if (isFirstExpanded) {
+        allContents.forEach(el => el.classList.remove('expanded'));
+        allCards.forEach(el => el.classList.remove('expanded-parent'));
     } else {
-        content.classList.add('expanded');
-        card.classList.add('expanded-parent');
+        allContents.forEach(el => el.classList.add('expanded'));
+        allCards.forEach(el => el.classList.add('expanded-parent'));
     }
 }
 
