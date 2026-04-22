@@ -1286,7 +1286,7 @@ function showProgramDetail(id) {
         const mediaSize = data.mediaSize || 'large';
 
         if (mediaSize === 'small') mediaWidthClass = 'max-w-sm mx-auto';
-        else if (mediaSize === 'medium') mediaWidthClass = 'max-w-xl mx-auto';
+        else if (mediaSize === 'medium') mediaWidthClass = 'max-w-2xl mx-auto';
         else mediaWidthClass = 'max-w-none';
 
         if (Array.isArray(days)) {
