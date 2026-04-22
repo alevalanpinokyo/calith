@@ -150,9 +150,53 @@
                                 <input type="url" id="prog-video" placeholder="Video Linki" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
                             </div>
                         </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Program İçeriği (Günler, setler...)</label>
-                            <div id="prog-editor" contenteditable="true" class="bg-black/40 border border-white/10 rounded-xl p-4 min-h-[250px] outline-none prose prose-invert max-w-none text-sm overflow-y-auto"></div>
+                        <div id="prog-days-container" class="space-y-6 pt-4 border-t border-white/5">
+                            <h4 class="text-xs font-black text-calith-orange uppercase tracking-[0.2em] mb-4">Program Günleri (5 Gün)</h4>
+                            
+                            <!-- Day 1 -->
+                            <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-3">
+                                <div class="flex gap-3">
+                                    <input type="text" id="prog-day-1-name" placeholder="GÜN 1 (Örn: PAZARTESİ)" class="flex-1 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs font-bold outline-none focus:border-calith-orange text-white">
+                                    <input type="text" id="prog-day-1-badge" placeholder="ROZET (Örn: ÜST VÜCUT)" class="w-1/3 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-[10px] outline-none focus:border-calith-orange text-gray-400">
+                                </div>
+                                <textarea id="prog-day-1-exercises" rows="3" placeholder="Hareketler (Her satıra bir tane)..." class="w-full bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs outline-none focus:border-calith-orange text-gray-300 resize-none"></textarea>
+                            </div>
+
+                            <!-- Day 2 -->
+                            <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-3">
+                                <div class="flex gap-3">
+                                    <input type="text" id="prog-day-2-name" placeholder="GÜN 2 (Örn: SALI)" class="flex-1 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs font-bold outline-none focus:border-calith-orange text-white">
+                                    <input type="text" id="prog-day-2-badge" placeholder="ROZET" class="w-1/3 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-[10px] outline-none focus:border-calith-orange text-gray-400">
+                                </div>
+                                <textarea id="prog-day-2-exercises" rows="3" placeholder="Hareketler..." class="w-full bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs outline-none focus:border-calith-orange text-gray-300 resize-none"></textarea>
+                            </div>
+
+                            <!-- Day 3 -->
+                            <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-3">
+                                <div class="flex gap-3">
+                                    <input type="text" id="prog-day-3-name" placeholder="GÜN 3 (Örn: ÇARŞAMBA)" class="flex-1 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs font-bold outline-none focus:border-calith-orange text-white">
+                                    <input type="text" id="prog-day-3-badge" placeholder="ROZET" class="w-1/3 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-[10px] outline-none focus:border-calith-orange text-gray-400">
+                                </div>
+                                <textarea id="prog-day-3-exercises" rows="3" placeholder="Hareketler..." class="w-full bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs outline-none focus:border-calith-orange text-gray-300 resize-none"></textarea>
+                            </div>
+
+                            <!-- Day 4 -->
+                            <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-3">
+                                <div class="flex gap-3">
+                                    <input type="text" id="prog-day-4-name" placeholder="GÜN 4 (Örn: PERŞEMBE)" class="flex-1 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs font-bold outline-none focus:border-calith-orange text-white">
+                                    <input type="text" id="prog-day-4-badge" placeholder="ROZET" class="w-1/3 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-[10px] outline-none focus:border-calith-orange text-gray-400">
+                                </div>
+                                <textarea id="prog-day-4-exercises" rows="3" placeholder="Hareketler..." class="w-full bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs outline-none focus:border-calith-orange text-gray-300 resize-none"></textarea>
+                            </div>
+
+                            <!-- Day 5 -->
+                            <div class="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-3">
+                                <div class="flex gap-3">
+                                    <input type="text" id="prog-day-5-name" placeholder="GÜN 5 (Örn: CUMA)" class="flex-1 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs font-bold outline-none focus:border-calith-orange text-white">
+                                    <input type="text" id="prog-day-5-badge" placeholder="ROZET" class="w-1/3 bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-[10px] outline-none focus:border-calith-orange text-gray-400">
+                                </div>
+                                <textarea id="prog-day-5-exercises" rows="3" placeholder="Hareketler..." class="w-full bg-white/5 border border-white/10 px-3 py-2 rounded-lg text-xs outline-none focus:border-calith-orange text-gray-300 resize-none"></textarea>
+                            </div>
                         </div>
                         <button onclick="saveProgram()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">PROGRAMI YAYINLA</button>
                     </div>

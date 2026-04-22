@@ -999,7 +999,6 @@ function initScrollReveal() {
 // ============================================
 async function saveProgram() {
     const title = document.getElementById('prog-title').value;
-    let content = sanitizeContent(document.getElementById('prog-editor').innerHTML);
     const category = document.getElementById('prog-category').value;
     const image = document.getElementById('prog-cover').value;
     const video = document.getElementById('prog-video').value;
@@ -1007,7 +1006,20 @@ async function saveProgram() {
 
     if (!title) return alert('Başlık gerekli!');
 
-    content = content.replace(/<!-- VIDEO: (.*?) -->/g, '');
+    // 5 Günlük veriyi topla
+    const days = [];
+    for (let i = 1; i <= 5; i++) {
+        const dayName = document.getElementById(`prog-day-${i}-name`).value.trim();
+        const dayBadge = document.getElementById(`prog-day-${i}-badge`).value.trim();
+        const dayExercises = document.getElementById(`prog-day-${i}-exercises`).value.trim()
+            .split('\n')
+            .map(ex => ex.trim())
+            .filter(ex => ex !== '');
+        
+        days.push({ name: dayName, badge: dayBadge, exercises: dayExercises });
+    }
+
+    let content = JSON.stringify(days);
     if (video && video.trim() !== '') {
         content += `<!-- VIDEO: ${video.trim()} -->`;
     }
@@ -1082,7 +1094,24 @@ function editProgram(id) {
     document.getElementById('prog-category').value = p.category;
     document.getElementById('prog-cover').value = p.image || '';
     document.getElementById('prog-video').value = videoUrl;
-    document.getElementById('prog-editor').innerHTML = displayContent;
+
+    // JSON verisini parse etmeye çalış
+    try {
+        const days = JSON.parse(displayContent);
+        if (Array.isArray(days)) {
+            days.forEach((day, index) => {
+                const i = index + 1;
+                if (i > 5) return;
+                document.getElementById(`prog-day-${i}-name`).value = day.name || '';
+                document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
+                document.getElementById(`prog-day-${i}-exercises`).value = (day.exercises || []).join('\n');
+            });
+        }
+    } catch (e) {
+        // Eski HTML formatındaysa ilk güne koy (veya temizle)
+        resetProgramForm();
+        document.getElementById('prog-day-1-exercises').value = "ESKİ FORMAT: " + displayContent.replace(/<[^>]*>/g, '');
+    }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
     showToast('Program düzenleniyor');
@@ -1117,7 +1146,11 @@ function resetProgramForm() {
     document.getElementById('prog-title').value = '';
     document.getElementById('prog-cover').value = '';
     document.getElementById('prog-video').value = '';
-    document.getElementById('prog-editor').innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        document.getElementById(`prog-day-${i}-name`).value = '';
+        document.getElementById(`prog-day-${i}-badge`).value = '';
+        document.getElementById(`prog-day-${i}-exercises`).value = '';
+    }
 }
 
 // PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
@@ -1195,7 +1228,6 @@ function showProgramLevel(level, titleStr) {
 }
 
 function showProgramDetail(id) {
-    // Adres çubuğunu güncelle (Program detay linki için)
     const url = new URL(window.location.href);
     url.searchParams.set('p', id);
     window.history.pushState({ path: url.href }, '', url.href);
@@ -1216,8 +1248,6 @@ function showProgramDetail(id) {
     let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
     let videoUrl = videoMatch ? videoMatch[1] : '';
     displayContent = displayContent.replace(/<!-- VIDEO: (.*?) -->/g, '');
-    // Supabase'den gelen şişirilmiş HTML'i temizle (eski kayıtlar için de geçerli)
-    if (typeof sanitizeContent === 'function') displayContent = sanitizeContent(displayContent);
 
     let mediaHtml = '';
     if (videoUrl) {
@@ -1227,22 +1257,69 @@ function showProgramDetail(id) {
         if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/').split('&')[0];
         else if (embedUrl.includes('youtu.be/')) embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0];
 
-        mediaHtml = `<div class="w-full aspect-video rounded-2xl mb-12 overflow-hidden shadow-2xl border border-white/10">
+        mediaHtml = `<div class="w-full aspect-video rounded-3xl mb-12 overflow-hidden shadow-2xl border border-white/10 group relative">
             <iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
         </div>`;
     } else if (p.image) {
-        mediaHtml = `<img src="${p.image}" class="w-full aspect-video object-cover rounded-2xl mb-12 grayscale hover:grayscale-0 transition-all duration-700">`;
+        mediaHtml = `<div class="w-full aspect-video rounded-3xl mb-12 overflow-hidden border border-white/5 shadow-2xl">
+            <img src="${p.image}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+        </div>`;
+    }
+
+    let programHtml = '';
+    try {
+        const days = JSON.parse(displayContent);
+        if (Array.isArray(days)) {
+            programHtml = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${days.filter(d => d.name || d.exercises.length > 0).map((day, idx) => `
+                        <div class="bg-calith-gray/40 border border-white/5 p-6 rounded-3xl hover:border-calith-orange/30 transition-all group reveal active">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-black text-calith-orange/40">0${idx+1}</span>
+                                    <h4 class="font-display text-xl font-bold tracking-tight">${day.name || 'GÜN ' + (idx+1)}</h4>
+                                </div>
+                                ${day.badge ? `<span class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2.5 py-1 bg-white/5 rounded-lg border border-white/5">${day.badge}</span>` : ''}
+                            </div>
+                            <ul class="space-y-4">
+                                ${day.exercises.map(ex => `
+                                    <li class="flex items-start gap-3 group/item">
+                                        <div class="w-5 h-5 rounded-full bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-colors">
+                                            <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-400 group-hover/item:text-gray-200 transition-colors leading-snug">${ex}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    } catch (e) {
+        programHtml = `<div class="prose prose-invert prose-lg max-w-none">${sanitizeContent(displayContent)}</div>`;
     }
 
     contentDiv.innerHTML = `
-        <div class="mb-8">
-            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-6 leading-tight">${p.title}</h1>
+        <div class="mb-12">
+            <h1 class="text-4xl md:text-7xl font-black tracking-tighter mb-4 leading-none uppercase">${p.title}</h1>
+            <div class="flex items-center gap-3">
+                <span class="px-3 py-1 bg-calith-orange text-black text-[10px] font-black uppercase tracking-widest rounded-lg">CALITH PROGRAM</span>
+                <span class="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em]">${p.category.replace('program_', '')} SEVİYE</span>
+            </div>
         </div>
         ${mediaHtml}
-        <div class="prose prose-invert prose-lg max-w-none">
-            ${displayContent}
+        <div class="mt-8">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="h-px flex-1 bg-gradient-to-r from-calith-orange/50 to-transparent"></div>
+                <h3 class="text-xs font-black text-calith-orange uppercase tracking-[0.3em]">Haftalık Rutin</h3>
+                <div class="h-px flex-1 bg-gradient-to-l from-calith-orange/50 to-transparent"></div>
+            </div>
+            ${programHtml}
         </div>
     `;
+
+    if (window.lucide) lucide.createIcons();
     window.scrollTo(0, 0);
 }
 // ====== DUYURU YÖNETİMİ (ANNOUNCEMENTS) ======
