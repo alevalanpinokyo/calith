@@ -1191,13 +1191,38 @@ function backToLevels() {
 }
 
 function toggleDayAccordion(index) {
-    const content = document.getElementById(`day-content-${index}`);
-    const card = document.getElementById(`day-card-${index}`);
+    const allCards = document.querySelectorAll('.program-day-card');
+    const indices = [];
     
-    if (content && card) {
-        content.classList.toggle('expanded');
-        card.classList.toggle('expanded-parent');
+    if (index === 0) {
+        // Üst grup: Sadece ilk kart
+        indices.push(0);
+    } else {
+        // Alt grup: İlk kart hariç geri kalanların hepsi
+        for (let i = 1; i < allCards.length; i++) {
+            indices.push(i);
+        }
     }
+    
+    if (indices.length === 0) return;
+
+    // Grubun durumunu belirlemek için seçilen ilk elemana bakalım
+    const firstContent = document.getElementById(`day-content-${indices[0]}`);
+    const shouldExpand = !firstContent?.classList.contains('expanded');
+    
+    indices.forEach(idx => {
+        const content = document.getElementById(`day-content-${idx}`);
+        const card = document.getElementById(`day-card-${idx}`);
+        if (content && card) {
+            if (shouldExpand) {
+                content.classList.add('expanded');
+                card.classList.add('expanded-parent');
+            } else {
+                content.classList.remove('expanded');
+                card.classList.remove('expanded-parent');
+            }
+        }
+    });
 }
 
 function showProgramLevel(level, titleStr) {
@@ -1303,7 +1328,7 @@ function showProgramDetail(id) {
             programHtml = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     ${days.filter(d => d.name || d.exercises.length > 0).map((day, idx) => `
-                        <div class="program-day-card ${idx === 0 ? 'expanded-parent' : ''} bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${idx}">
+                        <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${idx}">
                             <!-- Header (Clickable Area) -->
                             <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${idx})">
                                 <div class="flex items-center gap-4">
@@ -1321,7 +1346,7 @@ function showProgramDetail(id) {
                             </div>
                             
                             <!-- Accordion Body -->
-                            <div class="accordion-content ${idx === 0 ? 'expanded' : ''}" id="day-content-${idx}">
+                            <div class="accordion-content expanded" id="day-content-${idx}">
                                 <div class="accordion-inner px-6 pb-6">
                                     <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
                                     <ul class="space-y-4">
