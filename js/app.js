@@ -3023,28 +3023,44 @@ async function loadProfileData(user) {
     const sb = getSupabase();
     if (!sb) return;
 
-    // Profil bilgilerini yükle
-    document.getElementById('profile-name').textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+    // Elementleri seç
+    const nameEl = document.getElementById('profile-name');
+    const weightEl = document.getElementById('profile-weight');
+    const heightEl = document.getElementById('profile-height');
+    const goalEl = document.getElementById('profile-goal');
+
+    // Başlangıçta skeleton efektini ekle (Hızlı yükleme için)
+    const elements = [nameEl, weightEl, heightEl, goalEl];
+    elements.forEach(el => { if(el) el.classList.add('skeleton'); });
+
+    // Hızlı bilgi yükle (Metadatadan)
+    if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
     document.getElementById('profile-email').textContent = user.email;
 
     const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
     
-    if (!error && data) {
-        // Tablodan gelen ismi kullan
-        if (data.full_name) {
-            document.getElementById('profile-name').textContent = data.full_name;
-        }
+    // Skeleton efektini kaldır
+    elements.forEach(el => { if(el) el.classList.remove('skeleton'); });
 
-        document.getElementById('profile-weight').textContent = data.weight ? data.weight + ' KG' : '--';
-        document.getElementById('profile-height').textContent = data.height ? data.height + ' CM' : '--';
-        document.getElementById('profile-goal').textContent = data.goal || '--';
-        document.getElementById('profile-level').textContent = user.user_metadata?.fitness_level || 'BAŞLANGIÇ';
+    if (!error && data) {
+        if (data.full_name && nameEl) nameEl.textContent = data.full_name;
+        if (weightEl) weightEl.textContent = data.weight ? data.weight + ' KG' : '--';
+        if (heightEl) heightEl.textContent = data.height ? data.height + ' CM' : '--';
+        if (goalEl) goalEl.textContent = data.goal || '--';
+        
+        const levelEl = document.getElementById('profile-level');
+        if (levelEl) levelEl.textContent = user.user_metadata?.fitness_level || 'BAŞLANGIÇ';
 
         // Formu doldur
-        document.getElementById('edit-full-name').value = data.full_name || user.user_metadata?.full_name || '';
-        document.getElementById('edit-weight').value = data.weight || '';
-        document.getElementById('edit-height').value = data.height || '';
-        document.getElementById('edit-goal').value = data.goal || 'Kas Kazanmak';
+        const editName = document.getElementById('edit-full-name');
+        const editWeight = document.getElementById('edit-weight');
+        const editHeight = document.getElementById('edit-height');
+        const editGoal = document.getElementById('edit-goal');
+
+        if (editName) editName.value = data.full_name || user.user_metadata?.full_name || '';
+        if (editWeight) editWeight.value = data.weight || '';
+        if (editHeight) editHeight.value = data.height || '';
+        if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 }
 
