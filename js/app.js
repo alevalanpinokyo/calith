@@ -1164,11 +1164,13 @@ function resetProgramForm() {
 
 // PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
 // ============================================
-function backToProgramList() {
-    // URL'den p parametresini temizle, level kalsın
-    const url = new URL(window.location.href);
-    url.searchParams.delete('p');
-    window.history.pushState({ path: url.href }, '', url.href);
+function backToProgramList(skipHistory = false) {
+    if (!skipHistory) {
+        // URL'den p parametresini temizle, level kalsın
+        const url = new URL(window.location.href);
+        url.searchParams.delete('p');
+        window.history.pushState({ path: url.href }, '', url.href);
+    }
 
     const listSec = document.getElementById('program-list-view');
     const detailSec = document.getElementById('blog-detail');
@@ -1176,10 +1178,12 @@ function backToProgramList() {
     if (listSec) listSec.classList.remove('hidden');
 }
 
-function backToLevels() {
-    // URL'den level parametresini temizle
-    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-    window.history.pushState({ path: newUrl }, '', newUrl);
+function backToLevels(skipHistory = false) {
+    if (!skipHistory) {
+        // URL'den level parametresini temizle
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    }
 
     const mainSec = document.getElementById('programs');
     const listSec = document.getElementById('program-list-view');
@@ -1226,10 +1230,14 @@ function toggleDayAccordion(index) {
     });
 }
 
-function showProgramLevel(level, titleStr) {
-    // Browser URL'ini güncelle (Paylaşılabilir link için)
-    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?level=' + level;
-    window.history.pushState({ path: newUrl }, '', newUrl);
+function showProgramLevel(level, titleStr, skipHistory = false) {
+    if (!skipHistory) {
+        // Browser URL'ini güncelle (Paylaşılabilir link için)
+        const url = new URL(window.location.href);
+        url.searchParams.set('level', level);
+        url.searchParams.delete('p'); // Level değişince detay parametresini temizle
+        window.history.pushState({ path: url.href }, '', url.href);
+    }
 
     const mainSec = document.getElementById('programs');
     const listSec = document.getElementById('program-list-view');
@@ -1272,10 +1280,12 @@ function showProgramLevel(level, titleStr) {
     window.scrollTo(0, 0);
 }
 
-function showProgramDetail(id) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('p', id);
-    window.history.pushState({ path: url.href }, '', url.href);
+function showProgramDetail(id, skipHistory = false) {
+    if (!skipHistory) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('p', id);
+        window.history.pushState({ path: url.href }, '', url.href);
+    }
 
     const listSec = document.getElementById('program-list-view');
     const detailSec = document.getElementById('blog-detail');
@@ -2712,31 +2722,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Run these in parallel for speed
     const loadOps = [
         loadPosts().then(() => {
-            if (window.location.pathname.includes('blog.html')) renderBlog();
+        handleRouting(); // Veriler yüklendikten sonra yönlendirmeyi yap
+    }),
+    (async () => {
+        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
+            await loadAnnouncements();
+            await loadHomecards();
+        }
+    })()
+];
 
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get('p');
-            const blogId = params.get('b');
-            const blogCat = params.get('c');
-            const levelCode = params.get('level');
+await Promise.all(loadOps);
 
-            if (productId) showProductDetail(productId);
-            else if (blogId) showBlogDetail(blogId);
-            else if (blogCat && window.location.pathname.includes('blog.html')) filterBlog(blogCat);
-            else if (levelCode && window.location.pathname.includes('skills.html')) {
-                const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta Seviye', 'ileri': 'İleri Seviye' };
-                if (levelMap[levelCode]) setTimeout(() => showProgramLevel(levelCode, levelMap[levelCode]), 100);
-            }
-        }),
-        (async () => {
-            if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
-                await loadAnnouncements();
-                await loadHomecards();
-            }
-        })()
-    ];
+// 5. Browser Geri/İleri Butonu Senkronizasyonu
+window.onpopstate = () => handleRouting();
 
-    await Promise.all(loadOps);
+function handleRouting() {
+    const params = new URLSearchParams(window.location.search);
+    const programId = params.get('p');
+    const blogId = params.get('b');
+    const blogCat = params.get('c');
+    const levelCode = params.get('level');
+
+    // Elementlerin varlığına göre hangi sayfada olduğumuzu anlayalım (Pathname kontrolünden daha güvenli)
+    const isSkillsPage = !!document.getElementById('program-list-view');
+    const isBlogPage = !!document.getElementById('blog-list');
+    const isShopPage = !!document.getElementById('shop-grid');
+
+    if (isSkillsPage) {
+        if (programId) {
+            showProgramDetail(programId, true);
+        } else if (levelCode) {
+            const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta Seviye', 'ileri': 'İleri Seviye' };
+            showProgramLevel(levelCode, levelMap[levelCode] || levelCode, true);
+        } else {
+            backToLevels(true);
+        }
+    } else if (isBlogPage) {
+        if (blogId) {
+            showBlogDetail(blogId);
+        } else if (blogCat) {
+            filterBlog(blogCat);
+        } else {
+            showSection('blog');
+        }
+    } else if (isShopPage) {
+        const productId = params.get('p');
+        if (productId) showProductDetail(productId);
+        else showSection('shop');
+    }
+}
 
     // 5. Finishing Touches
     if (window.location.pathname.includes('shop.html')) renderShop();
@@ -2822,10 +2857,17 @@ function exportProgramPDF() {
         ];
     }
 
-    renderPDF(printContent, data);
+    // 4. Notları al (Eğer varsa)
+    let notes = '';
+    const notesEl = detailSec ? detailSec.querySelector('.whitespace-pre-wrap') : null;
+    if (notesEl) {
+        notes = notesEl.innerText.trim();
+    }
+
+    renderPDF(printContent, data, notes);
 }
 
-function renderPDF(printContent, data) {
+function renderPDF(printContent, data, notes = '') {
     showToast('PDF Çizelgesi Hazırlanıyor...');
 
     const colCount = data.length <= 2 ? data.length : 3;
@@ -2853,6 +2895,12 @@ function renderPDF(printContent, data) {
 
     html += `
         </div>
+        ${notes ? `
+        <div style="margin-top:20px;padding:15px;background:#f8f8f8;border-radius:10px;border-left:4px solid #000;break-inside:avoid;">
+            <p style="margin:0 0 8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#000;">PROGRAM NOTLARI:</p>
+            <p style="margin:0;font-size:10px;line-height:1.5;color:#444;white-space:pre-wrap;">${notes}</p>
+        </div>
+        ` : ''}
         <div style="margin-top:30px;border-top:1px solid #ddd;padding-top:10px;text-align:center;font-size:9px;color:#aaa;">
             * Her antrenman öncesi 5-10 dk ısınma yapın. Form rehberi için calith.com/blog adresini ziyaret edin.
         </div>
