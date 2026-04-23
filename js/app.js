@@ -2753,6 +2753,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         logo.addEventListener('touchend', endPress);
     }
 
+    // [YENİ] Flicker (Kırpışma) Önleyici: Veri yüklenmeden önce URL'e bak ve gerekirse varsayılan bölümleri gizle
+    const initialParams = new URLSearchParams(window.location.search);
+    if (initialParams.has('p') || initialParams.has('level')) {
+        const progMain = document.getElementById('programs');
+        if (progMain) progMain.classList.add('hidden'); // Veri gelene kadar ana kategorileri gizle
+    }
+    if (initialParams.has('b')) {
+        const blogMain = document.getElementById('blog');
+        if (blogMain) blogMain.classList.add('hidden');
+    }
+
     // 4. Data Loading (Posts & Homecards)
     // Run these in parallel for speed
     const loadOps = [
