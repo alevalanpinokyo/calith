@@ -1191,19 +1191,12 @@ function backToLevels() {
 }
 
 function toggleDayAccordion(index) {
-    // Kullanıcı isteği: Birine tıklayınca hepsi açılsın/kapansın
-    const allContents = document.querySelectorAll('.accordion-content');
-    const allCards = document.querySelectorAll('.program-day-card');
+    const content = document.getElementById(`day-content-${index}`);
+    const card = document.getElementById(`day-card-${index}`);
     
-    // Mevcut duruma bak (ilk kartı referans alalım)
-    const isFirstExpanded = allContents[0]?.classList.contains('expanded');
-    
-    if (isFirstExpanded) {
-        allContents.forEach(el => el.classList.remove('expanded'));
-        allCards.forEach(el => el.classList.remove('expanded-parent'));
-    } else {
-        allContents.forEach(el => el.classList.add('expanded'));
-        allCards.forEach(el => el.classList.add('expanded-parent'));
+    if (content && card) {
+        content.classList.toggle('expanded');
+        card.classList.toggle('expanded-parent');
     }
 }
 
@@ -1310,7 +1303,7 @@ function showProgramDetail(id) {
             programHtml = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     ${days.filter(d => d.name || d.exercises.length > 0).map((day, idx) => `
-                        <div class="program-day-card bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${idx}">
+                        <div class="program-day-card ${idx === 0 ? 'expanded-parent' : ''} bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${idx}">
                             <!-- Header (Clickable Area) -->
                             <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${idx})">
                                 <div class="flex items-center gap-4">
