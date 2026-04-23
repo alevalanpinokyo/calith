@@ -2959,8 +2959,178 @@ function renderPDF(printContent, data, notes = '') {
 
 
 // Global Add to Programs Placeholder
-function addToMyPrograms() {
-    showToast('Program başarıyla kütüphanenize eklendi! (Gelecek Özellik)');
+async function addToMyPrograms(programId = null) {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    // Eğer programId parametre olarak gelmediyse, URL'den al (Detay sayfasındaysak)
+    if (!programId) {
+        const params = new URLSearchParams(window.location.search);
+        programId = params.get('p');
+    }
+
+    if (!programId) {
+        showToast('Program ID bulunamadı.');
+        return;
+    }
+
+    // Giriş kontrolü
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) {
+        showToast('Program eklemek için giriş yapmalısınız.');
+        if (typeof showAuthModal === 'function') showAuthModal();
+        return;
+    }
+
+    showToast('Programa ekleniyor...');
+
+    // user_programs tablosuna ekle
+    const { error } = await sb.from('user_programs').upsert([
+        { user_id: user.id, program_id: programId }
+    ]);
+
+    if (error) {
+        console.error('Error adding program:', error);
+        showToast('Hata: ' + error.message);
+    } else {
+        showToast('Program başarıyla kütüphanenize eklendi!');
+    }
+}
+
+// ====== PROFİL YÖNETİMİ ======
+async function showProfile() {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) {
+        showToast('Profilinizi görmek için giriş yapmalısınız.');
+        if (typeof showAuthModal === 'function') showAuthModal();
+        return;
+    }
+
+    showSection('profile');
+    loadProfileData(user);
+    loadUserPrograms(user.id);
+}
+
+function toggleEditProfile() {
+    const form = document.getElementById('edit-profile-form');
+    if (form) form.classList.toggle('hidden');
+}
+
+async function loadProfileData(user) {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    // Profil bilgilerini yükle
+    document.getElementById('profile-name').textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+    document.getElementById('profile-email').textContent = user.email;
+
+    const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+    
+    if (!error && data) {
+        document.getElementById('profile-weight').textContent = data.weight ? data.weight + ' KG' : '--';
+        document.getElementById('profile-height').textContent = data.height ? data.height + ' CM' : '--';
+        document.getElementById('profile-goal').textContent = data.goal || '--';
+        document.getElementById('profile-level').textContent = user.user_metadata?.fitness_level || 'BAŞLANGIÇ';
+
+        // Formu doldur
+        document.getElementById('edit-full-name').value = data.full_name || user.user_metadata?.full_name || '';
+        document.getElementById('edit-weight').value = data.weight || '';
+        document.getElementById('edit-height').value = data.height || '';
+        document.getElementById('edit-goal').value = data.goal || 'Kas Kazanmak';
+    }
+}
+
+async function saveProfileData() {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+
+    const profileData = {
+        id: user.id,
+        full_name: document.getElementById('edit-full-name').value,
+        weight: parseFloat(document.getElementById('edit-weight').value),
+        height: parseFloat(document.getElementById('edit-height').value),
+        goal: document.getElementById('edit-goal').value
+    };
+
+    const { error } = await sb.from('profiles').upsert(profileData);
+
+    if (error) {
+        showToast('Hata: ' + error.message);
+    } else {
+        showToast('Profil güncellendi!');
+        toggleEditProfile();
+        loadProfileData(user);
+    }
+}
+
+async function loadUserPrograms(userId) {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
+    
+    if (!error && data) {
+        const programIds = data.map(d => d.program_id);
+        const myPrograms = programPosts.filter(p => programIds.includes(p.id));
+        renderUserPrograms(myPrograms);
+    }
+}
+
+function renderUserPrograms(programs) {
+    const container = document.getElementById('user-programs-list');
+    if (!container) return;
+
+    if (programs.length === 0) {
+        container.innerHTML = `
+            <div class="py-20 text-center border-2 border-dashed border-white/5 rounded-[2.5rem]">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="plus" class="w-8 h-8 text-gray-600"></i>
+                </div>
+                <p class="text-gray-500 font-medium">Henüz bir program eklemedin.</p>
+                <button onclick="showSection('skills')" class="mt-4 text-calith-orange font-bold text-xs uppercase tracking-widest underline">Programlara Göz At</button>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+    }
+
+    container.innerHTML = programs.map((p, i) => `
+        <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[2rem] p-4 sm:p-6 transition-all duration-500 flex flex-col lg:flex-row items-center gap-6 overflow-hidden">
+            <div class="absolute -left-4 -bottom-4 text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i+1}</div>
+            
+            <div class="w-full lg:w-32 aspect-video lg:aspect-square rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500">
+                <img src="${p.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
+            </div>
+
+            <div class="flex-1 text-center lg:text-left relative z-10">
+                <h3 class="font-display text-xl sm:text-2xl font-bold mb-2 tracking-tight group-hover:text-white transition-colors uppercase leading-tight">${p.title}</h3>
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-gray-500">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="clock" class="w-3.5 h-3.5 text-calith-orange"></i>
+                        <span class="text-[9px] font-black uppercase tracking-widest">Haftalık 5 Gün</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 text-calith-orange"></i>
+                        <span class="text-[9px] font-black uppercase tracking-widest">Aktif</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shrink-0 relative z-10">
+                <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange transition-all duration-500">
+                    <i data-lucide="arrow-right" class="w-5 h-5 text-white"></i>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    if (window.lucide) lucide.createIcons();
 }
 
 // Program Card Toggle (Her kart bağımsız açılır/kapanır)
