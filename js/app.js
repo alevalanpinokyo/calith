@@ -1253,27 +1253,60 @@ function showProgramLevel(level, titleStr, skipHistory = false) {
     const grid = document.getElementById('dynamic-programs-grid');
     if (!grid) return;
 
+    // Grid yerine flex-col kullanarak daha ferah bir liste yapalım
+    grid.className = "flex flex-col gap-6 max-w-5xl mx-auto";
+
     const levelPrograms = programPosts.filter(p => p.category === 'program_' + level);
 
     if (levelPrograms.length === 0) {
-        grid.innerHTML = '<div class="col-span-3 text-center py-20 text-gray-400">Bu seviyede henüz program bulunmuyor.</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-20 text-gray-400">Bu seviyede henüz program bulunmuyor.</div>';
         return;
     }
 
-    grid.innerHTML = levelPrograms.map(p => `
-        <article onclick="showProgramDetail('${p.id}')" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover border border-white/5 bg-calith-dark/50">
-            <div class="aspect-video relative overflow-hidden">
-                <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent opacity-80"></div>
+    grid.innerHTML = levelPrograms.map((p, i) => `
+        <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[2.5rem] p-5 sm:p-8 transition-all duration-500 flex flex-col lg:flex-row items-center gap-8 overflow-hidden reveal active">
+            <!-- Arka Plan Büyük Numara (Dekoratif) -->
+            <div class="absolute -left-4 -bottom-6 text-[10rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i+1}</div>
+            
+            <!-- Program Görseli (Küçük ve Şık) -->
+            <div class="w-full lg:w-48 aspect-video lg:aspect-square rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500 shadow-2xl">
+                <img src="${p.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
             </div>
-            <div class="p-6">
-                <h3 class="font-display text-2xl font-bold mb-3 group-hover:text-calith-orange transition-colors">${p.title}</h3>
-                <p class="text-gray-400 text-sm line-clamp-2 mb-6">${p.excerpt}</p>
-                <div class="flex items-center gap-2 text-sm font-bold text-calith-orange opacity-0 group-hover:opacity-100 transition-all">
-                    BAŞLA <i data-lucide="arrow-right" class="w-4 h-4"></i>
+
+            <!-- İçerik Alanı -->
+            <div class="flex-1 text-center lg:text-left relative z-10">
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-4">
+                    <span class="text-[10px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-4 py-1.5 rounded-full border border-calith-orange/20">PROGRAM 0${i+1}</span>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest border border-white/10 px-4 py-1.5 rounded-full">${p.category.replace('program_', '').toUpperCase()} SEVİYE</span>
+                </div>
+                
+                <h3 class="font-display text-3xl sm:text-4xl font-bold mb-4 tracking-tight group-hover:text-white transition-colors uppercase leading-tight">${p.title}</h3>
+                <p class="text-gray-400 text-sm leading-relaxed max-w-2xl line-clamp-2 mb-6 group-hover:text-gray-300 transition-colors">${p.excerpt}</p>
+                
+                <!-- Özellikler -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-8 text-gray-500">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                            <i data-lucide="clock" class="w-4 h-4 text-calith-orange"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Haftalık 5 Gün</span>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                            <i data-lucide="zap" class="w-4 h-4 text-calith-orange"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Yoğun Antrenman</span>
+                    </div>
                 </div>
             </div>
-        </article>
+
+            <!-- Aksiyon Butonu -->
+            <div class="shrink-0 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange group-hover:border-calith-orange transition-all duration-500 group-hover:shadow-[0_0_40px_rgba(255,107,0,0.3)]">
+                    <i data-lucide="arrow-right" class="w-6 h-6 text-white group-hover:scale-110 transition-transform"></i>
+                </div>
+            </div>
+        </div>
     `).join('');
 
     if (window.lucide) lucide.createIcons();
