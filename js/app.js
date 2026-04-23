@@ -3030,6 +3030,11 @@ async function loadProfileData(user) {
     const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
     
     if (!error && data) {
+        // Tablodan gelen ismi kullan
+        if (data.full_name) {
+            document.getElementById('profile-name').textContent = data.full_name;
+        }
+
         document.getElementById('profile-weight').textContent = data.weight ? data.weight + ' KG' : '--';
         document.getElementById('profile-height').textContent = data.height ? data.height + ' CM' : '--';
         document.getElementById('profile-goal').textContent = data.goal || '--';
