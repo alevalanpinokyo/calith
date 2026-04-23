@@ -1191,14 +1191,15 @@ function backToLevels() {
 }
 
 function toggleDayAccordion(index) {
-    const allCards = document.querySelectorAll('.program-day-card');
     const indices = [];
     
-    // Gruplandırma: 1. Gün tek, 2-3-4-5. Günler bir grup
-    if (index === 0) {
-        indices.push(0);
+    // Kullanıcı Gruplandırması:
+    // Üst Grup: Gün 1, 2, 3 (index 0, 1, 2)
+    // Alt Grup: Gün 4, 5 (index 3, 4)
+    if (index <= 2) {
+        indices.push(0, 1, 2);
     } else {
-        indices.push(1, 2, 3, 4);
+        indices.push(3, 4);
     }
     
     if (indices.length === 0) return;
@@ -1325,48 +1326,73 @@ function showProgramDetail(id) {
         else mediaWidthClass = 'max-w-none';
 
         if (Array.isArray(days)) {
-            programHtml = `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    ${days.map((day, i) => {
-                        if (!day.name && (!day.exercises || day.exercises.length === 0)) return '';
-                        return `
-                        <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${i}">
-                            <!-- Header (Clickable Area) -->
-                            <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
-                                        <span class="text-sm font-black text-calith-orange">0${i+1}</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (i+1)}</h4>
-                                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${day.badge || 'ANTRENMAN'}</p>
-                                    </div>
-                                </div>
-                                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center chevron-icon">
-                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
-                                </div>
+            const group1 = days.slice(0, 3);
+            const group2 = days.slice(3, 5);
+
+            const renderCard = (day, i) => {
+                if (!day.name && (!day.exercises || day.exercises.length === 0)) return '';
+                return `
+                <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${i}">
+                    <!-- Header (Clickable Area) -->
+                    <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
+                                <span class="text-sm font-black text-calith-orange">0${i+1}</span>
                             </div>
-                            
-                            <!-- Accordion Body -->
-                            <div class="accordion-content expanded" id="day-content-${i}">
-                                <div class="accordion-inner px-6 pb-6">
-                                    <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
-                                    <ul class="space-y-4">
-                                        ${(day.exercises || []).map(ex => `
-                                            <li class="flex items-start gap-4 group/item">
-                                                <div class="w-5 h-5 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-all duration-300">
-                                                    <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
-                                                </div>
-                                                <span class="text-sm text-gray-400 group-hover/item:text-gray-200 transition-colors leading-relaxed">${ex}</span>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
-                                </div>
+                            <div>
+                                <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (i+1)}</h4>
+                                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${day.badge || 'ANTRENMAN'}</p>
                             </div>
                         </div>
-                        `;
-                    }).join('')}
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center chevron-icon">
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Accordion Body -->
+                    <div class="accordion-content expanded" id="day-content-${i}">
+                        <div class="accordion-inner px-6 pb-6">
+                            <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
+                            <ul class="space-y-4">
+                                ${(day.exercises || []).map(ex => `
+                                    <li class="flex items-start gap-4 group/item">
+                                        <div class="w-5 h-5 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-all duration-300">
+                                            <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-400 group-hover/item:text-gray-200 transition-colors leading-relaxed">${ex}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+                `;
+            };
+
+            programHtml = `
+                <!-- Üst Grup (Gün 1, 2, 3) -->
+                <div class="mb-12">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-1.5 h-6 bg-calith-orange rounded-full"></span>
+                        <h4 class="text-sm font-black text-white/50 uppercase tracking-[0.2em]">ANA RUTİN (GÜN 1-2-3)</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${group1.map((day, i) => renderCard(day, i)).join('')}
+                    </div>
+                </div>
+
+                <!-- Alt Grup (Gün 4, 5) -->
+                ${group2.length > 0 ? `
+                <div class="mb-12">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-1.5 h-6 bg-calith-accent rounded-full"></span>
+                        <h4 class="text-sm font-black text-white/50 uppercase tracking-[0.2em]">TAMAMLAYICI & TOPARLANMA (GÜN 4-5)</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${group2.map((day, i) => renderCard(day, i + 3)).join('')}
+                    </div>
+                </div>
+                ` : ''}
             `;
         }
 
@@ -2214,8 +2240,10 @@ function renderFrontendHomecards() {
 
         const grid = document.getElementById('schedule-grid');
         if (grid && schedule.length > 0) {
-            grid.className = "grid lg:grid-cols-3 gap-6 fade-in";
-            grid.innerHTML = schedule.map((sch, i) => {
+            const group1 = schedule.slice(0, 3);
+            const group2 = schedule.slice(3, 5);
+
+            const renderCard = (sch, i) => {
                 const colorMap = ['calith-orange', 'calith-accent', 'red-500', 'green-500'];
                 const c = colorMap[i % colorMap.length];
                 const listItems = (sch.desc_text || '').split(/\n|\\n/).filter(l => l.trim().length > 0).map(l =>
@@ -2223,7 +2251,7 @@ function renderFrontendHomecards() {
                 ).join('');
 
                 return `
-                <div onclick="toggleScheduleCard()" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden fade-in stagger-${(i % 3) + 1}">
+                <div onclick="toggleScheduleGroup(${i})" id="home-day-card-${i}" class="program-card bg-calith-gray border border-white/5 rounded-[1.5rem] p-7 lg:p-8 hover:border-white/20 transition-all duration-500 group shadow-xl relative overflow-hidden fade-in stagger-${(i % 3) + 1}" data-expanded="1">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-${c}/5 blur-3xl rounded-full"></div>
                     <div class="flex flex-col w-full relative z-10">
                         <div class="flex items-center justify-between">
@@ -2234,12 +2262,12 @@ function renderFrontendHomecards() {
                                     <span class="text-gray-500 font-bold text-[9px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full">${sch.badge || ''}</span>
                                 </div>
                             </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="chevron-icon w-5 h-5 text-gray-500 group-hover:text-white transition-all duration-500 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         
                         <div class="program-list-wrapper mt-8">
-                            <div class="program-list-fade"></div>
-                            <div class="program-list-container">
+                            <div class="program-list-fade opacity-0"></div>
+                            <div class="program-list-container" style="max-height: none; opacity: 1;">
                                 <ul class="text-sm space-y-3">
                                     ${listItems}
                                 </ul>
@@ -2248,7 +2276,31 @@ function renderFrontendHomecards() {
                     </div>
                 </div>
                 `;
-            }).join('');
+            };
+
+            let gridHtml = `
+                <!-- Üst Grup -->
+                <div class="col-span-full mb-4">
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        ${group1.map((sch, i) => renderCard(sch, i)).join('')}
+                    </div>
+                </div>
+            `;
+
+            if (group2.length > 0) {
+                gridHtml += `
+                <!-- Alt Grup -->
+                <div class="col-span-full mt-4">
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        ${group2.map((sch, i) => renderCard(sch, i + 3)).join('')}
+                    </div>
+                </div>
+                `;
+            }
+
+            grid.innerHTML = gridHtml;
+            grid.className = "grid grid-cols-1 gap-6 fade-in"; // Grid yapısını konteynerlar yönetecek
+            
             if (window.lucide) lucide.createIcons();
             if (typeof initScrollReveal === 'function') initScrollReveal();
         }
@@ -2817,26 +2869,42 @@ function addToMyPrograms() {
     showToast('Program başarıyla kütüphanenize eklendi! (Gelecek Özellik)');
 }
 
-// Program Card Toggle (Preview + Expand)
-function toggleScheduleCard() {
-    const containers = document.querySelectorAll('#schedule-grid .program-list-container');
-    const fades = document.querySelectorAll('#schedule-grid .program-list-fade');
-    const chevrons = document.querySelectorAll('#schedule-grid .chevron-icon');
-    const grid = document.getElementById('schedule-grid');
-    if (!grid) return;
-    const isExpanded = grid.dataset.expanded === '1';
-    containers.forEach(function (c) {
-        c.style.transition = 'max-height 0.5s ease';
-        c.style.maxHeight = isExpanded ? '90px' : (c.scrollHeight + 40) + 'px';
+// Program Card Toggle (Her kart bağımsız açılır/kapanır)
+function toggleScheduleGroup(index) {
+    const indices = index <= 2 ? [0, 1, 2] : [3, 4];
+    
+    // Grubun durumunu kontrol etmek için sayfada var olan ilk elemanı baz alalım
+    let firstCard = document.getElementById(`home-day-card-${indices[0]}`);
+    if (!firstCard) return;
+
+    const isCurrentlyExpanded = firstCard.dataset.expanded === '1';
+    const shouldExpand = !isCurrentlyExpanded;
+    
+    indices.forEach(idx => {
+        const card = document.getElementById(`home-day-card-${idx}`);
+        if (!card) return;
+
+        const container = card.querySelector('.program-list-container');
+        const fade = card.querySelector('.program-list-fade');
+        const chevron = card.querySelector('.chevron-icon');
+        if (!container) return;
+
+        container.style.transition = 'max-height 0.5s ease, opacity 0.4s ease';
+        
+        if (shouldExpand) {
+            container.style.maxHeight = (container.scrollHeight + 40) + 'px';
+            container.style.opacity = '1';
+            if (fade) fade.style.opacity = '0';
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+            card.dataset.expanded = '1';
+        } else {
+            container.style.maxHeight = '110px';
+            container.style.opacity = '1'; // Kapalıyken de görünür kalsın
+            if (fade) fade.style.opacity = '1';
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+            card.dataset.expanded = '0';
+        }
     });
-    fades.forEach(function (f) {
-        f.style.opacity = isExpanded ? '1' : '0';
-    });
-    chevrons.forEach(function (ch) {
-        ch.style.transition = 'transform 0.5s ease';
-        ch.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
-    });
-    grid.dataset.expanded = isExpanded ? '0' : '1';
 }
 
 async function updateHappyMembersStats() {

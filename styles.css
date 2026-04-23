@@ -469,14 +469,31 @@ body {
 }
 
 .accordion-content {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 110px; /* Yaklaşık 2 satır + üst boşluk */
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
     overflow: hidden;
+    position: relative;
 }
 
 .accordion-content.expanded {
-    grid-template-rows: 1fr;
+    max-height: 1000px; /* Yeterince büyük bir değer */
+}
+
+/* Kapalıyken içerik sonuna hafif sönümleme efekti */
+.accordion-content:not(.expanded)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to top, rgba(10, 10, 10, 0.8), transparent);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.accordion-content.expanded::after {
+    opacity: 0;
 }
 
 .accordion-inner {
