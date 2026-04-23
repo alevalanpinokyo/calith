@@ -1194,21 +1194,21 @@ function toggleDayAccordion(index) {
     const allCards = document.querySelectorAll('.program-day-card');
     const indices = [];
     
-    // Yeni Gruplandırma Mantığı:
-    // 1, 2, 3 -> Üst Grup
-    // 4, 5 -> Alt Grup
-    
-    if (index <= 2) {
-        indices.push(0, 1, 2);
+    // Gruplandırma: 1. Gün tek, 2-3-4-5. Günler bir grup
+    if (index === 0) {
+        indices.push(0);
     } else {
-        indices.push(3, 4);
+        indices.push(1, 2, 3, 4);
     }
     
     if (indices.length === 0) return;
 
-    // Grubun mevcut durumunu ilk elemana göre kontrol et
-    const firstContent = document.getElementById(`day-content-${indices[0]}`);
-    const shouldExpand = !firstContent?.classList.contains('expanded');
+    // Grubun durumunu kontrol etmek için sayfada var olan ilk elemanı baz alalım
+    let firstExistingIdx = indices.find(idx => document.getElementById(`day-content-${idx}`));
+    if (firstExistingIdx === undefined) return;
+
+    const firstContent = document.getElementById(`day-content-${firstExistingIdx}`);
+    const shouldExpand = !firstContent.classList.contains('expanded');
     
     indices.forEach(idx => {
         const content = document.getElementById(`day-content-${idx}`);
@@ -1327,16 +1327,18 @@ function showProgramDetail(id) {
         if (Array.isArray(days)) {
             programHtml = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    ${days.filter(d => d.name || d.exercises.length > 0).map((day, idx) => `
-                        <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${idx}">
+                    ${days.map((day, i) => {
+                        if (!day.name && (!day.exercises || day.exercises.length === 0)) return '';
+                        return `
+                        <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${i}">
                             <!-- Header (Clickable Area) -->
-                            <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${idx})">
+                            <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
-                                        <span class="text-sm font-black text-calith-orange">0${idx+1}</span>
+                                        <span class="text-sm font-black text-calith-orange">0${i+1}</span>
                                     </div>
                                     <div>
-                                        <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (idx+1)}</h4>
+                                        <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (i+1)}</h4>
                                         <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${day.badge || 'ANTRENMAN'}</p>
                                     </div>
                                 </div>
@@ -1346,11 +1348,11 @@ function showProgramDetail(id) {
                             </div>
                             
                             <!-- Accordion Body -->
-                            <div class="accordion-content expanded" id="day-content-${idx}">
+                            <div class="accordion-content expanded" id="day-content-${i}">
                                 <div class="accordion-inner px-6 pb-6">
                                     <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
                                     <ul class="space-y-4">
-                                        ${day.exercises.map(ex => `
+                                        ${(day.exercises || []).map(ex => `
                                             <li class="flex items-start gap-4 group/item">
                                                 <div class="w-5 h-5 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-all duration-300">
                                                     <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
@@ -1362,7 +1364,8 @@ function showProgramDetail(id) {
                                 </div>
                             </div>
                         </div>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
             `;
         }
