@@ -1194,19 +1194,19 @@ function toggleDayAccordion(index) {
     const allCards = document.querySelectorAll('.program-day-card');
     const indices = [];
     
-    if (index === 0) {
-        // Üst grup: Sadece ilk kart
-        indices.push(0);
+    // Yeni Gruplandırma Mantığı:
+    // 1, 2, 3 -> Üst Grup
+    // 4, 5 -> Alt Grup
+    
+    if (index <= 2) {
+        indices.push(0, 1, 2);
     } else {
-        // Alt grup: İlk kart hariç geri kalanların hepsi
-        for (let i = 1; i < allCards.length; i++) {
-            indices.push(i);
-        }
+        indices.push(3, 4);
     }
     
     if (indices.length === 0) return;
 
-    // Grubun durumunu belirlemek için seçilen ilk elemana bakalım
+    // Grubun mevcut durumunu ilk elemana göre kontrol et
     const firstContent = document.getElementById(`day-content-${indices[0]}`);
     const shouldExpand = !firstContent?.classList.contains('expanded');
     
