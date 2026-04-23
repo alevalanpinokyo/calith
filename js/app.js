@@ -1287,9 +1287,11 @@ function showProgramDetail(id, skipHistory = false) {
         window.history.pushState({ path: url.href }, '', url.href);
     }
 
+    const mainSec = document.getElementById('programs');
     const listSec = document.getElementById('program-list-view');
     const detailSec = document.getElementById('blog-detail');
 
+    if (mainSec) mainSec.classList.add('hidden');
     if (listSec) listSec.classList.add('hidden');
     if (detailSec) detailSec.classList.remove('hidden');
 
