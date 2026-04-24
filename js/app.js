@@ -3578,6 +3578,25 @@ function updateWorkoutUI() {
     document.getElementById('workout-exercise-count').textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
     document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
 
+    // OTOMATİK TEKRAR ÇEKME (Smart Pull)
+    const repsInput = document.getElementById('workout-input-reps');
+    if (repsInput) {
+        let targetReps = 10; // Varsayılan
+        const targetStr = String(ex.target).toLowerCase();
+        
+        if (targetStr.includes('x')) {
+            // "4x12" -> 12
+            targetReps = parseInt(targetStr.split('x')[1]) || 10;
+        } else if (targetStr.includes('-')) {
+            // "12-15" -> 12 (Alt sınırı alalım)
+            targetReps = parseInt(targetStr.split('-')[0]) || 10;
+        } else {
+            // Direkt "12" yazıyorsa
+            targetReps = parseInt(targetStr) || 10;
+        }
+        repsInput.value = targetReps;
+    }
+
     // Progress Bar
     const totalItems = workoutSession.exercises.length;
     const progress = (workoutSession.currExerciseIdx / totalItems) * 100;
@@ -3611,18 +3630,31 @@ function completeSet() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     ex.sets.push({ weight, reps });
 
-    // Dinlenme Başlat (Örn: 60 saniye)
+    // Dinlenme Başlat (Varsayılan 60 sn)
     startRestTimer(60);
     
     // UI Güncelle
     renderWorkoutSets();
     
-    // Eğer hedef set sayısına ulaşıldıysa (Örn: 4 set) veya kullanıcı istiyorsa sonraki harekete geçiş opsiyonu
-    // Şimdilik sadece set arttırıyoruz
+    // Hedef set kontrolü (Örn: "4x12" -> 4 set)
+    let targetSets = 4;
+    const targetStr = String(ex.target).toLowerCase();
+    if(targetStr.includes('x')) targetSets = parseInt(targetStr.split('x')[0]) || 4;
+
+    if (workoutSession.currSet >= targetSets) {
+        showToast(`Hedeflenen ${targetSets} seti tamamladın! Sıradaki harekete geçebilirsin.`);
+        // Sıradaki hareket butonunu parlat
+        const nextBtn = document.querySelector('button[onclick="nextExercise()"]');
+        if(nextBtn) {
+            nextBtn.classList.add('bg-calith-orange/20', 'text-white', 'border-calith-orange');
+            nextBtn.classList.remove('bg-white/5', 'text-gray-400');
+        }
+    } else {
+        showToast(`${workoutSession.currSet}. Set Tamamlandı!`);
+    }
+
     workoutSession.currSet++;
     document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
-    
-    showToast('Set Tamamlandı!');
 }
 
 function startRestTimer(seconds) {
