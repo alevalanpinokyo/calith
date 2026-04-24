@@ -3956,6 +3956,7 @@ function renderFrontendLinks() {
 
 let myProgramIds = []; // Global sahiplik listesi
 let exerciseTimerInterval = null;
+let countdownInterval = null;
 
 function isProgramAdded(programId) {
     // 1. Önce global sahiplik listesine bak (Supabase'den dolan)
@@ -4380,6 +4381,8 @@ function completeSet() {
 
 function startRestTimer() {
     clearInterval(restInterval);
+    clearInterval(exerciseTimerInterval);
+    clearInterval(countdownInterval);
     const box = document.getElementById('workout-rest-timer-box');
     const clock = document.getElementById('workout-rest-clock');
     const label = box.querySelector('p');
@@ -4405,7 +4408,10 @@ function startRestTimer() {
 }
 
 function startExerciseTimer(duration) {
+    clearInterval(restInterval);
     clearInterval(exerciseTimerInterval);
+    clearInterval(countdownInterval);
+    
     const clock = document.getElementById('workout-rest-clock');
     const box = document.getElementById('workout-rest-timer-box');
     const label = box.querySelector('p');
@@ -4428,7 +4434,7 @@ function startExerciseTimer(duration) {
     clock.textContent = countdown;
     if (navigator.vibrate) navigator.vibrate(100);
 
-    const countdownInterval = setInterval(() => {
+    countdownInterval = setInterval(() => {
         countdown--;
         if (countdown > 0) {
             clock.textContent = countdown;
@@ -4524,6 +4530,7 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn) {
 function skipRest() {
     clearInterval(restInterval);
     clearInterval(exerciseTimerInterval);
+    clearInterval(countdownInterval);
     document.getElementById('workout-rest-timer-box').classList.add('hidden');
 
     // Dinlenme bitince HAREKETE BAŞLA butonunu tekrar göster (saniye bazlıysa)
