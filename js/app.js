@@ -4011,7 +4011,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
             target,
             targetSets: target.includes('x') ? parseInt(target.split('x')[0]) : 4,
             targetReps: target.includes('x') ? parseInt(target.split('x')[1]) : 12,
-            type: 'reps',
+            type: (target.toLowerCase().includes('sn') || target.toLowerCase().includes('sec')) ? 'secs' : 'reps',
             sets: []
         };
     });
@@ -4182,13 +4182,15 @@ function renderWorkoutSets() {
                 <div class="h-4 w-px bg-white/5"></div>
             </div>
             <div class="flex items-center gap-4">
+                ${ex.type !== 'secs' ? `
                 <div class="flex items-center gap-2">
                     <i data-lucide="weight" class="w-3.5 h-3.5 text-gray-500"></i>
                     <span class="text-sm font-mono font-bold text-white">${set.weight}kg</span>
                 </div>
+                ` : ''}
                 <div class="flex items-center gap-2 bg-calith-orange/10 px-3 py-1 rounded-lg border border-calith-orange/20">
-                    <i data-lucide="zap" class="w-3.5 h-3.5 text-calith-orange"></i>
-                    <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}</span>
+                    <i data-lucide="${ex.type === 'secs' ? 'clock' : 'zap'}" class="w-3.5 h-3.5 text-calith-orange"></i>
+                    <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}${ex.type === 'secs' ? 'sn' : ''}</span>
                 </div>
             </div>
         </div>
