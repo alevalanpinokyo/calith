@@ -1506,14 +1506,23 @@ function showProgramDetail(id, skipHistory = false) {
 
             <!-- CTA Section -->
             <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 reveal active">
-                <button onclick="startWorkoutMode('${p.id}')" class="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all shadow-2xl shadow-white/10">
+                <button onclick="startWorkoutMode('${p.id}')" class="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all shadow-2xl shadow-white/10 active:scale-95">
                     <i data-lucide="play" class="w-5 h-5"></i>
                     <span>Antrenmanı Başlat</span>
                 </button>
-                <button onclick="addToMyPrograms()" class="w-full sm:w-auto btn-outline border-white/10 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all">
-                    <i data-lucide="plus-circle" class="w-5 h-5 text-calith-orange"></i>
-                    <span>Programlarıma Ekle</span>
-                </button>
+                
+                ${isProgramAdded(p.id) ? `
+                    <div class="w-full sm:w-auto bg-calith-orange/10 border border-calith-orange/20 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] text-calith-orange flex items-center justify-center gap-3">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>PROGRAMLARINDA</span>
+                    </div>
+                ` : `
+                    <button onclick="addToMyPrograms()" class="w-full sm:w-auto btn-outline border-white/10 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-calith-orange"></i>
+                        <span>Programlarıma Ekle</span>
+                    </button>
+                `}
+                
                 <button onclick="exportProgramPDF()" class="w-full sm:w-auto text-gray-500 hover:text-white px-6 py-4 font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-colors">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span>PDF</span>
@@ -3470,8 +3479,15 @@ function renderFrontendLinks() {
 
 // --- WORKOUT ENGINE FUNCTIONS ---
 
+function isProgramAdded(programId) {
+    // Profil verilerinden veya localStorage'dan kontrol et
+    const userProgs = JSON.parse(localStorage.getItem('calith_my_programs') || '[]');
+    return userProgs.some(id => String(id) === String(programId));
+}
+
 async function startWorkoutMode(programId) {
-    const p = programPosts.find(item => String(item.id) === String(programId));
+    // Hem programPosts içinde hem de tüm posts içinde ara (sayfa farketmeksizin)
+    const p = posts.find(item => String(item.id) === String(programId));
     if (!p) return showToast('Program verisi bulunamadı.');
 
     // Program içeriğini parse et
