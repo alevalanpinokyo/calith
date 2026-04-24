@@ -3208,36 +3208,41 @@ async function removeFromMyPrograms(programId) {
         return;
     }
 
-    console.log(`Removing program ${programId} for user ${user.id}...`);
+    console.log(`Attempting to delete program ${programId} for user ${user.id}...`);
 
-    const { error, status } = await sb.from('user_programs')
+    const { data, error, status } = await sb.from('user_programs')
         .delete()
-        .match({ user_id: user.id, program_id: programId });
+        .match({ user_id: user.id, program_id: programId })
+        .select();
 
     if (error) {
         console.error('Supabase Delete Error:', error, 'Status:', status);
         showToast('Hata: ' + error.message);
     } else {
-        console.log('Program successfully removed from Supabase. Status:', status);
+        console.log('Delete Response Data:', data);
+        if (!data || data.length === 0) {
+            console.warn('Warning: No rows were deleted from Supabase. Check RLS or IDs.');
+        } else {
+            console.log(`Successfully deleted ${data.length} rows.`);
+        }
+        
         showToast('Program kütüphanenizden çıkarıldı.');
         
         // Local listeyi güncelle
         myProgramIds = myProgramIds.filter(id => String(id) !== String(programId));
         
-        // Legacy localStorage temizliği (isProgramAdded tutarlılığı için)
-        let localProgs = JSON.parse(localStorage.getItem('calith_my_programs') || '[]');
-        localProgs = localProgs.filter(id => String(id) !== String(programId));
-        localStorage.setItem('calith_my_programs', JSON.stringify(localProgs));
+        // Legacy localStorage temizliği
+        localStorage.removeItem('calith_my_programs'); 
 
-        // UI Güncelle
+        // UI Güncelle - Daha güvenli kontrol
         const detailSec = document.getElementById('blog-detail');
         const isDetailView = detailSec && !detailSec.classList.contains('hidden');
 
         if (isDetailView) {
-            // Eğer detay sayfasındaysak butonu güncellemek için tekrar render et
+            console.log('Detail view active, refreshing detail buttons...');
             showProgramDetail(programId, true);
         } else {
-            // Profil sayfasındaysak veya başka yerdeysek sadece listeyi yenile
+            console.log('Profile view active, refreshing programs list...');
             if (document.getElementById('profile-mount')) {
                 loadUserPrograms(user.id);
             }
@@ -3579,13 +3584,22 @@ async function loadUserPrograms(userId) {
     const sb = getSupabase();
     if (!sb) return;
 
+    console.log('Loading user programs for:', userId);
     const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
 
-    if (!error && data) {
+    if (error) {
+        console.error('Error loading user programs:', error);
+        return;
+    }
+
+    console.log('User programs from DB:', data);
+
+    if (data) {
         const programIds = data.map(d => String(d.program_id));
         myProgramIds = programIds; // Global listeyi güncelle
 
         const myPrograms = posts.filter(p => programIds.includes(String(p.id)));
+        console.log('Filtered programs to render:', myPrograms.length);
         renderUserPrograms(myPrograms);
     }
 }
