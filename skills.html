@@ -132,59 +132,81 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Profil Header Card -->
-        <div class="relative bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-[3rem] p-8 sm:p-12 mb-10 overflow-hidden group">
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-calith-orange/10 rounded-full blur-[100px] group-hover:bg-calith-orange/20 transition-all duration-1000"></div>
-            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                <div class="relative">
-                    <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-[2.5rem] bg-gradient-to-br from-calith-orange to-calith-accent p-1">
-                        <div class="w-full h-full rounded-[2.3rem] bg-calith-dark flex items-center justify-center overflow-hidden">
-                            <i data-lucide="user" class="w-12 h-12 sm:w-16 sm:h-16 text-gray-700"></i>
+        <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-6 group border border-white/10 shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between w-full gap-6">
+                <!-- Avatar & Info -->
+                <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                    <div class="relative group/avatar cursor-pointer">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-calith-orange to-calith-accent flex items-center justify-center shadow-lg shadow-calith-orange/20">
+                            <i data-lucide="user" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-calith-dark border border-white/10 flex items-center justify-center hover:bg-calith-orange hover:border-calith-orange transition-colors shadow-lg">
+                            <i data-lucide="camera" class="w-3.5 h-3.5 text-white"></i>
                         </div>
                     </div>
-                    <div class="absolute -bottom-2 -right-2 w-10 h-10 rounded-2xl bg-calith-orange flex items-center justify-center shadow-lg">
-                        <i data-lucide="camera" class="w-5 h-5 text-white"></i>
+                    
+                    <div>
+                        <h2 id="profile-name" class="font-display text-2xl sm:text-4xl font-black mb-1.5 tracking-tighter uppercase text-white">Üye Adı</h2>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+                            <span id="profile-badge" class="px-3 py-1 bg-calith-orange/10 text-calith-orange text-[9px] font-black uppercase tracking-widest rounded-lg border border-calith-orange/20">ÜYE</span>
+                            <span id="profile-email" class="text-gray-400 text-xs font-medium">uye@mail.com</span>
+                        </div>
                     </div>
                 </div>
-                <div class="text-center md:text-left flex-1">
-                    <h2 id="profile-name" class="font-display text-3xl sm:text-5xl font-black mb-3 tracking-tighter uppercase">Üye Adı</h2>
-                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                        <span class="px-4 py-1.5 bg-calith-orange/10 text-calith-orange text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-calith-orange/20">ELİT ÜYE</span>
-                        <span id="profile-email" class="text-gray-500 text-sm font-medium">uye@mail.com</span>
-                    </div>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="toggleEditProfile()" class="btn-outline px-6 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest flex items-center gap-2">
-                        <i data-lucide="settings" class="w-4 h-4"></i>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <button onclick="toggleEditProfile()" class="flex-1 md:flex-none btn-outline px-5 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
+                        <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                         <span>Profili Düzenle</span>
                     </button>
-                    <button onclick="handleLogout()" class="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white px-6 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all">
-                        Çıkış Yap
+                    <button onclick="handleLogout()" class="flex-1 md:flex-none bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white px-5 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                        <span>Çıkış Yap</span>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12">
-            <div class="bg-white/[0.03] border border-white/5 rounded-3xl p-6 text-center hover:border-calith-orange/30 transition-all group">
-                <i data-lucide="scale" class="w-6 h-6 text-calith-orange mx-auto mb-3 opacity-50 group-hover:opacity-100 transition-opacity"></i>
-                <div id="profile-weight" class="text-2xl font-bold mb-1">--</div>
-                <div class="text-[9px] font-black text-gray-500 uppercase tracking-widest">GÜNCEL KİLO</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-4 sm:p-5 flex items-center gap-4 hover:bg-white/[0.04] hover:border-calith-orange/20 transition-all group">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-calith-orange/10 border border-calith-orange/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <i data-lucide="scale" class="w-4 h-4 sm:w-5 sm:h-5 text-calith-orange"></i>
+                </div>
+                <div>
+                    <div class="text-[8px] sm:text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">GÜNCEL KİLO</div>
+                    <div id="profile-weight" class="text-lg sm:text-xl font-bold text-white leading-none">--</div>
+                </div>
             </div>
-            <div class="bg-white/[0.03] border border-white/5 rounded-3xl p-6 text-center hover:border-calith-orange/30 transition-all group">
-                <i data-lucide="ruler" class="w-6 h-6 text-calith-orange mx-auto mb-3 opacity-50 group-hover:opacity-100 transition-opacity"></i>
-                <div id="profile-height" class="text-2xl font-bold mb-1">--</div>
-                <div class="text-[9px] font-black text-gray-500 uppercase tracking-widest">BOY (CM)</div>
+            <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-4 sm:p-5 flex items-center gap-4 hover:bg-white/[0.04] hover:border-calith-orange/20 transition-all group">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-calith-orange/10 border border-calith-orange/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <i data-lucide="ruler" class="w-4 h-4 sm:w-5 sm:h-5 text-calith-orange"></i>
+                </div>
+                <div>
+                    <div class="text-[8px] sm:text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">BOY (CM)</div>
+                    <div id="profile-height" class="text-lg sm:text-xl font-bold text-white leading-none">--</div>
+                </div>
             </div>
-            <div class="bg-white/[0.03] border border-white/5 rounded-3xl p-6 text-center hover:border-calith-orange/30 transition-all group">
-                <i data-lucide="target" class="w-6 h-6 text-calith-orange mx-auto mb-3 opacity-50 group-hover:opacity-100 transition-opacity"></i>
-                <div id="profile-goal" class="text-lg font-bold mb-1 leading-tight h-8 flex items-center justify-center">--</div>
-                <div class="text-[9px] font-black text-gray-500 uppercase tracking-widest">ANA HEDEF</div>
+            <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-4 sm:p-5 flex items-center gap-4 hover:bg-white/[0.04] hover:border-calith-orange/20 transition-all group">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-calith-orange/10 border border-calith-orange/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <i data-lucide="target" class="w-4 h-4 sm:w-5 sm:h-5 text-calith-orange"></i>
+                </div>
+                <div class="flex-1 truncate">
+                    <div class="text-[8px] sm:text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">ANA HEDEF</div>
+                    <div id="profile-goal" class="text-xs sm:text-sm font-bold text-white leading-tight truncate">--</div>
+                </div>
             </div>
-            <div class="bg-white/[0.03] border border-white/5 rounded-3xl p-6 text-center hover:border-calith-orange/30 transition-all group">
-                <i data-lucide="award" class="w-6 h-6 text-calith-orange mx-auto mb-3 opacity-50 group-hover:opacity-100 transition-opacity"></i>
-                <div id="profile-level" class="text-lg font-bold mb-1 uppercase">--</div>
-                <div class="text-[9px] font-black text-gray-500 uppercase tracking-widest">DENEYİM</div>
+            <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-4 sm:p-5 flex items-center gap-4 hover:bg-white/[0.04] hover:border-calith-orange/20 transition-all group">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-calith-orange/10 border border-calith-orange/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <i data-lucide="award" class="w-4 h-4 sm:w-5 sm:h-5 text-calith-orange"></i>
+                </div>
+                <div class="flex-1 truncate">
+                    <div class="text-[8px] sm:text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">DENEYİM</div>
+                    <div id="profile-level" class="text-xs sm:text-sm font-bold text-white leading-tight uppercase truncate">--</div>
+                </div>
             </div>
         </div>
 
@@ -249,7 +271,7 @@
     <div id="print-content"></div>
 </div>
 
-<script src="js/app.js?v=202604242117"></script>
+<script src="js/app.js?v=202604242127"></script>
 <script>lucide.createIcons();</script>
 <!-- Workout Mode Overlay (Full Screen Tracking) -->
 <section id="workout-mode" class="fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black">

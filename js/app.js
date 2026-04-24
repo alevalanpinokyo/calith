@@ -3198,8 +3198,9 @@ async function loadProfileData(user) {
     const weightEl = document.getElementById('profile-weight');
     const heightEl = document.getElementById('profile-height');
     const goalEl = document.getElementById('profile-goal');
+    const badgeEl = document.getElementById('profile-badge');
 
-    // Başlangıçta skeleton efektini ekle (Hızlı yükleme için)
+    // Başlangıçta skeleton efektini ekle
     const elements = [nameEl, weightEl, heightEl, goalEl];
     elements.forEach(el => { if(el) el.classList.add('skeleton'); });
 
@@ -3221,6 +3222,36 @@ async function loadProfileData(user) {
         const levelEl = document.getElementById('profile-level');
         if (levelEl) levelEl.textContent = user.user_metadata?.fitness_level || 'BAŞLANGIÇ';
 
+        // ===== ROZET SİSTEMİ =====
+        if (badgeEl) {
+            const role = (data.role || 'uye').toLowerCase();
+            // Önce tüm renk sınıflarını sıfırla
+            badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border';
+            
+            const roleConfig = {
+                admin: {
+                    label: '⚡ ADMİN',
+                    classes: 'bg-red-500/15 text-red-400 border-red-500/30'
+                },
+                mod: {
+                    label: '🛡 MOD',
+                    classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+                },
+                premium: {
+                    label: '👑 PREMİUM',
+                    classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
+                },
+                uye: {
+                    label: 'ÜYE',
+                    classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
+                }
+            };
+
+            const config = roleConfig[role] || roleConfig['uye'];
+            badgeEl.textContent = config.label;
+            badgeEl.className += ' ' + config.classes;
+        }
+
         // Formu doldur
         const editName = document.getElementById('edit-full-name');
         const editWeight = document.getElementById('edit-weight');
@@ -3233,6 +3264,7 @@ async function loadProfileData(user) {
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 }
+
 
 async function saveProfileData() {
     const sb = getSupabase();
