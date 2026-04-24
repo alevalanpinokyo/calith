@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALITH | Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-sans antialiased bg-calith-dark text-white">
+<div class="grain"></div>
+
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+                <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
+                <a href="skills.html" class="text-white font-medium text-sm">PROGRAMLAR</a>
+                <a href="shop.html" class="text-white font-medium text-sm">EKİPMAN</a>
+                <a href="blog.html" class="text-white font-medium text-sm">ÖĞREN</a>
+                <a href="about.html" class="text-white font-medium text-sm">HAKKIMIZDA</a>
+                <a href="premium.html" class="text-calith-orange font-bold text-sm tracking-widest hover:text-white transition-colors uppercase">KOÇLUK</a>
+            </div>
+            <div class="flex items-center gap-4">
+                
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3">
+            <a href="index.html" class="block text-gray-400 hover:text-white py-2">ANA SAYFA</a>
+            <a href="skills.html" class="block text-gray-400 hover:text-white py-2">PROGRAMLAR</a>
+            <a href="shop.html" class="block text-gray-400 hover:text-white py-2">EKİPMAN</a>
+            <a href="blog.html" class="block text-gray-400 hover:text-white py-2">ÖĞREN</a>
+            <a href="about.html" class="block text-gray-400 hover:text-white py-2">HAKKIMIZDA</a>
+            <a href="premium.html" class="block text-calith-orange font-bold py-2 uppercase tracking-widest">KOÇLUK</a>
+        </div>
+    </div>
+</nav>
+
+<section class="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center text-center px-4">
+    <h1 class="font-display text-5xl md:text-8xl font-bold mb-6">CALITH <span class="gradient-text">PREMIUM</span></h1>
+    <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-12">Kişiye özel koçluk, profesyonel antrenman programları ve beslenme takibi.</p>
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl w-full">
+        <div class="product-card p-10 rounded-3xl border-calith-orange/20">
+            <h3 class="font-display text-2xl font-bold mb-4">AYLIK PLAN</h3>
+            <p class="text-4xl font-bold mb-8">299₺ <span class="text-sm font-normal text-gray-500">/ay</span></p>
+            <button class="w-full btn-primary py-4 rounded-xl font-bold">KATIL</button>
+        </div>
+        <div class="product-card p-10 rounded-3xl border-calith-accent/20">
+            <h3 class="font-display text-2xl font-bold mb-4">YILLIK PLAN</h3>
+            <p class="text-4xl font-bold mb-8">199₺ <span class="text-sm font-normal text-gray-500">/ay</span></p>
+            <button class="w-full bg-calith-accent text-black py-4 rounded-xl font-bold">KATIL</button>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8 text-center text-gray-500 text-sm">
+    <p>© 2025 CALITH. Tüm hakları saklıdır.</p>
+</footer>
+
+
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-50 transform translate-y-32 transition-transform duration-500 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i><span id="toast-msg" class="font-bold text-sm"></span></div>
+
+<script src="js/app.js?v=202604250132"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

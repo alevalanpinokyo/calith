@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALITH | Calisthenics Ekipman</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calith: {
+                            orange: '#FF6B35',
+                            dark: '#0A0A0A',
+                            gray: '#1A1A1A',
+                            light: '#2A2A2A',
+                            accent: '#00D9FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-calith-dark text-white">
+
+<div class="grain"></div>
+
+<!-- Navigation -->
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+                <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
+                <a href="skills.html" class="text-white font-medium text-sm">PROGRAMLAR</a>
+                <a href="shop.html" class="text-white font-medium text-sm">EKİPMAN</a>
+                <a href="blog.html" class="text-white font-medium text-sm">ÖĞREN</a>
+                <a href="about.html" class="text-white font-medium text-sm">HAKKIMIZDA</a>
+                <a href="premium.html" class="text-calith-orange font-bold text-sm tracking-widest hover:text-white transition-colors uppercase">KOÇLUK</a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3">
+            <a href="index.html" class="block text-white py-2">ANA SAYFA</a>
+            <a href="skills.html" class="block text-white py-2">PROGRAMLAR</a>
+            <a href="shop.html" class="block text-white py-2 text-calith-orange">EKİPMAN</a>
+            <a href="blog.html" class="block text-white py-2">ÖĞREN</a>
+            <a href="about.html" class="block text-white py-2">HAKKIMIZDA</a>
+            <a href="premium.html" class="block text-calith-orange font-bold py-2 uppercase tracking-widest">KOÇLUK</a>
+            <button onclick="showAuthModal()" class="w-full text-left py-2 font-bold text-white border-t border-white/10 mt-2 pt-4">GİRİŞ YAP / ÜYE OL</button>
+        </div>
+    </div>
+</nav>
+
+<!-- SHOP HEADER -->
+<section class="pt-32 pb-12 hero-gradient">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <span class="text-calith-orange font-semibold text-sm tracking-wider uppercase">Pro Serisi</span>
+            <h1 class="font-display text-5xl md:text-7xl font-bold mt-4 mb-4 uppercase">PROFESYONEL <span class="gradient-text">EKİPMAN</span></h1>
+            <p class="text-gray-400 max-w-xl mx-auto leading-relaxed text-lg">
+                Antrenmanını bir üst seviyeye taşıyacak, ömür boyu garantili calisthenics ekipmanları.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- SHOP FILTERS -->
+<div id="shop-filters" class="sticky top-20 z-30 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex gap-3 overflow-x-auto no-scrollbar">
+        <button onclick="filterProducts('all')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all active bg-calith-orange text-white" data-filter="all">Tümü</button>
+        <button onclick="filterProducts('bar')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="bar">Barfiks</button>
+        <button onclick="filterProducts('parallettes')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="parallettes">Paralel</button>
+        <button onclick="filterProducts('rings')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="rings">Halka</button>
+        <button onclick="filterProducts('band')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="band">Band</button>
+    </div>
+</div>
+
+<!-- SHOP GRID -->
+<section id="shop" class="py-12 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Loaded via app.js renderShop() -->
+        </div>
+    </div>
+</section>
+
+<!-- PRODUCT DETAIL (Hidden by default) -->
+<section id="product-detail" class="hidden min-h-screen pt-32 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <button onclick="showSection('shop')" class="mb-12 text-sm text-gray-400 hover:text-calith-orange transition-colors flex items-center gap-2 group">
+            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>Tüm ürünler
+        </button>
+        <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div class="aspect-square rounded-3xl overflow-hidden bg-calith-gray border border-white/5 flex items-center justify-center p-12 relative">
+                <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/10 to-transparent"></div>
+                <img id="pd-image" src="" alt="Ürün Görseli" class="w-3/4 h-3/4 object-contain transition-transform duration-500 hover:scale-110 z-10">
+            </div>
+            <div class="flex flex-col">
+                <p id="pd-category" class="text-calith-orange font-bold text-sm tracking-widest uppercase mb-4"></p>
+                <h2 id="pd-name" class="font-display text-4xl lg:text-6xl font-bold mb-6"></h2>
+                <div class="flex items-baseline gap-4 mb-8">
+                    <span id="pd-price" class="text-4xl font-bold"></span>
+                    <span id="pd-old-price" class="text-xl text-gray-500 line-through"></span>
+                </div>
+                <p id="pd-desc" class="text-gray-400 text-lg leading-relaxed mb-10"></p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex items-center border border-white/10 rounded-full h-14 bg-white/5">
+                        <button onclick="changePdQty(-1)" class="px-6 hover:text-calith-orange transition-colors font-bold">-</button>
+                        <span id="pd-qty" class="px-4 font-bold min-w-[3rem] text-center text-lg">1</span>
+                        <button onclick="changePdQty(1)" class="px-6 hover:text-calith-orange transition-colors font-bold">+</button>
+                    </div>
+                    <button onclick="addToCartFromDetail()" class="flex-1 btn-primary h-14 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        <span>SEPETE EKLE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+                </div>
+                <p class="text-gray-500 text-sm leading-relaxed">Profesyonel calisthenics ekipmanları ve eğitim kaynakları. Evinde spor salonu deneyimi.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ürünler</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Pull-Up Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Paralel Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Aksesuarlar</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Kaynaklar</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="skills.html" class="hover:text-white transition-colors">Programlar</a></li>
+                    <li><a href="premium.html" class="hover:text-white transition-colors">Premium</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Destek</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="about.html" class="hover:text-white transition-colors">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-500 text-sm">© 2025 CALITH. Tüm hakları saklıdır.</p>
+            <div class="flex gap-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all" aria-label="Instagram"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all" aria-label="YouTube"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Cart Drawer -->
+
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-50 transform translate-y-32 transition-transform duration-500 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i><span id="toast-msg" class="font-bold text-sm"></span></div>
+
+<script src="js/app.js?v=202604250132"></script>
+<script>
+    lucide.createIcons();
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, observerOptions);
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+<!-- Workout Mode Overlay (Full Screen Tracking) -->
+<section id="workout-mode" class="fixed inset-0 z-[1000] bg-calith-dark hidden overflow-y-auto">
+    <!-- Progress Bar (Top) -->
+    <div class="fixed top-0 left-0 right-0 h-1.5 bg-white/5 z-[1010]">
+        <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange to-calith-accent transition-all duration-500 w-0"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="sticky top-0 z-[1010] px-6 py-8 flex items-center justify-between bg-calith-dark/80 backdrop-blur-xl">
+        <div class="flex items-center gap-4">
+            <button onclick="confirmExitWorkout()" aria-label="Antrenmandan Çık" title="Antrenmandan Çık" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-red-500 transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <h2 id="workout-program-title" class="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-0.5">PROGRAM ADI</h2>
+    <div class="fixed top-0 left-0 right-0 h-1 bg-white/5 z-[1020]">
+        <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange via-white to-calith-accent transition-all duration-700 w-0 will-change-[width]"></div>
+    </div>
+
+    <!-- Header (Lighter Blur) -->
+    <div class="sticky top-0 z-[1010] px-6 py-8 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-5">
+                <button onclick="confirmExitWorkout()" aria-label="Antrenmandan Çık" title="Antrenmandan Çık" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10 group">
+                    <i data-lucide="x" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                </button>
+                <div>
+                    <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">PROGRAM ADI</h2>
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-calith-orange animate-pulse"></div>
+                        <p id="workout-timer" class="text-lg font-mono font-bold text-white tracking-tighter">00:00:00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <span id="workout-move-info" class="text-[10px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-4 py-2 rounded-full border border-calith-orange/20">1 / 5 HAREKET</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
+        <!-- Exercise Card (Onarıldı) -->
+        <div id="workout-exercise-card" class="relative group mb-12">
+            <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm overflow-hidden">
+                <div class="absolute -right-4 -top-4 w-32 h-32 bg-white/[0.02] rounded-full flex items-center justify-center rotate-12">
+                    <i data-lucide="dumbbell" class="w-20 h-20 text-white/[0.03]"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">ŞU ANKİ EGZERSİZ</span>
+                    <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10">
+                        <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
+                        <p id="workout-exercise-target" class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">HEDEF: -</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rest Timer Overlay -->
+        <div id="workout-rest-timer-box" class="hidden mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden animate-in fade-in zoom-in duration-500">
+            <div class="absolute inset-0 bg-calith-accent/5 animate-pulse"></div>
+            <div class="relative z-10">
+                <p class="text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3">DINLENME SÜRESI</p>
+                <div id="workout-rest-clock" class="text-6xl font-mono font-black text-white tracking-tighter mb-4">00:45</div>
+                <button onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DINLENMEYI ATLA</button>
+            </div>
+        </div>
+
+        <!-- Sets History -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-6 px-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-4 bg-calith-orange rounded-full"></span>
+                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">SET GEÇMİŞİ</h4>
+                </div>
+                <span id="workout-set-info" class="text-[10px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-lg">SET 1 / -</span>
+            </div>
+            <div id="workout-sets-list" class="grid grid-cols-1 gap-3"></div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="space-y-8 pb-20">
+            <div class="grid grid-cols-2 gap-6">
+                <div class="relative group">
+                    <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
+                    <input type="number" id="workout-input-weight" value="0" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                </div>
+                <div class="relative group">
+                    <label for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
+                    <input type="number" id="workout-input-reps" value="10" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button onclick="nextExercise()" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">
+                    SIRADAKİ HAREKET
+                </button>
+                <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
+                    <span>SETİ TAMAMLA</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
