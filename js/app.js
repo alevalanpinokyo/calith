@@ -3244,10 +3244,8 @@ async function showProfile() {
         return;
     }
 
-    renderProfileSection();
-    showSection('profile');
-    loadProfileData(user);
-    loadUserPrograms(user.id);
+    // Artık hash routing değil, direkt profile.html'e git
+    window.location.href = 'profile.html';
 }
 
 function renderProfileSection() {
