@@ -3332,33 +3332,23 @@ function renderProfileSection() {
 
         <!-- Programs Tabs Section -->
         <div class="mb-10">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-8 border-b border-white/5 pb-0.5 overflow-x-auto no-scrollbar">
-                <div class="flex items-center gap-8">
-                    <button onclick="switchProfileTab('ready')" id="btn-tab-ready" class="profile-tab active relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-white whitespace-nowrap transition-all">
-                        <span class="relative z-10">Calith Programları</span>
-                        <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full shadow-[0_0_15px_rgba(255,107,0,0.5)]"></div>
-                    </button>
-                    <button onclick="switchProfileTab('custom')" id="btn-tab-custom" class="profile-tab relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
-                        <span class="relative z-10">Kendi Oluşturduğum</span>
-                        <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
-                    </button>
-                    <button onclick="switchProfileTab('history')" id="btn-tab-history" class="profile-tab relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
-                        <span class="relative z-10">Antrenman Geçmişi</span>
-                        <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
-                    </button>
-                    <button class="profile-tab relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-gray-800 cursor-not-allowed whitespace-nowrap">
-                        <span class="relative z-10">Rezerve</span>
-                    </button>
-                </div>
-                
-                <button onclick="showSection('skills')" class="hidden md:flex pb-4 items-center gap-2 text-[10px] font-black text-calith-orange uppercase tracking-widest hover:text-white transition-colors group/add">
-                    <i data-lucide="plus" class="w-3.5 h-3.5 group-hover/add:rotate-90 transition-transform"></i>
-                    <span>YENİ PROGRAM EKLE</span>
+            <div class="flex items-center gap-6 mb-8 border-b border-white/5 pb-0.5 overflow-x-auto no-scrollbar">
+                <button onclick="switchProfileTab('ready')" id="btn-tab-ready" class="profile-tab active relative pb-4 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-white whitespace-nowrap transition-all">
+                    <span class="relative z-10">Calith Programları</span>
+                    <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full shadow-[0_0_15px_rgba(255,107,0,0.5)]"></div>
+                </button>
+                <button onclick="switchProfileTab('custom')" id="btn-tab-custom" class="profile-tab relative pb-4 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
+                    <span class="relative z-10">Kendi Programım</span>
+                    <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
+                </button>
+                <button onclick="switchProfileTab('history')" id="btn-tab-history" class="profile-tab relative pb-4 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
+                    <span class="relative z-10">Geçmiş</span>
+                    <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
                 </button>
             </div>
 
-            <div id="profile-tab-content" class="fade-in">
-                <div id="user-programs-list" class="flex flex-col gap-6">
+            <div id="profile-tab-content">
+                <div id="user-programs-list" class="flex flex-col gap-4 sm:gap-6">
                     <!-- Programlar buraya render edilecek -->
                 </div>
             </div>
@@ -3366,6 +3356,7 @@ function renderProfileSection() {
     `;
 
     if (window.lucide) lucide.createIcons();
+    if (typeof initScrollReveal === 'function') initScrollReveal();
 }
 
 function switchProfileTab(tabId) {
@@ -3564,30 +3555,30 @@ function renderUserPrograms(programs) {
     }
 
     container.innerHTML = programs.map((p, i) => `
-        <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[2rem] p-4 sm:p-6 transition-all duration-500 flex flex-col lg:flex-row items-center gap-6 overflow-hidden">
-            <div class="absolute -left-4 -bottom-4 text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i + 1}</div>
+        <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[1.5rem] sm:rounded-[2rem] p-4 transition-all duration-500 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 overflow-hidden">
+            <div class="absolute -left-4 -bottom-4 text-[4rem] sm:text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i+1}</div>
             
-            <div class="w-full lg:w-32 aspect-video lg:aspect-square rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500">
+            <div class="w-full sm:w-24 lg:w-32 aspect-video sm:aspect-square rounded-xl sm:rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500">
                 <img src="${p.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
             </div>
 
-            <div class="flex-1 text-center lg:text-left relative z-10">
-                <h3 class="font-display text-xl sm:text-2xl font-bold mb-2 tracking-tight group-hover:text-white transition-colors uppercase leading-tight">${p.title}</h3>
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-gray-500">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="clock" class="w-3.5 h-3.5 text-calith-orange"></i>
-                        <span class="text-[9px] font-black uppercase tracking-widest">Haftalık 5 Gün</span>
+            <div class="flex-1 text-center sm:text-left relative z-10">
+                <h3 class="font-display text-lg sm:text-2xl font-bold mb-1 sm:mb-2 tracking-tight text-white group-hover:text-calith-orange transition-colors uppercase leading-tight">${p.title}</h3>
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 text-gray-500">
+                    <div class="flex items-center gap-1.5">
+                        <i data-lucide="clock" class="w-3 h-3 text-calith-orange"></i>
+                        <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Haftalık 5 Gün</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="zap" class="w-3.5 h-3.5 text-calith-orange"></i>
-                        <span class="text-[9px] font-black uppercase tracking-widest">Aktif</span>
+                    <div class="flex items-center gap-1.5">
+                        <i data-lucide="zap" class="w-3 h-3 text-calith-orange"></i>
+                        <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Aktif</span>
                     </div>
                 </div>
             </div>
 
-            <div class="shrink-0 relative z-10">
-                <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange transition-all duration-500">
-                    <i data-lucide="arrow-right" class="w-5 h-5 text-white"></i>
+            <div class="shrink-0 relative z-10 hidden sm:block">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange transition-all duration-500">
+                    <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 h-5 text-white"></i>
                 </div>
             </div>
         </div>
