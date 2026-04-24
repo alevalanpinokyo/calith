@@ -3190,6 +3190,7 @@ async function addToMyPrograms(programId = null) {
         }
         // UI Güncelle
         if (document.getElementById('post-content')) showProgramDetail(programId, true);
+        if (document.getElementById('profile-mount')) loadUserPrograms(user.id);
     }
 }
 
@@ -3209,13 +3210,23 @@ async function removeFromMyPrograms(programId) {
         showToast('Hata: ' + error.message);
     } else {
         showToast('Program kütüphanenizden çıkarıldı.');
+        
+        // Local listeyi güncelle
         myProgramIds = myProgramIds.filter(id => String(id) !== String(programId));
         
+        // Legacy localStorage temizliği (isProgramAdded tutarlılığı için)
+        let localProgs = JSON.parse(localStorage.getItem('calith_my_programs') || '[]');
+        localProgs = localProgs.filter(id => String(id) !== String(programId));
+        localStorage.setItem('calith_my_programs', JSON.stringify(localProgs));
+
         // UI Güncelle
-        if (document.getElementById('post-content')) showProgramDetail(programId, true);
-        if (document.getElementById('user-programs-list')) {
-            const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
-            renderUserPrograms(myPrograms);
+        if (document.getElementById('post-content')) {
+            showProgramDetail(programId, true);
+        }
+        
+        // Profil sayfasındaysak listeyi yenile
+        if (document.getElementById('profile-mount')) {
+            loadUserPrograms(user.id);
         }
     }
 }
