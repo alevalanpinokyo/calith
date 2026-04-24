@@ -4273,7 +4273,12 @@ function startExerciseTimer(duration) {
         if (timeLeft <= 0) {
             clearInterval(exerciseTimerInterval);
             clock.textContent = "TAMAM!";
-            showToast('Süre doldu! Seti tamamlayabilirsin.');
+            
+            // Süreyi otomatik inputa yaz (Kullanıcı yazmak zorunda kalmasın)
+            const repsInput = document.getElementById('workout-input-reps');
+            if (repsInput) repsInput.value = duration;
+
+            showToast('🔥 Süre doldu! Veriler otomatik dolduruldu.');
             // Titreşim ve ses eklenebilir
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         }
