@@ -2559,14 +2559,22 @@ async function handleLogout() {
     const sb = getSupabase();
     if (sb) await sb.auth.signOut();
     currentUser = null;
+    isAdminMode = false;
     showToast('Çıkış yapıldı');
     updateAuthUI();
 
-    // Yalnızca profil veya admin sayfasındayken çıkış yapılıyorsa anasayfaya yönlendir
-    if (window.location.pathname.endsWith('profile.html') || window.location.pathname.endsWith('admin.html')) {
+    // Sayfa veya aktif section kontrolü
+    const isProfileVisible = document.getElementById('profile') && !document.getElementById('profile').classList.contains('hidden');
+    const isSpecialPage = window.location.pathname.includes('profile.html') || window.location.pathname.includes('admin.html');
+
+    if (isSpecialPage || isProfileVisible) {
         setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 500); // Kullanıcı "Çıkış yapıldı" toast mesajını görebilsin diye ufak bir bekleme
+            if (window.location.pathname.includes('index.html') || isProfileVisible) {
+                showSection('landing');
+            } else {
+                window.location.href = 'index.html';
+            }
+        }, 500);
     }
 }
 
