@@ -1503,56 +1503,79 @@ function showProgramDetail(id, skipHistory = false) {
                     <div class="accordion-content expanded" id="day-content-${i}">
                         <div class="accordion-inner px-6 pb-6">
                             <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
-                            <div class="space-y-3">
-                                ${(day.exercises || []).map(ex => {
-                                    let name, sets, reps, type;
+                            ${(() => {
+                                const exList = day.exercises || [];
+                                const isRestDay = exList.length === 0 || 
+                                                  (exList.length === 1 && (
+                                                    String(exList[0].name || exList[0]).toUpperCase().includes('REST') ||
+                                                    String(exList[0].name || exList[0]).toUpperCase().includes('DİNLEN') ||
+                                                    String(exList[0].name || exList[0]).toUpperCase().includes('DINLEN')
+                                                  ));
 
-                                    if (typeof ex === 'object') {
-                                        name = ex.name;
-                                        sets = ex.sets;
-                                        reps = ex.reps;
-                                        type = ex.type || 'reps';
-                                    } else {
-                                        // Eski format (String) parse et
-                                        const parts = String(ex).split('(');
-                                        name = parts[0].trim();
-                                        let target = parts[1] ? parts[1].replace(')', '').trim() : '-';
-                                        if (target.includes('x')) {
-                                            sets = target.split('x')[0].trim();
-                                            reps = target.split('x')[1].trim();
-                                        } else {
-                                            sets = '-';
-                                            reps = target;
-                                        }
-                                        type = 'reps';
-                                    }
-
+                                if (isRestDay) {
                                     return `
-                                    <div class="flex flex-col gap-3 p-4 bg-white/[0.03] border border-white/5 rounded-2xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-2 h-2 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform"></div>
-                                            <span class="text-sm font-bold text-gray-200 uppercase tracking-tight">${name}</span>
+                                        <div class="py-10 flex flex-col items-center justify-center text-center">
+                                            <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10">
+                                                <i data-lucide="moon" class="w-8 h-8 text-gray-500"></i>
+                                            </div>
+                                            <h5 class="text-sm font-black text-white uppercase tracking-widest mb-2">DİNLENME GÜNÜ</h5>
+                                            <p class="text-xs text-gray-500 font-bold max-w-[200px]">Kaslarının toparlanması için bugün kendine vakit ayır.</p>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
-                                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">SET</span>
-                                                <span class="text-xs font-mono font-bold text-calith-orange">${sets}</span>
-                                            </div>
-                                            <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
-                                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">${type === 'secs' ? 'SANİYE' : 'TEKRAR'}</span>
-                                                <span class="text-xs font-mono font-bold text-white">${reps}</span>
-                                            </div>
-                                            <div class="ml-auto w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
-                                                <i data-lucide="${type === 'secs' ? 'clock' : 'target'}" class="w-3.5 h-3.5 text-calith-orange"></i>
-                                            </div>
-                                        </div>
-                                    </div>
                                     `;
-                                }).join('')}
-                            </div>
-                            <button onclick="startWorkoutMode('${p.id}', ${i})" class="mt-6 w-full py-4 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.2em] hover:bg-calith-orange hover:text-black transition-all group/btn">
-                                <i data-lucide="play" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> BU GÜNÜ BAŞLAT
-                            </button>
+                                }
+
+                                return `
+                                    <div class="space-y-3">
+                                        ${exList.map(ex => {
+                                            let name, sets, reps, type;
+
+                                            if (typeof ex === 'object') {
+                                                name = ex.name;
+                                                sets = ex.sets;
+                                                reps = ex.reps;
+                                                type = ex.type || 'reps';
+                                            } else {
+                                                const parts = String(ex).split('(');
+                                                name = parts[0].trim();
+                                                let target = parts[1] ? parts[1].replace(')', '').trim() : '-';
+                                                if (target.includes('x')) {
+                                                    sets = target.split('x')[0].trim();
+                                                    reps = target.split('x')[1].trim();
+                                                } else {
+                                                    sets = '-';
+                                                    reps = target;
+                                                }
+                                                type = 'reps';
+                                            }
+
+                                            return \`
+                                            <div class="flex flex-col gap-3 p-4 bg-white/[0.03] border border-white/5 rounded-2xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-2 h-2 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform"></div>
+                                                    <span class="text-sm font-bold text-gray-200 uppercase tracking-tight">\${name}</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
+                                                        <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">SET</span>
+                                                        <span class="text-xs font-mono font-bold text-calith-orange">\${sets}</span>
+                                                    </div>
+                                                    <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
+                                                        <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">\${type === 'secs' ? 'SANİYE' : 'TEKRAR'}</span>
+                                                        <span class="text-xs font-mono font-bold text-white">\${reps}</span>
+                                                    </div>
+                                                    <div class="ml-auto w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
+                                                        <i data-lucide="\${type === 'secs' ? 'clock' : 'target'}" class="w-3.5 h-3.5 text-calith-orange"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            \`;
+                                        }).join('')}
+                                    </div>
+                                    <button onclick="startWorkoutMode('${p.id}', ${i})" class="mt-6 w-full py-4 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.2em] hover:bg-calith-orange hover:text-black transition-all group/btn">
+                                        <i data-lucide="play" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> BU GÜNÜ BAŞLAT
+                                    </button>
+                                `;
+                            })()}
                         </div>
                     </div>
                 </div>`;
