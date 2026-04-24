@@ -3714,17 +3714,17 @@ function showNextExerciseModal() {
     const isLast = workoutSession.currExerciseIdx === workoutSession.exercises.length - 1;
 
     const modalHtml = `
-        <div id="next-exercise-modal" class="fixed inset-0 z-[100] flex items-center justify-center px-4 animate-in fade-in duration-300">
-            <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
-            <div class="relative bg-calith-dark border border-white/10 w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-2xl scale-in-center">
+        <div id="next-exercise-modal" class="fixed inset-0 z-[9999] flex items-center justify-center px-4">
+            <div class="absolute inset-0 bg-black/90 backdrop-blur-xl animate-in fade-in duration-500"></div>
+            <div class="relative bg-calith-dark border border-white/10 w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-2xl animate-in zoom-in duration-300">
                 <div class="w-20 h-20 bg-calith-orange/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-calith-orange/10">
-                    <i data-lucide="check-circle-2" class="w-10 h-10 text-calith-orange animate-bounce"></i>
+                    <i data-lucide="check-circle-2" class="w-10 h-10 text-calith-orange"></i>
                 </div>
-                <h3 class="font-display text-2xl font-bold uppercase mb-2 tracking-tight">Hareketi Bitirdin!</h3>
-                <p class="text-gray-400 text-sm font-medium mb-8">Tüm hedeflenen setleri başarıyla tamamladın. Adamsın!</p>
+                <h3 class="font-display text-3xl font-bold uppercase mb-2 tracking-tight">TEBRİKLER!</h3>
+                <p class="text-gray-400 text-sm font-medium mb-8">Hedeflenen tüm setleri bitirdin. Sıradaki harekete geçelim mi?</p>
                 
                 <div class="space-y-3">
-                    <button onclick="closeNextModal(); nextExercise();" class="w-full bg-calith-orange hover:bg-calith-orange/90 text-white font-bold py-5 rounded-2xl transition-all shadow-lg shadow-calith-orange/20 flex items-center justify-center gap-2 uppercase tracking-widest text-sm">
+                    <button onclick="closeNextModal(); nextExercise();" class="w-full bg-calith-orange hover:bg-calith-orange/90 text-white font-bold py-5 rounded-2xl transition-all shadow-lg shadow-calith-orange/20 flex items-center justify-center gap-2 uppercase tracking-widest text-sm active:scale-95">
                         ${isLast ? 'ANTRENMANI BİTİR' : 'SIRADAKİ HAREKETE GEÇ'} <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                     <button onclick="closeNextModal()" class="w-full bg-white/5 hover:bg-white/10 text-gray-500 font-bold py-4 rounded-2xl transition-all uppercase tracking-widest text-[10px]">
@@ -3814,21 +3814,26 @@ function completeSet() {
     // UI Güncelle
     renderWorkoutSets();
     
-    // Hedef set kontrolü (Debug logları eklendi)
-    let targetSets = parseInt(ex.targetSets) || 0;
-    if (!targetSets && String(ex.target).toLowerCase().includes('x')) {
-        targetSets = parseInt(String(ex.target).split('x')[0].trim()) || 4;
-    } else if (!targetSets) {
-        targetSets = 4; // Fallback
+    // Hedef set kontrolü (AŞIRI ZIRHLI VERSİYON)
+    let targetSets = parseInt(ex.targetSets);
+    if (isNaN(targetSets) || targetSets <= 0) {
+        const match = String(ex.target).match(/(\d+)\s*[xX-]/);
+        targetSets = match ? parseInt(match[1]) : 4;
     }
 
-    console.log(`[Calith Debug] Mevcut Set: ${workoutSession.currSet}, Hedef Set: ${targetSets}`);
+    console.log(`[Calith Debug] SET: ${workoutSession.currSet}, HEDEF: ${targetSets}`);
 
     if (workoutSession.currSet === targetSets) {
-        console.log('[Calith Debug] Hedef yakalandı, modal açılıyor...');
+        console.log('[Calith Debug] Hedef Tamam! Modal ve Alert tetikleniyor...');
         showNextExerciseModal();
+        // Fallback Alert (Modal açılmazsa diye garanti)
+        setTimeout(() => {
+            if (!document.getElementById('next-exercise-modal')) {
+                alert("🔥 HAREKETİ TAMAMLADIN! Sıradaki harekete geçebilirsin.");
+            }
+        }, 500);
     } else if (workoutSession.currSet > targetSets) {
-        showToast(`🔥 Hedefin üzerindesin! (${workoutSession.currSet}. Set)`);
+        showToast(`🔥 Limitleri zorluyorsun! (${workoutSession.currSet}. Set)`);
     } else {
         showToast(`${workoutSession.currSet}. Set Tamamlandı!`);
     }
