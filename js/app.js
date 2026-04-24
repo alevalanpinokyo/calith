@@ -3208,10 +3208,9 @@ async function loadProfileData(user) {
     if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
     document.getElementById('profile-email').textContent = user.email;
 
-    // Profil ve rol verilerini paralel olarak çek
-    const [profileResult, roleResult] = await Promise.all([
-        sb.from('profiles').select('*').eq('id', user.id).single(),
-        sb.from('user_roles').select('role').eq('user_id', user.id).single()
+    // Profil verisini çek (role dahil)
+    const [profileResult] = await Promise.all([
+        sb.from('profiles').select('*').eq('id', user.id).single()
     ]);
     
     // Skeleton efektini kaldır
@@ -3225,7 +3224,7 @@ async function loadProfileData(user) {
         if (goalEl) goalEl.textContent = data.goal || '--';
         
         const levelEl = document.getElementById('profile-level');
-        if (levelEl) levelEl.textContent = user.user_metadata?.fitness_level || 'BAŞLANGIÇ';
+        if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
 
         // Formu doldur
         const editName = document.getElementById('edit-full-name');
@@ -3237,36 +3236,37 @@ async function loadProfileData(user) {
         if (editWeight) editWeight.value = data.weight || '';
         if (editHeight) editHeight.value = data.height || '';
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
-    }
 
-    // ===== ROZET SİSTEMİ (user_roles tablosundan) =====
-    if (badgeEl) {
-        const role = roleResult.data?.role?.toLowerCase() || 'user';
+        // ===== ROZET SİSTEMİ (profiles.role) =====
+        if (badgeEl) {
+            const role = (data.role || 'user').toLowerCase();
 
-        const roleConfig = {
-            admin: {
-                label: '⚡ ADMİN',
-                classes: 'bg-red-500/15 text-red-400 border-red-500/30'
-            },
-            mod: {
-                label: '🛡 MOD',
-                classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
-            },
-            premium: {
-                label: '👑 PREMİUM',
-                classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
-            },
-            user: {
-                label: 'ÜYE',
-                classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
-            }
-        };
+            const roleConfig = {
+                admin: {
+                    label: '⚡ ADMİN',
+                    classes: 'bg-red-500/15 text-red-400 border-red-500/30'
+                },
+                mod: {
+                    label: '🛡 MOD',
+                    classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+                },
+                premium: {
+                    label: '👑 PREMİUM',
+                    classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
+                },
+                user: {
+                    label: 'ÜYE',
+                    classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
+                }
+            };
 
-        const config = roleConfig[role] || roleConfig['user'];
-        badgeEl.textContent = config.label;
-        badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
+            const config = roleConfig[role] || roleConfig['user'];
+            badgeEl.textContent = config.label;
+            badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
+        }
     }
 }
+
 
 
 
