@@ -1661,10 +1661,10 @@ function showProgramDetail(id, skipHistory = false) {
                     <span>1. GÜNDEN BAŞLA</span>
                 </button>
                 ${isProgramAdded(p.id) ? `
-                    <div class="w-full sm:w-auto bg-calith-orange/10 border border-calith-orange/20 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] text-calith-orange flex items-center justify-center gap-3">
-                        <i data-lucide="check-circle" class="w-5 h-5"></i>
-                        <span>PROGRAMLARINDA</span>
-                    </div>` : `
+                    <button onclick="removeFromMyPrograms('${p.id}')" class="w-full sm:w-auto bg-calith-orange/10 border border-calith-orange/20 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] text-calith-orange flex items-center justify-center gap-3 hover:bg-calith-orange hover:text-black transition-all group">
+                        <i data-lucide="minus-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                        <span>Programlarımdan Çıkar</span>
+                    </button>` : `
                     <button onclick="addToMyPrograms('${p.id}')" class="w-full sm:w-auto btn-outline border-white/10 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all">
                         <i data-lucide="plus-circle" class="w-5 h-5 text-calith-orange"></i>
                         <span>Programlarıma Ekle</span>
@@ -3157,7 +3157,6 @@ async function addToMyPrograms(programId = null) {
     const sb = getSupabase();
     if (!sb) return;
 
-    // Eğer programId parametre olarak gelmediyse, URL'den al (Detay sayfasındaysak)
     if (!programId) {
         const params = new URLSearchParams(window.location.search);
         programId = params.get('p');
@@ -3168,7 +3167,6 @@ async function addToMyPrograms(programId = null) {
         return;
     }
 
-    // Giriş kontrolü
     const { data: { user } } = await sb.auth.getUser();
     if (!user) {
         showToast('Program eklemek için giriş yapmalısınız.');
@@ -3178,7 +3176,6 @@ async function addToMyPrograms(programId = null) {
 
     showToast('Programa ekleniyor...');
 
-    // user_programs tablosuna ekle
     const { error } = await sb.from('user_programs').upsert([
         { user_id: user.id, program_id: programId }
     ]);
@@ -3188,6 +3185,38 @@ async function addToMyPrograms(programId = null) {
         showToast('Hata: ' + error.message);
     } else {
         showToast('Program başarıyla kütüphanenize eklendi!');
+        if (!myProgramIds.includes(String(programId))) {
+            myProgramIds.push(String(programId));
+        }
+        // UI Güncelle
+        if (document.getElementById('post-content')) showProgramDetail(programId, true);
+    }
+}
+
+async function removeFromMyPrograms(programId) {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+
+    const { error } = await sb.from('user_programs')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('program_id', programId);
+
+    if (error) {
+        showToast('Hata: ' + error.message);
+    } else {
+        showToast('Program kütüphanenizden çıkarıldı.');
+        myProgramIds = myProgramIds.filter(id => String(id) !== String(programId));
+        
+        // UI Güncelle
+        if (document.getElementById('post-content')) showProgramDetail(programId, true);
+        if (document.getElementById('user-programs-list')) {
+            const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
+            renderUserPrograms(myPrograms);
+        }
     }
 }
 
@@ -3576,8 +3605,11 @@ function renderUserPrograms(programs) {
                 </div>
             </div>
 
-            <div class="shrink-0 relative z-10 hidden sm:block">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange transition-all duration-500">
+            <div class="flex items-center gap-2 shrink-0 relative z-10">
+                <button onclick="event.stopPropagation(); removeFromMyPrograms('${p.id}')" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center hover:bg-red-500 group/trash transition-all duration-300" title="Kütüphaneden Çıkar">
+                    <i data-lucide="trash-2" class="w-4 h-4 sm:w-5 h-5 text-red-500 group-hover/trash:text-white transition-colors"></i>
+                </button>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-calith-orange transition-all duration-500 hidden sm:flex">
                     <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 h-5 text-white"></i>
                 </div>
             </div>
