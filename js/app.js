@@ -4400,7 +4400,7 @@ function startRestTimer() {
     const label = box.querySelector('p');
     
     // Rest UI (Accent/Blue)
-    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden animate-in fade-in zoom-in duration-500";
+    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden";
     if (label) {
         label.textContent = 'DİNLENME SÜRESİ (İLERİ SAYIM)';
         label.className = 'text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3';
