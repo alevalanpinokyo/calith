@@ -1439,16 +1439,46 @@ function showProgramDetail(id, skipHistory = false) {
                     <div class="accordion-content expanded" id="day-content-${i}">
                         <div class="accordion-inner px-6 pb-6">
                             <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
-                            <ul class="space-y-4">
-                                ${(day.exercises || []).map(ex => `
-                                    <li class="flex items-start gap-4 group/item">
-                                        <div class="w-5 h-5 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-calith-orange transition-all duration-300">
-                                            <i data-lucide="check" class="w-3 h-3 text-calith-orange group-hover/item:text-white transition-colors"></i>
+                            <div class="space-y-3">
+                                ${(day.exercises || []).map(ex => {
+                                    // "Pushups (4x12)" formatını parse et
+                                    const parts = ex.split('(');
+                                    const name = parts[0].trim();
+                                    let target = parts[1] ? parts[1].replace(')', '').trim() : 'Hedef Belirtilmedi';
+                                    
+                                    // Set ve Reps ayırmaya çalış (Örn: 4x12 veya 3x15-20)
+                                    let setVal = '-', repVal = '-';
+                                    if(target.toLowerCase().includes('x')) {
+                                        const tParts = target.toLowerCase().split('x');
+                                        setVal = tParts[0].trim();
+                                        repVal = tParts[1].trim();
+                                    } else {
+                                        repVal = target;
+                                    }
+
+                                    return `
+                                    <div class="flex flex-col gap-3 p-4 bg-white/[0.03] border border-white/5 rounded-2xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-2 h-2 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform"></div>
+                                            <span class="text-sm font-bold text-gray-200 uppercase tracking-tight">${name}</span>
                                         </div>
-                                        <span class="text-sm text-gray-400 group-hover/item:text-gray-200 transition-colors leading-relaxed">${ex}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
+                                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">SET</span>
+                                                <span class="text-xs font-mono font-bold text-calith-orange">${setVal}</span>
+                                            </div>
+                                            <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
+                                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">TEKRAR</span>
+                                                <span class="text-xs font-mono font-bold text-white">${repVal}</span>
+                                            </div>
+                                            <div class="ml-auto w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
+                                                <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
                         </div>
                     </div>
                 </div>`;
