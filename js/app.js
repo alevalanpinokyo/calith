@@ -4135,9 +4135,20 @@ function updateWorkoutUI() {
             timerBtn.querySelector('span').textContent = `SÜRE BAŞLAT (${ex.targetReps}sn)`;
             timerBtn.onclick = () => startExerciseTimer(ex.targetReps);
             if (repsLabel) repsLabel.textContent = 'SÜRE (SN)';
+            
+            if (weightInput) {
+                weightInput.disabled = true;
+                weightInput.value = 0;
+                weightInput.parentElement.classList.add('opacity-20');
+            }
         } else {
             timerBtn.classList.add('hidden');
             if (repsLabel) repsLabel.textContent = 'TEKRAR';
+            
+            if (weightInput) {
+                weightInput.disabled = false;
+                weightInput.parentElement.classList.remove('opacity-20');
+            }
         }
     }
 
@@ -4234,7 +4245,14 @@ function startRestTimer() {
     const box = document.getElementById('workout-rest-timer-box');
     const clock = document.getElementById('workout-rest-clock');
     const label = box.querySelector('p');
-    if (label) label.textContent = 'DİNLENME SÜRESİ (İLERİ SAYIM)';
+    
+    // Rest UI (Accent/Blue)
+    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden animate-in fade-in zoom-in duration-500";
+    if (label) {
+        label.textContent = 'DİNLENME SÜRESİ (İLERİ SAYIM)';
+        label.className = 'text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3';
+    }
+    clock.className = 'text-6xl font-mono font-black text-white tracking-tighter mb-4';
     box.classList.remove('hidden');
 
     let timePassed = 0;
@@ -4244,10 +4262,7 @@ function startRestTimer() {
         const secs = timePassed % 60;
         clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         
-        // Çok uzun sürerse (10 dk) uyar
-        if (timePassed > 600) {
-            clock.classList.add('text-red-500');
-        }
+        if (timePassed > 600) clock.classList.add('text-red-500');
     }, 1000);
 }
 
@@ -4257,7 +4272,13 @@ function startExerciseTimer(duration) {
     const box = document.getElementById('workout-rest-timer-box');
     const label = box.querySelector('p');
     
-    if (label) label.textContent = 'HAREKET SÜRESİ (GERİ SAYIM)';
+    // Exercise UI (Orange)
+    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-orange/20 to-transparent border border-calith-orange/30 text-center relative overflow-hidden animate-in fade-in zoom-in duration-500";
+    if (label) {
+        label.textContent = 'HAREKET SÜRESİ (GERİ SAYIM)';
+        label.className = 'text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-3';
+    }
+    clock.className = 'text-6xl font-mono font-black text-white tracking-tighter mb-4';
     box.classList.remove('hidden');
     
     let timeLeft = duration;
