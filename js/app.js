@@ -4125,7 +4125,19 @@ function updateWorkoutUI() {
     if (els.reps) els.reps.value = tReps;
 
     // UI Durum Yönetimi
-    console.log("Workout UI Update:", { name: ex.name, target: ex.target, type: ex.type, isTimed });
+    const uiDebug = {
+        exercise: ex.name,
+        target: ex.target,
+        type: ex.type,
+        isTimed,
+        elementsFound: {
+            timerBtn: !!els.timerBtn,
+            repsLabel: !!els.repsLabel,
+            weightCont: !!els.weightCont,
+            grid: !!els.grid
+        }
+    };
+    console.log("Workout UI Update (DETAYLI):", uiDebug);
     
     const workoutModeEl = document.getElementById('workout-mode');
     if (workoutModeEl) {
@@ -4138,12 +4150,16 @@ function updateWorkoutUI() {
             els.timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${tReps}sn)`;
             els.timerBtn.onclick = () => startExerciseTimer(tReps);
         }
-        if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
+        if (els.repsLabel) {
+            els.repsLabel.textContent = 'SÜRE (SN)';
+            console.log("Label güncellendi: SÜRE (SN)");
+        }
         
-        // Ağırlığı GİZLE (CSS data-attribute üzerinden de yapılıyor ama JS garanti olsun)
+        // Ağırlığı GİZLE
         if (els.weightCont) {
             els.weightCont.style.setProperty('display', 'none', 'important');
             els.weightCont.classList.add('hidden');
+            console.log("Ağırlık kutusu gizlendi (display: none)");
         }
         if (els.grid) {
             els.grid.classList.remove('grid-cols-2');
