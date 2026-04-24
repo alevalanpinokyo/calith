@@ -1550,6 +1550,9 @@ function showProgramDetail(id, skipHistory = false) {
                                     `;
                                 }).join('')}
                             </div>
+                            <button onclick="startWorkoutMode('${p.id}', ${i})" class="mt-6 w-full py-4 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.2em] hover:bg-calith-orange hover:text-black transition-all group/btn">
+                                <i data-lucide="play" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> BU GÜNÜ BAŞLAT
+                            </button>
                         </div>
                     </div>
                 </div>`;
@@ -1606,7 +1609,7 @@ function showProgramDetail(id, skipHistory = false) {
             <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 reveal active">
                 <button onclick="startWorkoutMode('${p.id}')" class="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all shadow-2xl shadow-white/10 active:scale-95">
                     <i data-lucide="play" class="w-5 h-5"></i>
-                    <span>Antrenmanı Başlat</span>
+                    <span>1. GÜNDEN BAŞLA</span>
                 </button>
                 ${isProgramAdded(p.id) ? `
                     <div class="w-full sm:w-auto bg-calith-orange/10 border border-calith-orange/20 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] text-calith-orange flex items-center justify-center gap-3">
@@ -3632,7 +3635,7 @@ function isProgramAdded(programId) {
     return userProgs.some(id => String(id) === String(programId));
 }
 
-async function startWorkoutMode(programId) {
+async function startWorkoutMode(programId, dayIndex = 0) {
     // Hem programPosts içinde hem de tüm posts içinde ara (sayfa farketmeksizin)
     const p = posts.find(item => String(item.id) === String(programId));
     if (!p) return showToast('Program verisi bulunamadı.');
@@ -3649,8 +3652,9 @@ async function startWorkoutMode(programId) {
 
     if (days.length === 0) return showToast('Antrenman günü bulunamadı.');
 
-    // Günü seç (Varsayılan 0, ileride seçim ekranı eklenebilir)
-    const day = days[0]; 
+    // Seçilen günü al (Eğer geçerli değilse 1. günü al)
+    if (dayIndex >= days.length || dayIndex < 0) dayIndex = 0;
+    const day = days[dayIndex]; 
     const exercises = (day.exercises || []).map(ex => {
         if (typeof ex === 'object') {
             return {
