@@ -143,6 +143,20 @@ let currentBlogId = null;
 let pdQty = 1;
 let isAdminMode = false;
 
+// --- WORKOUT STATE ---
+let workoutSession = {
+    active: false,
+    program: null,
+    dayIndex: 0,
+    startTime: null,
+    exercises: [], // [{name: '', target: '', sets: []}]
+    currExerciseIdx: 0,
+    currSet: 1,
+    history: [] // [{name: '', sets: [{weight: 0, reps: 0}]}]
+};
+let workoutInterval = null;
+let restInterval = null;
+
 function showSection(section) {
     const target = document.getElementById(section);
 
@@ -1492,13 +1506,17 @@ function showProgramDetail(id, skipHistory = false) {
 
             <!-- CTA Section -->
             <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 reveal active">
-                <button onclick="addToMyPrograms()" class="btn-primary px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] shadow-2xl shadow-calith-orange/20 flex items-center gap-3 transform hover:scale-[1.05] transition-all">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                <button onclick="startWorkoutMode('${p.id}')" class="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all shadow-2xl shadow-white/10">
+                    <i data-lucide="play" class="w-5 h-5"></i>
+                    <span>Antrenmanı Başlat</span>
+                </button>
+                <button onclick="addToMyPrograms()" class="w-full sm:w-auto btn-outline border-white/10 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-calith-orange"></i>
                     <span>Programlarıma Ekle</span>
                 </button>
-                <button onclick="exportProgramPDF()" class="btn-outline px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center gap-3 group">
-                    <i data-lucide="download" class="w-5 h-5 text-gray-500 group-hover:text-white transition-colors"></i>
-                    <span>PDF Olarak Kaydet</span>
+                <button onclick="exportProgramPDF()" class="w-full sm:w-auto text-gray-500 hover:text-white px-6 py-4 font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-colors">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>PDF</span>
                 </button>
             </div>
         </div>
@@ -3450,6 +3468,233 @@ function renderFrontendLinks() {
     if (window.lucide) lucide.createIcons();
 }
 
+// --- WORKOUT ENGINE FUNCTIONS ---
+
+async function startWorkoutMode(programId) {
+    const p = programPosts.find(item => String(item.id) === String(programId));
+    if (!p) return showToast('Program verisi bulunamadı.');
+
+    // Program içeriğini parse et
+    let days = [];
+    try {
+        const data = JSON.parse(p.content);
+        days = Array.isArray(data) ? data : (data.days || []);
+    } catch (e) {
+        showToast('Bu program eski formatta, antrenman modu desteklenmiyor.');
+        return;
+    }
+
+    if (days.length === 0) return showToast('Antrenman günü bulunamadı.');
+
+    // Günü seç (Varsayılan 0, ileride seçim ekranı eklenebilir)
+    const day = days[0]; 
+    const exercises = (day.exercises || []).map(ex => {
+        // "Pushups (4x12)" formatını parse etmeye çalış
+        const parts = ex.split('(');
+        const name = parts[0].trim();
+        let target = '4 x 12';
+        if (parts[1]) target = parts[1].replace(')', '').trim();
+        
+        return { name, target, sets: [] };
+    });
+
+    if (exercises.length === 0) return showToast('Bu gün için egzersiz tanımlanmamış.');
+
+    // State Hazırla
+    workoutSession = {
+        active: true,
+        program: p,
+        dayName: day.name || 'GÜN 1',
+        startTime: Date.now(),
+        exercises: exercises,
+        currExerciseIdx: 0,
+        currSet: 1,
+        history: []
+    };
+
+    // UI Hazırla
+    document.getElementById('workout-mode').classList.remove('hidden');
+    document.getElementById('workout-program-title').textContent = p.title.toUpperCase();
+    document.getElementById('workout-rest-timer-box').classList.add('hidden');
+    
+    updateWorkoutUI();
+    startWorkoutClock();
+    
+    showToast('Antrenman Başladı! Başarılar kanka.');
+    if (window.lucide) lucide.createIcons();
+}
+
+function updateWorkoutUI() {
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    if (!ex) return finishWorkout();
+
+    document.getElementById('workout-curr-exercise').textContent = ex.name.toUpperCase();
+    document.getElementById('workout-target-info').textContent = `HEDEF: ${ex.target}`;
+    document.getElementById('workout-exercise-count').textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
+    document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
+
+    // Progress Bar
+    const totalItems = workoutSession.exercises.length;
+    const progress = (workoutSession.currExerciseIdx / totalItems) * 100;
+    document.getElementById('workout-progress-bar').style.width = `${progress}%`;
+
+    // Set Geçmişini Render Et
+    renderWorkoutSets();
+}
+
+function renderWorkoutSets() {
+    const container = document.getElementById('workout-sets-list');
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    
+    container.innerHTML = ex.sets.map((set, i) => `
+        <div class="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl animate-fade-in">
+            <span class="text-xs font-bold text-gray-500">SET ${i + 1}</span>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-mono font-bold text-white">${set.weight} KG</span>
+                <span class="text-sm font-mono font-bold text-calith-orange">${set.reps} TEKRAR</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function completeSet() {
+    const weight = parseFloat(document.getElementById('workout-input-weight').value) || 0;
+    const reps = parseInt(document.getElementById('workout-input-reps').value) || 0;
+
+    if (reps === 0) return showToast('Lütfen tekrar sayısını girin.');
+
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    ex.sets.push({ weight, reps });
+
+    // Dinlenme Başlat (Örn: 60 saniye)
+    startRestTimer(60);
+    
+    // UI Güncelle
+    renderWorkoutSets();
+    
+    // Eğer hedef set sayısına ulaşıldıysa (Örn: 4 set) veya kullanıcı istiyorsa sonraki harekete geçiş opsiyonu
+    // Şimdilik sadece set arttırıyoruz
+    workoutSession.currSet++;
+    document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
+    
+    showToast('Set Tamamlandı!');
+}
+
+function startRestTimer(seconds) {
+    clearInterval(restInterval);
+    const box = document.getElementById('workout-rest-timer-box');
+    const clock = document.getElementById('workout-rest-clock');
+    box.classList.remove('hidden');
+
+    let timeLeft = seconds;
+    restInterval = setInterval(() => {
+        timeLeft--;
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(restInterval);
+            box.classList.add('hidden');
+            showToast('Dinlenme bitti, sıradaki set!');
+            // Ses eklenebilir
+        }
+    }, 1000);
+}
+
+function skipRest() {
+    clearInterval(restInterval);
+    document.getElementById('workout-rest-timer-box').classList.add('hidden');
+}
+
+function nextExercise() {
+    workoutSession.currExerciseIdx++;
+    workoutSession.currSet = 1;
+    
+    if (workoutSession.currExerciseIdx >= workoutSession.exercises.length) {
+        finishWorkout();
+    } else {
+        updateWorkoutUI();
+        skipRest();
+    }
+}
+
+function startWorkoutClock() {
+    clearInterval(workoutInterval);
+    const timerEl = document.getElementById('workout-timer');
+    workoutInterval = setInterval(() => {
+        const diff = Date.now() - workoutSession.startTime;
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        timerEl.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+function confirmExitWorkout() {
+    if (confirm('Antrenmanı bitirmeden çıkmak istediğine emin misin? Verilerin kaydedilmeyecek.')) {
+        closeWorkoutMode();
+    }
+}
+
+function closeWorkoutMode() {
+    workoutSession.active = false;
+    clearInterval(workoutInterval);
+    clearInterval(restInterval);
+    document.getElementById('workout-mode').classList.add('hidden');
+}
+
+async function finishWorkout() {
+    showToast('Antrenman Tamamlandı! Veriler senkronize ediliyor...');
+    
+    // Veriyi hazırla
+    const logData = {
+        user_id: currentUser?.id,
+        program_title: workoutSession.program.title,
+        day_name: workoutSession.dayName,
+        duration: document.getElementById('workout-timer').textContent,
+        workout_data: {
+            exercises: workoutSession.exercises.map(ex => ({
+                name: ex.name,
+                target: ex.target,
+                sets: ex.sets
+            }))
+        }
+    };
+
+    // 1. Local-First: Her durumda tarayıcıya yedekle
+    const localLogs = JSON.parse(localStorage.getItem('calith_workout_logs') || '[]');
+    localLogs.push({ ...logData, date: new Date().toISOString() });
+    localStorage.setItem('calith_workout_logs', JSON.stringify(localLogs));
+
+    // 2. Supabase Sync: Eğer giriş yapılmışsa buluta gönder
+    if (currentUser) {
+        const sb = getSupabase();
+        if (sb) {
+            const { error } = await sb.from('workout_logs').insert([logData]);
+            if (error) {
+                console.error('Supabase Sync Error:', error);
+                showToast('Bulut senkronizasyonu başarısız, yerel kaydedildi.');
+            } else {
+                showToast('Antrenman başarıyla buluta kaydedildi!');
+            }
+        }
+    } else {
+        showToast('Giriş yapılmadı, veriler sadece bu cihazda saklanacak.');
+    }
+
+    // UI'ı kapat ve ana sayfaya dön
+    setTimeout(() => {
+        closeWorkoutMode();
+        // Eğer index.html'deysek landing'e, değilsek index'e yönlendir
+        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+            showSection('landing');
+        } else {
+            window.location.href = 'index.html';
+        }
+    }, 2500);
+}
+
 function updateIconPreview() {
     const type = document.getElementById('link-icon-type').value;
     const name = document.getElementById('link-icon-name').value.trim().toLowerCase();
@@ -3470,7 +3715,9 @@ function updateIconPreview() {
 }
 
 function setQuickIcon(type, name) {
-    document.getElementById('link-icon-type').value = type;
-    document.getElementById('link-icon-name').value = name;
+    const typeEl = document.getElementById('link-icon-type');
+    const nameEl = document.getElementById('link-icon-name');
+    if (typeEl) typeEl.value = type;
+    if (nameEl) nameEl.value = name;
     updateIconPreview();
 }
