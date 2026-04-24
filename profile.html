@@ -150,6 +150,23 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Workout History -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-6 bg-calith-accent rounded-full"></div>
+                        <h3 class="font-display text-2xl font-bold uppercase">Antrenman Geçmişim</h3>
+                    </div>
+                </div>
+                
+                <div id="workout-logs-list" class="space-y-3">
+                    <!-- JS will inject logs here -->
+                    <div class="py-12 text-center border border-white/5 rounded-[2rem] bg-white/[0.01]">
+                        <p class="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Henüz kaydedilmiş bir antrenman yok.</p>
+                    </div>
+                </div>
+            </div>
             
         </div>
     </div>
@@ -189,6 +206,7 @@
         // Kayıtlı programları yükle
         if (typeof loadPosts === 'function') await loadPosts();
         if (typeof loadUserPrograms === 'function') await loadUserPrograms(user.id);
+        if (typeof loadWorkoutLogs === 'function') await loadWorkoutLogs(user.id);
     });
 </script>
 </body>

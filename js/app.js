@@ -3298,6 +3298,53 @@ function renderUserPrograms(programs) {
     if (window.lucide) lucide.createIcons();
 }
 
+async function loadWorkoutLogs(userId) {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data, error } = await sb.from('workout_logs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+    
+    if (!error && data) {
+        renderWorkoutLogs(data);
+    }
+}
+
+function renderWorkoutLogs(logs) {
+    const container = document.getElementById('workout-logs-list');
+    if (!container) return;
+
+    if (logs.length === 0) return;
+
+    container.innerHTML = logs.map(log => {
+        const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
+        const time = new Date(log.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        
+        return `
+            <div class="group bg-white/[0.02] border border-white/5 p-4 rounded-2xl flex items-center justify-between hover:border-calith-accent/30 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-calith-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i data-lucide="award" class="w-5 h-5 text-calith-accent"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-200 uppercase tracking-tight">${log.program_title}</h4>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${date} • ${time}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs font-mono font-bold text-white">${log.duration}</div>
+                    <div class="text-[9px] text-gray-600 font-black uppercase tracking-widest">${log.day_name}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    if (window.lucide) lucide.createIcons();
+}
+
 // Program Card Toggle (Her kart bağımsız açılır/kapanır)
 function toggleScheduleGroup(index) {
     const indices = index <= 2 ? [0, 1, 2] : [3, 4];
@@ -3725,18 +3772,20 @@ function completeSet() {
     // UI Güncelle
     renderWorkoutSets();
     
-    // Hedef set kontrolü (Örn: "4x12" -> 4 set)
-    let targetSets = 4;
-    const targetStr = String(ex.target).toLowerCase();
-    if(targetStr.includes('x')) targetSets = parseInt(targetStr.split('x')[0]) || 4;
+    // Hedef set kontrolü (Önce objedeki targetSets'e bak, yoksa parse et)
+    let targetSets = ex.targetSets || 4;
+    if (!ex.targetSets && String(ex.target).toLowerCase().includes('x')) {
+        targetSets = parseInt(String(ex.target).split('x')[0]) || 4;
+    }
 
     if (workoutSession.currSet >= targetSets) {
-        showToast(`Hedeflenen ${targetSets} seti tamamladın! Sıradaki harekete geçebilirsin.`);
-        // Sıradaki hareket butonunu parlat
+        showToast(`🔥 HEDEF TAMAMLANDI! ${targetSets} Set bitti. Adamsın.`);
+        // Sıradaki hareket butonunu iyice belirginleştir
         const nextBtn = document.querySelector('button[onclick="nextExercise()"]');
         if(nextBtn) {
-            nextBtn.classList.add('bg-calith-orange/20', 'text-white', 'border-calith-orange');
-            nextBtn.classList.remove('bg-white/5', 'text-gray-400');
+            nextBtn.classList.add('ring-2', 'ring-calith-orange', 'bg-calith-orange', 'text-white');
+            nextBtn.innerHTML = 'SIRADAKİ HAREKETE GEÇ <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+            if(window.lucide) lucide.createIcons();
         }
     } else {
         showToast(`${workoutSession.currSet}. Set Tamamlandı!`);
