@@ -4125,6 +4125,8 @@ function updateWorkoutUI() {
     if (els.reps) els.reps.value = tReps;
 
     // UI Durum Yönetimi
+    console.log("Workout UI Update:", { name: ex.name, target: ex.target, type: ex.type, isTimed });
+
     if (isTimed) {
         if (els.timerBtn) {
             els.timerBtn.classList.remove('hidden');
@@ -4132,13 +4134,29 @@ function updateWorkoutUI() {
             els.timerBtn.onclick = () => startExerciseTimer(tReps);
         }
         if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
-        if (els.weightCont) els.weightCont.classList.add('hidden');
-        if (els.grid) els.grid.classList.remove('grid-cols-2');
+        
+        // Ağırlığı GİZLE
+        if (els.weightCont) {
+            els.weightCont.style.display = 'none';
+            els.weightCont.classList.add('hidden');
+        }
+        if (els.grid) {
+            els.grid.classList.remove('grid-cols-2');
+            els.grid.classList.add('grid-cols-1');
+        }
     } else {
         if (els.timerBtn) els.timerBtn.classList.add('hidden');
         if (els.repsLabel) els.repsLabel.textContent = 'TEKRAR';
-        if (els.weightCont) els.weightCont.classList.remove('hidden');
-        if (els.grid) els.grid.classList.add('grid-cols-2');
+        
+        // Ağırlığı GÖSTER
+        if (els.weightCont) {
+            els.weightCont.style.display = 'block';
+            els.weightCont.classList.remove('hidden');
+        }
+        if (els.grid) {
+            els.grid.classList.remove('grid-cols-1');
+            els.grid.classList.add('grid-cols-2');
+        }
     }
 
     // Progres Bar
