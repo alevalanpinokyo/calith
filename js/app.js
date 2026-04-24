@@ -3957,6 +3957,8 @@ function renderFrontendLinks() {
 // --- WORKOUT ENGINE FUNCTIONS ---
 
 let myProgramIds = []; // Global sahiplik listesi
+let restInterval = null;
+let exerciseTimerInterval = null;
 
 function isProgramAdded(programId) {
     // 1. Önce global sahiplik listesine bak (Supabase'den dolan)
@@ -4124,6 +4126,18 @@ function updateWorkoutUI() {
         if (weightInput) weightInput.setAttribute("min", "0");
     }
 
+    // Hareket Zamanlayıcı Kontrolü (Timed Exercises)
+    const timerBtn = document.getElementById('btn-exercise-timer');
+    if (timerBtn) {
+        if (ex.type === 'secs') {
+            timerBtn.classList.remove('hidden');
+            timerBtn.querySelector('span').textContent = `SÜRE BAŞLAT (${ex.targetReps}sn)`;
+            timerBtn.onclick = () => startExerciseTimer(ex.targetReps);
+        } else {
+            timerBtn.classList.add('hidden');
+        }
+    }
+
     // Progres Bar
     if (progressBar) {
         const progress = (workoutSession.currExerciseIdx / workoutSession.exercises.length) * 100;
@@ -4178,8 +4192,8 @@ function completeSet() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     ex.sets.push({ weight, reps });
 
-    // Dinlenme Başlat (Varsayılan 60 sn)
-    startRestTimer(60);
+    // Dinlenme Başlat (İleri Sayım)
+    startRestTimer();
 
     // UI Güncelle
     renderWorkoutSets();
@@ -4212,30 +4226,60 @@ function completeSet() {
     document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
 }
 
-function startRestTimer(seconds) {
+function startRestTimer() {
     clearInterval(restInterval);
     const box = document.getElementById('workout-rest-timer-box');
     const clock = document.getElementById('workout-rest-clock');
+    const label = box.querySelector('p');
+    if (label) label.textContent = 'DİNLENME SÜRESİ (İLERİ SAYIM)';
     box.classList.remove('hidden');
 
-    let timeLeft = seconds;
+    let timePassed = 0;
     restInterval = setInterval(() => {
+        timePassed++;
+        const mins = Math.floor(timePassed / 60);
+        const secs = timePassed % 60;
+        clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        // Çok uzun sürerse (10 dk) uyar
+        if (timePassed > 600) {
+            clock.classList.add('text-red-500');
+        }
+    }, 1000);
+}
+
+function startExerciseTimer(duration) {
+    clearInterval(exerciseTimerInterval);
+    const clock = document.getElementById('workout-rest-clock');
+    const box = document.getElementById('workout-rest-timer-box');
+    const label = box.querySelector('p');
+    
+    if (label) label.textContent = 'HAREKET SÜRESİ (GERİ SAYIM)';
+    box.classList.remove('hidden');
+    
+    let timeLeft = duration;
+    clock.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
+    clock.classList.remove('text-red-500');
+
+    exerciseTimerInterval = setInterval(() => {
         timeLeft--;
         const mins = Math.floor(timeLeft / 60);
         const secs = timeLeft % 60;
         clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
         if (timeLeft <= 0) {
-            clearInterval(restInterval);
-            box.classList.add('hidden');
-            showToast('Dinlenme bitti, sıradaki set!');
-            // Ses eklenebilir
+            clearInterval(exerciseTimerInterval);
+            clock.textContent = "TAMAM!";
+            showToast('Süre doldu! Seti tamamlayabilirsin.');
+            // Titreşim ve ses eklenebilir
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         }
     }, 1000);
 }
 
 function skipRest() {
     clearInterval(restInterval);
+    clearInterval(exerciseTimerInterval);
     document.getElementById('workout-rest-timer-box').classList.add('hidden');
 }
 
