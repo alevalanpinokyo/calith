@@ -4129,14 +4129,24 @@ function updateWorkoutUI() {
     const timerBtn = document.getElementById('btn-exercise-timer');
     const repsLabel = document.getElementById('workout-label-reps');
     const weightCont = document.getElementById('workout-weight-container');
-    const repsCont = document.getElementById('workout-reps-container');
     const inputsGrid = document.getElementById('workout-inputs-grid');
 
+    // TİP KONTROLÜ (Aşırı Robust Versiyon)
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+
     if (timerBtn) {
-        if (ex.type === 'secs') {
+        if (isTimed) {
             timerBtn.classList.remove('hidden');
-            timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${ex.targetReps}sn)`;
-            timerBtn.onclick = () => startExerciseTimer(ex.targetReps);
+            // ex.targetReps eğer parse edilemediyse target stringden tekrar çek
+            let duration = ex.targetReps;
+            if (!duration || duration === 10) {
+                const match = targetStr.match(/(\d+)\s*(sn|sec)/);
+                if (match) duration = parseInt(match[1]);
+            }
+
+            timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${duration}sn)`;
+            timerBtn.onclick = () => startExerciseTimer(duration);
             if (repsLabel) repsLabel.textContent = 'SÜRE (SN)';
             
             // Ağırlığı gizle ve süreyi genişlet
@@ -4175,6 +4185,9 @@ function renderWorkoutSets() {
         return;
     }
 
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+
     container.innerHTML = ex.sets.map((set, i) => `
         <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-pulse" style="animation: fade-in 0.3s ease-out forwards;">
             <div class="flex items-center gap-3">
@@ -4182,15 +4195,15 @@ function renderWorkoutSets() {
                 <div class="h-4 w-px bg-white/5"></div>
             </div>
             <div class="flex items-center gap-4">
-                ${ex.type !== 'secs' ? `
+                ${!isTimed ? `
                 <div class="flex items-center gap-2">
                     <i data-lucide="weight" class="w-3.5 h-3.5 text-gray-500"></i>
                     <span class="text-sm font-mono font-bold text-white">${set.weight}kg</span>
                 </div>
                 ` : ''}
                 <div class="flex items-center gap-2 bg-calith-orange/10 px-3 py-1 rounded-lg border border-calith-orange/20">
-                    <i data-lucide="${ex.type === 'secs' ? 'clock' : 'zap'}" class="w-3.5 h-3.5 text-calith-orange"></i>
-                    <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}${ex.type === 'secs' ? 'sn' : ''}</span>
+                    <i data-lucide="${isTimed ? 'clock' : 'zap'}" class="w-3.5 h-3.5 text-calith-orange"></i>
+                    <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}${isTimed ? 'sn' : ''}</span>
                 </div>
             </div>
         </div>
