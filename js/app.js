@@ -4409,6 +4409,8 @@ function startRestTimer() {
     box.classList.remove('hidden');
 
     let timePassed = 0;
+    clock.textContent = '00:00'; // Hemen sıfırla, 1 saniye beklemesin
+
     restInterval = setInterval(() => {
         timePassed++;
         const mins = Math.floor(timePassed / 60);
@@ -4519,17 +4521,7 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn) {
                     doneBtn.remove();
                     completeSet();
                     
-                    // Dinlenme bittikten sonra HAREKETE BAŞLA butonu tekrar görünsün
-                    // (skipRest veya dinlenme bitince timerBtn gösterilecek)
-                    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
-                    const targetStr = String(ex?.target || '').toLowerCase();
-                    const isTimed = ex?.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
-                    if (isTimed && timerBtn) {
-                        // Dinlenme süresinden sonra butonu tekrar göster
-                        setTimeout(() => {
-                            if (timerBtn) timerBtn.classList.remove('hidden');
-                        }, 100);
-                    }
+                    // Not: HAREKETE BAŞLA butonu sadece skipRest() içinde (dinlenme atlandığında) görünür yapılacak.
                 };
                 box.querySelector('.relative.z-10')
                     ? box.querySelector('.relative.z-10').appendChild(doneBtn)
