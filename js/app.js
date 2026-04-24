@@ -3751,52 +3751,67 @@ function updateWorkoutUI() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!ex) return finishWorkout();
 
-    document.getElementById('workout-curr-exercise').textContent = ex.name.toUpperCase();
-    document.getElementById('workout-target-info').textContent = `HEDEF: ${ex.target}`;
-    document.getElementById('workout-exercise-count').textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
-    document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
-
-    // OTOMATİK TEKRAR ÇEKME (Smart Pull)
+    // Elementleri bul
+    const nameEl = document.getElementById('workout-exercise-name');
+    const targetEl = document.getElementById('workout-exercise-target');
+    const moveInfoEl = document.getElementById('workout-move-info');
+    const setInfoEl = document.getElementById('workout-set-info');
+    const progTitleEl = document.getElementById('workout-program-title');
+    const progressBar = document.getElementById('workout-progress-bar');
+    const weightInput = document.getElementById('workout-input-weight');
     const repsInput = document.getElementById('workout-input-reps');
+
+    // Metinleri Güncelle
+    if (nameEl) nameEl.textContent = ex.name.toUpperCase();
+    if (targetEl) targetEl.textContent = ex.target;
+    if (progTitleEl) progTitleEl.textContent = workoutSession.programTitle || 'CALITH ANTRENMAN';
+    if (moveInfoEl) moveInfoEl.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length}`;
+    if (setInfoEl) setInfoEl.textContent = `SET ${workoutSession.currSet}`;
+
+    // Akıllı Tekrar Çekme
     if (repsInput) {
-        let targetReps = 10; // Varsayılan
+        let targetReps = 10;
         const targetStr = String(ex.target).toLowerCase();
-        
-        if (targetStr.includes('x')) {
-            // "4x12" -> 12
-            targetReps = parseInt(targetStr.split('x')[1]) || 10;
-        } else if (targetStr.includes('-')) {
-            // "12-15" -> 12 (Alt sınırı alalım)
-            targetReps = parseInt(targetStr.split('-')[0]) || 10;
-        } else {
-            // Direkt "12" yazıyorsa
-            targetReps = parseInt(targetStr) || 10;
-        }
+        if (targetStr.includes('x')) targetReps = parseInt(targetStr.split('x')[1]) || 10;
+        else if (targetStr.includes('-')) targetReps = parseInt(targetStr.split('-')[0]) || 10;
+        else targetReps = parseInt(targetStr) || 10;
         repsInput.value = targetReps;
     }
 
-    // Progress Bar
-    const totalItems = workoutSession.exercises.length;
-    const progress = (workoutSession.currExerciseIdx / totalItems) * 100;
-    document.getElementById('workout-progress-bar').style.width = `${progress}%`;
+    // Progres Bar
+    if (progressBar) {
+        const progress = (workoutSession.currExerciseIdx / workoutSession.exercises.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
 
-    // Set Geçmişini Render Et
     renderWorkoutSets();
 }
 
 function renderWorkoutSets() {
     const container = document.getElementById('workout-sets-list');
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    if (!container || !ex) return;
     
     container.innerHTML = ex.sets.map((set, i) => `
-        <div class="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl animate-fade-in">
-            <span class="text-xs font-bold text-gray-500">SET ${i + 1}</span>
+        <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-in fade-in slide-in-from-right duration-300">
+            <div class="flex items-center gap-3">
+                <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">${i + 1}. SET</span>
+                <div class="h-4 w-px bg-white/5"></div>
+            </div>
             <div class="flex items-center gap-4">
-                <span class="text-sm font-mono font-bold text-white">${set.weight} KG</span>
-                <span class="text-sm font-mono font-bold text-calith-orange">${set.reps} TEKRAR</span>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="weight" class="w-3.5 h-3.5 text-gray-500"></i>
+                    <span class="text-sm font-mono font-bold text-white">${set.weight}kg</span>
+                </div>
+                <div class="flex items-center gap-2 bg-calith-orange/10 px-3 py-1 rounded-lg border border-calith-orange/20">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-calith-orange"></i>
+                    <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}</span>
+                </div>
             </div>
         </div>
     `).join('');
+
+    if (window.lucide) lucide.createIcons();
 }
 
 function completeSet() {
