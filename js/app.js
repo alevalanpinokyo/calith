@@ -3705,6 +3705,48 @@ async function startWorkoutMode(programId) {
     if (window.lucide) lucide.createIcons();
 }
 
+function showNextExerciseModal() {
+    // Varsa eskiyi temizle
+    const oldModal = document.getElementById('next-exercise-modal');
+    if (oldModal) oldModal.remove();
+
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    const isLast = workoutSession.currExerciseIdx === workoutSession.exercises.length - 1;
+
+    const modalHtml = `
+        <div id="next-exercise-modal" class="fixed inset-0 z-[100] flex items-center justify-center px-4 animate-in fade-in duration-300">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+            <div class="relative bg-calith-dark border border-white/10 w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-2xl scale-in-center">
+                <div class="w-20 h-20 bg-calith-orange/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-calith-orange/10">
+                    <i data-lucide="check-circle-2" class="w-10 h-10 text-calith-orange animate-bounce"></i>
+                </div>
+                <h3 class="font-display text-2xl font-bold uppercase mb-2 tracking-tight">Hareketi Bitirdin!</h3>
+                <p class="text-gray-400 text-sm font-medium mb-8">Tüm hedeflenen setleri başarıyla tamamladın. Adamsın!</p>
+                
+                <div class="space-y-3">
+                    <button onclick="closeNextModal(); nextExercise();" class="w-full bg-calith-orange hover:bg-calith-orange/90 text-white font-bold py-5 rounded-2xl transition-all shadow-lg shadow-calith-orange/20 flex items-center justify-center gap-2 uppercase tracking-widest text-sm">
+                        ${isLast ? 'ANTRENMANI BİTİR' : 'SIRADAKİ HAREKETE GEÇ'} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="closeNextModal()" class="w-full bg-white/5 hover:bg-white/10 text-gray-500 font-bold py-4 rounded-2xl transition-all uppercase tracking-widest text-[10px]">
+                        Setlere Devam Et
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide) lucide.createIcons();
+}
+
+function closeNextModal() {
+    const modal = document.getElementById('next-exercise-modal');
+    if (modal) {
+        modal.classList.add('animate-out', 'fade-out', 'zoom-out', 'duration-300');
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
 function updateWorkoutUI() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!ex) return finishWorkout();
@@ -3772,21 +3814,16 @@ function completeSet() {
     // UI Güncelle
     renderWorkoutSets();
     
-    // Hedef set kontrolü (Önce objedeki targetSets'e bak, yoksa parse et)
+    // Hedef set kontrolü
     let targetSets = ex.targetSets || 4;
     if (!ex.targetSets && String(ex.target).toLowerCase().includes('x')) {
         targetSets = parseInt(String(ex.target).split('x')[0]) || 4;
     }
 
-    if (workoutSession.currSet >= targetSets) {
-        showToast(`🔥 HEDEF TAMAMLANDI! ${targetSets} Set bitti. Adamsın.`);
-        // Sıradaki hareket butonunu iyice belirginleştir
-        const nextBtn = document.querySelector('button[onclick="nextExercise()"]');
-        if(nextBtn) {
-            nextBtn.classList.add('ring-2', 'ring-calith-orange', 'bg-calith-orange', 'text-white');
-            nextBtn.innerHTML = 'SIRADAKİ HAREKETE GEÇ <i data-lucide="arrow-right" class="w-4 h-4"></i>';
-            if(window.lucide) lucide.createIcons();
-        }
+    if (workoutSession.currSet === targetSets) {
+        showNextExerciseModal();
+    } else if (workoutSession.currSet > targetSets) {
+        showToast(`${workoutSession.currSet}. Set Tamamlandı! Hedefin üzerindesin, helal!`);
     } else {
         showToast(`${workoutSession.currSet}. Set Tamamlandı!`);
     }
