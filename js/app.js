@@ -1529,22 +1529,19 @@ function showProgramDetail(id, skipHistory = false) {
                         }
 
                         return `
-                        <div class="flex flex-col gap-3 p-4 bg-white/[0.03] border border-white/5 rounded-2xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2 h-2 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform"></div>
-                                <span class="text-sm font-bold text-gray-200 uppercase tracking-tight">${name}</span>
+                        <div class="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all">
+                            <div class="flex items-center gap-3 pr-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform shrink-0"></div>
+                                <span class="text-[13px] font-bold text-gray-200 uppercase tracking-tight leading-tight">${name}</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
-                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">SET</span>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-2.5 py-1.5 min-w-[50px] justify-center">
+                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">SET</span>
                                     <span class="text-xs font-mono font-bold text-calith-orange">${sets}</span>
                                 </div>
-                                <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
-                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">${type === 'secs' ? 'SANİYE' : 'TEKRAR'}</span>
+                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-2.5 py-1.5 min-w-[50px] justify-center">
+                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">${type === 'secs' ? 'SN' : 'TEK'}</span>
                                     <span class="text-xs font-mono font-bold text-white">${reps}</span>
-                                </div>
-                                <div class="ml-auto w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
-                                    <i data-lucide="${type === 'secs' ? 'clock' : 'target'}" class="w-3.5 h-3.5 text-calith-orange"></i>
                                 </div>
                             </div>
                         </div>
