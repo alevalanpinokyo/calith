@@ -3176,14 +3176,15 @@ async function addToMyPrograms(programId = null) {
 
     showToast('Programa ekleniyor...');
 
-    const { error } = await sb.from('user_programs').upsert([
+    const { error, status } = await sb.from('user_programs').upsert([
         { user_id: user.id, program_id: programId }
     ]);
 
     if (error) {
-        console.error('Error adding program:', error);
+        console.error('Error adding program:', error, 'Status:', status);
         showToast('Hata: ' + error.message);
     } else {
+        console.log('Program successfully added to Supabase. Status:', status);
         showToast('Program başarıyla kütüphanenize eklendi!');
         if (!myProgramIds.includes(String(programId))) {
             myProgramIds.push(String(programId));
@@ -3202,15 +3203,22 @@ async function removeFromMyPrograms(programId) {
     if (!sb) return;
 
     const { data: { user } } = await sb.auth.getUser();
-    if (!user) return;
+    if (!user) {
+        console.error('Remove attempt failed: No authenticated user.');
+        return;
+    }
 
-    const { error } = await sb.from('user_programs')
+    console.log(`Removing program ${programId} for user ${user.id}...`);
+
+    const { error, status } = await sb.from('user_programs')
         .delete()
         .match({ user_id: user.id, program_id: programId });
 
     if (error) {
+        console.error('Supabase Delete Error:', error, 'Status:', status);
         showToast('Hata: ' + error.message);
     } else {
+        console.log('Program successfully removed from Supabase. Status:', status);
         showToast('Program kütüphanenizden çıkarıldı.');
         
         // Local listeyi güncelle
