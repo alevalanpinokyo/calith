@@ -3792,8 +3792,17 @@ function renderWorkoutSets() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!container || !ex) return;
     
+    if (ex.sets.length === 0) {
+        container.innerHTML = `
+            <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
+            </div>
+        `;
+        return;
+    }
+    
     container.innerHTML = ex.sets.map((set, i) => `
-        <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-in fade-in slide-in-from-right duration-300">
+        <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-pulse" style="animation: fade-in 0.3s ease-out forwards;">
             <div class="flex items-center gap-3">
                 <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">${i + 1}. SET</span>
                 <div class="h-4 w-px bg-white/5"></div>

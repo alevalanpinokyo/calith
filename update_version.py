@@ -18,7 +18,7 @@ def update_version():
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(new_content)
             
-    print(f"✅ Tüm HTML dosyaları güncellendi: v={new_version}")
+    print(f"Tüm HTML dosyalari güncellendi: v={new_version}")
 
 if __name__ == "__main__":
     update_version()
