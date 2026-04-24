@@ -1356,8 +1356,12 @@ function showProgramDetail(id, skipHistory = false) {
     if (listSec) listSec.classList.add('hidden');
     if (detailSec) detailSec.classList.remove('hidden');
 
-    const p = programPosts.find(post => String(post.id) === String(id));
-    if (!p) return;
+    // Tüm posts içinde ara (Daha güvenli)
+    const p = posts.find(post => String(post.id) === String(id));
+    if (!p) {
+        showToast('Program bulunamadı.');
+        return;
+    }
 
     const contentDiv = document.getElementById('post-content');
     if (!contentDiv) return;
@@ -1386,7 +1390,7 @@ function showProgramDetail(id, skipHistory = false) {
 
     let programHtml = '';
     let notesHtml = '';
-    let mediaWidthClass = 'max-w-none'; // Default large
+    let mediaWidthClass = 'max-w-none';
 
     try {
         const data = JSON.parse(displayContent);
@@ -1396,7 +1400,6 @@ function showProgramDetail(id, skipHistory = false) {
 
         if (mediaSize === 'small') mediaWidthClass = 'max-w-sm mx-auto';
         else if (mediaSize === 'medium') mediaWidthClass = 'max-w-2xl mx-auto';
-        else mediaWidthClass = 'max-w-none';
 
         if (Array.isArray(days)) {
             const group1 = days.slice(0, 3);
@@ -1406,7 +1409,6 @@ function showProgramDetail(id, skipHistory = false) {
                 if (!day.name && (!day.exercises || day.exercises.length === 0)) return '';
                 return `
                 <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${i}">
-                    <!-- Header (Clickable Area) -->
                     <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
@@ -1421,8 +1423,6 @@ function showProgramDetail(id, skipHistory = false) {
                             <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
                         </div>
                     </div>
-                    
-                    <!-- Accordion Body -->
                     <div class="accordion-content expanded" id="day-content-${i}">
                         <div class="accordion-inner px-6 pb-6">
                             <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
@@ -1438,47 +1438,35 @@ function showProgramDetail(id, skipHistory = false) {
                             </ul>
                         </div>
                     </div>
-                </div>
-                `;
+                </div>`;
             };
 
             programHtml = `
-                <!-- Üst Grup (Gün 1, 2, 3) -->
                 <div class="mb-12">
                     <div class="flex items-center gap-3 mb-6">
                         <span class="w-1.5 h-6 bg-calith-orange rounded-full"></span>
                         <h4 class="text-sm font-black text-white/50 uppercase tracking-[0.2em]">ANA RUTİN (GÜN 1-2-3)</h4>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${group1.map((day, i) => renderCard(day, i)).join('')}
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${group1.map((day, i) => renderCard(day, i)).join('')}</div>
                 </div>
-
-                <!-- Alt Grup (Gün 4, 5) -->
                 ${group2.length > 0 ? `
                 <div class="mb-12">
                     <div class="flex items-center gap-3 mb-6">
                         <span class="w-1.5 h-6 bg-calith-accent rounded-full"></span>
                         <h4 class="text-sm font-black text-white/50 uppercase tracking-[0.2em]">TAMAMLAYICI & TOPARLANMA (GÜN 4-5)</h4>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${group2.map((day, i) => renderCard(day, i + 3)).join('')}
-                    </div>
-                </div>
-                ` : ''}
-            `;
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${group2.map((day, i) => renderCard(day, i + 3)).join('')}</div>
+                </div>` : ''}`;
         }
 
         if (notes) {
-            notesHtml = `
-                <div class="mt-12 p-8 rounded-3xl bg-gradient-to-br from-calith-orange/5 to-transparent border border-calith-orange/10 reveal active">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i data-lucide="info" class="w-5 h-5 text-calith-orange"></i>
-                        <h4 class="text-sm font-black text-white uppercase tracking-widest">Antrenman Notları</h4>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed whitespace-pre-wrap">${notes}</p>
+            notesHtml = `<div class="mt-12 p-8 rounded-3xl bg-gradient-to-br from-calith-orange/5 to-transparent border border-calith-orange/10 reveal active">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="info" class="w-5 h-5 text-calith-orange"></i>
+                    <h4 class="text-sm font-black text-white uppercase tracking-widest">Antrenman Notları</h4>
                 </div>
-            `;
+                <p class="text-gray-400 text-sm leading-relaxed whitespace-pre-wrap">${notes}</p>
+            </div>`;
         }
     } catch (e) {
         programHtml = `<div class="prose prose-invert prose-lg max-w-none">${sanitizeContent(displayContent)}</div>`;
@@ -1492,9 +1480,7 @@ function showProgramDetail(id, skipHistory = false) {
                 <span class="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em]">${p.category.replace('program_', '')} SEVİYE</span>
             </div>
         </div>
-        <div class="${mediaWidthClass}">
-            ${mediaHtml}
-        </div>
+        <div class="${mediaWidthClass}">${mediaHtml}</div>
         <div class="mt-8">
             <div class="flex items-center gap-4 mb-8">
                 <div class="h-px flex-1 bg-gradient-to-r from-calith-orange/50 to-transparent"></div>
@@ -1503,33 +1489,26 @@ function showProgramDetail(id, skipHistory = false) {
             </div>
             ${programHtml}
             ${notesHtml}
-
-            <!-- CTA Section -->
             <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 reveal active">
                 <button onclick="startWorkoutMode('${p.id}')" class="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all shadow-2xl shadow-white/10 active:scale-95">
                     <i data-lucide="play" class="w-5 h-5"></i>
                     <span>Antrenmanı Başlat</span>
                 </button>
-                
                 ${isProgramAdded(p.id) ? `
                     <div class="w-full sm:w-auto bg-calith-orange/10 border border-calith-orange/20 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] text-calith-orange flex items-center justify-center gap-3">
                         <i data-lucide="check-circle" class="w-5 h-5"></i>
                         <span>PROGRAMLARINDA</span>
-                    </div>
-                ` : `
-                    <button onclick="addToMyPrograms()" class="w-full sm:w-auto btn-outline border-white/10 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all">
+                    </div>` : `
+                    <button onclick="addToMyPrograms('${p.id}')" class="w-full sm:w-auto btn-outline border-white/10 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all">
                         <i data-lucide="plus-circle" class="w-5 h-5 text-calith-orange"></i>
                         <span>Programlarıma Ekle</span>
-                    </button>
-                `}
-                
+                    </button>`}
                 <button onclick="exportProgramPDF()" class="w-full sm:w-auto text-gray-500 hover:text-white px-6 py-4 font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-colors">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span>PDF</span>
                 </button>
             </div>
-        </div>
-    `;
+        </div>`;
 
     if (window.lucide) lucide.createIcons();
     window.scrollTo(0, 0);
@@ -3146,8 +3125,9 @@ async function loadUserPrograms(userId) {
     const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
     
     if (!error && data) {
+        myProgramIds = data.map(d => String(d.program_id)); // Global listeyi güncelle
         const programIds = data.map(d => d.program_id);
-        const myPrograms = programPosts.filter(p => programIds.includes(p.id));
+        const myPrograms = posts.filter(p => programIds.includes(p.id));
         renderUserPrograms(myPrograms);
     }
 }
@@ -3479,8 +3459,13 @@ function renderFrontendLinks() {
 
 // --- WORKOUT ENGINE FUNCTIONS ---
 
+let myProgramIds = []; // Global sahiplik listesi
+
 function isProgramAdded(programId) {
-    // Profil verilerinden veya localStorage'dan kontrol et
+    // 1. Önce global sahiplik listesine bak (Supabase'den dolan)
+    if (myProgramIds.includes(String(programId))) return true;
+    
+    // 2. localStorage'a bak (Eski veriler veya yedek için)
     const userProgs = JSON.parse(localStorage.getItem('calith_my_programs') || '[]');
     return userProgs.some(id => String(id) === String(programId));
 }
