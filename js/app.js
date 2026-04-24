@@ -4244,6 +4244,14 @@ function completeSet() {
 
     // UI Güncelle
     renderWorkoutSets();
+    
+    // Saniye Bazlı Hareket Kontrolü (Her set sonunda zorla uygula)
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+    const workoutModeEl = document.getElementById('workout-mode');
+    if (workoutModeEl && isTimed) {
+        workoutModeEl.setAttribute('data-exercise-type', 'secs');
+    }
 
     // Hedef set kontrolü (AŞIRI ZIRHLI VERSİYON)
     let targetSets = parseInt(ex.targetSets);
