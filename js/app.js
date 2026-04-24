@@ -1352,14 +1352,27 @@ function showProgramDetail(id, skipHistory = false) {
     const listSec = document.getElementById('program-list-view');
     const detailSec = document.getElementById('blog-detail');
 
+    if (!detailSec) {
+        // Eğer bu sayfada detay alanı yoksa (örneğin profile.html), skills.html'e yönlendir
+        window.location.href = `skills.html?p=${id}`;
+        return;
+    }
+
     if (mainSec) mainSec.classList.add('hidden');
     if (listSec) listSec.classList.add('hidden');
-    if (detailSec) detailSec.classList.remove('hidden');
+    detailSec.classList.remove('hidden');
 
-    // Tüm posts içinde ara (Daha güvenli)
-    const p = posts.find(post => String(post.id) === String(id));
+    // Hem genel posts hem de kullanıcının özel programları (myPrograms) içinde ara
+    let p = posts.find(post => String(post.id) === String(id));
+    
+    // Eğer posts içinde bulamazsa myPrograms içinde ara
+    if (!p && typeof myPrograms !== 'undefined') {
+        p = myPrograms.find(prog => String(prog.id) === String(id));
+    }
+
     if (!p) {
-        showToast('Program bulunamadı.');
+        showToast('Program verisi yüklenemedi. Lütfen sayfayı yenileyin.');
+        console.error('Program not found in posts or myPrograms:', id);
         return;
     }
 
@@ -3125,9 +3138,10 @@ async function loadUserPrograms(userId) {
     const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
     
     if (!error && data) {
-        myProgramIds = data.map(d => String(d.program_id)); // Global listeyi güncelle
-        const programIds = data.map(d => d.program_id);
-        const myPrograms = posts.filter(p => programIds.includes(p.id));
+        const programIds = data.map(d => String(d.program_id));
+        myProgramIds = programIds; // Global listeyi güncelle
+        
+        const myPrograms = posts.filter(p => programIds.includes(String(p.id)));
         renderUserPrograms(myPrograms);
     }
 }

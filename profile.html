@@ -132,6 +132,24 @@
                     </button>
                 </div>
             </div>
+
+            <!-- My Registered Programs -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-6 bg-calith-orange rounded-full"></div>
+                        <h3 class="font-display text-2xl font-bold uppercase">Kayıtlı Programlarım</h3>
+                    </div>
+                    <button onclick="window.location.href='skills.html'" class="text-[10px] font-black text-gray-500 uppercase tracking-widest hover:text-calith-orange transition-colors">Tümünü Gör</button>
+                </div>
+                
+                <div id="user-programs-list" class="grid grid-cols-1 gap-4">
+                    <!-- JS will inject programs here -->
+                    <div class="py-12 text-center animate-pulse">
+                        <p class="text-gray-600 font-bold uppercase tracking-widest text-xs">Programlar yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
             
         </div>
     </div>
@@ -167,6 +185,10 @@
 
         const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta', 'ileri': 'İleri'};
         document.getElementById('profile-level').textContent = levelMap[level] || level;
+
+        // Kayıtlı programları yükle
+        if (typeof loadPosts === 'function') await loadPosts();
+        if (typeof loadUserPrograms === 'function') await loadUserPrograms(user.id);
     });
 </script>
 </body>
