@@ -4127,13 +4127,17 @@ function updateWorkoutUI() {
 
     // Hareket Zamanlayıcı Kontrolü (Timed Exercises)
     const timerBtn = document.getElementById('btn-exercise-timer');
+    const repsLabel = document.getElementById('workout-label-reps');
+
     if (timerBtn) {
         if (ex.type === 'secs') {
             timerBtn.classList.remove('hidden');
             timerBtn.querySelector('span').textContent = `SÜRE BAŞLAT (${ex.targetReps}sn)`;
             timerBtn.onclick = () => startExerciseTimer(ex.targetReps);
+            if (repsLabel) repsLabel.textContent = 'SÜRE (SN)';
         } else {
             timerBtn.classList.add('hidden');
+            if (repsLabel) repsLabel.textContent = 'TEKRAR';
         }
     }
 
