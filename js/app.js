@@ -3208,9 +3208,11 @@ async function loadProfileData(user) {
     if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
     document.getElementById('profile-email').textContent = user.email;
 
-    // Profil verisini çek (role dahil)
-    const [profileResult] = await Promise.all([
-        sb.from('profiles').select('*').eq('id', user.id).single()
+    // Her iki tabloyu paralel çek
+    // user_roles = gerçek yetki kaynağı | profiles = profil verisi
+    const [profileResult, roleResult] = await Promise.all([
+        sb.from('profiles').select('*').eq('id', user.id).single(),
+        sb.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
     ]);
     
     // Skeleton efektini kaldır
@@ -3236,36 +3238,40 @@ async function loadProfileData(user) {
         if (editWeight) editWeight.value = data.weight || '';
         if (editHeight) editHeight.value = data.height || '';
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
+    }
 
-        // ===== ROZET SİSTEMİ (profiles.role) =====
-        if (badgeEl) {
-            const role = (data.role || 'user').toLowerCase();
+    // ===== ROZET SİSTEMİ =====
+    // Önce user_roles'a bak (yetkili kaynak), yoksa profiles.role'a fallback
+    if (badgeEl) {
+        const authorizedRole = roleResult.data?.role;          // user_roles tablosu
+        const profileRole    = profileResult.data?.role;       // profiles tablosu (fallback)
+        const role = (authorizedRole || profileRole || 'user').toLowerCase();
 
-            const roleConfig = {
-                admin: {
-                    label: '⚡ ADMİN',
-                    classes: 'bg-red-500/15 text-red-400 border-red-500/30'
-                },
-                mod: {
-                    label: '🛡 MOD',
-                    classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
-                },
-                premium: {
-                    label: '👑 PREMİUM',
-                    classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
-                },
-                user: {
-                    label: 'ÜYE',
-                    classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
-                }
-            };
+        const roleConfig = {
+            admin: {
+                label: '⚡ ADMİN',
+                classes: 'bg-red-500/15 text-red-400 border-red-500/30'
+            },
+            mod: {
+                label: '🛡 MOD',
+                classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+            },
+            premium: {
+                label: '👑 PREMİUM',
+                classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
+            },
+            user: {
+                label: 'ÜYE',
+                classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
+            }
+        };
 
-            const config = roleConfig[role] || roleConfig['user'];
-            badgeEl.textContent = config.label;
-            badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
-        }
+        const config = roleConfig[role] || roleConfig['user'];
+        badgeEl.textContent = config.label;
+        badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
     }
 }
+
 
 
 
