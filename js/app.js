@@ -3176,15 +3176,13 @@ async function addToMyPrograms(programId = null) {
 
     showToast('Programa ekleniyor...');
 
-    const { error, status } = await sb.from('user_programs').upsert([
+    const { error } = await sb.from('user_programs').upsert([
         { user_id: user.id, program_id: programId }
     ]);
 
     if (error) {
-        console.error('Error adding program:', error, 'Status:', status);
         showToast('Hata: ' + error.message);
     } else {
-        console.log('Program successfully added to Supabase. Status:', status);
         showToast('Program başarıyla kütüphanenize eklendi!');
         if (!myProgramIds.includes(String(programId))) {
             myProgramIds.push(String(programId));
@@ -3203,29 +3201,15 @@ async function removeFromMyPrograms(programId) {
     if (!sb) return;
 
     const { data: { user } } = await sb.auth.getUser();
-    if (!user) {
-        console.error('Remove attempt failed: No authenticated user.');
-        return;
-    }
+    if (!user) return;
 
-    console.log(`Attempting to delete program ${programId} for user ${user.id}...`);
-
-    const { data, error, status } = await sb.from('user_programs')
+    const { error } = await sb.from('user_programs')
         .delete()
-        .match({ user_id: user.id, program_id: programId })
-        .select();
+        .match({ user_id: user.id, program_id: programId });
 
     if (error) {
-        console.error('Supabase Delete Error:', error, 'Status:', status);
         showToast('Hata: ' + error.message);
     } else {
-        console.log('Delete Response Data:', data);
-        if (!data || data.length === 0) {
-            console.warn('Warning: No rows were deleted from Supabase. Check RLS or IDs.');
-        } else {
-            console.log(`Successfully deleted ${data.length} rows.`);
-        }
-        
         showToast('Program kütüphanenizden çıkarıldı.');
         
         // Local listeyi güncelle
@@ -3239,10 +3223,8 @@ async function removeFromMyPrograms(programId) {
         const isDetailView = detailSec && !detailSec.classList.contains('hidden');
 
         if (isDetailView) {
-            console.log('Detail view active, refreshing detail buttons...');
             showProgramDetail(programId, true);
         } else {
-            console.log('Profile view active, refreshing programs list...');
             if (document.getElementById('profile-mount')) {
                 loadUserPrograms(user.id);
             }
@@ -3584,22 +3566,15 @@ async function loadUserPrograms(userId) {
     const sb = getSupabase();
     if (!sb) return;
 
-    console.log('Loading user programs for:', userId);
     const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
 
-    if (error) {
-        console.error('Error loading user programs:', error);
-        return;
-    }
-
-    console.log('User programs from DB:', data);
+    if (error) return;
 
     if (data) {
         const programIds = data.map(d => String(d.program_id));
-        myProgramIds = programIds; // Global listeyi güncelle
+        myProgramIds = programIds; 
 
         const myPrograms = posts.filter(p => programIds.includes(String(p.id)));
-        console.log('Filtered programs to render:', myPrograms.length);
         renderUserPrograms(myPrograms);
     }
 }
