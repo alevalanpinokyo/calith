@@ -157,7 +157,6 @@ function showSection(section) {
         if (section === 'shop' && !isShopPage) return window.location.href = 'shop.html';
         if (section === 'blog' && !isBlogPage) return window.location.href = 'blog.html';
         if (section === 'admin' && !isAdminPage) return window.location.href = 'admin.html';
-        if (section === 'profile' && !path.includes('index.html')) return window.location.href = 'index.html?section=profile';
         if (section === 'landing' && !path.includes('index.html') && path !== '/') return window.location.href = 'index.html';
 
         if (section === 'product-detail' && currentPd && !isShopPage) return window.location.href = `shop.html?p=${currentPd.id}`;
@@ -936,20 +935,6 @@ function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     if (menu) menu.classList.toggle('hidden');
 }
-
-// Mobil menü dışına tıklayınca kapatma
-document.addEventListener('click', (e) => {
-    const menu = document.getElementById('mobile-menu');
-    const menuBtn = document.querySelector('button[onclick="toggleMobileMenu()"]');
-    const menuIcon = menuBtn ? menuBtn.querySelector('i') : null;
-    
-    if (menu && !menu.classList.contains('hidden')) {
-        // Eğer tıklanan yer menü değilse VE menü butonu değilse VE menü butonu içindeki icon değilse
-        if (!menu.contains(e.target) && e.target !== menuBtn && e.target !== menuIcon) {
-            menu.classList.add('hidden');
-        }
-    }
-});
 
 function init() {
     loadPosts();
@@ -2623,50 +2608,53 @@ function hideAdminLoading() {
 }
 
 function updateAuthUI() {
-    // Desktop Nav Auth Button & Icon
-    const authElements = document.querySelectorAll('[onclick="showAuthModal()"], [onclick="showProfile()"], [onclick="handleLogout()"], [onclick*="profile.html"]');
-    
-    authElements.forEach(el => {
-        const isMobileIcon = el.classList.contains('md:hidden') && el.querySelector('i[data-lucide="user"]');
-        const isMobileMenuBtn = el.closest('#mobile-menu') && el.tagName === 'BUTTON';
+    // Desktop Nav Auth Button
+    const deskBtns = document.querySelectorAll('button[onclick="showAuthModal()"], button[onclick="window.location.href=\'profile.html\'"], button[onclick="handleLogout()"]');
+    deskBtns.forEach(btn => {
+        // İndex sayfası desktop butonları genelde btn-outline içerir
+        if (!btn.classList.contains('w-full') && btn.classList.contains('hidden')) {
+            if (currentUser) {
+                btn.textContent = 'Profilim';
+                btn.setAttribute('onclick', "window.location.href='profile.html'");
+                btn.classList.remove('text-red-400', 'border-red-500/30');
+                btn.classList.add('text-white', 'btn-outline');
+            } else {
+                btn.textContent = 'Giriş Yap';
+                btn.setAttribute('onclick', 'showAuthModal()');
+                btn.classList.remove('text-red-400', 'border-red-500/30');
+                btn.classList.add('text-white', 'btn-outline');
+            }
+        }
 
-        if (isMobileIcon) {
+        // Mobile Header Icon Button
+        if (btn.classList.contains('md:hidden') && btn.classList.contains('p-2')) {
             if (currentUser) {
-                el.setAttribute('onclick', "showProfile()");
-                el.classList.add('text-calith-accent');
-                el.classList.remove('text-white');
+                btn.setAttribute('onclick', "window.location.href='profile.html'");
+                btn.classList.add('text-calith-accent');
+                btn.classList.remove('text-white');
             } else {
-                el.setAttribute('onclick', 'showAuthModal()');
-                el.classList.add('text-white');
-                el.classList.remove('text-calith-accent');
-            }
-        } else if (isMobileMenuBtn) {
-            if (currentUser) {
-                el.textContent = 'PROFİLİM';
-                el.setAttribute('onclick', "showProfile()");
-                el.classList.add('text-calith-accent');
-                el.classList.remove('text-red-500', 'text-white');
-            } else {
-                el.textContent = 'GİRİŞ YAP / ÜYE OL';
-                el.setAttribute('onclick', 'showAuthModal()');
-                el.classList.remove('text-red-500', 'text-calith-accent');
-                el.classList.add('text-white');
-            }
-        } else {
-            // Desktop or generic buttons
-            if (currentUser) {
-                if (el.textContent.includes('GİRİŞ YAP') || el.textContent.includes('ÜYE OL') || el.textContent.includes('Giriş Yap')) {
-                    el.innerHTML = el.querySelector('i') ? el.innerHTML.replace(/Giriş Yap|GİRİŞ YAP \/ ÜYE OL/g, 'PROFİLİM') : 'PROFİLİM';
-                    el.setAttribute('onclick', "showProfile()");
-                }
-            } else {
-                if (el.textContent.includes('PROFİLİM') || el.textContent.includes('Profilim')) {
-                    el.innerHTML = el.querySelector('i') ? el.innerHTML.replace(/PROFİLİM|Profilim/g, 'GİRİŞ YAP') : 'GİRİŞ YAP';
-                    el.setAttribute('onclick', "showAuthModal()");
-                }
+                btn.setAttribute('onclick', 'showAuthModal()');
+                btn.classList.add('text-white');
+                btn.classList.remove('text-calith-accent');
             }
         }
     });
+
+    // Mobile Menu Auth Button
+    const mobileAuthBtn = document.querySelector('#mobile-menu button[onclick="showAuthModal()"], #mobile-menu button[onclick="window.location.href=\'profile.html\'"], #mobile-menu button[onclick="handleLogout()"]');
+    if (mobileAuthBtn) {
+        if (currentUser) {
+            mobileAuthBtn.textContent = 'PROFİLİM';
+            mobileAuthBtn.setAttribute('onclick', "window.location.href='profile.html'");
+            mobileAuthBtn.classList.add('text-calith-accent');
+            mobileAuthBtn.classList.remove('text-red-500', 'text-white');
+        } else {
+            mobileAuthBtn.textContent = 'GİRİŞ YAP / ÜYE OL';
+            mobileAuthBtn.setAttribute('onclick', 'showAuthModal()');
+            mobileAuthBtn.classList.remove('text-red-500', 'text-calith-accent');
+            mobileAuthBtn.classList.add('text-white');
+        }
+    }
 }
 
 // --- LEAD OR EMAIL COLLECTION ---
@@ -2806,11 +2794,8 @@ function handleRouting() {
     const isSkillsPage = !!document.getElementById('program-list-view');
     const isBlogPage = !!document.getElementById('blog-list');
     const isShopPage = !!document.getElementById('shop-grid');
-    const sectionParam = params.get('section');
 
-    if (sectionParam === 'profile') {
-        showProfile();
-    } else if (isSkillsPage) {
+    if (isSkillsPage) {
         if (programId) {
             showProgramDetail(programId, true);
         } else if (levelCode) {
