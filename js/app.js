@@ -3208,12 +3208,17 @@ async function loadProfileData(user) {
     if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
     document.getElementById('profile-email').textContent = user.email;
 
-    const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+    // Profil ve rol verilerini paralel olarak çek
+    const [profileResult, roleResult] = await Promise.all([
+        sb.from('profiles').select('*').eq('id', user.id).single(),
+        sb.from('user_roles').select('role').eq('user_id', user.id).single()
+    ]);
     
     // Skeleton efektini kaldır
     elements.forEach(el => { if(el) el.classList.remove('skeleton'); });
 
-    if (!error && data) {
+    const data = profileResult.data;
+    if (!profileResult.error && data) {
         if (data.full_name && nameEl) nameEl.textContent = data.full_name;
         if (weightEl) weightEl.textContent = data.weight ? data.weight + ' KG' : '--';
         if (heightEl) heightEl.textContent = data.height ? data.height + ' CM' : '--';
@@ -3221,36 +3226,6 @@ async function loadProfileData(user) {
         
         const levelEl = document.getElementById('profile-level');
         if (levelEl) levelEl.textContent = user.user_metadata?.fitness_level || 'BAŞLANGIÇ';
-
-        // ===== ROZET SİSTEMİ =====
-        if (badgeEl) {
-            const role = (data.role || 'uye').toLowerCase();
-            // Önce tüm renk sınıflarını sıfırla
-            badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border';
-            
-            const roleConfig = {
-                admin: {
-                    label: '⚡ ADMİN',
-                    classes: 'bg-red-500/15 text-red-400 border-red-500/30'
-                },
-                mod: {
-                    label: '🛡 MOD',
-                    classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
-                },
-                premium: {
-                    label: '👑 PREMİUM',
-                    classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
-                },
-                uye: {
-                    label: 'ÜYE',
-                    classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
-                }
-            };
-
-            const config = roleConfig[role] || roleConfig['uye'];
-            badgeEl.textContent = config.label;
-            badgeEl.className += ' ' + config.classes;
-        }
 
         // Formu doldur
         const editName = document.getElementById('edit-full-name');
@@ -3263,7 +3238,36 @@ async function loadProfileData(user) {
         if (editHeight) editHeight.value = data.height || '';
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
+
+    // ===== ROZET SİSTEMİ (user_roles tablosundan) =====
+    if (badgeEl) {
+        const role = roleResult.data?.role?.toLowerCase() || 'user';
+
+        const roleConfig = {
+            admin: {
+                label: '⚡ ADMİN',
+                classes: 'bg-red-500/15 text-red-400 border-red-500/30'
+            },
+            mod: {
+                label: '🛡 MOD',
+                classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+            },
+            premium: {
+                label: '👑 PREMİUM',
+                classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
+            },
+            user: {
+                label: 'ÜYE',
+                classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
+            }
+        };
+
+        const config = roleConfig[role] || roleConfig['user'];
+        badgeEl.textContent = config.label;
+        badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
+    }
 }
+
 
 
 async function saveProfileData() {
