@@ -3715,19 +3715,20 @@ function showNextExerciseModal() {
 
     const modalHtml = `
         <div id="next-exercise-modal" class="fixed inset-0 z-[9999] flex items-center justify-center px-4">
-            <div class="absolute inset-0 bg-black/90 backdrop-blur-xl animate-in fade-in duration-500"></div>
-            <div class="relative bg-calith-dark border border-white/10 w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-2xl animate-in zoom-in duration-300">
-                <div class="w-20 h-20 bg-calith-orange/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-calith-orange/10">
-                    <i data-lucide="check-circle-2" class="w-10 h-10 text-calith-orange"></i>
+            <div class="absolute inset-0 bg-black/90 backdrop-blur-xl animate-in fade-in duration-700"></div>
+            <div class="relative bg-calith-dark border border-calith-orange/30 w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-[0_0_50px_rgba(255,107,0,0.15)] animate-in zoom-in duration-300">
+                <div class="w-24 h-24 bg-calith-orange/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-calith-orange/10 animate-pulse">
+                    <i data-lucide="award" class="w-12 h-12 text-calith-orange"></i>
                 </div>
-                <h3 class="font-display text-3xl font-bold uppercase mb-2 tracking-tight">TEBRİKLER!</h3>
-                <p class="text-gray-400 text-sm font-medium mb-8">Hedeflenen tüm setleri bitirdin. Sıradaki harekete geçelim mi?</p>
+                <h3 class="font-display text-4xl font-black text-white mb-2 tracking-tighter italic">TEBRİKLER!</h3>
+                <p class="text-calith-orange text-xs font-black uppercase tracking-[0.2em] mb-8">HEDEF SETLER TAMAMLANDI</p>
                 
-                <div class="space-y-3">
-                    <button onclick="closeNextModal(); nextExercise();" class="w-full bg-calith-orange hover:bg-calith-orange/90 text-white font-bold py-5 rounded-2xl transition-all shadow-lg shadow-calith-orange/20 flex items-center justify-center gap-2 uppercase tracking-widest text-sm active:scale-95">
-                        ${isLast ? 'ANTRENMANI BİTİR' : 'SIRADAKİ HAREKETE GEÇ'} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                <div class="space-y-4">
+                    <button onclick="closeNextModal(); nextExercise();" class="w-full bg-calith-orange hover:bg-calith-orange/90 text-white font-black py-5 rounded-2xl transition-all shadow-[0_10px_20px_rgba(255,107,0,0.3)] flex items-center justify-center gap-3 uppercase tracking-widest text-sm active:scale-95 group">
+                        <span>${isLast ? 'ANTRENMANI BİTİR' : 'SIRADAKİ HAREKETE GEÇ'}</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </button>
-                    <button onclick="closeNextModal()" class="w-full bg-white/5 hover:bg-white/10 text-gray-500 font-bold py-4 rounded-2xl transition-all uppercase tracking-widest text-[10px]">
+                    <button onclick="closeNextModal()" class="w-full bg-white/5 hover:bg-white/10 text-gray-500 font-bold py-4 rounded-2xl transition-all uppercase tracking-widest text-[10px] border border-white/5">
                         Setlere Devam Et
                     </button>
                 </div>
