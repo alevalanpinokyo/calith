@@ -3957,7 +3957,6 @@ function renderFrontendLinks() {
 // --- WORKOUT ENGINE FUNCTIONS ---
 
 let myProgramIds = []; // Global sahiplik listesi
-let restInterval = null;
 let exerciseTimerInterval = null;
 
 function isProgramAdded(programId) {
