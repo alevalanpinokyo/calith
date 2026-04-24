@@ -3768,14 +3768,24 @@ function updateWorkoutUI() {
     if (moveInfoEl) moveInfoEl.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length}`;
     if (setInfoEl) setInfoEl.textContent = `SET ${workoutSession.currSet}`;
 
-    // Akıllı Tekrar Çekme
+    // Akıllı Tekrar Çekme (Aşırı Güvenli Regex)
     if (repsInput) {
         let targetReps = 10;
         const targetStr = String(ex.target).toLowerCase();
-        if (targetStr.includes('x')) targetReps = parseInt(targetStr.split('x')[1]) || 10;
-        else if (targetStr.includes('-')) targetReps = parseInt(targetStr.split('-')[0]) || 10;
-        else targetReps = parseInt(targetStr) || 10;
-        repsInput.value = targetReps;
+        
+        const xMatch = targetStr.match(/x\s*(\d+)/);
+        if (xMatch) {
+            targetReps = parseInt(xMatch[1], 10);
+        } else {
+            const numMatch = targetStr.match(/(\d+)/);
+            if (numMatch) targetReps = parseInt(numMatch[1], 10);
+        }
+        
+        repsInput.value = Math.max(1, targetReps || 10);
+        
+        // HTML min attribute (Scroll ile eksiye düşmemesi için)
+        repsInput.setAttribute("min", "0");
+        if (weightInput) weightInput.setAttribute("min", "0");
     }
 
     // Progres Bar
