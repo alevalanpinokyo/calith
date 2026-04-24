@@ -167,15 +167,16 @@ function showSection(section) {
     const isAdminPage = path.includes('admin');
 
     if (!target) {
-        // Hedef element bu sayfada yoksa ve başka bir sayfaya aitse yönlendir
-        if (section === 'shop' && !isShopPage) return window.location.href = 'shop.html';
-        if (section === 'blog' && !isBlogPage) return window.location.href = 'blog.html';
-        if (section === 'admin' && !isAdminPage) return window.location.href = 'admin.html';
-        if (section === 'profile' && !path.includes('index.html')) return window.location.href = 'index.html?section=profile';
-        if (section === 'landing' && !path.includes('index.html') && path !== '/') return window.location.href = 'index.html';
+        const isHomePage = path.includes('index.html') || path === '/' || path === '';
 
-        if (section === 'product-detail' && currentPd && !isShopPage) return window.location.href = `shop.html?p=${currentPd.id}`;
-        if (section === 'blog-detail' && currentBlogId && !isBlogPage) return window.location.href = `blog.html?b=${currentBlogId}`;
+        if (section === 'shop' && !path.includes('shop')) return window.location.href = 'shop.html';
+        if (section === 'blog' && !path.includes('blog')) return window.location.href = 'blog.html';
+        if (section === 'admin' && !path.includes('admin')) return window.location.href = 'admin.html';
+        if (section === 'profile' && !isHomePage) return window.location.href = 'index.html#profile';
+        if (section === 'landing' && !isHomePage) return window.location.href = 'index.html';
+
+        if (section === 'product-detail' && currentPd && !path.includes('shop')) return window.location.href = `shop.html?p=${currentPd.id}`;
+        if (section === 'blog-detail' && currentBlogId && !path.includes('blog')) return window.location.href = `blog.html?b=${currentBlogId}`;
 
         console.warn(`Section "${section}" bu sayfada bulunamadı.`);
         return;
@@ -187,6 +188,17 @@ function showSection(section) {
     });
     target.classList.remove('hidden');
     setTimeout(() => target.classList.add('active'), 50);
+
+    // URL Hash güncelle (Refresh'te kalması için)
+    if (section !== 'landing') {
+        if (window.location.hash !== '#' + section) {
+            window.location.hash = section;
+        }
+    } else {
+        if (window.location.hash) {
+            window.history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+    }
 
     const nav = document.getElementById('global-nav');
     document.body.classList.add('theme-dark');
@@ -654,9 +666,9 @@ function sanitizeContent(html) {
     tmp.innerHTML = html;
 
     // Yalnızca izin verilen etiketler (daha geniş bir beyaz liste)
-    const ALLOWED_TAGS = new Set(['p','h1','h2','h3','h4','h5','h6','ul','ol','li',
-        'b','strong','i','em','u','s','a','img','br','hr','blockquote',
-        'table','thead','tbody','tr','th','td','span','div','iframe']);
+    const ALLOWED_TAGS = new Set(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li',
+        'b', 'strong', 'i', 'em', 'u', 's', 'a', 'img', 'br', 'hr', 'blockquote',
+        'table', 'thead', 'tbody', 'tr', 'th', 'td', 'span', 'div', 'iframe']);
 
     function cleanNode(node) {
         // Metin nodları olduğu gibi kalıyor
@@ -676,8 +688,8 @@ function sanitizeContent(html) {
 
             // style ve class gibi zararlı attribute’ları temizle
             // (href, src, alt, width, height, frameborder, allowfullscreen izinli)
-            const ALLOWED_ATTRS = new Set(['href','src','alt','width','height',
-                'frameborder','allowfullscreen','target','rel']);
+            const ALLOWED_ATTRS = new Set(['href', 'src', 'alt', 'width', 'height',
+                'frameborder', 'allowfullscreen', 'target', 'rel']);
             Array.from(node.attributes).forEach(attr => {
                 if (!ALLOWED_ATTRS.has(attr.name.toLowerCase())) {
                     node.removeAttribute(attr.name);
@@ -955,7 +967,7 @@ function toggleMobileMenu() {
 document.addEventListener('click', (e) => {
     const menu = document.getElementById('mobile-menu');
     const menuBtn = document.querySelector('button[onclick="toggleMobileMenu()"]');
-    
+
     if (menu && !menu.classList.contains('hidden')) {
         // Eğer tıklanan yer menü değilse VE menü butonu (veya içindeki herhangi bir şey) değilse
         if (!menu.contains(e.target) && (!menuBtn || !menuBtn.contains(e.target))) {
@@ -964,9 +976,11 @@ document.addEventListener('click', (e) => {
     }
 });
 
-function init() {
-    loadPosts();
-    loadProducts(); // Dinamik ürünleri yükle
+async function init() {
+    // Önce kritik verileri yükle (await kullanarak yarış durumunu engelle)
+    await loadPosts();
+    await loadProducts();
+
     updateCartUI();
     loadLinks();
     loadAnnouncements();
@@ -1007,8 +1021,18 @@ function init() {
     // Lucide support
     if (window.lucide) lucide.createIcons();
 
-    // URL parametre kontrolü loadPosts() içinde posts yüklendikten sonra yapılıyor
-    // (blog.html?b=ID ve skills.html?p=ID ve skills.html?level=... için)
+    // Hash Router - Sayfa yenilendiğinde kalınan yerden devam et
+    const handleHash = () => {
+        const hash = window.location.hash.substring(1);
+        if (hash === 'profile') {
+            showProfile();
+        } else if (hash && document.getElementById(hash)) {
+            showSection(hash);
+        }
+    };
+
+    window.addEventListener('hashchange', handleHash);
+    handleHash(); // İlk yüklemede çalıştır
 }
 
 function initScrollReveal() {
@@ -1039,11 +1063,11 @@ async function saveProgram() {
     for (let i = 1; i <= 5; i++) {
         const dayName = document.getElementById(`prog-day-${i}-name`).value.trim();
         const dayBadge = document.getElementById(`prog-day-${i}-badge`).value.trim();
-        
+
         // Dinamik satırlardan egzersizleri topla
         const exerciseList = document.getElementById(`prog-day-${i}-exercises-list`);
         const exercises = [];
-        
+
         if (exerciseList) {
             const rows = exerciseList.querySelectorAll('.exercise-row');
             rows.forEach(row => {
@@ -1051,13 +1075,13 @@ async function saveProgram() {
                 const sets = row.querySelector('.ex-sets').value.trim();
                 const reps = row.querySelector('.ex-reps').value.trim();
                 const type = row.querySelector('.ex-type').value;
-                
+
                 if (name) {
                     exercises.push({ name, sets, reps, type });
                 }
             });
         }
-        
+
         days.push({ name: dayName, badge: dayBadge, exercises: exercises });
     }
 
@@ -1105,7 +1129,7 @@ function addExerciseRow(dayNum, data = null) {
     const row = document.createElement('div');
     row.className = 'exercise-row flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5 group transition-all hover:border-calith-orange/30';
     row.id = `row-${rowId}`;
-    
+
     row.innerHTML = `
         <input type="text" placeholder="Hareket Adı" class="ex-name flex-1 bg-transparent border-none p-0 text-[11px] font-bold outline-none focus:ring-0 text-white placeholder-gray-700" value="${data ? data.name : ''}">
         <div class="flex items-center gap-1 shrink-0 border-l border-white/10 pl-2">
@@ -1121,7 +1145,7 @@ function addExerciseRow(dayNum, data = null) {
             </button>
         </div>
     `;
-    
+
     list.appendChild(row);
     if (window.lucide) lucide.createIcons();
 }
@@ -1175,13 +1199,13 @@ function editProgram(id) {
     try {
         const data = JSON.parse(displayContent);
         const days = Array.isArray(data) ? data : (data.days || []);
-        
+
         days.forEach((day, index) => {
             const i = index + 1;
             if (i > 5) return;
             document.getElementById(`prog-day-${i}-name`).value = day.name || '';
             document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
-            
+
             // Egzersizleri ekle
             if (day.exercises && Array.isArray(day.exercises)) {
                 day.exercises.forEach(ex => {
@@ -1288,7 +1312,7 @@ function backToLevels(skipHistory = false) {
 
 function toggleDayAccordion(index) {
     const indices = [];
-    
+
     // Kullanıcı Gruplandırması:
     // Üst Grup: Gün 1, 2, 3 (index 0, 1, 2)
     // Alt Grup: Gün 4, 5 (index 3, 4)
@@ -1297,7 +1321,7 @@ function toggleDayAccordion(index) {
     } else {
         indices.push(3, 4);
     }
-    
+
     if (indices.length === 0) return;
 
     // Grubun durumunu kontrol etmek için sayfada var olan ilk elemanı baz alalım
@@ -1306,7 +1330,7 @@ function toggleDayAccordion(index) {
 
     const firstContent = document.getElementById(`day-content-${firstExistingIdx}`);
     const shouldExpand = !firstContent.classList.contains('expanded');
-    
+
     indices.forEach(idx => {
         const content = document.getElementById(`day-content-${idx}`);
         const card = document.getElementById(`day-card-${idx}`);
@@ -1358,7 +1382,7 @@ function showProgramLevel(level, titleStr, skipHistory = false) {
     grid.innerHTML = levelPrograms.map((p, i) => `
         <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[2rem] p-4 sm:p-6 transition-all duration-500 flex flex-col lg:flex-row items-center gap-6 overflow-hidden reveal active">
             <!-- Arka Plan Büyük Numara (Dekoratif) -->
-            <div class="absolute -left-4 -bottom-4 text-[8rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i+1}</div>
+            <div class="absolute -left-4 -bottom-4 text-[8rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i + 1}</div>
             
             <!-- Program Görseli (Küçük ve Şık) -->
             <div class="w-full lg:w-40 aspect-video lg:aspect-square rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500 shadow-2xl">
@@ -1368,7 +1392,7 @@ function showProgramLevel(level, titleStr, skipHistory = false) {
             <!-- İçerik Alanı -->
             <div class="flex-1 text-center lg:text-left relative z-10">
                 <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 mb-3">
-                    <span class="text-[9px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-full border border-calith-orange/20">PROGRAM 0${i+1}</span>
+                    <span class="text-[9px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-full border border-calith-orange/20">PROGRAM 0${i + 1}</span>
                     <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest border border-white/10 px-3 py-1 rounded-full">${p.category.replace('program_', '').toUpperCase()} SEVİYE</span>
                 </div>
                 
@@ -1428,7 +1452,7 @@ function showProgramDetail(id, skipHistory = false) {
 
     // Hem genel posts hem de kullanıcının özel programları (myPrograms) içinde ara
     let p = posts.find(post => String(post.id) === String(id));
-    
+
     // Eğer posts içinde bulamazsa myPrograms içinde ara
     if (!p && typeof myPrograms !== 'undefined') {
         p = myPrograms.find(prog => String(prog.id) === String(id));
@@ -1486,12 +1510,12 @@ function showProgramDetail(id, skipHistory = false) {
                 if (!day.name && (!day.exercises || day.exercises.length === 0)) return '';
 
                 const exList = day.exercises || [];
-                const isRestDay = exList.length === 0 || 
-                                  (exList.length === 1 && (
-                                    String(exList[0].name || exList[0]).toUpperCase().includes('REST') ||
-                                    String(exList[0].name || exList[0]).toUpperCase().includes('DİNLEN') ||
-                                    String(exList[0].name || exList[0]).toUpperCase().includes('DINLEN')
-                                  ));
+                const isRestDay = exList.length === 0 ||
+                    (exList.length === 1 && (
+                        String(exList[0].name || exList[0]).toUpperCase().includes('REST') ||
+                        String(exList[0].name || exList[0]).toUpperCase().includes('DİNLEN') ||
+                        String(exList[0].name || exList[0]).toUpperCase().includes('DINLEN')
+                    ));
 
                 let dayContentHtml = '';
 
@@ -1563,10 +1587,10 @@ function showProgramDetail(id, skipHistory = false) {
                     <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
-                                <span class="text-sm font-black text-calith-orange">0${i+1}</span>
+                                <span class="text-sm font-black text-calith-orange">0${i + 1}</span>
                             </div>
                             <div>
-                                <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (i+1)}</h4>
+                                <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (i + 1)}</h4>
                                 <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${day.badge || 'ANTRENMAN'}</p>
                             </div>
                         </div>
@@ -2016,7 +2040,7 @@ async function loadHomecards() {
     if (homecards.length > 0) {
         const isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html');
         const isAdmin = window.location.pathname.endsWith('admin.html');
-        
+
         if (isIndex && !isAdmin && typeof renderFrontendHomecards === 'function') renderFrontendHomecards();
         if (isAdmin && typeof renderAdminHomecards === 'function') renderAdminHomecards();
     }
@@ -2029,10 +2053,10 @@ async function loadHomecards() {
     const { data, error } = await sb.from('homecards').select('*');
     if (!error && data) {
         const isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html');
-        
+
         // AKILLI KONTROL: Eğer gelen veri önbellektekiyle aynıysa render yapma (Titremeyi önler)
         const hasChanged = JSON.stringify(data) !== JSON.stringify(homecards);
-        
+
         homecards = data;
         localStorage.setItem('calith_homecards_cache', JSON.stringify(data));
 
@@ -2156,14 +2180,14 @@ function resetHomecardForm() {
 async function saveScheduleGlobalSettings() {
     const text = document.getElementById('sch-global-text').value.trim();
     const url = document.getElementById('sch-global-url').value.trim();
-    
-    if(!text) return alert('Buton metni boş olamaz!');
+
+    if (!text) return alert('Buton metni boş olamaz!');
 
     const sb = getSupabase();
-    if(!sb) return;
+    if (!sb) return;
 
     const btn = document.getElementById('btn-sch-global-save');
-    if(btn) btn.innerHTML = '<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Kaydediliyor...';
+    if (btn) btn.innerHTML = '<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Kaydediliyor...';
 
     const { error } = await sb.from('homecards').upsert({
         id: 'schedule_settings',
@@ -2173,15 +2197,15 @@ async function saveScheduleGlobalSettings() {
         link_url: url
     });
 
-    if(error) {
+    if (error) {
         alert('Hata: ' + error.message);
     } else {
         showToast('Bölüm ayarları güncellendi');
         await loadHomecards();
     }
-    
-    if(btn) btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Ayarları Kaydet ve Güncelle';
-    if(window.lucide) lucide.createIcons();
+
+    if (btn) btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Ayarları Kaydet ve Güncelle';
+    if (window.lucide) lucide.createIcons();
 }
 
 function editHomecard(id) {
@@ -2433,7 +2457,7 @@ function renderFrontendHomecards() {
     if (scheduleData.length > 0) {
         // Ayarlar kaydını ayır (gerçek kartlardan gizle)
         const settings = scheduleData.find(h => h.id === 'schedule_settings');
-        const schedule = scheduleData.filter(h => h.id !== 'schedule_settings').sort((a,b)=> (a.id > b.id ? 1 : -1));
+        const schedule = scheduleData.filter(h => h.id !== 'schedule_settings').sort((a, b) => (a.id > b.id ? 1 : -1));
 
         // Global Butonu Güncelle
         const globalBtn = document.getElementById('schedule-global-btn');
@@ -2507,7 +2531,7 @@ function renderFrontendHomecards() {
 
             grid.innerHTML = gridHtml;
             grid.className = "grid grid-cols-1 gap-6 fade-in"; // Grid yapısını konteynerlar yönetecek
-            
+
             if (window.lucide) lucide.createIcons();
             if (typeof initScrollReveal === 'function') initScrollReveal();
         }
@@ -2780,7 +2804,7 @@ function hideAdminLoading() {
 function updateAuthUI() {
     // Desktop Nav Auth Button & Icon
     const authElements = document.querySelectorAll('[onclick="showAuthModal()"], [onclick="showProfile()"], [onclick="handleLogout()"], [onclick*="profile.html"]');
-    
+
     authElements.forEach(el => {
         const isMobileIcon = el.classList.contains('md:hidden') && el.querySelector('[data-lucide="user"]');
         const isMobileMenuBtn = el.closest('#mobile-menu') && el.tagName === 'BUTTON';
@@ -2935,59 +2959,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Run these in parallel for speed
     const loadOps = [
         loadPosts().then(() => {
-        handleRouting(); // Veriler yüklendikten sonra yönlendirmeyi yap
-    }),
-    (async () => {
-        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
-            await loadAnnouncements();
-            await loadHomecards();
+            handleRouting(); // Veriler yüklendikten sonra yönlendirmeyi yap
+        }),
+        (async () => {
+            if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('admin.html')) {
+                await loadAnnouncements();
+                await loadHomecards();
+            }
+        })()
+    ];
+
+    await Promise.all(loadOps);
+
+    // 5. Browser Geri/İleri Butonu Senkronizasyonu
+    window.onpopstate = () => handleRouting();
+
+    function handleRouting() {
+        const params = new URLSearchParams(window.location.search);
+        const programId = params.get('p');
+        const blogId = params.get('b');
+        const blogCat = params.get('c');
+        const levelCode = params.get('level');
+
+        // Elementlerin varlığına göre hangi sayfada olduğumuzu anlayalım (Pathname kontrolünden daha güvenli)
+        const isSkillsPage = !!document.getElementById('program-list-view');
+        const isBlogPage = !!document.getElementById('blog-list');
+        const isShopPage = !!document.getElementById('shop-grid');
+        const sectionParam = params.get('section');
+
+        if (sectionParam === 'profile') {
+            showProfile();
+        } else if (isSkillsPage) {
+            if (programId) {
+                showProgramDetail(programId, true);
+            } else if (levelCode) {
+                const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta Seviye', 'ileri': 'İleri Seviye' };
+                showProgramLevel(levelCode, levelMap[levelCode] || levelCode, true);
+            } else {
+                backToLevels(true);
+            }
+        } else if (isBlogPage) {
+            if (blogId) {
+                showBlogDetail(blogId);
+            } else if (blogCat) {
+                filterBlog(blogCat);
+            } else {
+                showSection('blog');
+            }
+        } else if (isShopPage) {
+            const productId = params.get('p');
+            if (productId) showProductDetail(productId);
+            else showSection('shop');
         }
-    })()
-];
-
-await Promise.all(loadOps);
-
-// 5. Browser Geri/İleri Butonu Senkronizasyonu
-window.onpopstate = () => handleRouting();
-
-function handleRouting() {
-    const params = new URLSearchParams(window.location.search);
-    const programId = params.get('p');
-    const blogId = params.get('b');
-    const blogCat = params.get('c');
-    const levelCode = params.get('level');
-
-    // Elementlerin varlığına göre hangi sayfada olduğumuzu anlayalım (Pathname kontrolünden daha güvenli)
-    const isSkillsPage = !!document.getElementById('program-list-view');
-    const isBlogPage = !!document.getElementById('blog-list');
-    const isShopPage = !!document.getElementById('shop-grid');
-    const sectionParam = params.get('section');
-
-    if (sectionParam === 'profile') {
-        showProfile();
-    } else if (isSkillsPage) {
-        if (programId) {
-            showProgramDetail(programId, true);
-        } else if (levelCode) {
-            const levelMap = { 'baslangic': 'Başlangıç', 'orta': 'Orta Seviye', 'ileri': 'İleri Seviye' };
-            showProgramLevel(levelCode, levelMap[levelCode] || levelCode, true);
-        } else {
-            backToLevels(true);
-        }
-    } else if (isBlogPage) {
-        if (blogId) {
-            showBlogDetail(blogId);
-        } else if (blogCat) {
-            filterBlog(blogCat);
-        } else {
-            showSection('blog');
-        }
-    } else if (isShopPage) {
-        const productId = params.get('p');
-        if (productId) showProductDetail(productId);
-        else showSection('shop');
     }
-}
 
     // 5. Finishing Touches
     if (window.location.pathname.includes('shop.html')) renderShop();
@@ -3003,10 +3027,10 @@ function exportProgramPDF() {
     // 0. Yeni Kaynak: Program Detay Ekranı (Eğer açıksa)
     const detailSec = document.getElementById('blog-detail');
     const dayCards = detailSec ? Array.from(detailSec.querySelectorAll('.program-day-card')) : [];
-    
+
     const scheduleCards = (typeof homecards !== 'undefined')
         ? homecards.filter(h => h.section === 'schedule' && h.id !== 'schedule_settings')
-                   .sort((a, b) => (a.id > b.id ? 1 : -1))
+            .sort((a, b) => (a.id > b.id ? 1 : -1))
         : [];
 
     let data = [];
@@ -3016,7 +3040,7 @@ function exportProgramPDF() {
             const h4 = card.querySelector('h4');
             const badge = card.querySelector('p');
             const items = Array.from(card.querySelectorAll('ul li span'))
-                               .map(s => s.innerText.trim()).filter(Boolean);
+                .map(s => s.innerText.trim()).filter(Boolean);
             return {
                 title: h4 ? h4.innerText.trim() : '',
                 badge: badge ? badge.innerText.trim() : '',
@@ -3029,8 +3053,8 @@ function exportProgramPDF() {
             title: sch.title || '',
             badge: sch.badge || '',
             items: (sch.desc_text || '').split(/\n|\\n/)
-                       .map(l => l.trim().replace(/^[-✓* ]+/, ''))
-                       .filter(l => l.length > 0)
+                .map(l => l.trim().replace(/^[-✓* ]+/, ''))
+                .filter(l => l.length > 0)
         }));
     } else {
         // 2. Fallback: Anasayfa DOM'dan oku
@@ -3039,10 +3063,10 @@ function exportProgramPDF() {
 
         if (cards.length > 0) {
             data = cards.map(card => {
-                const h4     = card.querySelector('h4');
-                const badge  = card.querySelector('.rounded-full');
-                const items  = Array.from(card.querySelectorAll('ul li span:last-child'))
-                                   .map(s => s.innerText.trim()).filter(Boolean);
+                const h4 = card.querySelector('h4');
+                const badge = card.querySelector('.rounded-full');
+                const items = Array.from(card.querySelectorAll('ul li span:last-child'))
+                    .map(s => s.innerText.trim()).filter(Boolean);
                 return {
                     title: h4 ? h4.innerText.trim() : '',
                     badge: badge ? badge.innerText.trim() : '',
@@ -3179,10 +3203,214 @@ async function showProfile() {
         return;
     }
 
+    renderProfileSection();
     showSection('profile');
     loadProfileData(user);
     loadUserPrograms(user.id);
 }
+
+function renderProfileSection() {
+    const mount = document.getElementById('profile-mount');
+    if (!mount) return;
+
+    mount.innerHTML = `
+        <!-- Profil Header Card -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden group border border-white/10 shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between w-full gap-6 pb-8 border-b border-white/5">
+                <!-- Avatar & Info -->
+                <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                    <div class="relative group/avatar cursor-pointer">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-calith-orange to-calith-accent flex items-center justify-center shadow-lg shadow-calith-orange/20">
+                            <i data-lucide="user" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-calith-dark border border-white/10 flex items-center justify-center hover:bg-calith-orange hover:border-calith-orange transition-colors shadow-lg">
+                            <i data-lucide="camera" class="w-3.5 h-3.5 text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-2">
+                            <h2 id="profile-name" class="text-2xl sm:text-3xl font-display font-black tracking-tight uppercase">YÜKLENİYOR...</h2>
+                            <div id="profile-badge" class="px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border border-calith-orange/20 bg-calith-orange/10 text-calith-orange">ÜYE</div>
+                        </div>
+                        <p id="profile-email" class="text-gray-500 font-bold text-xs uppercase tracking-widest flex items-center justify-center md:justify-start gap-2">
+                            <i data-lucide="mail" class="w-3 h-3"></i>
+                            YÜKLENİYOR...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3 w-full md:w-auto justify-center">
+                    <button onclick="toggleEditProfile()" class="flex-1 md:flex-none px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-calith-orange hover:border-calith-orange transition-all flex items-center justify-center gap-2 group/btn">
+                        <i data-lucide="settings" class="w-3.5 h-3.5 group-hover/btn:rotate-90 transition-transform"></i>
+                        PROFİLİ DÜZENLE
+                    </button>
+                    <button onclick="logout()" class="px-5 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center gap-2">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 relative z-10">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                            <i data-lucide="scale" class="w-3.5 h-3.5 text-orange-500"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Güncel Kilo</span>
+                    </div>
+                    <div id="profile-weight" class="text-lg font-display font-bold">-- KG</div>
+                </div>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="ruler" class="w-3.5 h-3.5 text-blue-500"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Boy (CM)</span>
+                    </div>
+                    <div id="profile-height" class="text-lg font-display font-bold">-- CM</div>
+                </div>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                            <i data-lucide="target" class="w-3.5 h-3.5 text-purple-500"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Ana Hedef</span>
+                    </div>
+                    <div id="profile-goal" class="text-sm font-display font-bold leading-tight">--</div>
+                </div>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-7 h-7 rounded-lg bg-calith-accent/10 flex items-center justify-center">
+                            <i data-lucide="medal" class="w-3.5 h-3.5 text-calith-accent"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Deneyim</span>
+                    </div>
+                    <div id="profile-level" class="text-lg font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form (Gizli) -->
+        <div id="edit-profile-form" class="hidden glass-card rounded-3xl p-6 sm:p-8 mb-10 border border-white/10 animate-in slide-in-from-top-4 duration-500">
+            <h3 class="font-display text-xl font-bold mb-8 uppercase tracking-tight flex items-center gap-3">
+                <i data-lucide="user-cog" class="w-5 h-5 text-calith-orange"></i>
+                Profil Bilgilerini Güncelle
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">AD SOYAD</label>
+                    <input type="text" id="edit-full-name" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="Adınız Soyadınız">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">KİLO (KG)</label>
+                    <input type="number" id="edit-weight" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="75">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">BOY (CM)</label>
+                    <input type="number" id="edit-height" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="180">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">ANTRENMAN HEDEFİ</label>
+                    <select id="edit-goal" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all appearance-none">
+                        <option value="Kas Kazanmak" class="bg-calith-dark">Kas Kazanmak (Hipertrofi)</option>
+                        <option value="Yağ Yakmak" class="bg-calith-dark">Yağ Yakmak / Definasyon</option>
+                        <option value="Güç Kazanmak" class="bg-calith-dark">Güç Kazanmak</option>
+                        <option value="İlk Barfiks" class="bg-calith-dark">İlk Barfiksini Çekmek</option>
+                        <option value="Skill Öğrenmek" class="bg-calith-dark">Skill Öğrenmek (L-Sit, Handstand vb.)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end gap-4">
+                <button onclick="toggleEditProfile()" class="px-6 py-3 text-gray-500 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">İptal</button>
+                <button onclick="saveProfileData()" class="px-8 py-3 bg-calith-orange text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-calith-orange/20">Kaydet</button>
+            </div>
+        </div>
+
+        <!-- Programs Tabs Section -->
+        <div class="mb-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-8 border-b border-white/5 pb-0.5 overflow-x-auto no-scrollbar">
+                <div class="flex items-center gap-8">
+                    <button onclick="switchProfileTab('ready')" id="btn-tab-ready" class="profile-tab active relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-white whitespace-nowrap transition-all">
+                        <span class="relative z-10">Calith Programları</span>
+                        <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full shadow-[0_0_15px_rgba(255,107,0,0.5)]"></div>
+                    </button>
+                    <button onclick="switchProfileTab('custom')" id="btn-tab-custom" class="profile-tab relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
+                        <span class="relative z-10">Kendi Oluşturduğum</span>
+                        <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
+                    </button>
+                    <button onclick="switchProfileTab('history')" id="btn-tab-history" class="profile-tab relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
+                        <span class="relative z-10">Antrenman Geçmişi</span>
+                        <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
+                    </button>
+                    <button class="profile-tab relative pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-gray-800 cursor-not-allowed whitespace-nowrap">
+                        <span class="relative z-10">Rezerve</span>
+                    </button>
+                </div>
+                
+                <button onclick="showSection('skills')" class="hidden md:flex pb-4 items-center gap-2 text-[10px] font-black text-calith-orange uppercase tracking-widest hover:text-white transition-colors group/add">
+                    <i data-lucide="plus" class="w-3.5 h-3.5 group-hover/add:rotate-90 transition-transform"></i>
+                    <span>YENİ PROGRAM EKLE</span>
+                </button>
+            </div>
+
+            <div id="profile-tab-content" class="fade-in">
+                <div id="user-programs-list" class="flex flex-col gap-6">
+                    <!-- Programlar buraya render edilecek -->
+                </div>
+            </div>
+        </div>
+    `;
+
+    if (window.lucide) lucide.createIcons();
+}
+
+function switchProfileTab(tabId) {
+    const tabs = document.querySelectorAll('.profile-tab');
+    tabs.forEach(tab => {
+        tab.classList.remove('active', 'text-white');
+        tab.classList.add('text-gray-500');
+        const indicator = tab.querySelector('.tab-indicator');
+        if (indicator) indicator.classList.add('opacity-0');
+    });
+
+    const activeTab = document.getElementById(`btn-tab-${tabId}`);
+    if (activeTab) {
+        activeTab.classList.add('active', 'text-white');
+        activeTab.classList.remove('text-gray-500');
+        const indicator = activeTab.querySelector('.tab-indicator');
+        if (indicator) indicator.classList.remove('opacity-0');
+    }
+
+    const container = document.getElementById('user-programs-list');
+    if (!container) return;
+
+    if (tabId === 'ready') {
+        const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
+        renderUserPrograms(myPrograms);
+    } else if (tabId === 'custom') {
+        container.innerHTML = `
+            <div class="py-24 text-center border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
+                <div class="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10 group">
+                    <i data-lucide="pencil-line" class="w-10 h-10 text-gray-700 group-hover:text-calith-orange transition-colors"></i>
+                </div>
+                <h4 class="text-white font-bold text-lg mb-2 uppercase tracking-tight">Kendi Programını Oluştur</h4>
+                <p class="text-gray-500 text-sm max-w-xs mx-auto mb-8 font-medium">Çok yakında kendi antrenman rutinlerini oluşturup kaydedebileceksin.</p>
+                <button class="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-not-allowed">YAKINDA SİZLERLE</button>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+    } else if (tabId === 'history') {
+        const sb = getSupabase();
+        sb.auth.getUser().then(({ data: { user } }) => {
+            if (user) loadWorkoutLogs(user.id);
+        });
+    }
+}
+
 
 function toggleEditProfile() {
     const form = document.getElementById('edit-profile-form');
@@ -3202,7 +3430,7 @@ async function loadProfileData(user) {
 
     // Başlangıçta skeleton efektini ekle
     const elements = [nameEl, weightEl, heightEl, goalEl];
-    elements.forEach(el => { if(el) el.classList.add('skeleton'); });
+    elements.forEach(el => { if (el) el.classList.add('skeleton'); });
 
     // Hızlı bilgi yükle (Metadatadan)
     if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
@@ -3214,9 +3442,9 @@ async function loadProfileData(user) {
         sb.from('profiles').select('*').eq('id', user.id).single(),
         sb.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
     ]);
-    
+
     // Skeleton efektini kaldır
-    elements.forEach(el => { if(el) el.classList.remove('skeleton'); });
+    elements.forEach(el => { if (el) el.classList.remove('skeleton'); });
 
     const data = profileResult.data;
     if (!profileResult.error && data) {
@@ -3224,7 +3452,7 @@ async function loadProfileData(user) {
         if (weightEl) weightEl.textContent = data.weight ? data.weight + ' KG' : '--';
         if (heightEl) heightEl.textContent = data.height ? data.height + ' CM' : '--';
         if (goalEl) goalEl.textContent = data.goal || '--';
-        
+
         const levelEl = document.getElementById('profile-level');
         if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
 
@@ -3244,7 +3472,7 @@ async function loadProfileData(user) {
     // Önce user_roles'a bak (yetkili kaynak), yoksa profiles.role'a fallback
     if (badgeEl) {
         const authorizedRole = roleResult.data?.role;          // user_roles tablosu
-        const profileRole    = profileResult.data?.role;       // profiles tablosu (fallback)
+        const profileRole = profileResult.data?.role;       // profiles tablosu (fallback)
         const role = (authorizedRole || profileRole || 'user').toLowerCase();
 
         const roleConfig = {
@@ -3307,11 +3535,11 @@ async function loadUserPrograms(userId) {
     if (!sb) return;
 
     const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
-    
+
     if (!error && data) {
         const programIds = data.map(d => String(d.program_id));
         myProgramIds = programIds; // Global listeyi güncelle
-        
+
         const myPrograms = posts.filter(p => programIds.includes(String(p.id)));
         renderUserPrograms(myPrograms);
     }
@@ -3337,7 +3565,7 @@ function renderUserPrograms(programs) {
 
     container.innerHTML = programs.map((p, i) => `
         <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[2rem] p-4 sm:p-6 transition-all duration-500 flex flex-col lg:flex-row items-center gap-6 overflow-hidden">
-            <div class="absolute -left-4 -bottom-4 text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i+1}</div>
+            <div class="absolute -left-4 -bottom-4 text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i + 1}</div>
             
             <div class="w-full lg:w-32 aspect-video lg:aspect-square rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500">
                 <img src="${p.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
@@ -3377,14 +3605,14 @@ async function loadWorkoutLogs(userId) {
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(10);
-    
+
     if (!error && data) {
         renderWorkoutLogs(data);
     }
 }
 
 function renderWorkoutLogs(logs) {
-    const container = document.getElementById('workout-logs-list');
+    const container = document.getElementById('user-programs-list'); // Sekmeli yapıya göre container ID artık ortak
     if (!container) return;
 
     if (logs.length === 0) return;
@@ -3392,7 +3620,7 @@ function renderWorkoutLogs(logs) {
     container.innerHTML = logs.map(log => {
         const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
         const time = new Date(log.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-        
+
         return `
             <div class="group bg-white/[0.02] border border-white/5 p-4 rounded-2xl flex items-center justify-between hover:border-calith-accent/30 transition-all">
                 <div class="flex items-center gap-4">
@@ -3418,14 +3646,14 @@ function renderWorkoutLogs(logs) {
 // Program Card Toggle (Her kart bağımsız açılır/kapanır)
 function toggleScheduleGroup(index) {
     const indices = index <= 2 ? [0, 1, 2] : [3, 4];
-    
+
     // Grubun durumunu kontrol etmek için sayfada var olan ilk elemanı baz alalım
     let firstCard = document.getElementById(`home-day-card-${indices[0]}`);
     if (!firstCard) return;
 
     const isCurrentlyExpanded = firstCard.dataset.expanded === '1';
     const shouldExpand = !isCurrentlyExpanded;
-    
+
     indices.forEach(idx => {
         const card = document.getElementById(`home-day-card-${idx}`);
         if (!card) return;
@@ -3436,7 +3664,7 @@ function toggleScheduleGroup(index) {
         if (!container) return;
 
         container.style.transition = 'max-height 0.5s ease, opacity 0.4s ease';
-        
+
         if (shouldExpand) {
             container.style.maxHeight = (container.scrollHeight + 40) + 'px';
             container.style.opacity = '1';
@@ -3662,12 +3890,12 @@ function renderFrontendLinks() {
             `;
         }
 
-        const onClick = l.category === 'youtube_modal' 
-            ? "document.getElementById('youtube-modal').classList.remove('hidden')" 
+        const onClick = l.category === 'youtube_modal'
+            ? "document.getElementById('youtube-modal').classList.remove('hidden')"
             : `window.open('${l.url}', '${l.url.includes('.html') ? '_self' : '_blank'}')`;
-        
-        const iconHtml = l.icon_type === 'lucide' 
-            ? `<i data-lucide="${l.icon_name || 'link'}" class="w-6 h-6 text-white"></i>` 
+
+        const iconHtml = l.icon_type === 'lucide'
+            ? `<i data-lucide="${l.icon_name || 'link'}" class="w-6 h-6 text-white"></i>`
             : `<i class="fa-brands fa-${l.icon_name || 'link'} text-2xl text-white"></i>`;
 
         return `
@@ -3696,7 +3924,7 @@ let myProgramIds = []; // Global sahiplik listesi
 function isProgramAdded(programId) {
     // 1. Önce global sahiplik listesine bak (Supabase'den dolan)
     if (myProgramIds.includes(String(programId))) return true;
-    
+
     // 2. localStorage'a bak (Eski veriler veya yedek için)
     const userProgs = JSON.parse(localStorage.getItem('calith_my_programs') || '[]');
     return userProgs.some(id => String(id) === String(programId));
@@ -3721,7 +3949,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
 
     // Seçilen günü al (Eğer geçerli değilse 1. günü al)
     if (dayIndex >= days.length || dayIndex < 0) dayIndex = 0;
-    const day = days[dayIndex]; 
+    const day = days[dayIndex];
     const exercises = (day.exercises || []).map(ex => {
         if (typeof ex === 'object') {
             return {
@@ -3733,20 +3961,20 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                 sets: []
             };
         }
-        
+
         // Eski format fallback
         const parts = String(ex).split('(');
         const name = parts[0].trim();
         let target = '4 x 12';
         if (parts[1]) target = parts[1].replace(')', '').trim();
-        
-        return { 
-            name, 
-            target, 
+
+        return {
+            name,
+            target,
             targetSets: target.includes('x') ? parseInt(target.split('x')[0]) : 4,
             targetReps: target.includes('x') ? parseInt(target.split('x')[1]) : 12,
             type: 'reps',
-            sets: [] 
+            sets: []
         };
     });
 
@@ -3768,10 +3996,10 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     document.getElementById('workout-mode').classList.remove('hidden');
     document.getElementById('workout-program-title').textContent = p.title.toUpperCase();
     document.getElementById('workout-rest-timer-box').classList.add('hidden');
-    
+
     updateWorkoutUI();
     startWorkoutClock();
-    
+
     showToast('Antrenman Başladı! Başarılar kanka.');
     if (window.lucide) lucide.createIcons();
 }
@@ -3843,7 +4071,7 @@ function updateWorkoutUI() {
     if (repsInput) {
         let targetReps = 10;
         const targetStr = String(ex.target).toLowerCase();
-        
+
         const xMatch = targetStr.match(/x\s*(\d+)/);
         if (xMatch) {
             targetReps = parseInt(xMatch[1], 10);
@@ -3851,9 +4079,9 @@ function updateWorkoutUI() {
             const numMatch = targetStr.match(/(\d+)/);
             if (numMatch) targetReps = parseInt(numMatch[1], 10);
         }
-        
+
         repsInput.value = Math.max(1, targetReps || 10);
-        
+
         // HTML min attribute (Scroll ile eksiye düşmemesi için)
         repsInput.setAttribute("min", "0");
         if (weightInput) weightInput.setAttribute("min", "0");
@@ -3872,7 +4100,7 @@ function renderWorkoutSets() {
     const container = document.getElementById('workout-sets-list');
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!container || !ex) return;
-    
+
     if (ex.sets.length === 0) {
         container.innerHTML = `
             <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
@@ -3881,7 +4109,7 @@ function renderWorkoutSets() {
         `;
         return;
     }
-    
+
     container.innerHTML = ex.sets.map((set, i) => `
         <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-pulse" style="animation: fade-in 0.3s ease-out forwards;">
             <div class="flex items-center gap-3">
@@ -3915,10 +4143,10 @@ function completeSet() {
 
     // Dinlenme Başlat (Varsayılan 60 sn)
     startRestTimer(60);
-    
+
     // UI Güncelle
     renderWorkoutSets();
-    
+
     // Hedef set kontrolü (AŞIRI ZIRHLI VERSİYON)
     let targetSets = parseInt(ex.targetSets);
     if (isNaN(targetSets) || targetSets <= 0) {
@@ -3977,7 +4205,7 @@ function skipRest() {
 function nextExercise() {
     workoutSession.currExerciseIdx++;
     workoutSession.currSet = 1;
-    
+
     if (workoutSession.currExerciseIdx >= workoutSession.exercises.length) {
         finishWorkout();
     } else {
@@ -4013,7 +4241,7 @@ function closeWorkoutMode() {
 
 async function finishWorkout() {
     showToast('Antrenman Tamamlandı! Veriler senkronize ediliyor...');
-    
+
     // Veriyi hazırla
     const logData = {
         user_id: currentUser?.id,

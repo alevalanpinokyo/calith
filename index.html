@@ -553,145 +553,8 @@
 <!-- Profilim Bölümü (Üyeler İçin) -->
 <section id="profile" class="hidden min-h-screen pt-32 pb-20 fade-in overflow-x-hidden">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Profil Header Card (Unified - avatar + stats) -->
-        <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden group border border-white/10 shadow-2xl">
-            <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-            
-            <!-- Üst satır: Avatar + İsim + Butonlar -->
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between w-full gap-5 pb-5 border-b border-white/5">
-                <!-- Avatar & Info -->
-                <div class="flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
-                    <div class="relative cursor-pointer shrink-0">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-calith-orange to-calith-accent flex items-center justify-center shadow-lg shadow-calith-orange/20">
-                            <i data-lucide="user" class="w-8 h-8 sm:w-10 sm:h-10 text-white"></i>
-                        </div>
-                        <div class="absolute -bottom-2 -right-2 w-7 h-7 rounded-xl bg-calith-dark border border-white/10 flex items-center justify-center hover:bg-calith-orange hover:border-calith-orange transition-colors shadow-lg">
-                            <i data-lucide="camera" class="w-3 h-3 text-white"></i>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h2 id="profile-name" class="font-display text-xl sm:text-3xl font-black mb-1 tracking-tighter uppercase text-white">Üye Adı</h2>
-                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                            <span id="profile-badge" class="px-3 py-1 bg-calith-orange/10 text-calith-orange text-[9px] font-black uppercase tracking-widest rounded-lg border border-calith-orange/20">ÜYE</span>
-                            <span id="profile-email" class="text-gray-400 text-xs font-medium">uye@mail.com</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-2.5 w-full md:w-auto">
-                    <button onclick="toggleEditProfile()" class="flex-1 md:flex-none btn-outline px-4 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
-                        <i data-lucide="settings" class="w-3.5 h-3.5"></i>
-                        <span>Düzenle</span>
-                    </button>
-                    <button onclick="handleLogout()" class="flex-1 md:flex-none bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white px-4 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-                        <span>Çıkış</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Alt satır: Stats -->
-            <div class="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-px mt-5">
-                <div class="flex items-center gap-3 px-3 py-2 md:border-r border-white/5">
-                    <div class="w-8 h-8 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0">
-                        <i data-lucide="scale" class="w-3.5 h-3.5 text-calith-orange"></i>
-                    </div>
-                    <div>
-                        <div class="text-[8px] font-black text-gray-600 uppercase tracking-widest">KİLO</div>
-                        <div id="profile-weight" class="text-sm font-bold text-white leading-none">--</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 px-3 py-2 md:border-r border-white/5">
-                    <div class="w-8 h-8 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0">
-                        <i data-lucide="ruler" class="w-3.5 h-3.5 text-calith-orange"></i>
-                    </div>
-                    <div>
-                        <div class="text-[8px] font-black text-gray-600 uppercase tracking-widest">BOY</div>
-                        <div id="profile-height" class="text-sm font-bold text-white leading-none">--</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 px-3 py-2 md:border-r border-white/5">
-                    <div class="w-8 h-8 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0">
-                        <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <div class="text-[8px] font-black text-gray-600 uppercase tracking-widest">HEDEF</div>
-                        <div id="profile-goal" class="text-sm font-bold text-white leading-none truncate">--</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 px-3 py-2">
-                    <div class="w-8 h-8 rounded-lg bg-calith-orange/10 flex items-center justify-center shrink-0">
-                        <i data-lucide="award" class="w-3.5 h-3.5 text-calith-orange"></i>
-                    </div>
-                    <div>
-                        <div class="text-[8px] font-black text-gray-600 uppercase tracking-widest">DENEYİM</div>
-                        <div id="profile-level" class="text-sm font-bold text-white leading-none uppercase">--</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-        <!-- Edit Profile Form (Initially Hidden) -->
-        <div id="edit-profile-form" class="hidden bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-8 sm:p-10 mb-12">
-            <h3 class="font-display text-2xl font-bold mb-8 uppercase tracking-tight">Profil Bilgilerini Güncelle</h3>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div>
-                    <label for="edit-full-name" class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">AD SOYAD</label>
-                    <input type="text" id="edit-full-name" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="Ad Soyad">
-                </div>
-                <div>
-                    <label for="edit-weight" class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">KİLO (KG)</label>
-                    <input type="number" id="edit-weight" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="75">
-                </div>
-                <div>
-                    <label for="edit-height" class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">BOY (CM)</label>
-                    <input type="number" id="edit-height" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="180">
-                </div>
-                <div class="md:col-span-3">
-                    <label for="edit-goal" class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">ANTRENMAN HEDEFİ</label>
-                    <select id="edit-goal" title="Antrenman Hedefi Seçin" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all appearance-none">
-                        <option value="Kas Kazanmak" class="bg-calith-dark">Kas Kazanmak (Hipertrofi)</option>
-                        <option value="Yağ Yakmak" class="bg-calith-dark">Yağ Yakmak / Definasyon</option>
-                        <option value="Güç Kazanmak" class="bg-calith-dark">Güç Kazanmak</option>
-                        <option value="İlk Barfiks" class="bg-calith-dark">İlk Barfiksini Çekmek</option>
-                        <option value="Skill Öğrenmek" class="bg-calith-dark">Skill Öğrenmek (L-Sit, Handstand vb.)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="mt-10 flex justify-end gap-4">
-                <button onclick="toggleEditProfile()" class="px-8 py-4 text-gray-500 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">İptal</button>
-                <button onclick="saveProfileData()" class="btn-primary px-10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-calith-orange/20">Değişiklikleri Kaydet</button>
-            </div>
-        </div>
-
-        <!-- My Programs Section -->
-        <div class="mb-10">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-3">
-                    <span class="w-1.5 h-6 bg-calith-orange rounded-full"></span>
-                    <h3 class="font-display text-2xl font-bold uppercase tracking-tight">KAYITLI PROGRAMLARIM</h3>
-                </div>
-                <button onclick="showSection('skills')" class="text-[10px] font-black text-calith-orange uppercase tracking-widest hover:underline">+ YENİ EKLE</button>
-            </div>
-            
-            <div id="user-programs-list" class="flex flex-col gap-6">
-                <!-- Programlar JS ile buraya yüklenecek -->
-                <div class="py-20 text-center border-2 border-dashed border-white/5 rounded-[2.5rem]">
-                    <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i data-lucide="plus" class="w-8 h-8 text-gray-600"></i>
-                    </div>
-                    <p class="text-gray-500 font-medium">Henüz bir program eklemedin.</p>
-                    <button onclick="showSection('skills')" class="mt-4 text-calith-orange font-bold text-xs uppercase tracking-widest underline">Programlara Göz At</button>
-                </div>
-            </div>
-        </div>
-
+        <!-- Profil bileşeni app.js tarafından buraya render edilir -->
+        <div id="profile-mount"></div>
     </div>
 </section>
 
@@ -862,7 +725,7 @@
     </div>
 </div>
 
-<script src="js/app.js?v=202604242138"></script>
+<script src="js/app.js?v=202604242213"></script>
 <script>
     lucide.createIcons();
     // Intersection Observer for animations
