@@ -253,19 +253,19 @@
 <script>lucide.createIcons();</script>
 <!-- Workout Mode Overlay (Full Screen Tracking) -->
 <section id="workout-mode" class="fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black">
-    <!-- Ambient Background Glow -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-calith-orange/10 blur-[120px] rounded-full"></div>
-        <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-calith-accent/5 blur-[120px] rounded-full"></div>
+    <!-- Ambient Background Glow (Optimized) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-50">
+        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-calith-orange/5 blur-[80px] rounded-full will-change-transform"></div>
+        <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-calith-accent/5 blur-[80px] rounded-full will-change-transform"></div>
     </div>
 
     <!-- Progress Bar (Top) -->
     <div class="fixed top-0 left-0 right-0 h-1 bg-white/5 z-[1020]">
-        <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange via-white to-calith-accent transition-all duration-700 w-0"></div>
+        <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange via-white to-calith-accent transition-all duration-700 w-0 will-change-[width]"></div>
     </div>
 
-    <!-- Header -->
-    <div class="sticky top-0 z-[1010] px-6 py-8 bg-[#050505]/80 backdrop-blur-2xl border-b border-white/5">
+    <!-- Header (Lighter Blur) -->
+    <div class="sticky top-0 z-[1010] px-6 py-8 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-5">
                 <button onclick="confirmExitWorkout()" aria-label="Antrenmandan Çık" title="Antrenmandan Çık" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10 group">
