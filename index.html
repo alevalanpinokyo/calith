@@ -842,7 +842,7 @@
     </div>
 </div>
 
-<script src="js/app.js?v=202604242014"></script>
+<script src="js/app.js?v=202604242021"></script>
 <script>
     lucide.createIcons();
     // Intersection Observer for animations
@@ -941,10 +941,14 @@
             </div>
             <div class="text-right">
                 <span id="workout-exercise-count" class="text-[10px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-4 py-2 rounded-full border border-calith-orange/20">1 / 5 HAREKET</span>
+                <span id="workout-move-info" class="text-[10px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-4 py-2 rounded-full border border-calith-orange/20">1 / 5 HAREKET</span>
             </div>
         </div>
     </div>
+
+    <!-- Main Content -->
     <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
+        <!-- Exercise Card (Onarıldı) -->
         <div id="workout-exercise-card" class="relative group mb-12">
             <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
             <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm overflow-hidden">
@@ -953,12 +957,9 @@
                 </div>
                 <div class="relative z-10">
                     <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">ŞU ANKİ EGZERSİZ</span>
-                    <h3 id="workout-curr-exercise" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
+                    <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10">
                         <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
-                        <p id="workout-target-info" class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">HEDEF: -</p>
-                    </div>
-                </div>
             </div>
         </div>
         <div id="workout-rest-timer-box" class="hidden mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden animate-in fade-in zoom-in duration-500">
