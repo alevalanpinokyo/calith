@@ -1039,12 +1039,26 @@ async function saveProgram() {
     for (let i = 1; i <= 5; i++) {
         const dayName = document.getElementById(`prog-day-${i}-name`).value.trim();
         const dayBadge = document.getElementById(`prog-day-${i}-badge`).value.trim();
-        const dayExercises = document.getElementById(`prog-day-${i}-exercises`).value.trim()
-            .split('\n')
-            .map(ex => ex.trim())
-            .filter(ex => ex !== '');
         
-        days.push({ name: dayName, badge: dayBadge, exercises: dayExercises });
+        // Dinamik satırlardan egzersizleri topla
+        const exerciseList = document.getElementById(`prog-day-${i}-exercises-list`);
+        const exercises = [];
+        
+        if (exerciseList) {
+            const rows = exerciseList.querySelectorAll('.exercise-row');
+            rows.forEach(row => {
+                const name = row.querySelector('.ex-name').value.trim();
+                const sets = row.querySelector('.ex-sets').value.trim();
+                const reps = row.querySelector('.ex-reps').value.trim();
+                const type = row.querySelector('.ex-type').value;
+                
+                if (name) {
+                    exercises.push({ name, sets, reps, type });
+                }
+            });
+        }
+        
+        days.push({ name: dayName, badge: dayBadge, exercises: exercises });
     }
 
     const notes = document.getElementById('prog-notes').value.trim();
@@ -1083,6 +1097,35 @@ async function saveProgram() {
     resetProgramForm();
 }
 
+function addExerciseRow(dayNum, data = null) {
+    const list = document.getElementById(`prog-day-${dayNum}-exercises-list`);
+    if (!list) return;
+
+    const rowId = Date.now() + Math.random();
+    const row = document.createElement('div');
+    row.className = 'exercise-row flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5 group transition-all hover:border-calith-orange/30';
+    row.id = `row-${rowId}`;
+    
+    row.innerHTML = `
+        <input type="text" placeholder="Hareket Adı" class="ex-name flex-1 bg-transparent border-none p-0 text-[11px] font-bold outline-none focus:ring-0 text-white placeholder-gray-700" value="${data ? data.name : ''}">
+        <div class="flex items-center gap-1 shrink-0 border-l border-white/10 pl-2">
+            <input type="text" placeholder="S" title="Set" class="ex-sets w-8 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-calith-orange outline-none focus:ring-0" value="${data ? data.sets : ''}">
+            <span class="text-gray-700 text-[10px]">×</span>
+            <input type="text" placeholder="R" title="Tekrar/Sn" class="ex-reps w-12 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-white outline-none focus:ring-0" value="${data ? data.reps : ''}">
+            <select title="Tür" class="ex-type bg-transparent border-none p-0 text-[9px] font-black uppercase text-gray-500 outline-none focus:ring-0 cursor-pointer">
+                <option value="reps" ${data && data.type === 'reps' ? 'selected' : ''}>TKR</option>
+                <option value="secs" ${data && data.type === 'secs' ? 'selected' : ''}>SN</option>
+            </select>
+            <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
+                <i data-lucide="x" class="w-3 h-3"></i>
+            </button>
+        </div>
+    `;
+    
+    list.appendChild(row);
+    if (window.lucide) lucide.createIcons();
+}
+
 function renderAdminPrograms() {
     const list = document.getElementById('admin-prog-list');
     if (!list) return;
@@ -1116,6 +1159,8 @@ function editProgram(id) {
     const p = programPosts.find(post => String(post.id) === String(id));
     if (!p) return;
 
+    resetProgramForm();
+
     let displayContent = p.content || '';
     let videoMatch = displayContent.match(/<!-- VIDEO: (.*?) -->/);
     let videoUrl = videoMatch ? videoMatch[1] : '';
@@ -1127,7 +1172,6 @@ function editProgram(id) {
     document.getElementById('prog-cover').value = p.image || '';
     document.getElementById('prog-video').value = videoUrl;
 
-    // JSON verisini parse etmeye çalış
     try {
         const data = JSON.parse(displayContent);
         const days = Array.isArray(data) ? data : (data.days || []);
@@ -1137,15 +1181,34 @@ function editProgram(id) {
             if (i > 5) return;
             document.getElementById(`prog-day-${i}-name`).value = day.name || '';
             document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
-            document.getElementById(`prog-day-${i}-exercises`).value = (day.exercises || []).join('\n');
+            
+            // Egzersizleri ekle
+            if (day.exercises && Array.isArray(day.exercises)) {
+                day.exercises.forEach(ex => {
+                    if (typeof ex === 'object') {
+                        addExerciseRow(i, ex);
+                    } else {
+                        // Eski format (String) ise parse etmeye çalış
+                        const parts = ex.split('(');
+                        const name = parts[0].trim();
+                        let target = parts[1] ? parts[1].replace(')', '').trim() : '';
+                        let sets = '-', reps = '-';
+                        if (target.includes('x')) {
+                            sets = target.split('x')[0].trim();
+                            reps = target.split('x')[1].trim();
+                        } else {
+                            reps = target;
+                        }
+                        addExerciseRow(i, { name, sets, reps, type: 'reps' });
+                    }
+                });
+            }
         });
 
         if (data.notes) document.getElementById('prog-notes').value = data.notes;
         if (data.mediaSize) document.getElementById('prog-media-size').value = data.mediaSize;
     } catch (e) {
-        // Eski HTML formatındaysa ilk güne koy (veya temizle)
-        resetProgramForm();
-        document.getElementById('prog-day-1-exercises').value = "ESKİ FORMAT: " + displayContent.replace(/<[^>]*>/g, '');
+        console.error('Program parse error:', e);
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1184,7 +1247,8 @@ function resetProgramForm() {
     for (let i = 1; i <= 5; i++) {
         document.getElementById(`prog-day-${i}-name`).value = '';
         document.getElementById(`prog-day-${i}-badge`).value = '';
-        document.getElementById(`prog-day-${i}-exercises`).value = '';
+        const list = document.getElementById(`prog-day-${i}-exercises-list`);
+        if (list) list.innerHTML = '';
     }
     document.getElementById('prog-notes').value = '';
     document.getElementById('prog-media-size').value = 'medium';
@@ -1441,19 +1505,26 @@ function showProgramDetail(id, skipHistory = false) {
                             <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
                             <div class="space-y-3">
                                 ${(day.exercises || []).map(ex => {
-                                    // "Pushups (4x12)" formatını parse et
-                                    const parts = ex.split('(');
-                                    const name = parts[0].trim();
-                                    let target = parts[1] ? parts[1].replace(')', '').trim() : 'Hedef Belirtilmedi';
-                                    
-                                    // Set ve Reps ayırmaya çalış (Örn: 4x12 veya 3x15-20)
-                                    let setVal = '-', repVal = '-';
-                                    if(target.toLowerCase().includes('x')) {
-                                        const tParts = target.toLowerCase().split('x');
-                                        setVal = tParts[0].trim();
-                                        repVal = tParts[1].trim();
+                                    let name, sets, reps, type;
+
+                                    if (typeof ex === 'object') {
+                                        name = ex.name;
+                                        sets = ex.sets;
+                                        reps = ex.reps;
+                                        type = ex.type || 'reps';
                                     } else {
-                                        repVal = target;
+                                        // Eski format (String) parse et
+                                        const parts = String(ex).split('(');
+                                        name = parts[0].trim();
+                                        let target = parts[1] ? parts[1].replace(')', '').trim() : '-';
+                                        if (target.includes('x')) {
+                                            sets = target.split('x')[0].trim();
+                                            reps = target.split('x')[1].trim();
+                                        } else {
+                                            sets = '-';
+                                            reps = target;
+                                        }
+                                        type = 'reps';
                                     }
 
                                     return `
@@ -1465,14 +1536,14 @@ function showProgramDetail(id, skipHistory = false) {
                                         <div class="flex items-center gap-2">
                                             <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
                                                 <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">SET</span>
-                                                <span class="text-xs font-mono font-bold text-calith-orange">${setVal}</span>
+                                                <span class="text-xs font-mono font-bold text-calith-orange">${sets}</span>
                                             </div>
                                             <div class="flex flex-col items-center justify-center bg-black/40 border border-white/5 rounded-xl px-4 py-2 min-w-[60px]">
-                                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">TEKRAR</span>
-                                                <span class="text-xs font-mono font-bold text-white">${repVal}</span>
+                                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">${type === 'secs' ? 'SANİYE' : 'TEKRAR'}</span>
+                                                <span class="text-xs font-mono font-bold text-white">${reps}</span>
                                             </div>
                                             <div class="ml-auto w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
-                                                <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
+                                                <i data-lucide="${type === 'secs' ? 'clock' : 'target'}" class="w-3.5 h-3.5 text-calith-orange"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -3534,13 +3605,31 @@ async function startWorkoutMode(programId) {
     // Günü seç (Varsayılan 0, ileride seçim ekranı eklenebilir)
     const day = days[0]; 
     const exercises = (day.exercises || []).map(ex => {
-        // "Pushups (4x12)" formatını parse etmeye çalış
-        const parts = ex.split('(');
+        if (typeof ex === 'object') {
+            return {
+                name: ex.name,
+                target: `${ex.sets} x ${ex.reps}${ex.type === 'secs' ? 'sn' : ''}`,
+                targetSets: parseInt(ex.sets) || 1,
+                targetReps: parseInt(ex.reps) || 10,
+                type: ex.type || 'reps',
+                sets: []
+            };
+        }
+        
+        // Eski format fallback
+        const parts = String(ex).split('(');
         const name = parts[0].trim();
         let target = '4 x 12';
         if (parts[1]) target = parts[1].replace(')', '').trim();
         
-        return { name, target, sets: [] };
+        return { 
+            name, 
+            target, 
+            targetSets: target.includes('x') ? parseInt(target.split('x')[0]) : 4,
+            targetReps: target.includes('x') ? parseInt(target.split('x')[1]) : 12,
+            type: 'reps',
+            sets: [] 
+        };
     });
 
     if (exercises.length === 0) return showToast('Bu gün için egzersiz tanımlanmamış.');
