@@ -4088,84 +4088,63 @@ function updateWorkoutUI() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!ex) return finishWorkout();
 
-    // Elementleri bul
-    const nameEl = document.getElementById('workout-exercise-name');
-    const targetEl = document.getElementById('workout-exercise-target');
-    const moveInfoEl = document.getElementById('workout-move-info');
-    const setInfoEl = document.getElementById('workout-set-info');
-    const progTitleEl = document.getElementById('workout-program-title');
-    const progressBar = document.getElementById('workout-progress-bar');
-    const weightInput = document.getElementById('workout-input-weight');
-    const repsInput = document.getElementById('workout-input-reps');
+    // Elementleri tek seferde bul
+    const els = {
+        name: document.getElementById('workout-exercise-name'),
+        target: document.getElementById('workout-exercise-target'),
+        move: document.getElementById('workout-move-info'),
+        set: document.getElementById('workout-set-info'),
+        title: document.getElementById('workout-program-title'),
+        progress: document.getElementById('workout-progress-bar'),
+        weight: document.getElementById('workout-input-weight'),
+        reps: document.getElementById('workout-input-reps'),
+        timerBtn: document.getElementById('btn-exercise-timer'),
+        repsLabel: document.getElementById('workout-label-reps'),
+        weightCont: document.getElementById('workout-weight-container'),
+        grid: document.getElementById('workout-inputs-grid')
+    };
 
-    // Metinleri Güncelle
-    if (nameEl) nameEl.textContent = ex.name.toUpperCase();
-    if (targetEl) targetEl.textContent = ex.target;
-    if (progTitleEl) progTitleEl.textContent = workoutSession.programTitle || 'CALITH ANTRENMAN';
-    if (moveInfoEl) moveInfoEl.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length}`;
-    if (setInfoEl) setInfoEl.textContent = `SET ${workoutSession.currSet}`;
+    // Metin Güncellemeleri
+    if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
+    if (els.target) els.target.textContent = (ex.target || '');
+    if (els.title) els.title.textContent = workoutSession.program?.title?.toUpperCase() || 'CALITH ANTRENMAN';
+    if (els.move) els.move.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
+    if (els.set) els.set.textContent = `SET ${workoutSession.currSet}`;
 
-    // Akıllı Tekrar Çekme (Aşırı Güvenli Regex)
-    if (repsInput) {
-        let targetReps = 10;
-        const targetStr = String(ex.target).toLowerCase();
-
-        const xMatch = targetStr.match(/x\s*(\d+)/);
-        if (xMatch) {
-            targetReps = parseInt(xMatch[1], 10);
-        } else {
-            const numMatch = targetStr.match(/(\d+)/);
-            if (numMatch) targetReps = parseInt(numMatch[1], 10);
-        }
-
-        repsInput.value = Math.max(1, targetReps || 10);
-
-        // HTML min attribute (Scroll ile eksiye düşmemesi için)
-        repsInput.setAttribute("min", "0");
-        if (weightInput) weightInput.setAttribute("min", "0");
-    }
-
-    // Hareket Zamanlayıcı Kontrolü (Timed Exercises)
-    const timerBtn = document.getElementById('btn-exercise-timer');
-    const repsLabel = document.getElementById('workout-label-reps');
-    const weightCont = document.getElementById('workout-weight-container');
-    const inputsGrid = document.getElementById('workout-inputs-grid');
-
-    // TİP KONTROLÜ (Aşırı Robust Versiyon)
+    // Tip Kontrolü
     const targetStr = String(ex.target || "").toLowerCase();
     const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
 
-    if (timerBtn) {
-        if (isTimed) {
-            timerBtn.classList.remove('hidden');
-            // ex.targetReps eğer parse edilemediyse target stringden tekrar çek
-            let duration = ex.targetReps;
-            if (!duration || duration === 10) {
-                const match = targetStr.match(/(\d+)\s*(sn|sec)/);
-                if (match) duration = parseInt(match[1]);
-            }
+    // Değerleri Hazırla
+    if (els.weight) els.weight.value = 0;
+    
+    let tReps = 10;
+    // Hedef içinden sayısal değeri çek (Gelişmiş regex)
+    const repsMatch = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
+    if (repsMatch) tReps = parseInt(repsMatch[1]);
+    if (els.reps) els.reps.value = tReps;
 
-            timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${duration}sn)`;
-            timerBtn.onclick = () => startExerciseTimer(duration);
-            if (repsLabel) repsLabel.textContent = 'SÜRE (SN)';
-            
-            // Ağırlığı gizle ve süreyi genişlet
-            if (weightCont) weightCont.classList.add('hidden');
-            if (inputsGrid) inputsGrid.classList.remove('grid-cols-2');
-        } else {
-            timerBtn.classList.add('hidden');
-            if (repsLabel) repsLabel.textContent = 'TEKRAR';
-            
-            // Normal görünüme dön
-            if (weightCont) weightCont.classList.remove('hidden');
-            if (inputsGrid) inputsGrid.classList.add('grid-cols-2');
+    // UI Durum Yönetimi
+    if (isTimed) {
+        if (els.timerBtn) {
+            els.timerBtn.classList.remove('hidden');
+            els.timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${tReps}sn)`;
+            els.timerBtn.onclick = () => startExerciseTimer(tReps);
         }
+        if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
+        if (els.weightCont) els.weightCont.classList.add('hidden');
+        if (els.grid) els.grid.classList.remove('grid-cols-2');
+    } else {
+        if (els.timerBtn) els.timerBtn.classList.add('hidden');
+        if (els.repsLabel) els.repsLabel.textContent = 'TEKRAR';
+        if (els.weightCont) els.weightCont.classList.remove('hidden');
+        if (els.grid) els.grid.classList.add('grid-cols-2');
     }
 
     // Progres Bar
-    if (progressBar) {
+    if (els.progress) {
         const progress = (workoutSession.currExerciseIdx / workoutSession.exercises.length) * 100;
-        progressBar.style.width = `${progress}%`;
+        els.progress.style.width = `${progress}%`;
     }
 
     renderWorkoutSets();
