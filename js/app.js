@@ -4409,42 +4409,114 @@ function startExerciseTimer(duration) {
     const clock = document.getElementById('workout-rest-clock');
     const box = document.getElementById('workout-rest-timer-box');
     const label = box.querySelector('p');
-    
-    // Exercise UI (Orange)
-    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-orange/20 to-transparent border border-calith-orange/30 text-center relative overflow-hidden animate-in fade-in zoom-in duration-500";
+    const timerBtn = document.getElementById('btn-exercise-timer');
+
+    // HAREKETE BAŞLA butonunu gizle (sayım başlıyor)
+    if (timerBtn) timerBtn.classList.add('hidden');
+
+    // Kutuyu hazırla - 3-2-1 modu
+    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-white/10 to-transparent border border-white/20 text-center relative overflow-hidden";
     if (label) {
-        label.textContent = 'HAREKET SÜRESİ (GERİ SAYIM)';
+        label.textContent = 'HAZIR MISIN?';
+        label.className = 'text-[10px] font-black text-white uppercase tracking-[0.3em] mb-3';
+    }
+    clock.className = 'text-8xl font-mono font-black text-white tracking-tighter mb-4';
+    box.classList.remove('hidden');
+
+    // 3-2-1 Sayımı
+    let countdown = 3;
+    clock.textContent = countdown;
+    if (navigator.vibrate) navigator.vibrate(100);
+
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            clock.textContent = countdown;
+            if (navigator.vibrate) navigator.vibrate(100);
+        } else {
+            clearInterval(countdownInterval);
+            clock.textContent = 'BAŞLA!';
+            if (navigator.vibrate) navigator.vibrate([100, 50, 300]);
+
+            // 0.8sn sonra asıl geri sayımı başlat
+            setTimeout(() => {
+                runExerciseCountdown(duration, clock, box, label, timerBtn);
+            }, 800);
+        }
+    }, 1000);
+}
+
+function runExerciseCountdown(duration, clock, box, label, timerBtn) {
+    // Hareket geri sayım moduna geç
+    box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-orange/20 to-transparent border border-calith-orange/30 text-center relative overflow-hidden";
+    if (label) {
+        label.textContent = 'HAREKET SÜRESİ';
         label.className = 'text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-3';
     }
     clock.className = 'text-6xl font-mono font-black text-white tracking-tighter mb-4';
-    box.classList.remove('hidden');
-    
+
     let timeLeft = duration;
-    clock.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
-    clock.classList.remove('text-red-500');
+    const formatTime = (t) => {
+        const m = Math.floor(t / 60);
+        const s = t % 60;
+        return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    };
+    clock.textContent = formatTime(timeLeft);
 
     exerciseTimerInterval = setInterval(() => {
         timeLeft--;
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        // Son 3 saniye titreşim
+        if (timeLeft <= 3 && timeLeft > 0) {
+            clock.classList.add('text-red-400');
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        clock.textContent = timeLeft > 0 ? formatTime(timeLeft) : '00:00';
 
         if (timeLeft <= 0) {
             clearInterval(exerciseTimerInterval);
-            clock.textContent = "TAMAM!";
-            
-            // Süreyi otomatik inputa yaz
-            const repsInput = document.getElementById('workout-input-reps');
-            if (repsInput) repsInput.value = duration;
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
 
-            showToast('🔥 Süre doldu! Set tamamlanıyor...');
-            
-            // Otomatik olarak seti bitir ve dinlenmeye geç
-            setTimeout(() => {
-                completeSet();
-            }, 1000);
+            // TAMAM butonunu göster
+            box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 text-center relative overflow-hidden";
+            if (label) {
+                label.textContent = '🔥 SÜRE DOLDU!';
+                label.className = 'text-[10px] font-black text-green-400 uppercase tracking-[0.3em] mb-3';
+            }
+            clock.className = 'text-4xl font-mono font-black text-green-400 tracking-tighter mb-6';
+            clock.textContent = 'TAMAMLANDI';
 
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            // TAMAM butonu ekle
+            const existingBtn = box.querySelector('#timer-done-btn');
+            if (!existingBtn) {
+                const doneBtn = document.createElement('button');
+                doneBtn.id = 'timer-done-btn';
+                doneBtn.className = 'px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-widest rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/30';
+                doneBtn.textContent = '✓  TAMAM';
+                doneBtn.onclick = () => {
+                    // Seti kaydet
+                    const repsInput = document.getElementById('workout-input-reps');
+                    if (repsInput) repsInput.value = duration;
+                    doneBtn.remove();
+                    completeSet();
+                    
+                    // Dinlenme bittikten sonra HAREKETE BAŞLA butonu tekrar görünsün
+                    // (skipRest veya dinlenme bitince timerBtn gösterilecek)
+                    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+                    const targetStr = String(ex?.target || '').toLowerCase();
+                    const isTimed = ex?.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+                    if (isTimed && timerBtn) {
+                        // Dinlenme süresinden sonra butonu tekrar göster
+                        setTimeout(() => {
+                            if (timerBtn) timerBtn.classList.remove('hidden');
+                        }, 100);
+                    }
+                };
+                box.querySelector('.relative.z-10')
+                    ? box.querySelector('.relative.z-10').appendChild(doneBtn)
+                    : box.appendChild(doneBtn);
+            }
         }
     }, 1000);
 }
@@ -4453,6 +4525,19 @@ function skipRest() {
     clearInterval(restInterval);
     clearInterval(exerciseTimerInterval);
     document.getElementById('workout-rest-timer-box').classList.add('hidden');
+
+    // Dinlenme bitince HAREKETE BAŞLA butonunu tekrar göster (saniye bazlıysa)
+    if (workoutSession && workoutSession.active) {
+        const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+        if (ex) {
+            const targetStr = String(ex.target || "").toLowerCase();
+            const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+            const timerBtn = document.getElementById('btn-exercise-timer');
+            if (isTimed && timerBtn) {
+                timerBtn.classList.remove('hidden');
+            }
+        }
+    }
 }
 
 function nextExercise() {
