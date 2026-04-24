@@ -1534,14 +1534,14 @@ function showProgramDetail(id, skipHistory = false) {
                                 <div class="w-1.5 h-1.5 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform shrink-0"></div>
                                 <span class="text-[13px] font-bold text-gray-200 uppercase tracking-tight leading-tight">${name}</span>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-2.5 py-1.5 min-w-[50px] justify-center">
-                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">SET</span>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 w-[70px] justify-center">
                                     <span class="text-xs font-mono font-bold text-calith-orange">${sets}</span>
+                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">SET</span>
                                 </div>
-                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-2.5 py-1.5 min-w-[50px] justify-center">
-                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">${type === 'secs' ? 'SN' : 'TEK'}</span>
+                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 w-[85px] justify-center">
                                     <span class="text-xs font-mono font-bold text-white">${reps}</span>
+                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">${type === 'secs' ? 'SN' : 'TEKRAR'}</span>
                                 </div>
                             </div>
                         </div>
