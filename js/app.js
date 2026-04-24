@@ -3189,7 +3189,10 @@ async function addToMyPrograms(programId = null) {
             myProgramIds.push(String(programId));
         }
         // UI Güncelle
-        if (document.getElementById('post-content')) showProgramDetail(programId, true);
+        const detailSec = document.getElementById('blog-detail');
+        if (detailSec && !detailSec.classList.contains('hidden')) {
+            showProgramDetail(programId, true);
+        }
         if (document.getElementById('profile-mount')) loadUserPrograms(user.id);
     }
 }
@@ -3203,8 +3206,7 @@ async function removeFromMyPrograms(programId) {
 
     const { error } = await sb.from('user_programs')
         .delete()
-        .eq('user_id', user.id)
-        .eq('program_id', programId);
+        .match({ user_id: user.id, program_id: programId });
 
     if (error) {
         showToast('Hata: ' + error.message);
@@ -3220,13 +3222,17 @@ async function removeFromMyPrograms(programId) {
         localStorage.setItem('calith_my_programs', JSON.stringify(localProgs));
 
         // UI Güncelle
-        if (document.getElementById('post-content')) {
+        const detailSec = document.getElementById('blog-detail');
+        const isDetailView = detailSec && !detailSec.classList.contains('hidden');
+
+        if (isDetailView) {
+            // Eğer detay sayfasındaysak butonu güncellemek için tekrar render et
             showProgramDetail(programId, true);
-        }
-        
-        // Profil sayfasındaysak listeyi yenile
-        if (document.getElementById('profile-mount')) {
-            loadUserPrograms(user.id);
+        } else {
+            // Profil sayfasındaysak veya başka yerdeysek sadece listeyi yenile
+            if (document.getElementById('profile-mount')) {
+                loadUserPrograms(user.id);
+            }
         }
     }
 }
