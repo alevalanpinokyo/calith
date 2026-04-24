@@ -3814,16 +3814,21 @@ function completeSet() {
     // UI Güncelle
     renderWorkoutSets();
     
-    // Hedef set kontrolü
-    let targetSets = ex.targetSets || 4;
-    if (!ex.targetSets && String(ex.target).toLowerCase().includes('x')) {
-        targetSets = parseInt(String(ex.target).split('x')[0]) || 4;
+    // Hedef set kontrolü (Debug logları eklendi)
+    let targetSets = parseInt(ex.targetSets) || 0;
+    if (!targetSets && String(ex.target).toLowerCase().includes('x')) {
+        targetSets = parseInt(String(ex.target).split('x')[0].trim()) || 4;
+    } else if (!targetSets) {
+        targetSets = 4; // Fallback
     }
 
+    console.log(`[Calith Debug] Mevcut Set: ${workoutSession.currSet}, Hedef Set: ${targetSets}`);
+
     if (workoutSession.currSet === targetSets) {
+        console.log('[Calith Debug] Hedef yakalandı, modal açılıyor...');
         showNextExerciseModal();
     } else if (workoutSession.currSet > targetSets) {
-        showToast(`${workoutSession.currSet}. Set Tamamlandı! Hedefin üzerindesin, helal!`);
+        showToast(`🔥 Hedefin üzerindesin! (${workoutSession.currSet}. Set)`);
     } else {
         showToast(`${workoutSession.currSet}. Set Tamamlandı!`);
     }
