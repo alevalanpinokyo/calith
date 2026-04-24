@@ -4128,27 +4128,27 @@ function updateWorkoutUI() {
     // Hareket Zamanlayıcı Kontrolü (Timed Exercises)
     const timerBtn = document.getElementById('btn-exercise-timer');
     const repsLabel = document.getElementById('workout-label-reps');
+    const weightCont = document.getElementById('workout-weight-container');
+    const repsCont = document.getElementById('workout-reps-container');
+    const inputsGrid = document.getElementById('workout-inputs-grid');
 
     if (timerBtn) {
         if (ex.type === 'secs') {
             timerBtn.classList.remove('hidden');
-            timerBtn.querySelector('span').textContent = `SÜRE BAŞLAT (${ex.targetReps}sn)`;
+            timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${ex.targetReps}sn)`;
             timerBtn.onclick = () => startExerciseTimer(ex.targetReps);
             if (repsLabel) repsLabel.textContent = 'SÜRE (SN)';
             
-            if (weightInput) {
-                weightInput.disabled = true;
-                weightInput.value = 0;
-                weightInput.parentElement.classList.add('opacity-20');
-            }
+            // Ağırlığı gizle ve süreyi genişlet
+            if (weightCont) weightCont.classList.add('hidden');
+            if (inputsGrid) inputsGrid.classList.remove('grid-cols-2');
         } else {
             timerBtn.classList.add('hidden');
             if (repsLabel) repsLabel.textContent = 'TEKRAR';
             
-            if (weightInput) {
-                weightInput.disabled = false;
-                weightInput.parentElement.classList.remove('opacity-20');
-            }
+            // Normal görünüme dön
+            if (weightCont) weightCont.classList.remove('hidden');
+            if (inputsGrid) inputsGrid.classList.add('grid-cols-2');
         }
     }
 
@@ -4295,12 +4295,17 @@ function startExerciseTimer(duration) {
             clearInterval(exerciseTimerInterval);
             clock.textContent = "TAMAM!";
             
-            // Süreyi otomatik inputa yaz (Kullanıcı yazmak zorunda kalmasın)
+            // Süreyi otomatik inputa yaz
             const repsInput = document.getElementById('workout-input-reps');
             if (repsInput) repsInput.value = duration;
 
-            showToast('🔥 Süre doldu! Veriler otomatik dolduruldu.');
-            // Titreşim ve ses eklenebilir
+            showToast('🔥 Süre doldu! Set tamamlanıyor...');
+            
+            // Otomatik olarak seti bitir ve dinlenmeye geç
+            setTimeout(() => {
+                completeSet();
+            }, 1000);
+
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         }
     }, 1000);

@@ -725,7 +725,7 @@
     </div>
 </div>
 
-<script src="js/app.js?v=202604242337"></script>
+<script src="js/app.js?v=202604242342"></script>
 <script>
     lucide.createIcons();
     // Intersection Observer for animations
@@ -872,12 +872,12 @@
             </div>
         </div>
         <div class="space-y-8 pb-20">
-            <div class="grid grid-cols-2 gap-6">
-                <div class="relative group">
+            <div id="workout-inputs-grid" class="grid grid-cols-2 gap-6">
+                <div id="workout-weight-container" class="relative group">
                     <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
                     <input type="number" id="workout-input-weight" value="0" aria-label="Ağırlık Girin" title="Ağırlık Girin" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                 </div>
-                <div class="relative group">
+                <div id="workout-reps-container" class="relative group">
                     <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
                     <input type="number" id="workout-input-reps" value="10" aria-label="Tekrar Girin" title="Tekrar Girin" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                 </div>
