@@ -4199,7 +4199,8 @@ function updateWorkoutUI() {
         timerBtn: document.getElementById('btn-exercise-timer'),
         repsLabel: document.getElementById('workout-label-reps'),
         weightCont: document.getElementById('workout-weight-container'),
-        grid: document.getElementById('workout-inputs-grid')
+        grid: document.getElementById('workout-inputs-grid'),
+        completeBtn: document.getElementById('btn-complete-set')
     };
 
     // Metin Güncellemeleri
@@ -4259,6 +4260,13 @@ function updateWorkoutUI() {
             els.weightCont.classList.add('hidden');
             console.log("Ağırlık kutusu gizlendi (display: none)");
         }
+        
+        // SETİ TAMAMLA butonunu GİZLE (sadece sayaç ile tamamlanabilir)
+        if (els.completeBtn) {
+            els.completeBtn.style.setProperty('display', 'none', 'important');
+            els.completeBtn.classList.add('hidden');
+        }
+
         if (els.grid) {
             els.grid.classList.remove('grid-cols-2');
             els.grid.classList.add('grid-cols-1');
@@ -4267,10 +4275,14 @@ function updateWorkoutUI() {
         if (els.timerBtn) els.timerBtn.classList.add('hidden');
         if (els.repsLabel) els.repsLabel.textContent = 'TEKRAR';
         
-        // Ağırlığı GÖSTER
+        // Ağırlığı ve Butonu GÖSTER
         if (els.weightCont) {
             els.weightCont.style.setProperty('display', 'block', 'important');
             els.weightCont.classList.remove('hidden');
+        }
+        if (els.completeBtn) {
+            els.completeBtn.style.setProperty('display', 'flex', 'important');
+            els.completeBtn.classList.remove('hidden');
         }
         if (els.grid) {
             els.grid.classList.remove('grid-cols-1');
