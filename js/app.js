@@ -3714,17 +3714,16 @@ function showNextExerciseModal() {
     const isLast = workoutSession.currExerciseIdx === workoutSession.exercises.length - 1;
 
     const modalHtml = `
-        <div id="next-exercise-modal" class="fixed inset-0 z-[9999] flex items-center justify-center px-4">
-            <div class="absolute inset-0 bg-black/90 backdrop-blur-xl animate-in fade-in duration-700"></div>
-            <div class="relative bg-calith-dark border border-calith-orange/30 w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-[0_0_50px_rgba(255,107,0,0.15)] animate-in zoom-in duration-300">
-                <div class="w-24 h-24 bg-calith-orange/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-calith-orange/10 animate-pulse">
-                    <i data-lucide="award" class="w-12 h-12 text-calith-orange"></i>
+        <div id="next-exercise-modal" class="fixed inset-0 z-[9999] flex items-center justify-center px-4" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);">
+            <div class="relative bg-calith-dark w-full max-w-sm rounded-[2.5rem] p-8 text-center animate-in zoom-in duration-300" style="border: 2px solid #ff6b00; box-shadow: 0 0 50px rgba(255,107,0,0.2);">
+                <div class="w-24 h-24 bg-calith-orange/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-calith-orange/10">
+                    <i data-lucide="award" class="w-12 h-12" style="color: #ff6b00 !important;"></i>
                 </div>
                 <h3 class="font-display text-4xl font-black text-white mb-2 tracking-tighter italic">TEBRİKLER!</h3>
-                <p class="text-calith-orange text-xs font-black uppercase tracking-[0.2em] mb-8">HEDEF SETLER TAMAMLANDI</p>
+                <p class="text-xs font-black uppercase tracking-[0.2em] mb-8" style="color: #ff6b00 !important;">HEDEF SETLER TAMAMLANDI</p>
                 
                 <div class="space-y-4">
-                    <button onclick="closeNextModal(); nextExercise();" class="w-full bg-calith-orange hover:bg-calith-orange/90 text-white font-black py-5 rounded-2xl transition-all shadow-[0_10px_20px_rgba(255,107,0,0.3)] flex items-center justify-center gap-3 uppercase tracking-widest text-sm active:scale-95 group">
+                    <button onclick="closeNextModal(); nextExercise();" class="w-full font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-sm active:scale-95 group" style="background: #ff6b00 !important; color: white !important; box-shadow: 0 10px 20px rgba(255,107,0,0.3) !important;">
                         <span>${isLast ? 'ANTRENMANI BİTİR' : 'SIRADAKİ HAREKETE GEÇ'}</span>
                         <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </button>
