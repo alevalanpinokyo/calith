@@ -548,3 +548,18 @@ body {
     background: linear-gradient(135deg, rgba(255, 107, 0, 0.1), rgba(255, 107, 0, 0.05));
     box-shadow: inset 0 0 10px rgba(255, 107, 0, 0.05);
 }
+
+/* ==========================================================================
+   WORKOUT TIMER UI ENFORCEMENT (Saniye Bazlı Hareket Kilitleri)
+   ========================================================================== */
+#workout-mode[data-exercise-type="secs"] #workout-weight-container {
+    display: none !important;
+}
+
+#workout-mode[data-exercise-type="secs"] #workout-inputs-grid {
+    grid-template-columns: 1fr !important;
+}
+
+#workout-mode[data-exercise-type="secs"] #workout-reps-container {
+    grid-column: span 1 !important;
+}

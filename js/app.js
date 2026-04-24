@@ -4126,6 +4126,11 @@ function updateWorkoutUI() {
 
     // UI Durum Yönetimi
     console.log("Workout UI Update:", { name: ex.name, target: ex.target, type: ex.type, isTimed });
+    
+    const workoutModeEl = document.getElementById('workout-mode');
+    if (workoutModeEl) {
+        workoutModeEl.setAttribute('data-exercise-type', isTimed ? 'secs' : 'reps');
+    }
 
     if (isTimed) {
         if (els.timerBtn) {
@@ -4135,9 +4140,9 @@ function updateWorkoutUI() {
         }
         if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
         
-        // Ağırlığı GİZLE
+        // Ağırlığı GİZLE (CSS data-attribute üzerinden de yapılıyor ama JS garanti olsun)
         if (els.weightCont) {
-            els.weightCont.style.display = 'none';
+            els.weightCont.style.setProperty('display', 'none', 'important');
             els.weightCont.classList.add('hidden');
         }
         if (els.grid) {
@@ -4150,7 +4155,7 @@ function updateWorkoutUI() {
         
         // Ağırlığı GÖSTER
         if (els.weightCont) {
-            els.weightCont.style.display = 'block';
+            els.weightCont.style.setProperty('display', 'block', 'important');
             els.weightCont.classList.remove('hidden');
         }
         if (els.grid) {
