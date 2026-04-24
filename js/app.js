@@ -941,11 +941,10 @@ function toggleMobileMenu() {
 document.addEventListener('click', (e) => {
     const menu = document.getElementById('mobile-menu');
     const menuBtn = document.querySelector('button[onclick="toggleMobileMenu()"]');
-    const menuIcon = menuBtn ? menuBtn.querySelector('i') : null;
     
     if (menu && !menu.classList.contains('hidden')) {
-        // Eğer tıklanan yer menü değilse VE menü butonu değilse VE menü butonu içindeki icon değilse
-        if (!menu.contains(e.target) && e.target !== menuBtn && e.target !== menuIcon) {
+        // Eğer tıklanan yer menü değilse VE menü butonu (veya içindeki herhangi bir şey) değilse
+        if (!menu.contains(e.target) && (!menuBtn || !menuBtn.contains(e.target))) {
             menu.classList.add('hidden');
         }
     }
@@ -2627,7 +2626,7 @@ function updateAuthUI() {
     const authElements = document.querySelectorAll('[onclick="showAuthModal()"], [onclick="showProfile()"], [onclick="handleLogout()"], [onclick*="profile.html"]');
     
     authElements.forEach(el => {
-        const isMobileIcon = el.classList.contains('md:hidden') && el.querySelector('i[data-lucide="user"]');
+        const isMobileIcon = el.classList.contains('md:hidden') && el.querySelector('[data-lucide="user"]');
         const isMobileMenuBtn = el.closest('#mobile-menu') && el.tagName === 'BUTTON';
 
         if (isMobileIcon) {
