@@ -1079,9 +1079,10 @@ async function saveProgram() {
                 const sets = row.querySelector('.ex-sets').value.trim();
                 const reps = row.querySelector('.ex-reps').value.trim();
                 const type = row.querySelector('.ex-type').value;
+                const isBW = row.querySelector('.ex-is-bw').checked;
 
                 if (name) {
-                    exercises.push({ name, sets, reps, type });
+                    exercises.push({ name, sets, reps, type, isBW });
                 }
             });
         }
@@ -1144,6 +1145,10 @@ function addExerciseRow(dayNum, data = null) {
                 <option value="reps" ${data && data.type === 'reps' ? 'selected' : ''}>TKR</option>
                 <option value="secs" ${data && data.type === 'secs' ? 'selected' : ''}>SN</option>
             </select>
+            <div class="flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded-lg bg-black/20 border border-white/5" title="Vücut Ağırlığı (Ağırlık Girişi Kapanır)">
+                <input type="checkbox" class="ex-is-bw w-3 h-3 rounded bg-transparent border-white/20 text-calith-orange focus:ring-0 cursor-pointer" ${data && data.isBW ? 'checked' : ''}>
+                <span class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">BW</span>
+            </div>
             <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
                 <i data-lucide="x" class="w-3 h-3"></i>
             </button>
@@ -4621,6 +4626,21 @@ function updateWorkoutUI() {
         workoutModeEl.setAttribute('data-exercise-type', isTimed ? 'secs' : 'reps');
     }
 
+    // BW (Bodyweight) Kontrolü
+    const isBW = ex.isBW || targetStr.includes('bw');
+    if (isBW && !isTimed) {
+        if (els.weightCont) els.weightCont.classList.add('hidden');
+        if (els.grid) els.grid.className = "grid grid-cols-1 gap-4 mb-8";
+        if (els.weight) {
+            els.weight.value = 0;
+            els.weight.disabled = true;
+        }
+    } else if (!isTimed) {
+        if (els.weightCont) els.weightCont.classList.remove('hidden');
+        if (els.grid) els.grid.className = "grid grid-cols-2 gap-4 mb-8";
+        if (els.weight) els.weight.disabled = false;
+    }
+
     if (isTimed) {
         if (els.timerBtn) {
             els.timerBtn.classList.remove('hidden');
@@ -4716,48 +4736,74 @@ function updateDynamicRecommendation() {
         }
     }
 
-    // Epley Formülü ile anlık 1RM Tahmini (yapılan reps + cepteki reps)
+    // BW Kontrolü
+    const isBW = ex.isBW || targetStr.includes('bw');
+    
+    // Epley Formülü ile anlık 1RM Tahmini (Ağırlıklı hareketler için)
     const effectiveReps = reps + rir;
-    const estimated1RM = weight * (1 + effectiveReps / 30);
+    let newWeight = weight;
+    let newReps = targetReps;
 
-    // Hedef tekrara göre yeni ağırlığı hesapla: Weight = 1RM / (1 + TargetReps/30)
-    let newWeight = estimated1RM / (1 + targetReps / 30);
+    if (!isBW) {
+        const estimated1RM = weight * (1 + effectiveReps / 30);
+        // Hedef tekrara göre yeni ağırlığı hesapla: Weight = 1RM / (1 + TargetReps/30)
+        newWeight = estimated1RM / (1 + targetReps / 30);
 
-    // Agresiflik Bonusu: Eğer hafifse ve form temizse %10 ekstra ekle
-    if (lastSet.isClean && lastSet.feel === 'light') {
-        newWeight *= 1.15; // %15 ekstra zıplat
+        // Agresiflik Bonusu: Eğer hafifse ve form temizse %15 ekstra ekle
+        if (lastSet.isClean && lastSet.feel === 'light') {
+            newWeight *= 1.15;
+        }
+        
+        // 0.5 katlarına yuvarla
+        newWeight = Math.round(newWeight * 2) / 2;
+
+        // Eğer ağırlık zaten 0 ise veya çok küçükse BW mantığına geçiş yapabilir
+        if (newWeight <= 0) {
+            newWeight = 0;
+            // Ağırlık bittiyse tekrarı artır
+            newReps = Math.round(effectiveReps - 2); 
+        }
+    } else {
+        // Bodyweight Hareketi: Sadece tekrar sayısını ayarla
+        // İdeal RIR 2-3 olduğu için, kapasiteden 2 çıkarıyoruz
+        newReps = Math.round(effectiveReps - 2);
+        if (newReps < 1) newReps = 1;
+        newWeight = 0;
     }
 
-    // Aynı kiloyu öneriyorsa veya ufak bir fark varsa mesajı düzelt
-    if (Math.abs(newWeight - weight) < 1 && lastSet.isClean && lastSet.feel === 'ideal') {
+    // Aynı kiloyu/tekrarı öneriyorsa veya ufak bir fark varsa mesajı düzelt
+    if (!isBW && Math.abs(newWeight - weight) < 1 && lastSet.isClean && lastSet.feel === 'ideal') {
         reasonText = "HEDEFTE KAL";
-    } else if (newWeight < weight && lastSet.isClean && lastSet.feel === 'heavy' && reps < targetReps) {
-        reasonText = "TEKRAR ÇIKMADI - DÜŞÜRÜLDÜ";
+    } else if (isBW && newReps === reps && lastSet.feel === 'ideal') {
+        reasonText = "HEDEFTE KAL";
     }
-
-    // 0.5 katlarına yuvarla
-    newWeight = Math.round(newWeight * 2) / 2;
 
     const recBox = document.getElementById('workout-recommendation-box');
     const recText = document.getElementById('workout-recommendation-text');
     const reasonEl = document.getElementById('workout-recommendation-reason');
     const weightInput = document.getElementById('workout-input-weight');
+    const repsInput = document.getElementById('workout-input-reps');
 
     if (recBox && recText) {
         recBox.classList.remove('hidden');
-        recText.textContent = `ÖNERİLEN: ${newWeight} KG`;
+        recText.textContent = isBW ? `ÖNERİLEN: ${newReps} TEKRAR` : `ÖNERİLEN: ${newWeight} KG`;
         if (reasonEl) {
             reasonEl.textContent = reasonText;
             reasonEl.className = reasonClass;
         }
     }
 
-    if (weightInput) {
+    if (weightInput && !isBW) {
         weightInput.value = newWeight;
     }
+    if (repsInput) {
+        repsInput.value = newReps;
+    }
 
-    if (newWeight !== weight) {
-        showToast(`${reasonText} -> Hedef Kilo: ${newWeight}kg`);
+    if (isBW) {
+        if (newReps !== reps) showToast(`${reasonText} -> Yeni Hedef: ${newReps} Tekrar`);
+    } else {
+        if (newWeight !== weight) showToast(`${reasonText} -> Hedef Kilo: ${newWeight}kg`);
     }
 }
 
