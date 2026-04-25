@@ -4363,7 +4363,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                     <div class="relative z-10">
                         <p class="text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3">DİNLENME SÜRESİ</p>
                         <div id="workout-rest-clock" class="text-6xl font-mono font-black text-white tracking-tighter mb-4">00:00</div>
-                        <button onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DİNLENMEYİ ATLA</button>
+                        <button id="btn-skip-rest" onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DİNLENMEYİ ATLA</button>
                     </div>
                 </div>
                 <div class="mb-12">
@@ -4885,6 +4885,12 @@ function startRestTimer() {
         label.className = 'text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3';
     }
     clock.className = 'text-6xl font-mono font-black text-white tracking-tighter mb-4';
+    const skipBtn = document.getElementById('btn-skip-rest');
+    if (skipBtn) {
+        skipBtn.textContent = 'DİNLENMEYİ ATLA';
+        skipBtn.classList.remove('hidden');
+        skipBtn.onclick = skipRest;
+    }
     box.classList.remove('hidden');
 
     let timePassed = 0;
@@ -4920,6 +4926,8 @@ function startExerciseTimer(duration) {
         label.className = 'text-[10px] font-black text-white uppercase tracking-[0.3em] mb-3';
     }
     clock.className = 'text-8xl font-mono font-black text-white tracking-tighter mb-4';
+    const skipBtn = document.getElementById('btn-skip-rest');
+    if (skipBtn) skipBtn.classList.add('hidden');
     box.classList.remove('hidden');
 
     // 3-2-1 Sayımı
@@ -4954,6 +4962,22 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn) {
     }
     clock.className = 'text-6xl font-mono font-black text-white tracking-tighter mb-4';
 
+    const skipBtn = document.getElementById('btn-skip-rest');
+    if (skipBtn) {
+        skipBtn.textContent = 'SETİ BİTİR';
+        skipBtn.classList.remove('hidden');
+        skipBtn.onclick = () => {
+            const elapsed = duration - timeLeft;
+            clearInterval(exerciseTimerInterval);
+            
+            // Seti kaydet
+            const repsInput = document.getElementById('workout-input-reps');
+            if (repsInput) repsInput.value = elapsed;
+            
+            completeSet();
+        };
+    }
+
     let timeLeft = duration;
     const formatTime = (t) => {
         const m = Math.floor(t / 60);
@@ -4976,6 +5000,9 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn) {
         if (timeLeft <= 0) {
             clearInterval(exerciseTimerInterval);
             if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+
+            const skipBtn = document.getElementById('btn-skip-rest');
+            if (skipBtn) skipBtn.classList.add('hidden');
 
             // TAMAM butonunu göster
             box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 text-center relative overflow-hidden";
