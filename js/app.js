@@ -3626,7 +3626,8 @@ async function loadProfileData(user) {
     if (badgeEl) {
         const authorizedRole = roleResult.data?.role;
         const profileRole = profileResult.data?.role;
-        const role = (authorizedRole || profileRole || 'user').toLowerCase();
+        const metadataRole = user.user_metadata?.role;
+        const role = (authorizedRole || profileRole || metadataRole || 'user').toLowerCase();
 
         const roleConfig = {
             admin: { label: '⚡ ADMİN', classes: 'bg-red-500/15 text-red-400 border-red-500/30' },
