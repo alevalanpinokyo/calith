@@ -4310,8 +4310,8 @@ async function startWorkoutMode(programId, dayIndex = 0) {
 
     // Workout Overlay'i Oluştur (yoksa inject et)
     let overlayEl = document.getElementById('workout-mode');
-    if (!overlayEl || !document.getElementById('workout-weight-container')) {
-        if (overlayEl) overlayEl.remove(); // Eksik ID'li eski versiyonu sil
+    if (!overlayEl || !document.getElementById('workout-recommendation-box')) {
+        if (overlayEl) overlayEl.remove(); // Eskisini temizle ki yeni kodlar (akıllı kutular) gelsin
         const overlayHTML = `
         <section id="workout-mode" class="fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black">
             <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-50">
