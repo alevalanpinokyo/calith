@@ -3852,7 +3852,7 @@ async function renderAdminUsers() {
     const list = document.getElementById('admin-user-list');
     if (!list) return;
 
-    list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kullanıcılar Yükleniyor...</td></tr>';
+    list.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kullanıcılar Yükleniyor...</td></tr>';
 
     const sb = getSupabase();
     if (!sb) return;
@@ -3860,12 +3860,12 @@ async function renderAdminUsers() {
     const { data, error } = await sb.rpc('get_admin_users');
     if (error) {
         console.error("Kullanıcılar çekilirken hata:", error);
-        list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500 font-bold tracking-widest text-xs uppercase">Kullanıcıları çekerken hata oluştu veya yetkiniz yok.</td></tr>';
+        list.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold tracking-widest text-xs uppercase">Kullanıcıları çekerken hata oluştu veya yetkiniz yok.</td></tr>';
         return;
     }
 
     if (!data || data.length === 0) {
-        list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kayıtlı kullanıcı bulunamadı.</td></tr>';
+        list.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kayıtlı kullanıcı bulunamadı.</td></tr>';
         return;
     }
 
@@ -3891,9 +3891,65 @@ async function renderAdminUsers() {
                     <span class="text-white font-bold">${u.since || '-'}</span> yıl
                 </td>
                 <td class="p-4 text-[11px] text-gray-500 font-bold tracking-wider">${joinDate}</td>
+                <td class="p-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button onclick="adminChangeRole('${u.id}', '${u.role || 'user'}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-calith-accent flex items-center justify-center text-white transition-colors" title="Rol Değiştir"><i data-lucide="shield" class="w-4 h-4"></i></button>
+                        <button onclick="adminBanUser('${u.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-orange-500 flex items-center justify-center text-white transition-colors" title="Uzaklaştır (Ban)"><i data-lucide="ban" class="w-4 h-4"></i></button>
+                        <button onclick="adminDeleteUser('${u.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-red-500 flex items-center justify-center text-white transition-colors" title="Kullanıcıyı Sil"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                </td>
             </tr>
         `;
     }).join('');
+    
+    if (window.lucide) lucide.createIcons();
+}
+
+async function adminChangeRole(userId, currentRole) {
+    const newRole = prompt(`Mevcut Rol: ${currentRole}\nYeni rolü yazın (admin, premium, user):`, currentRole);
+    if (!newRole || newRole === currentRole) return;
+    
+    if (!['admin', 'premium', 'user'].includes(newRole)) {
+        alert("Sadece 'admin', 'premium' veya 'user' yazabilirsiniz.");
+        return;
+    }
+
+    const sb = getSupabase();
+    const { error } = await sb.rpc('admin_set_user_role', { target_user_id: userId, new_role: newRole });
+    if (error) {
+        alert("Rol güncellenemedi: " + error.message);
+    } else {
+        showToast("Kullanıcı rolü başarıyla " + newRole + " olarak güncellendi.");
+        renderAdminUsers();
+    }
+}
+
+async function adminBanUser(userId) {
+    const days = prompt("Kullanıcı kaç gün banlansın? (Süresiz ban için 3650, ban kaldırmak için 0 yazın):", "7");
+    if (days === null) return;
+    const banDays = parseInt(days);
+    if (isNaN(banDays) || banDays < 0) return;
+
+    const sb = getSupabase();
+    const { error } = await sb.rpc('admin_ban_user', { target_user_id: userId, ban_duration_days: banDays });
+    if (error) {
+        alert("Ban işlemi başarısız: " + error.message);
+    } else {
+        showToast(banDays === 0 ? "Kullanıcının banı kaldırıldı." : "Kullanıcı " + banDays + " gün banlandı.");
+    }
+}
+
+async function adminDeleteUser(userId) {
+    if (!confirm("DİKKAT: Bu kullanıcıyı ve tüm verilerini (profil, vb.) kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz!")) return;
+    
+    const sb = getSupabase();
+    const { error } = await sb.rpc('admin_delete_user', { target_user_id: userId });
+    if (error) {
+        alert("Silme başarısız: " + error.message);
+    } else {
+        showToast("Kullanıcı başarıyla silindi.");
+        renderAdminUsers();
+    }
 }
 
 function resetLinkForm() {

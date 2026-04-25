@@ -65,3 +65,97 @@ REVOKE EXECUTE ON FUNCTION get_admin_users() FROM PUBLIC;
 
 -- Güvenlik: Sadece giriş yapmış (authenticated) kullanıcıların çağırmasına izin ver
 GRANT EXECUTE ON FUNCTION get_admin_users() TO authenticated;
+
+
+-- ==============================================================================
+-- KULLANICI İŞLEMLERİ (Rol Atama, Ban, Silme)
+-- ==============================================================================
+
+-- 1. Rol Atama Fonksiyonu
+CREATE OR REPLACE FUNCTION admin_set_user_role(target_user_id uuid, new_role text)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+BEGIN
+    -- Güvenlik Kontrolü
+    IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin') 
+    AND (auth.jwt() -> 'user_metadata' ->> 'role' IS DISTINCT FROM 'admin') 
+    AND NOT EXISTS (SELECT 1 FROM public.user_roles WHERE user_roles.user_id = auth.uid() AND user_roles.role = 'admin') THEN
+        RAISE EXCEPTION 'Yetkisiz erişim';
+    END IF;
+
+    -- user_roles tablosunu güncelle veya ekle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (target_user_id, new_role)
+    ON CONFLICT (user_id) DO UPDATE SET role = EXCLUDED.role;
+    
+    -- Senkronizasyon: public.profiles tablosundaki role sütununu da güncelle
+    UPDATE public.profiles SET role = new_role WHERE id = target_user_id;
+    
+    -- İsteğe bağlı: auth.users metadata güncellemesi (eğer Supabase frontend login metadata kullanıyorsa)
+    UPDATE auth.users SET raw_user_meta_data = jsonb_set(COALESCE(raw_user_meta_data, '{}'::jsonb), '{role}', to_jsonb(new_role)) WHERE id = target_user_id;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION admin_set_user_role(uuid, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION admin_set_user_role(uuid, text) TO authenticated;
+
+-- 2. Kullanıcı Banlama Fonksiyonu (banned_until kullanımı)
+CREATE OR REPLACE FUNCTION admin_ban_user(target_user_id uuid, ban_duration_days int)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+BEGIN
+    -- Güvenlik Kontrolü
+    IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin') 
+    AND (auth.jwt() -> 'user_metadata' ->> 'role' IS DISTINCT FROM 'admin') 
+    AND NOT EXISTS (SELECT 1 FROM public.user_roles WHERE user_roles.user_id = auth.uid() AND user_roles.role = 'admin') THEN
+        RAISE EXCEPTION 'Yetkisiz erişim';
+    END IF;
+
+    IF target_user_id = auth.uid() THEN
+        RAISE EXCEPTION 'Kendi hesabınızı banlayamazsınız';
+    END IF;
+
+    IF ban_duration_days > 0 THEN
+        UPDATE auth.users SET banned_until = now() + (ban_duration_days || ' days')::interval WHERE id = target_user_id;
+    ELSE
+        UPDATE auth.users SET banned_until = null WHERE id = target_user_id;
+    END IF;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION admin_ban_user(uuid, int) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION admin_ban_user(uuid, int) TO authenticated;
+
+-- 3. Kullanıcı Silme Fonksiyonu
+CREATE OR REPLACE FUNCTION admin_delete_user(target_user_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+BEGIN
+    -- Güvenlik Kontrolü
+    IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.role = 'admin') 
+    AND (auth.jwt() -> 'user_metadata' ->> 'role' IS DISTINCT FROM 'admin') 
+    AND NOT EXISTS (SELECT 1 FROM public.user_roles WHERE user_roles.user_id = auth.uid() AND user_roles.role = 'admin') THEN
+        RAISE EXCEPTION 'Yetkisiz erişim';
+    END IF;
+
+    IF target_user_id = auth.uid() THEN
+        RAISE EXCEPTION 'Kendi hesabınızı silemezsiniz';
+    END IF;
+
+    -- Sadece auth.users'dan sileriz. Eğer Supabase tablolarda foreign key ON DELETE CASCADE ayarlandıysa
+    -- ilişkili profiles ve user_roles satırları da otomatik silinir.
+    DELETE FROM auth.users WHERE id = target_user_id;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION admin_delete_user(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION admin_delete_user(uuid) TO authenticated;
