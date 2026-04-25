@@ -25,10 +25,14 @@ SECURITY DEFINER -- auth.users tablosuna erişim için gerekli
 SET search_path = pg_catalog, public
 AS $$
 BEGIN
-    -- Sadece 'admin' rolüne sahip kullanıcıların bu fonksiyondan veri çekmesini sağla
+    -- Güvenlik: Admin yetkisi kontrolü (profiles.role, user_metadata veya user_roles tablosu)
     IF NOT EXISTS (
         SELECT 1 FROM public.profiles 
         WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+    ) AND (auth.jwt() -> 'user_metadata' ->> 'role' IS DISTINCT FROM 'admin') 
+      AND NOT EXISTS (
+        SELECT 1 FROM public.user_roles 
+        WHERE user_roles.user_id = auth.uid() AND user_roles.role = 'admin'
     ) THEN
         RETURN; -- Admin değilse boş sonuç döndür
     END IF;
