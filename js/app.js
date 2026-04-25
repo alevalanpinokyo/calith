@@ -4447,8 +4447,8 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     getSmartRecommendation(firstEx.name).then(rec => {
         if (!rec) {
             setTimeout(() => {
-                showToast("🚀 KALİBRASYON BAŞLADI: İlk sette kendine uygun bir ağırlık seç, seni tanımaya başlayayım kanka!", 5000);
-            }, 1000);
+                showCalibrationModal();
+            }, 800);
         }
     });
 
@@ -5534,6 +5534,44 @@ function setFormStatus(isClean) {
         btnBad.className = "w-12 h-12 rounded-2xl border-2 border-red-500 bg-red-500/20 flex items-center justify-center text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]";
         btnGood.className = "w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-green-500/10";
     }
+}
+
+function showCalibrationModal() {
+    const modalHtml = `
+        <div id="calibration-modal" class="fixed inset-0 z-[1100] flex items-center justify-center px-6" style="background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);">
+            <div class="relative bg-calith-dark w-full max-w-sm rounded-[2.5rem] p-10 text-center border border-calith-orange/30 shadow-[0_0_100px_rgba(255,107,0,0.15)] animate-in zoom-in duration-500">
+                <div class="w-24 h-24 bg-calith-orange/10 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-calith-orange/5">
+                    <i data-lucide="compass" class="w-12 h-12 text-calith-orange animate-spin-slow"></i>
+                </div>
+                <h3 class="font-display text-3xl font-black text-white mb-4 tracking-tighter italic uppercase leading-none">🚀 KALİBRASYON MODU</h3>
+                <p class="text-[11px] font-medium text-gray-400 mb-8 leading-relaxed uppercase tracking-widest">
+                    Bu hareketi ilk kez yapıyorsun kanka! <br><br>
+                    Seni tanımam için bu antrenman bir <span class="text-calith-orange font-black">"Test Sürüşü"</span> olacak.
+                </p>
+                
+                <div class="space-y-4 mb-10 text-left bg-white/5 p-6 rounded-3xl border border-white/5">
+                    <div class="flex gap-4">
+                        <span class="w-5 h-5 rounded-full bg-calith-orange text-black flex items-center justify-center text-[10px] font-black shrink-0">1</span>
+                        <p class="text-[10px] text-gray-300 font-bold uppercase tracking-tight">Kendi ağırlığını seç ve 1. sete başla.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="w-5 h-5 rounded-full bg-calith-orange text-black flex items-center justify-center text-[10px] font-black shrink-0">2</span>
+                        <p class="text-[10px] text-gray-300 font-bold uppercase tracking-tight">Set sonunda "Temiz" butonuna basmayı unutma.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="w-5 h-5 rounded-full bg-calith-orange text-black flex items-center justify-center text-[10px] font-black shrink-0">3</span>
+                        <p class="text-[10px] text-gray-300 font-bold uppercase tracking-tight">2. setten itibaren koçun sana özel öneri yapacak.</p>
+                    </div>
+                </div>
+
+                <button onclick="document.getElementById('calibration-modal').remove()" class="w-full bg-calith-orange text-white font-black py-6 rounded-2xl transition-all shadow-[0_20px_40px_rgba(255,107,0,0.2)] active:scale-95 uppercase tracking-widest text-sm">
+                    ANLADIM, BAŞLAYALIM!
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide) lucide.createIcons();
 }
 
 async function resetExerciseStats() {
