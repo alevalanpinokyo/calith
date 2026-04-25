@@ -5670,13 +5670,22 @@ function selectFeedback(type, value) {
 }
 
 function submitSetFeedback(weight, reps) {
-    const { isClean, feel } = window.currentFeedback;
+    console.log('[Calith] submitSetFeedback çağrıldı:', weight, reps, window.currentFeedback);
+    
+    // Modal'ı HER DURUMDA kapat (crash olsa bile)
     const modal = document.getElementById('set-feedback-modal');
     if (modal) modal.remove();
 
-    // Ekranı yukarı kaydır - rest box görünsün
+    // Scroll sıfırla
     const workoutEl = document.getElementById('workout-mode');
     if (workoutEl) workoutEl.scrollTop = 0;
 
-    processSetWithFeedback(weight, reps, isClean, feel);
+    try {
+        const feedback = window.currentFeedback || { isClean: true, feel: 'ideal' };
+        const { isClean, feel } = feedback;
+        processSetWithFeedback(weight, reps, isClean, feel);
+    } catch(e) {
+        console.error('[Calith] submitSetFeedback HATA:', e);
+        processSetWithFeedback(weight, reps, true, 'ideal');
+    }
 }
