@@ -4776,10 +4776,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     // Set geçmişini render et
     renderWorkoutSets();
 
-    // UI'ı Yenile (Öneriler güncellensin)
-    updateWorkoutUI();
-
-    // Dinlenme Başlat
+    // Dinlenme Başlat (updateWorkoutUI ÇAĞIRMIYORUZ - startRestTimer ile çakışıyor)
     startRestTimer();
 }
 
