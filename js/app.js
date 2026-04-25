@@ -1734,12 +1734,12 @@ function renderAnnouncementsSlider() {
     track.innerHTML = announcements.map((ann, index) => {
         const hShadow = ann.color === 'calith-orange' ? 'rgba(255,107,53,0.3)' : (ann.color === 'calith-accent' ? 'rgba(0,217,255,0.3)' : (ann.color === 'green-500' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'));
 
+        const onClickAction = `handleAnnouncementClick(${index})`;
+
         const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
         const ytMatch = ann.link ? ann.link.match(ytRegex) : null;
         const ytId = ytMatch ? ytMatch[1] : '';
         const isYoutube = !!ytId;
-        const isVideo = isYoutube || (ann.link && ann.link.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i));
-        const onClickAction = isVideo ? `openVideoModal('${ann.link}')` : `window.location.href='${ann.link}'`;
 
         let imageUrl = ann.image;
         if ((!imageUrl || imageUrl.trim() === '') && isYoutube) {
@@ -1788,6 +1788,25 @@ function renderAnnouncementsSlider() {
         window.heroSlider.init(announcements.length);
     }
 }
+
+/**
+ * Duyuru tıklama olayını yönetir.
+ * HTML içinde tırnak işareti hatalarını önlemek için merkezi bir fonksiyon.
+ */
+window.handleAnnouncementClick = function(index) {
+    const ann = announcements[index];
+    if (!ann || !ann.link) return;
+
+    const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
+    const isYoutube = ytRegex.test(ann.link);
+    const isVideo = isYoutube || ann.link.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i);
+
+    if (isVideo) {
+        openVideoModal(ann.link);
+    } else {
+        window.location.href = ann.link;
+    }
+};
 
 function openVideoModal(videoSource) {
     if (!videoSource) return;
