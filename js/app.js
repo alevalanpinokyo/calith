@@ -4370,6 +4370,14 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                     </div>
                 </div>
                 <div class="space-y-8 pb-20">
+                    <div id="workout-recommendation-box" class="hidden -mb-4 px-6 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-2">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-calith-orange"></i>
+                            <span id="workout-recommendation-text" class="text-[10px] font-black text-white uppercase tracking-widest">ÖNERİLEN: -- KG</span>
+                        </div>
+                        <span id="workout-recommendation-reason" class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">REKORA GÖRE</span>
+                    </div>
+
                     <div id="workout-inputs-grid" class="grid grid-cols-2 gap-6">
                         <div id="workout-weight-container" class="relative group">
                             <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
@@ -4378,6 +4386,21 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                         <div id="workout-reps-container" class="relative group">
                             <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
                             <input type="number" id="workout-input-reps" value="10" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                        </div>
+                    </div>
+
+                    <!-- Temiz Form Kontrolü -->
+                    <div id="clean-form-container" class="flex items-center justify-center gap-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
+                        <div class="flex flex-col items-center gap-1">
+                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">FORM TEMİZ Mİ?</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button onclick="setFormStatus(false)" id="btn-form-bad" class="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all">
+                                <i data-lucide="thumbs-down" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="setFormStatus(true)" id="btn-form-good" class="w-12 h-12 rounded-2xl border-2 border-green-500/50 bg-green-500/10 flex items-center justify-center text-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+                                <i data-lucide="thumbs-up" class="w-5 h-5"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-4">
@@ -4506,8 +4529,31 @@ function updateWorkoutUI() {
         repsLabel: document.getElementById('workout-label-reps'),
         weightCont: document.getElementById('workout-weight-container'),
         grid: document.getElementById('workout-inputs-grid'),
-        completeBtn: document.getElementById('btn-complete-set')
+        completeBtn: document.getElementById('btn-complete-set'),
+        recBox: document.getElementById('workout-recommendation-box'),
+        recText: document.getElementById('workout-recommendation-text')
     };
+
+    // Akıllı Öneri Getir
+    getSmartRecommendation(ex.name).then(rec => {
+        if (rec && els.recBox && els.recText) {
+            els.recBox.classList.remove('hidden');
+            els.recText.textContent = `ÖNERİLEN: ${rec} KG`;
+            // Eğer ilk setse otomatik doldur
+            if (workoutSession.currSet === 1 && els.weight) {
+                els.weight.value = rec;
+            }
+        } else if (els.recBox) {
+            els.recBox.classList.add('hidden');
+        }
+    });
+
+    // Form Status Reset
+    window.currentFormIsClean = true;
+    const btnGood = document.getElementById('btn-form-good');
+    const btnBad = document.getElementById('btn-form-bad');
+    if (btnGood) btnGood.className = "w-12 h-12 rounded-2xl border-2 border-green-500/50 bg-green-500/10 flex items-center justify-center text-green-500 transition-all";
+    if (btnBad) btnBad.className = "w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all";
 
     // Metin Güncellemeleri
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
@@ -4649,14 +4695,15 @@ function renderWorkoutSets() {
 function completeSet() {
     const weight = parseFloat(document.getElementById('workout-input-weight').value) || 0;
     const reps = parseInt(document.getElementById('workout-input-reps').value) || 0;
+    const isClean = window.currentFormIsClean !== false;
 
     if (reps === 0) return showToast('Lütfen tekrar sayısını girin.');
 
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
-    ex.sets.push({ weight, reps });
+    ex.sets.push({ weight, reps, isClean });
 
     // FAZ 1: Rekor Kontrolü ve 1RM Güncelleme
-    if (weight > 0 && reps > 0) {
+    if (weight > 0 && reps > 0 && isClean) {
         updateExerciseBest(ex.name, weight, reps);
     }
 
@@ -5371,4 +5418,68 @@ function renderPersonalRecords(records) {
         </div>
     `;
     if (window.lucide) lucide.createIcons();
+}
+
+// --- PHASE 2: SMART RECOMMENDATION & DUP ENGINE ---
+
+const DUP_RULES = {
+    'weighted pull-up': {
+        heavy: { sets: 4, reps: 4, increment: 2.5, type: 'exact' },
+        medium: { totalReps: 20, increment: 1.25, type: 'total' }
+    },
+    'weighted dip': {
+        heavy: { sets: 3, reps: 6, increment: 2.5, type: 'exact' }
+    }
+};
+
+async function getSmartRecommendation(exerciseName) {
+    if (!currentUser) return null;
+    const sb = getSupabase();
+    if (!sb) return null;
+
+    const nameLower = exerciseName.toLowerCase();
+    
+    // 1. Önce Rekor Tablosuna Bak
+    const { data: record } = await sb.from('user_exercise_stats')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .eq('exercise_name', exerciseName)
+        .maybeSingle();
+
+    if (!record) return null; // Kalibrasyon lazım
+
+    // 2. Özel Kuralları Kontrol Et (DUP vb.)
+    let rule = null;
+    if (nameLower.includes('pull-up') || nameLower.includes('barfiks')) {
+        rule = nameLower.includes('heavy') ? DUP_RULES['weighted pull-up'].heavy : DUP_RULES['weighted pull-up'].medium;
+    } else if (nameLower.includes('dip')) {
+        rule = DUP_RULES['weighted dip'].heavy;
+    }
+
+    if (rule) {
+        // Eğer kural varsa, son başarılı antrenmana göre hesapla (Bu kısım Faz 3'te daha da derinleşecek)
+        return record.weight; // Şimdilik son rekor kilonu öner
+    }
+
+    // 3. Genel Hedef Bazlı Öneri (%1RM)
+    const goal = (currentUser.user_metadata?.goal || 'Kas Kazanmak').toLowerCase();
+    let ratio = 0.75; // Hipertrofi
+    if (goal.includes('güç')) ratio = 0.85;
+    if (goal.includes('yağ')) ratio = 0.70;
+
+    return Math.round((record.one_rm * ratio) * 2) / 2; // 0.5 katlarına yuvarla
+}
+
+function setFormStatus(isClean) {
+    window.currentFormIsClean = isClean;
+    const btnGood = document.getElementById('btn-form-good');
+    const btnBad = document.getElementById('btn-form-bad');
+
+    if (isClean) {
+        btnGood.className = "w-12 h-12 rounded-2xl border-2 border-green-500 bg-green-500/20 flex items-center justify-center text-green-500 shadow-[0_0_20px_rgba(34,197,94,0.2)]";
+        btnBad.className = "w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-red-500/10";
+    } else {
+        btnBad.className = "w-12 h-12 rounded-2xl border-2 border-red-500 bg-red-500/20 flex items-center justify-center text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]";
+        btnGood.className = "w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-green-500/10";
+    }
 }
