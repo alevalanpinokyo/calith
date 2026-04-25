@@ -3584,6 +3584,8 @@ async function loadProfileData(user) {
 
     // 1. PROFİL BİLGİLERİ
     const data = profileResult.data;
+    console.log('Calith Profile Data:', data);
+
     if (!profileResult.error && data) {
         if (data.full_name && nameEl) nameEl.textContent = data.full_name;
         if (weightEl) weightEl.textContent = data.weight ? data.weight + ' KG' : '--';
@@ -3647,13 +3649,18 @@ async function saveProfileData() {
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return;
 
+    const weightVal = parseFloat(document.getElementById('edit-weight').value);
+    const heightVal = parseFloat(document.getElementById('edit-height').value);
+    const ageVal = parseInt(document.getElementById('edit-age').value);
+    const sinceVal = parseInt(document.getElementById('edit-since').value);
+
     const profileData = {
         id: user.id,
         full_name: document.getElementById('edit-full-name').value,
-        weight: parseFloat(document.getElementById('edit-weight').value),
-        height: parseFloat(document.getElementById('edit-height').value),
-        age: parseInt(document.getElementById('edit-age').value),
-        since: parseInt(document.getElementById('edit-since').value),
+        weight: isNaN(weightVal) ? null : weightVal,
+        height: isNaN(heightVal) ? null : heightVal,
+        age: isNaN(ageVal) ? null : ageVal,
+        since: isNaN(sinceVal) ? null : sinceVal,
         fitness_level: document.getElementById('edit-level').value,
         goal: document.getElementById('edit-goal').value
     };
