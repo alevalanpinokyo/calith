@@ -50,7 +50,7 @@ BEGIN
     LEFT JOIN 
         public.profiles p ON au.id = p.id
     ORDER BY 
-        p.created_at DESC;
+        p.created_at DESC NULLS LAST;
 END;
 $$;
 
