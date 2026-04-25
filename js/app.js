@@ -3419,6 +3419,10 @@ function renderProfileSection() {
                     <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">YAŞ</label>
                     <input type="number" id="edit-age" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="25">
                 </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">SPOR GEÇMİŞİ (YIL)</label>
+                    <input type="number" id="edit-since" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="3">
+                </div>
             </div>
             <div class="mt-8 flex justify-end gap-4">
                 <button onclick="toggleEditProfile()" class="px-6 py-3 text-gray-500 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">İptal</button>
@@ -3576,6 +3580,10 @@ async function loadProfileData(user) {
         if (editWeight) editWeight.value = data.weight || '';
         if (editHeight) editHeight.value = data.height || '';
         if (editAge) editAge.value = data.age || '';
+        if (editSince) {
+            const editSinceInput = document.getElementById('edit-since');
+            if (editSinceInput) editSinceInput.value = data.since || '';
+        }
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 
@@ -3621,6 +3629,7 @@ async function saveProfileData() {
         weight: parseFloat(document.getElementById('edit-weight').value),
         height: parseFloat(document.getElementById('edit-height').value),
         age: parseInt(document.getElementById('edit-age').value),
+        since: parseInt(document.getElementById('edit-since').value),
         goal: document.getElementById('edit-goal').value
     };
 
