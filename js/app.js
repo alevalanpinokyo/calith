@@ -3773,25 +3773,28 @@ async function loadWorkoutLogs(userId) {
     const sb = getSupabase();
     if (!sb) return;
 
-    const { data, error } = await sb.from('workout_logs')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(10);
+    try {
+        const { data, error } = await sb.from('workout_logs')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(10);
 
-    if (!error && data) {
-        renderWorkoutLogs(data);
+        if (error) throw error;
+        renderWorkoutLogs(data || []);
+    } catch (e) {
+        console.error('Load Logs Error:', e);
+        renderWorkoutLogs([]); // Hata durumunda da boş ekranı göster (spinner dursun)
     }
 }
 
 function renderWorkoutLogs(logs) {
-    const activeTab = document.querySelector('.profile-tab.active');
     const container = document.getElementById('user-programs-list');
+    if (!container) return;
 
-    if (!activeTab || activeTab.id !== 'btn-tab-history') {
-        console.warn('RenderWorkoutLogs: Beklenen sekme (history) aktif değil, iptal edildi.');
-        return;
-    }
+    // Sekme kontrolü - Eğer kullanıcı çoktan başka sekmeye geçtiyse render etme
+    const activeTab = document.querySelector('.profile-tab.active');
+    if (activeTab && activeTab.id !== 'btn-tab-history') return;
     if (!container) return;
     
     if (logs.length === 0) {
