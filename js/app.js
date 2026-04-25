@@ -4737,13 +4737,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
         updateExerciseBest(ex.name, weight, reps);
     }
 
-    // Dinlenme Başlat (İleri Sayım)
-    startRestTimer();
-
-    // UI Güncelle
-    renderWorkoutSets();
-    
-    // Saniye Bazlı Hareket Kontrolü (Her set sonunda zorla uygula)
+    // Saniye Bazlı Hareket Kontrolü
     const targetStr = String(ex.target || "").toLowerCase();
     const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
     const workoutModeEl = document.getElementById('workout-mode');
@@ -4776,13 +4770,17 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     }
 
     workoutSession.currSet++;
-    document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
-    
-    // Dinlenme Başlat
-    startRestTimer();
+    const setInfoEl = document.getElementById('workout-set-info');
+    if (setInfoEl) setInfoEl.textContent = `SET ${workoutSession.currSet}`;
+
+    // Set geçmişini render et
+    renderWorkoutSets();
 
     // UI'ı Yenile (Öneriler güncellensin)
     updateWorkoutUI();
+
+    // Dinlenme Başlat
+    startRestTimer();
 }
 
 function startRestTimer() {
