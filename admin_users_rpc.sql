@@ -37,13 +37,13 @@ BEGIN
         RETURN; -- Admin değilse boş sonuç döndür
     END IF;
 
-    -- auth.users ve public.profiles birleştirilerek verileri döndür
+    -- auth.users, public.profiles ve public.user_roles birleştirilerek verileri döndür
     RETURN QUERY
     SELECT 
         au.id,
         au.email::varchar,
         p.full_name,
-        p.role,
+        COALESCE(ur.role, p.role) AS role,
         p.height,
         p.weight,
         p.age,
@@ -53,6 +53,8 @@ BEGIN
         auth.users au
     LEFT JOIN 
         public.profiles p ON au.id = p.id
+    LEFT JOIN
+        public.user_roles ur ON au.id = ur.user_id
     ORDER BY 
         p.created_at DESC NULLS LAST;
 END;
