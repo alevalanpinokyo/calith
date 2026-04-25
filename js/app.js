@@ -103,7 +103,10 @@ async function loadPosts() {
         allData = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
     } else {
         const { data, error } = await sb.from('posts').select('*').order('id', { ascending: false });
-        if (!error && data) {
+        if (error) {
+            console.error('Supabase loadPosts error:', error);
+            allData = defaultPosts.filter(def => !deletedPostTitles.includes(def.title));
+        } else if (data) {
             allData = data.map(p => ({
                 ...p,
                 category: p.category || 'temel',
@@ -3490,7 +3493,17 @@ function switchProfileTab(tabId) {
     `;
 
     if (tabId === 'ready') {
+        console.log('Ready Tab: Filtering posts...', {
+            totalPosts: posts.length,
+            myProgramIds: myProgramIds
+        });
         const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
+        console.log('Filtered Programs:', myPrograms);
+        
+        if (myProgramIds.length > 0 && myPrograms.length === 0) {
+            console.warn('UYARI: Kullanıcının program IDs var ama posts tablosunda karşılığı yok!', myProgramIds);
+        }
+
         renderUserPrograms(myPrograms);
     } else if (tabId === 'custom') {
         container.innerHTML = `
