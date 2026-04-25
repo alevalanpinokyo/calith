@@ -4558,7 +4558,7 @@ function updateWorkoutUI() {
     getSmartRecommendation(ex.name).then(rec => {
         if (rec && els.recBox && els.recText) {
             els.recBox.classList.remove('hidden');
-            els.recText.textContent = `ÖNERİLEN: ${rec} KG`;
+            els.recText.textContent = isBW ? `ÖNERİLEN: ${rec} TEKRAR` : `ÖNERİLEN: ${rec} KG`;
             
             const reasonEl = document.getElementById('workout-recommendation-reason');
             if (reasonEl) {
@@ -4791,7 +4791,7 @@ function renderWorkoutSets() {
                 <div class="h-4 w-px bg-white/5"></div>
             </div>
             <div class="flex items-center gap-4">
-                ${!isTimed ? `
+                ${(!isTimed && !isBW) ? `
                 <div class="flex items-center gap-2">
                     <i data-lucide="weight" class="w-3.5 h-3.5 text-gray-500"></i>
                     <span class="text-sm font-mono font-bold text-white">${set.weight}kg</span>
@@ -5706,12 +5706,16 @@ async function resetExerciseStats() {
 }
 
 function showSetFeedbackModal(weight, reps) {
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    const targetStr = String(ex?.target || "").toLowerCase();
+    const isBW = ex?.isBW || targetStr.includes('bw');
+
     const modalHtml = `
         <div id="set-feedback-modal" class="fixed inset-0 z-[1200] flex items-center justify-center px-6" style="background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);">
             <div class="relative bg-calith-dark w-full max-w-sm rounded-[3rem] p-8 text-center border border-white/10 shadow-2xl animate-in zoom-in duration-300">
                 <div class="mb-8">
                     <h4 class="text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-2">SET TAMAMLANDI</h4>
-                    <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${weight}KG x ${reps} TEKRAR</p>
+                    <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${isBW ? reps + ' TEKRAR' : weight + 'KG x ' + reps + ' TEKRAR'}</p>
                 </div>
 
                 <!-- Form Durumu -->
