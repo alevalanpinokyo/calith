@@ -4279,6 +4279,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                 targetSets: parseInt(ex.sets) || 1,
                 targetReps: parseInt(ex.reps) || 10,
                 type: ex.type || 'reps',
+                isBW: !!ex.isBW,
                 sets: []
             };
         }
