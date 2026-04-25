@@ -3848,6 +3848,54 @@ async function deleteLink(id) {
     }
 }
 
+async function renderAdminUsers() {
+    const list = document.getElementById('admin-user-list');
+    if (!list) return;
+
+    list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kullanıcılar Yükleniyor...</td></tr>';
+
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data, error } = await sb.rpc('get_admin_users');
+    if (error) {
+        console.error("Kullanıcılar çekilirken hata:", error);
+        list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500 font-bold tracking-widest text-xs uppercase">Kullanıcıları çekerken hata oluştu veya yetkiniz yok.</td></tr>';
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kayıtlı kullanıcı bulunamadı.</td></tr>';
+        return;
+    }
+
+    list.innerHTML = data.map(u => {
+        const joinDate = u.profile_created_at ? new Date(u.profile_created_at).toLocaleDateString('tr-TR') : '-';
+        const roleBadge = u.role === 'admin' 
+            ? '<span class="bg-red-500/20 text-red-500 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">ADMİN</span>'
+            : (u.role === 'premium' ? '<span class="bg-calith-orange/20 text-calith-orange px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">PREMİUM</span>' : '<span class="bg-white/10 text-gray-400 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">KULLANICI</span>');
+        
+        return `
+            <tr class="hover:bg-white/5 transition-colors">
+                <td class="p-4">
+                    <p class="font-bold text-white text-sm">${u.full_name || 'İsimsiz'}</p>
+                    <p class="text-[11px] text-gray-500">${u.email || '-'}</p>
+                </td>
+                <td class="p-4">${roleBadge}</td>
+                <td class="p-4 text-xs text-gray-400">
+                    Boy: <span class="text-white">${u.height || '-'}</span> cm<br>
+                    Kilo: <span class="text-white">${u.weight || '-'}</span> kg<br>
+                    Yaş: <span class="text-white">${u.age || '-'}</span>
+                </td>
+                <td class="p-4 text-xs text-gray-400">
+                    <span class="text-white font-bold">${u.since || '-'}</span> yıl
+                </td>
+                <td class="p-4 text-[11px] text-gray-500 font-bold tracking-wider">${joinDate}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
 function resetLinkForm() {
     document.getElementById('link-edit-id').value = '';
     document.getElementById('link-title').value = '';
