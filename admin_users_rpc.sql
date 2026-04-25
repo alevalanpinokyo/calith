@@ -53,3 +53,9 @@ BEGIN
         p.created_at DESC;
 END;
 $$;
+
+-- Güvenlik: Fonksiyonun herkes (PUBLIC) tarafından çağrılmasını engelle
+REVOKE EXECUTE ON FUNCTION get_admin_users() FROM PUBLIC;
+
+-- Güvenlik: Sadece giriş yapmış (authenticated) kullanıcıların çağırmasına izin ver
+GRANT EXECUTE ON FUNCTION get_admin_users() TO authenticated;
