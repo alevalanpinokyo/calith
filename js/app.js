@@ -4404,21 +4404,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                         </div>
                     </div>
 
-                    <!-- Temiz Form Kontrolü -->
-                    <div id="clean-form-container" class="flex items-center justify-center gap-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
-                        <div class="flex flex-col items-center gap-1">
-                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">FORM TEMİZ Mİ?</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <button onclick="setFormStatus(false)" id="btn-form-bad" class="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all">
-                                <i data-lucide="thumbs-down" class="w-5 h-5"></i>
-                            </button>
-                            <button onclick="setFormStatus(true)" id="btn-form-good" class="w-12 h-12 rounded-2xl border-2 border-green-500/50 bg-green-500/10 flex items-center justify-center text-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.1)]">
-                                <i data-lucide="thumbs-up" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
                         <button onclick="nextExercise()" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
                         <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
                             <span>SETİ TAMAMLA</span>
@@ -4591,12 +4577,9 @@ function updateWorkoutUI() {
         }
     });
 
-    // Form Status Reset
+    // Form Status Reset (Gereksiz oldu ama temizlik için dursun)
     window.currentFormIsClean = true;
-    const btnGood = document.getElementById('btn-form-good');
-    const btnBad = document.getElementById('btn-form-bad');
-    if (btnGood) btnGood.className = "w-12 h-12 rounded-2xl border-2 border-green-500/50 bg-green-500/10 flex items-center justify-center text-green-500 transition-all";
-    if (btnBad) btnBad.className = "w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all";
+    window.currentWeightFeel = 'ideal';
 
     // Metin Güncellemeleri
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
@@ -4738,12 +4721,16 @@ function renderWorkoutSets() {
 function completeSet() {
     const weight = parseFloat(document.getElementById('workout-input-weight').value) || 0;
     const reps = parseInt(document.getElementById('workout-input-reps').value) || 0;
-    const isClean = window.currentFormIsClean !== false;
 
     if (reps === 0) return showToast('Lütfen tekrar sayısını girin.');
 
+    // Geri Bildirim Modalını Aç
+    showSetFeedbackModal(weight, reps);
+}
+
+function processSetWithFeedback(weight, reps, isClean, feel) {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
-    ex.sets.push({ weight, reps, isClean });
+    ex.sets.push({ weight, reps, isClean, feel });
 
     // FAZ 1: Rekor Kontrolü ve 1RM Güncelleme
     if (weight > 0 && reps > 0 && isClean) {
@@ -5590,4 +5577,95 @@ async function resetExerciseStats() {
 
     showToast("Tüm geçmiş ve rekorlar silindi!");
     switchProfileTab('prs'); // Tabı yenile
+}
+
+function showSetFeedbackModal(weight, reps) {
+    const modalHtml = `
+        <div id="set-feedback-modal" class="fixed inset-0 z-[1200] flex items-center justify-center px-6" style="background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);">
+            <div class="relative bg-calith-dark w-full max-w-sm rounded-[3rem] p-8 text-center border border-white/10 shadow-2xl animate-in fade-in zoom-in duration-300">
+                <div class="mb-8">
+                    <h4 class="text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-2">SET TAMAMLANDI</h4>
+                    <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${weight}KG x ${reps} TEKRAR</p>
+                </div>
+
+                <!-- Form Durumu -->
+                <div class="mb-10">
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-4">FORM TEMİZ MİYDİ?</p>
+                    <div class="flex items-center justify-center gap-4">
+                        <button id="fb-form-bad" onclick="selectFeedback('form', false)" class="flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-red-500/10 hover:border-red-500/30 transition-all">
+                            <i data-lucide="thumbs-down" class="w-6 h-6"></i>
+                            <span class="text-[8px] font-black">KİRLİ / BOZUK</span>
+                        </button>
+                        <button id="fb-form-good" onclick="selectFeedback('form', true)" class="flex-1 py-5 rounded-2xl border-2 border-green-500 bg-green-500/10 text-green-500 flex flex-col items-center gap-2 transition-all">
+                            <i data-lucide="thumbs-up" class="w-6 h-6"></i>
+                            <span class="text-[8px] font-black">TERTEMİZ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ağırlık Hissi (RPE) -->
+                <div class="mb-10">
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-4">AĞIRLIK NASIL HİSSETTİRDİ?</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button id="fb-feel-light" onclick="selectFeedback('feel', 'light')" class="py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-calith-orange/10 transition-all">
+                            <i data-lucide="feather" class="w-5 h-5"></i>
+                            <span class="text-[8px] font-black uppercase">HAFİF</span>
+                        </button>
+                        <button id="fb-feel-ideal" onclick="selectFeedback('feel', 'ideal')" class="py-4 rounded-2xl border-2 border-calith-orange bg-calith-orange/10 text-calith-orange flex flex-col items-center gap-2 shadow-[0_0_20px_rgba(255,107,0,0.1)] transition-all">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            <span class="text-[8px] font-black uppercase">İDEAL</span>
+                        </button>
+                        <button id="fb-feel-heavy" onclick="selectFeedback('feel', 'heavy')" class="py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-red-500/10 transition-all">
+                            <i data-lucide="flame" class="w-5 h-5"></i>
+                            <span class="text-[8px] font-black uppercase">AĞIR</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="submitSetFeedback(${weight}, ${reps})" class="w-full bg-white text-black font-black py-6 rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-sm shadow-xl">
+                    ANALİZ ET VE DEVAM ET
+                </button>
+            </div>
+        </div>
+    `;
+    
+    window.currentFeedback = { isClean: true, feel: 'ideal' };
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide) lucide.createIcons();
+}
+
+function selectFeedback(type, value) {
+    if (type === 'form') {
+        window.currentFeedback.isClean = value;
+        const btnGood = document.getElementById('fb-form-good');
+        const btnBad = document.getElementById('fb-form-bad');
+        if (value) {
+            btnGood.className = "flex-1 py-5 rounded-2xl border-2 border-green-500 bg-green-500/10 text-green-500 flex flex-col items-center gap-2 transition-all";
+            btnBad.className = "flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 transition-all";
+        } else {
+            btnBad.className = "flex-1 py-5 rounded-2xl border-2 border-red-500 bg-red-500/10 text-red-500 flex flex-col items-center gap-2 transition-all";
+            btnGood.className = "flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 transition-all";
+        }
+    } else {
+        window.currentFeedback.feel = value;
+        const buttons = {
+            light: document.getElementById('fb-feel-light'),
+            ideal: document.getElementById('fb-feel-ideal'),
+            heavy: document.getElementById('fb-feel-heavy')
+        };
+        Object.keys(buttons).forEach(key => {
+            if (key === value) {
+                buttons[key].className = `py-4 rounded-2xl border-2 ${key === 'heavy' ? 'border-red-500 bg-red-500/10 text-red-500' : 'border-calith-orange bg-calith-orange/10 text-calith-orange'} flex flex-col items-center gap-2 shadow-xl transition-all`;
+            } else {
+                buttons[key].className = "py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-white/5 transition-all";
+            }
+        });
+    }
+}
+
+function submitSetFeedback(weight, reps) {
+    const { isClean, feel } = window.currentFeedback;
+    const modal = document.getElementById('set-feedback-modal');
+    if (modal) modal.remove();
+    processSetWithFeedback(weight, reps, isClean, feel);
 }
