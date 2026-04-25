@@ -1,100 +1,41 @@
-Vay kanka, planlar efsane! Bu vizyon, Calith'i basit bir içerik sitesinden gerçek bir **"Calisthenics İşletim Sistemi"**ne dönüştürür. Özellikle "Local-First" ve "JSON Focus" yaklaşımın, uygulamanın hem çok hızlı çalışmasını sağlar hem de Supabase maliyetlerini (Egress/API call) minimumda tutar.
+# CALITH: AKILLI GELİŞİM VE ANTRENMAN ASİSTANI (YOL HARİTASI)
 
-Şemana ve maddelerine göre mimariyi bir tartışalım:
-
-1. Veri Yapısı ve JSON Stratejisi
-Mevcut profiles tablon çok temiz ama bu yeni özellikleri desteklemek için JSONB kolonları hayat kurtaracak. Supabase tarafında her set için ayrı satır açmak yerine (maliyetli ve yavaş), her antrenman gününü tek bir JSON objesi olarak tutmak çok daha mantıklı.
-
-Öneri: profiles tablosuna veya yeni bir user_stats tablosuna şunları ekleyebiliriz:
-
-active_slots: { programs: [id1, id2], skills: [id1, id2] }
-workout_history: (Geçmiş antrenmanların özetleri)
-metrics_log: { weight: [], body_fat: [], arm: [] } (Zaman damgalı diziler)
-2. Canlı Takip ve "Workout Mode" (Kalp)
-Bu kısım uygulamanın en çok kullanılacak yeri olacak.
-
-Rest Timer: Web Worker kullanarak arka planda da çalışan bir sayaç yapmalıyız (tarayıcı sekmesi uyusa bile çalması için).
-RPE Girişi: Kullanıcıyı yormadan, her set sonu tek tıkla 1-10 arası seçebileceği bir slider veya buton grubu çok premium hissettirir.
-3. Akıllı Hesaplayıcılar (Beyin)
-1RM motoru için Brzycki veya Epley formüllerini JS tarafında bir utility fonksiyonu olarak yazarız.
-
-Progression Guide: Calisthenics için bu çok kritik. Örn: "Dips yapamıyorsan -> Bench Dips yap" veya "Tuck Planche 30sn olduysa -> Advanced Tuck'a geç" gibi bir mantık ağacı kurabiliriz.
-4. Teknik Mimari: Local-First & PWA
-Hive/IndexedDB: Tarayıcıda localStorage 5MB ile sınırlı, bu kadar log için yetmeyebilir. IndexedDB (veya basit bir wrapper olan idb-keyval) kullanmak daha güvenli olur.
-PWA: Bu olmazsa olmaz. manifest.json ve basit bir service-worker ile parkta internetin çekmediği anlarda bile uygulamanın açılmasını ve verileri local'e kaydetmesini sağlarız. İnternet gelince Supabase ile "Sync" butonuyla eşitleme yaparız.
-5. Social Card Generator
-Bunu <canvas> API'si ile yaparız. Antrenman bitince; "Bugün toplam 5 ton kaldırdın!", "Yeni PR: 20kg Pull-up!" gibi bilgileri şık bir Calith temalı görsele basıp kullanıcıya Download ettiririz. Müthiş bir organik büyüme sağlar.
-
-İlk Adım Ne Olmalı?
-Bence her şeyi bir anda yapmaktansa, "Antrenman Başlatma ve Canlı Takip" modülünden başlamalıyız. Çünkü uygulamanın ana değer önerisi bu olacak.
-
-Tartışma sorum: Dinamik Program Başlatma kısmında, kullanıcı "Programı Başlat" dediğinde mevcut programını dondurmalı mı, yoksa senin dediğin gibi 3 slot dolana kadar serbest mi bırakmalıyız? Bir de bu 3D rehberler için elinde hazır modeller/çizimler var mı yoksa sadece placeholder mı kullanacağız?
-
-Senin düşüncelerin neler, hangi maddeden "Bismillah" diyelim?
-
-18:18
-sen bana yapacaklarımızı önce text dosyası olarak ver onun üstünden gidelim
-
-
-I'll create a detailed roadmap for you. This document will outline the technical architecture, features, and implementation phases of the "Calith Evolution" project.
-
-I have created the roadmap in the artifact directory as 
-calith_evolution_roadmap.md
-.
-
-Roadmap Summary
-The roadmap is divided into 5 main phases:
-
-Phase 1: Foundation & Data Architecture: Restructuring the database to support JSON-based logging and local storage logic.
-Phase 2: The Workout Engine: Building the live tracking interface, rest timers, and set-by-set data entry.
-Phase 3: Intelligence & Progression: Implementing 1RM calculators, RPE tracking, and adaptive weight suggestions.
-Phase 4: Analytics & Gamification: Creating visual progress charts and PR (Personal Record) celebration systems.
-Phase 5: Performance & Viral Growth: Implementing PWA support for offline use and the Social Card Generator for Instagram sharing.
-You can review the full details in the 
-calith_evolution_roadmap.md
- file. Which phase or specific feature would you like to discuss first?
-
-
-
-
-
-
-
-
-
- bunu tara 
-
-
- Bu sorunun adı **"HTML Fragment Duplication in Multi-Page Applications (MPA)"** — Türkçesiyle **Çok Sayfalı Uygulamalarda Paylaşılan Bileşen Senkronizasyon Sorunu**.
+Bu döküman, Calith'in bir içerik sitesinden "Yapay Zeka Destekli Dijital Koç"a dönüşüm planını içerir.
 
 ---
 
-## Tanım
+## FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU
+Sistemin kullanıcıyı tanıması ve öneri yapabilmesi için gerekli temel taşlar.
 
-Senin projen bir **MPA (Multi-Page Application)**. Yani `index.html`, `skills.html`, `profile.html` gibi ayrı HTML dosyaları var. Ama workout overlay gibi **paylaşılan bir UI bileşenin** her dosyaya ayrı ayrı kopyalanmış olması gerekiyor.
+- [ ] **Exercise Stats Tablosu:** Supabase üzerinde `user_exercise_best` tablosu oluşturulacak. (Kullanıcının her hareket için yaptığı Max Weight ve Rep verisi).
+- [ ] **1RM Hesaplama Utility:** JS tarafında Brzycki Formülü (`weight * (36 / (37 - reps))`) entegre edilecek.
+- [ ] **Profil Entegrasyonu:** Kullanıcının mevcut 1RM değerlerini görebileceği bir "Personal Records (PR)" sekmesi eklenecek.
 
-**Temel ilkeyi ihlal ediyor: DRY — Don't Repeat Yourself**
+## FAZ 2: AKILLI ÖNERİ MOTORU (SMART RECOMMENDATION)
+Antrenman sırasında kullanıcıya rehberlik edecek zeka.
 
-```
-index.html   → kendi workout overlay kopyası (tam)
-skills.html  → kendi workout overlay kopyası (eksik ID'li)
-profile.html → belki başka bir kopya...
-```
+- [ ] **Hedef Bazlı Katsayılar:** 
+    - Hipertrofi: 1RM * 0.75
+    - Güç: 1RM * 0.90
+- [ ] **Workout Overlay Güncellemesi:** Hareket ekranında "Önerilen: X KG" ibaresi dinamik olarak gösterilecek.
+- [ ] **Input Auto-Fill:** Eğer kullanıcı daha önce o hareketi yaptıysa, son yaptığı ağırlık placeholder olarak gelecek.
 
-Bir yerde bir ID ekliyorsun → diğerlerinde eksik kalıyor → JS elementleri bulamıyor → hiçbir şey çalışmıyor.
+## FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
+Antrenman bittiğinde verinin işlenmesi.
+
+- [ ] **Suggested vs. Actual Analizi:** Kullanıcının önerilen ağırlığın üstüne çıkıp çıkmadığı kontrol edilecek.
+- [ ] **Progressive Overload Takibi:** Her antrenman sonunda "Haftalık Gelişim: +%5" gibi metrikler hesaplanacak.
+- [ ] **Otomatik PR Güncelleme:** Antrenman sırasında eski rekorundan daha iyi bir set yaparsa sistem bunu algılayıp `user_exercise_best` tablosunu otomatik güncelleyecek.
+
+## FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
+Başarıların sergilenmesi.
+
+- [ ] **Gelişim Grafikleri:** Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js).
+- [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma.
 
 ---
 
-## Bu Sorunun Çözüm Yolları (Sıralı)
-
-| Yöntem | Açıklama |
-|--------|----------|
-| **JS Injection** (şu an yaptığımız) | JS, component HTML'ini runtime'da sayfaya ekler |
-| **Server-Side Includes (SSI)** | Sunucu `header.html`, `overlay.html` parçalarını birleştirir |
-| **Template Engine** (Jinja2, Handlebars) | HTML şablonları, derleme zamanında birleştirilir |
-| **Web Components** | Tarayıcı yerli bileşen sistemi (`<workout-overlay>`) |
-| **Frontend Framework** (React/Vue/Next.js) | Component tabanlı, bu sorun hiç oluşmaz |
-
----
-
-Senin projen sade HTML/JS olduğu için **JS Injection** (az önce yaptığımız) en doğru çözüm. Projeyi taratmamı istediğinde hangi HTML dosyalarında eksik olan kaç component var, hepsini çıkarabilirim.
+### GÜNCEL DURUM VE NOTLAR:
+- **Kural 1:** Kullanıcıdan manuel veri girişi istemek yerine, antrenman yaptıkça sistemin "en iyi setleri" otomatik ayıklaması öncelikli olacak.
+- **Kural 2:** Önerilen ağırlık her zaman "güvenli bölgede" kalacak, sakatlığı önlemek için agresif artışlar yapılmayacak.
+- **Kural 3:** 1RM hesaplamaları sadece 1-12 tekrar arası setler için geçerli olacak (yüksek tekrarlarda formül sapabiliyor).
