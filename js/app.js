@@ -1736,10 +1736,10 @@ function renderAnnouncementsSlider() {
 
         const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
         const ytMatch = ann.link ? ann.link.match(ytRegex) : null;
-        let ytId = ytMatch ? ytMatch[1] : '';
+        const ytId = ytMatch ? ytMatch[1] : '';
         const isYoutube = !!ytId;
-
-        const onClickAction = isYoutube ? `openVideoModal('${ytId}')` : `window.location.href='${ann.link}'`;
+        const isVideo = isYoutube || (ann.link && ann.link.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i));
+        const onClickAction = isVideo ? `openVideoModal('${ann.link}')` : `window.location.href='${ann.link}'`;
 
         let imageUrl = ann.image;
         if ((!imageUrl || imageUrl.trim() === '') && isYoutube) {
@@ -1789,27 +1789,43 @@ function renderAnnouncementsSlider() {
     }
 }
 
-function openVideoModal(videoId) {
-    if (!videoId) return;
-
-    // Eğer videoId bir YouTube ID'si değil de tam URL ise ID'yi ayıkla
-    if (videoId.includes('http') || videoId.includes('youtube') || videoId.includes('youtu.be')) {
-        const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
-        const ytMatch = videoId.match(ytRegex);
-        if (ytMatch) videoId = ytMatch[1];
-        else {
-            window.open(videoId, '_blank');
-            return;
-        }
-    }
+function openVideoModal(videoSource) {
+    if (!videoSource) return;
 
     const modal = document.getElementById('video-modal');
-    const content = document.getElementById('video-modal-content');
     const container = document.getElementById('video-container');
+    const content = document.getElementById('video-modal-content');
 
     if (modal && container) {
         document.body.style.overflow = 'hidden';
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        modal.classList.remove('pointer-events-none');
+
+        // YouTube Kontrolü
+        const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
+        const ytMatch = videoSource.match(ytRegex);
+
+        if (ytMatch) {
+            const videoId = ytMatch[1];
+            container.innerHTML = `
+                <div class="aspect-video w-full bg-black">
+                    <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1" 
+                        class="w-full h-full" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen></iframe>
+                </div>`;
+        } else if (videoSource.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i) || videoSource.includes('storage') || videoSource.includes('supabase')) {
+            // Direkt Video Dosyası (Supabase storage veya mp4 linki)
+            container.innerHTML = `
+                <video src="${videoSource}" 
+                    class="w-full max-h-[85vh] bg-black" 
+                    controls autoplay playsinline></video>`;
+        } else {
+            // Video değilse dış link olarak aç
+            window.open(videoSource, '_blank');
+            document.body.style.overflow = '';
+            modal.classList.add('pointer-events-none');
+            return;
+        }
 
         modal.style.display = 'flex';
         setTimeout(() => {
@@ -1830,6 +1846,7 @@ function closeVideoModal() {
 
     if (modal) {
         document.body.style.overflow = '';
+        modal.classList.add('pointer-events-none');
         modal.classList.remove('opacity-100');
         modal.classList.add('opacity-0');
         if (content) {
