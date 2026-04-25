@@ -4396,11 +4396,11 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                     <div id="workout-inputs-grid" class="grid grid-cols-2 gap-6">
                         <div id="workout-weight-container" class="relative group">
                             <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
-                            <input type="number" id="workout-input-weight" value="0" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                            <input type="number" id="workout-input-weight" value="0" min="0" step="0.5" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                         </div>
                         <div id="workout-reps-container" class="relative group">
                             <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
-                            <input type="number" id="workout-input-reps" value="10" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                            <input type="number" id="workout-input-reps" value="10" min="0" step="1" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                         </div>
                     </div>
 
@@ -4677,6 +4677,85 @@ function updateWorkoutUI() {
     renderWorkoutSets();
 }
 
+function updateDynamicRecommendation() {
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    if (!ex || ex.sets.length === 0) return;
+
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+    if (isTimed) return; // Saniye bazlı hareketlerde kilo önerisi yapmıyoruz
+
+    const lastSet = ex.sets[ex.sets.length - 1];
+    let weight = parseFloat(lastSet.weight);
+    let reps = parseInt(lastSet.reps);
+    if (isNaN(weight) || weight <= 0 || isNaN(reps) || reps <= 0) return;
+
+    // Hedef Tekrarı Bul
+    let targetReps = 10;
+    const match = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
+    if (match) targetReps = parseInt(match[1]);
+
+    // RIR (Reps in Reserve - Cepte kalan tekrar) belirleme
+    let rir = 2; // İdeal
+    let reasonText = "İDEAL AĞIRLIK";
+    let reasonClass = "text-[8px] font-bold text-calith-accent uppercase tracking-tighter";
+
+    if (!lastSet.isClean) {
+        rir = -2; // Form bozuksa kapasitenin altındasın demektir
+        reasonText = "FORM BOZUK - DÜŞÜRÜLDÜ";
+        reasonClass = "text-[8px] font-black text-red-500 uppercase tracking-tighter";
+    } else {
+        if (lastSet.feel === 'light') {
+            rir = 4; // Hafifse cepte çok tekrar var
+            reasonText = "HAFİF GELDİ - ARTIRILDI";
+            reasonClass = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
+        } else if (lastSet.feel === 'heavy') {
+            rir = 0; // Ağırsa limit
+            reasonText = "AĞIR GELDİ - LİMİT";
+            reasonClass = "text-[8px] font-black text-orange-500 uppercase tracking-tighter";
+        }
+    }
+
+    // Epley Formülü ile anlık 1RM Tahmini (yapılan reps + cepteki reps)
+    const effectiveReps = reps + rir;
+    const estimated1RM = weight * (1 + effectiveReps / 30);
+
+    // Hedef tekrara göre yeni ağırlığı hesapla: Weight = 1RM / (1 + TargetReps/30)
+    let newWeight = estimated1RM / (1 + targetReps / 30);
+
+    // Aynı kiloyu öneriyorsa veya ufak bir fark varsa mesajı düzelt
+    if (Math.abs(newWeight - weight) < 1 && lastSet.isClean && lastSet.feel === 'ideal') {
+        reasonText = "HEDEFTE KAL";
+    } else if (newWeight < weight && lastSet.isClean && lastSet.feel === 'heavy' && reps < targetReps) {
+        reasonText = "TEKRAR ÇIKMADI - DÜŞÜRÜLDÜ";
+    }
+
+    // 0.5 katlarına yuvarla
+    newWeight = Math.round(newWeight * 2) / 2;
+
+    const recBox = document.getElementById('workout-recommendation-box');
+    const recText = document.getElementById('workout-recommendation-text');
+    const reasonEl = document.getElementById('workout-recommendation-reason');
+    const weightInput = document.getElementById('workout-input-weight');
+
+    if (recBox && recText) {
+        recBox.classList.remove('hidden');
+        recText.textContent = `ÖNERİLEN: ${newWeight} KG`;
+        if (reasonEl) {
+            reasonEl.textContent = reasonText;
+            reasonEl.className = reasonClass;
+        }
+    }
+
+    if (weightInput) {
+        weightInput.value = newWeight;
+    }
+
+    if (newWeight !== weight) {
+        showToast(`${reasonText} -> Hedef Kilo: ${newWeight}kg`);
+    }
+}
+
 function renderWorkoutSets() {
     const container = document.getElementById('workout-sets-list');
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
@@ -4775,6 +4854,9 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
 
     // Set geçmişini render et
     renderWorkoutSets();
+
+    // Dinamik Öneri Güncellemesi
+    updateDynamicRecommendation();
 
     // Dinlenme Başlat (updateWorkoutUI ÇAĞIRMIYORUZ - startRestTimer ile çakışıyor)
     startRestTimer();
@@ -5588,7 +5670,7 @@ async function resetExerciseStats() {
 function showSetFeedbackModal(weight, reps) {
     const modalHtml = `
         <div id="set-feedback-modal" class="fixed inset-0 z-[1200] flex items-center justify-center px-6" style="background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);">
-            <div class="relative bg-calith-dark w-full max-w-sm rounded-[3rem] p-8 text-center border border-white/10 shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div class="relative bg-calith-dark w-full max-w-sm rounded-[3rem] p-8 text-center border border-white/10 shadow-2xl animate-in zoom-in duration-300">
                 <div class="mb-8">
                     <h4 class="text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-2">SET TAMAMLANDI</h4>
                     <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${weight}KG x ${reps} TEKRAR</p>
@@ -5598,11 +5680,11 @@ function showSetFeedbackModal(weight, reps) {
                 <div class="mb-10">
                     <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-4">FORM TEMİZ MİYDİ?</p>
                     <div class="flex items-center justify-center gap-4">
-                        <button id="fb-form-bad" onclick="selectFeedback('form', false)" class="flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-red-500/10 hover:border-red-500/30 transition-all">
+                        <button id="fb-form-bad" onclick="selectFeedback('form', false)" class="flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-red-500/10 transition-all">
                             <i data-lucide="thumbs-down" class="w-6 h-6"></i>
                             <span class="text-[8px] font-black">KİRLİ / BOZUK</span>
                         </button>
-                        <button id="fb-form-good" onclick="selectFeedback('form', true)" class="flex-1 py-5 rounded-2xl border-2 border-green-500 bg-green-500/10 text-green-500 flex flex-col items-center gap-2 transition-all">
+                        <button id="fb-form-good" onclick="selectFeedback('form', true)" class="flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-green-500/10 transition-all">
                             <i data-lucide="thumbs-up" class="w-6 h-6"></i>
                             <span class="text-[8px] font-black">TERTEMİZ</span>
                         </button>
@@ -5617,7 +5699,7 @@ function showSetFeedbackModal(weight, reps) {
                             <i data-lucide="feather" class="w-5 h-5"></i>
                             <span class="text-[8px] font-black uppercase">HAFİF</span>
                         </button>
-                        <button id="fb-feel-ideal" onclick="selectFeedback('feel', 'ideal')" class="py-4 rounded-2xl border-2 border-calith-orange bg-calith-orange/10 text-calith-orange flex flex-col items-center gap-2 shadow-[0_0_20px_rgba(255,107,0,0.1)] transition-all">
+                        <button id="fb-feel-ideal" onclick="selectFeedback('feel', 'ideal')" class="py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-calith-orange/10 transition-all">
                             <i data-lucide="check-circle" class="w-5 h-5"></i>
                             <span class="text-[8px] font-black uppercase">İDEAL</span>
                         </button>
@@ -5628,14 +5710,14 @@ function showSetFeedbackModal(weight, reps) {
                     </div>
                 </div>
 
-                <button onclick="submitSetFeedback(${weight}, ${reps})" class="w-full bg-white text-black font-black py-6 rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-sm shadow-xl">
+                <button id="fb-submit-btn" onclick="submitSetFeedback(${weight}, ${reps})" class="w-full bg-white/10 text-white/30 font-black py-6 rounded-2xl transition-all uppercase tracking-widest text-sm cursor-not-allowed" disabled>
                     ANALİZ ET VE DEVAM ET
                 </button>
             </div>
         </div>
     `;
     
-    window.currentFeedback = { isClean: true, feel: 'ideal' };
+    window.currentFeedback = { isClean: null, feel: null };
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     if (window.lucide) lucide.createIcons();
 }
@@ -5666,6 +5748,15 @@ function selectFeedback(type, value) {
                 buttons[key].className = "py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-white/5 transition-all";
             }
         });
+    }
+
+    // İkisi de seçildiyse butonu aktif et
+    if (window.currentFeedback.isClean !== null && window.currentFeedback.feel !== null) {
+        const submitBtn = document.getElementById('fb-submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.className = "w-full bg-white text-black font-black py-6 rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-sm shadow-xl";
+        }
     }
 }
 

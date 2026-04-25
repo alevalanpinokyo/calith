@@ -5,7 +5,7 @@
 
 ---
 
-## ⚠️ AKTİF HATA: Set Tamamlama Sonrası Siyah Ekran
+## ✅ ÇÖZÜLEN HATA: Set Tamamlama Sonrası Siyah Ekran
 
 ### Sorunun Özeti
 Kullanıcı antrenman sırasında bir seti tamamlayıp **"SETİ TAMAMLA"** butonuna bastığında:
@@ -15,12 +15,12 @@ Kullanıcı antrenman sırasında bir seti tamamlayıp **"SETİ TAMAMLA"** buton
 4. Modal kapanıyor ✅
 5. **Ekran SİYAH kalıyor** ❌ (dinlenme sayacı görünmüyor)
 
-### Teşhis Süreci (Neler Denendi)
-1. `startRestTimer()` çift çağrısı kaldırıldı → **Düzelmedi**
-2. `updateWorkoutUI()` çakışması kaldırıldı → **Düzelmedi**
-3. `startRestTimer()` null-safe yapıldı → **Düzelmedi**
-4. `submitSetFeedback`'e `scrollTop=0` eklendi → **Düzelmedi**
-5. `submitSetFeedback`'e try-catch + konsol log eklendi → **TEST BEKLİYOR**
+### Çözüm (Neden Kaynaklandı)
+Hatanın kaynağı `showSetFeedbackModal` içerisindeki HTML'de bulunan `fade-in` CSS class'ıydı.
+Bu class `styles.css` içinde `opacity: 0` olarak tanımlanmıştı ve IntersectionObserver sadece sayfa yüklendiğinde var olan elementleri hedeflediği için, sonradan oluşturulan bu modal DOM'a eklendiğinde hep `opacity: 0` kalıyordu.
+Modalın kendi backgroundu (`rgba(0,0,0,0.95)`) ekranı kaplayıp karartırken, modal içindeki öğeler görünmez (`opacity: 0`) olduğu için kullanıcı simsiyah bir ekran görüyordu.
+
+**Yapılan İşlem:** `fade-in` class'ı `showSetFeedbackModal` içerisinden kaldırılarak sorun tamamen çözüldü. Artık Set Tamamlama akışı ve ardından dinlenme sayacı sorunsuz çalışıyor.
 
 ### Şu An Kodun Durumu
 ```js
