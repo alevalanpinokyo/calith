@@ -3340,7 +3340,7 @@ function renderProfileSection() {
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-8 relative z-10">
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mt-8 relative z-10">
                 <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
                     <div class="flex items-center gap-3 mb-1">
                         <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
@@ -3385,6 +3385,15 @@ function renderProfileSection() {
                         <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Yaş</span>
                     </div>
                     <div id="profile-age" class="text-lg font-display font-bold">--</div>
+                </div>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-7 h-7 rounded-lg bg-pink-500/10 flex items-center justify-center">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-pink-500"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Geçmiş</span>
+                    </div>
+                    <div id="profile-experience" class="text-lg font-display font-bold">-- Yıl</div>
                 </div>
             </div>
         </div>
@@ -3540,12 +3549,13 @@ async function loadProfileData(user) {
     const weightEl = document.getElementById('profile-weight');
     const heightEl = document.getElementById('profile-height');
     const ageEl = document.getElementById('profile-age');
+    const expEl = document.getElementById('profile-experience');
     const goalEl = document.getElementById('profile-goal');
     const badgeEl = document.getElementById('profile-badge');
     const sinceEl = document.getElementById('profile-since');
 
     // Başlangıçta skeleton efektini ekle
-    const elements = [nameEl, weightEl, heightEl, ageEl, goalEl, sinceEl];
+    const elements = [nameEl, weightEl, heightEl, ageEl, expEl, goalEl, sinceEl];
     elements.forEach(el => { if (el) el.classList.add('skeleton'); });
 
     // Hızlı bilgi yükle (Metadatadan)
@@ -3570,6 +3580,7 @@ async function loadProfileData(user) {
         if (weightEl) weightEl.textContent = data.weight ? data.weight + ' KG' : '--';
         if (heightEl) heightEl.textContent = data.height ? data.height + ' CM' : '--';
         if (ageEl) ageEl.textContent = data.age || '--';
+        if (expEl) expEl.textContent = data.since ? data.since + ' Yıl' : '-- Yıl';
         if (goalEl) goalEl.textContent = data.goal || '--';
 
         if (sinceEl) {
@@ -3587,6 +3598,7 @@ async function loadProfileData(user) {
         const editWeight = document.getElementById('edit-weight');
         const editHeight = document.getElementById('edit-height');
         const editAge = document.getElementById('edit-age');
+        const editSince = document.getElementById('edit-since');
         const editGoal = document.getElementById('edit-goal');
 
         if (editName) editName.value = data.full_name || user.user_metadata?.full_name || '';
