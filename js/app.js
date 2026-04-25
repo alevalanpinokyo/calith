@@ -3605,16 +3605,10 @@ async function loadProfileData(user) {
         badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
     }
 
-    // 3. PROGRAMLAR SİSTEMİ (Sadece veriyi hazırla, render etme)
     if (!programsResult.error && programsResult.data) {
         myProgramIds = programsResult.data.map(d => String(d.program_id));
     }
 }
-}
-
-
-
-
 
 async function saveProfileData() {
     const sb = getSupabase();
