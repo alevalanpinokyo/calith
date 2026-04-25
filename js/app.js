@@ -5673,5 +5673,10 @@ function submitSetFeedback(weight, reps) {
     const { isClean, feel } = window.currentFeedback;
     const modal = document.getElementById('set-feedback-modal');
     if (modal) modal.remove();
+
+    // Ekranı yukarı kaydır - rest box görünsün
+    const workoutEl = document.getElementById('workout-mode');
+    if (workoutEl) workoutEl.scrollTop = 0;
+
     processSetWithFeedback(weight, reps, isClean, feel);
 }
