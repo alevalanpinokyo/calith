@@ -4589,7 +4589,11 @@ function updateWorkoutUI() {
 
     // Metin Güncellemeleri
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
-    if (els.target) els.target.textContent = (ex.target || '');
+    if (els.target) {
+        let targetText = (ex.target || '').toUpperCase();
+        if (isBW && !isTimed) targetText += ' (VÜCUT AĞIRLIĞI)';
+        els.target.textContent = targetText;
+    }
     if (els.title) els.title.textContent = workoutSession.program?.title?.toUpperCase() || 'CALITH ANTRENMAN';
     if (els.move) els.move.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
     if (els.set) els.set.textContent = `SET ${workoutSession.currSet}`;
