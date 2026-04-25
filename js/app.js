@@ -5083,17 +5083,16 @@ function showConfirmModal(message, onConfirm) {
     if (old) old.remove();
 
     const modalHtml = `
-    <div id="confirm-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-300">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeConfirmModal()"></div>
-        <div class="relative w-full max-w-sm bg-calith-dark border border-white/10 rounded-[3rem] p-8 shadow-2xl transform animate-in zoom-in-95 duration-300 text-center">
-            <div class="w-20 h-20 bg-calith-orange/10 rounded-3xl flex items-center justify-center mb-6 mx-auto border border-calith-orange/20">
-                <i data-lucide="help-circle" class="w-10 h-10 text-calith-orange"></i>
+    <div id="confirm-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 transition-opacity duration-300" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
+        <div class="relative w-full max-w-sm bg-[#0A0A0A] border border-white/10 rounded-[3rem] p-8 shadow-2xl text-center transition-all duration-300 transform scale-100 opacity-100">
+            <div class="w-20 h-20 bg-[#FF6B35]/10 rounded-3xl flex items-center justify-center mb-6 mx-auto border border-[#FF6B35]/20">
+                <i data-lucide="help-circle" class="w-10 h-10 text-[#FF6B35]"></i>
             </div>
             <h3 class="font-display text-3xl font-bold mb-4 uppercase tracking-tight text-white italic">EMİN MİSİN?</h3>
             <p class="text-gray-400 text-sm leading-relaxed mb-10 font-medium px-4">${message}</p>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="closeConfirmModal()" class="py-5 rounded-2xl bg-white/5 text-gray-500 font-black text-[10px] uppercase tracking-[0.2em] border border-white/10 hover:bg-white/10 hover:text-white transition-all">İPTAL</button>
-                <button id="btn-confirm-action" class="py-5 rounded-2xl bg-calith-orange text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-calith-orange/20 hover:scale-[1.02] active:scale-[0.98] transition-all">DEVAM ET</button>
+                <button id="btn-confirm-action" class="py-5 rounded-2xl bg-[#FF6B35] text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-[#FF6B35]/20 hover:scale-[1.02] active:scale-[0.98] transition-all">DEVAM ET</button>
             </div>
         </div>
     </div>
@@ -5110,7 +5109,8 @@ function showConfirmModal(message, onConfirm) {
 function closeConfirmModal() {
     const modal = document.getElementById('confirm-modal');
     if (modal) {
-        modal.classList.add('animate-out', 'fade-out', 'zoom-out-95', 'duration-300');
+        modal.style.opacity = '0';
+        modal.querySelector('.relative').style.transform = 'scale(0.95)';
         setTimeout(() => modal.remove(), 300);
     }
 }
