@@ -5498,15 +5498,12 @@ async function resetExerciseStats() {
 
     showToast("Veriler sıfırlanıyor...");
     
-    const { error } = await sb.from('user_exercise_stats')
-        .delete()
-        .eq('user_id', currentUser.id);
+    // 1. Rekorları Sil
+    await sb.from('user_exercise_stats').delete().eq('user_id', currentUser.id);
+    
+    // 2. Antrenman Geçmişini Sil
+    await sb.from('workout_logs').delete().eq('user_id', currentUser.id);
 
-    if (error) {
-        showToast("Sıfırlama başarısız!");
-        console.error(error);
-    } else {
-        showToast("Tüm rekorlar silindi! Sıfırdan başlayabilirsin.");
-        switchProfileTab('prs'); // Tabı yenile
-    }
+    showToast("Tüm geçmiş ve rekorlar silindi!");
+    switchProfileTab('prs'); // Tabı yenile
 }
