@@ -103,6 +103,15 @@ BEGIN
         RAISE EXCEPTION 'Admin rolü bu panel üzerinden atanamaz. Güvenlik gereği sadece doğrudan veritabanı (Supabase SQL Editor) üzerinden atanmalıdır.';
     END IF;
 
+    -- Güvenlik: Hedef kullanıcı zaten bir admin ise, rolü değiştirilemez.
+    IF EXISTS (
+        SELECT 1 FROM public.user_roles WHERE user_id = target_user_id AND role = 'admin'
+    ) OR EXISTS (
+        SELECT 1 FROM public.profiles WHERE id = target_user_id AND role = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Bir adminin rolünü bu panel üzerinden değiştiremezsiniz.';
+    END IF;
+
     -- user_roles tablosunu güncelle veya ekle
     INSERT INTO public.user_roles (user_id, role)
     VALUES (target_user_id, new_role)
@@ -138,6 +147,15 @@ BEGIN
         RAISE EXCEPTION 'Kendi hesabınızı banlayamazsınız';
     END IF;
 
+    -- Güvenlik: Başka bir admini banlayamazsınız
+    IF EXISTS (
+        SELECT 1 FROM public.user_roles WHERE user_id = target_user_id AND role = 'admin'
+    ) OR EXISTS (
+        SELECT 1 FROM public.profiles WHERE id = target_user_id AND role = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Başka bir yöneticiyi (admin) banlayamazsınız.';
+    END IF;
+
     IF ban_duration_days > 0 THEN
         UPDATE auth.users SET banned_until = now() + (ban_duration_days || ' days')::interval WHERE id = target_user_id;
         UPDATE public.profiles SET ban_reason = reason WHERE id = target_user_id;
@@ -168,6 +186,15 @@ BEGIN
 
     IF target_user_id = auth.uid() THEN
         RAISE EXCEPTION 'Kendi hesabınızı silemezsiniz';
+    END IF;
+
+    -- Güvenlik: Başka bir admini silemezsiniz
+    IF EXISTS (
+        SELECT 1 FROM public.user_roles WHERE user_id = target_user_id AND role = 'admin'
+    ) OR EXISTS (
+        SELECT 1 FROM public.profiles WHERE id = target_user_id AND role = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Başka bir yöneticiyi (admin) silemezsiniz.';
     END IF;
 
     -- Sadece auth.users'dan sileriz. Eğer Supabase tablolarda foreign key ON DELETE CASCADE ayarlandıysa
