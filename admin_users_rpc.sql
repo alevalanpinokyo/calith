@@ -98,6 +98,11 @@ BEGIN
         RAISE EXCEPTION 'Yetkisiz erişim';
     END IF;
 
+    -- Güvenlik: Admin rolü sadece doğrudan veritabanı üzerinden (SQL Editor vb.) atanabilir.
+    IF new_role = 'admin' THEN
+        RAISE EXCEPTION 'Admin rolü bu panel üzerinden atanamaz. Güvenlik gereği sadece doğrudan veritabanı (Supabase SQL Editor) üzerinden atanmalıdır.';
+    END IF;
+
     -- user_roles tablosunu güncelle veya ekle
     INSERT INTO public.user_roles (user_id, role)
     VALUES (target_user_id, new_role)
