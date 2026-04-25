@@ -161,3 +161,18 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 - **BW PR Mantığı:** Şu anki 1RM hesaplaması ağırlıksız (BW) hareketlerde 0 sonuç veriyor. Bu hareketlerin "Maksimum Tekrar" üzerinden PR olarak kaydedilmesi ve profil ekranında farklı gösterilmesi (örn: "Barfiks: 22 Tekrar") tartışılacak.
 - **Workout Logs Delete Policy:** SQL sorgusu çalıştırıldı, silme yetkisi doğrulandı. ✅
 
+---
+
+## 🚧 GELİŞTİRME: Smart Workout Engine v2 (MAX/SN/BW)
+
+**Hedef:** Admin panelinden gelen "MAX", "SN" ve "BW" verilerinin antrenman motoru tarafından akıllıca işlenmesi.
+
+### Yapılacaklar:
+1. [ ] **Parser Güncelleme:** `ex.reps` "MAX" ise bunu algılayıp `isMax: true` flag'i ekle.
+2. [ ] **Stopwatch Modu:** `isTimed && isMax` durumunda geri sayım yerine 0'dan yukarı sayan sayaç ekle.
+3. [ ] **BW PR Mantığı:** Ağırlık 0 ise rekoru `reps` üzerinden tut.
+4. [ ] **UI Uyumluluğu:** MAX hareketlerde girdi alanlarını "Sonuç" odaklı güncelle.
+
+**Durum:** Planlandı, Kodlanacak.
+
+
