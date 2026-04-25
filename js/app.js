@@ -2893,6 +2893,9 @@ async function submitLeadForm() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Merkezi UI Bileşenlerini Başlat
+    initSharedUI();
+
     // 1. Initial page state & logic
     if (typeof init === 'function') init();
     await checkCurrentUser();
@@ -4317,31 +4320,31 @@ function moveExerciseToEnd() {
         return;
     }
 
-    if (!confirm("Bu hareketi gerçekten antrenman sonuna bırakmak istiyor musun?")) return;
-
-    // Hareketi diziden çıkar ve sona ekle
-    const exerciseToMove = workoutSession.exercises.splice(currentIndex, 1)[0];
-    workoutSession.exercises.push(exerciseToMove);
-    
-    // Not: currExerciseIdx'i değiştirmemize gerek yok çünkü 
-    // şu anki index'e bir sonraki hareket kaymış oldu.
-    // Ancak set sayısını ve listeyi sıfırlamamız lazım.
-    workoutSession.currSet = 1;
-    
-    // Set listesini temizle (Sanki bu harekete hiç başlamamışız gibi)
-    const setsList = document.getElementById('workout-sets-list');
-    if (setsList) {
-        setsList.innerHTML = `
-            <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
-            </div>
-        `;
-    }
-    
-    showToast(`${exerciseToMove.name.toUpperCase()} sona bırakıldı!`);
-    
-    // UI Güncelle
-    updateWorkoutUI();
+    showConfirmModal("Bu hareketi gerçekten antrenman sonuna bırakmak istiyor musun? Yorulduysan dert etme kanka, sona atıp sonra bitirebilirsin! 🔥", () => {
+        // Hareketi diziden çıkar ve sona ekle
+        const exerciseToMove = workoutSession.exercises.splice(currentIndex, 1)[0];
+        workoutSession.exercises.push(exerciseToMove);
+        
+        // Not: currExerciseIdx'i değiştirmemize gerek yok çünkü 
+        // şu anki index'e bir sonraki hareket kaymış oldu.
+        // Ancak set sayısını ve listeyi sıfırlamamız lazım.
+        workoutSession.currSet = 1;
+        
+        // Set listesini temizle (Sanki bu harekete hiç başlamamışız gibi)
+        const setsList = document.getElementById('workout-sets-list');
+        if (setsList) {
+            setsList.innerHTML = `
+                <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                    <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
+                </div>
+            `;
+        }
+        
+        showToast(`${exerciseToMove.name.toUpperCase()} sona bırakıldı!`);
+        
+        // UI Güncelle
+        updateWorkoutUI();
+    });
 }
 
 function updateWorkoutUI() {
@@ -4826,4 +4829,288 @@ function setQuickIcon(type, name) {
     if (typeEl) typeEl.value = type;
     if (nameEl) nameEl.value = name;
     updateIconPreview();
+}
+
+/**
+ * Merkezi UI Bileşenlerini Başlatır.
+ * Bu fonksiyon tüm sayfalarda (index, skills, shop vb.) aynı modal ve overlay yapılarının
+ * otomatik olarak DOM'a eklenmesini sağlar. Böylece bir yerde yapılan değişiklik her yerde geçerli olur.
+ */
+function initSharedUI() {
+    // 1. TOAST (Bildirimler)
+    if (!document.getElementById('toast')) {
+        const toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-[5000] transform translate-y-32 transition-transform duration-500 flex items-center gap-3';
+        toast.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i><span id="toast-msg" class="font-bold text-sm"></span>';
+        document.body.appendChild(toast);
+    }
+
+    // 2. AUTH MODAL (Giriş / Kayıt)
+    if (!document.getElementById('auth-modal')) {
+        const auth = document.createElement('div');
+        auth.id = 'auth-modal';
+        auth.className = 'fixed inset-0 z-[100] hidden flex items-center justify-center p-4';
+        auth.innerHTML = `
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+            <div class="relative w-full max-w-md bg-calith-dark border border-white/10 rounded-3xl p-8 shadow-2xl transform transition-all">
+                <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <div class="text-center mb-8">
+                    <div class="shrink-0 w-12 h-12 bg-gradient-to-br from-calith-orange to-calith-accent rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <h2 class="font-display text-3xl font-bold uppercase" id="auth-title">Hoş Geldin</h2>
+                    <p class="text-sm text-gray-400 mt-2" id="auth-subtitle">Devam etmek için giriş yap veya topluluğa katıl.</p>
+                </div>
+                <div id="login-form-view" class="space-y-4">
+                    <input type="email" id="auth-login-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <input type="password" id="auth-login-pass" placeholder="Şifreniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <button onclick="submitLogin()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 mt-4 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+                        <span id="btn-login-txt">Giriş Yap</span>
+                    </button>
+                    <p class="text-center text-sm text-gray-400 mt-4">
+                        Hesabın yok mu? <button onclick="toggleAuthView('register')" class="text-calith-orange font-bold hover:text-white transition-colors">Hemen Üye Ol</button>
+                    </p>
+                </div>
+                <div id="register-form-view" class="space-y-4 hidden">
+                    <input type="text" id="auth-reg-name" placeholder="Ad Soyad" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <input type="email" id="auth-reg-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <input type="password" id="auth-reg-pass" placeholder="Şifreniz (En az 6 karakter)" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <label class="block text-xs text-gray-400 uppercase tracking-widest mb-2 font-bold">Spor Geçmişin ve Seviyen</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="fitness_level" value="baslangic" class="peer sr-only" checked>
+                                <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
+                                    <div class="text-xl mb-1">🌱</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Başlangıç</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="fitness_level" value="orta" class="peer sr-only">
+                                <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
+                                    <div class="text-xl mb-1">🔥</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Orta</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="fitness_level" value="ileri" class="peer sr-only">
+                                <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
+                                    <div class="text-xl mb-1">👑</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">İleri</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button onclick="submitRegister()" class="w-full bg-white text-black font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-colors shadow-lg mt-6 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+                        <span id="btn-reg-txt">Topluluğa Katıl</span>
+                    </button>
+                    <p class="text-center text-sm text-gray-400 mt-4">
+                        Zaten hesabın var mı? <button onclick="toggleAuthView('login')" class="text-white font-bold hover:text-calith-orange transition-colors">Giriş Yap</button>
+                    </p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(auth);
+    }
+
+    // 3. LEAD MODAL (Rehber İndir)
+    if (!document.getElementById('lead-modal')) {
+        const lead = document.createElement('div');
+        lead.id = 'lead-modal';
+        lead.className = 'fixed inset-0 z-[100] hidden flex items-center justify-center p-4';
+        lead.innerHTML = `
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('lead-modal').classList.add('hidden')"></div>
+            <div class="relative w-full max-w-md bg-calith-dark border border-white/10 rounded-3xl p-8 shadow-2xl transform transition-all text-center">
+                <button onclick="document.getElementById('lead-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <div class="shrink-0 w-12 h-12 bg-gradient-to-br from-calith-orange to-calith-accent rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="download" class="w-6 h-6 text-white"></i>
+                </div>
+                <h2 class="font-display text-3xl font-bold uppercase mb-2">Başlangıç Rehberi</h2>
+                <p class="text-sm text-gray-400 mb-6">PDF rehberini indirmek için e-postanı gir. Antrenman programın hemen e-postana gelsin.</p>
+                <div class="space-y-4">
+                    <input type="email" id="lead-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <button onclick="submitLeadForm()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
+                        Şimdi İndir
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(lead);
+    }
+
+    // 4. VIDEO MODAL
+    if (!document.getElementById('video-modal')) {
+        const video = document.createElement('div');
+        video.id = 'video-modal';
+        video.className = 'fixed inset-0 z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none';
+        video.innerHTML = `
+            <div class="video-modal-backdrop bg-black/95 backdrop-blur-lg absolute inset-0" onclick="closeVideoModal()"></div>
+            <div class="relative z-10 w-full px-4 flex flex-col items-center justify-center min-h-screen">
+                <button onclick="closeVideoModal()" class="mb-4 w-12 h-12 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                <div class="w-full max-w-4xl rounded-2xl overflow-hidden border border-white/20 bg-black shadow-2xl shadow-calith-orange/10" id="video-container"></div>
+            </div>
+        `;
+        document.body.appendChild(video);
+    }
+
+    // 5. WORKOUT MODE (Antrenman Overlay)
+    if (!document.getElementById('workout-mode')) {
+        const workout = document.createElement('section');
+        workout.id = 'workout-mode';
+        workout.className = 'fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black';
+        workout.innerHTML = `
+            <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-50">
+                <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-calith-orange/5 blur-[80px] rounded-full"></div>
+                <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-calith-accent/5 blur-[80px] rounded-full"></div>
+            </div>
+            <div class="fixed top-0 left-0 right-0 h-1 bg-white/5 z-[1020]">
+                <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange via-white to-calith-accent transition-all duration-700 w-0"></div>
+            </div>
+            <div class="sticky top-0 z-[1010] px-6 py-8 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5">
+                <div class="max-w-xl mx-auto flex items-center justify-between">
+                    <div class="flex items-center gap-5">
+                        <button onclick="confirmExitWorkout()" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10 group">
+                            <i data-lucide="x" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                        </button>
+                        <div>
+                            <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">PROGRAM ADI</h2>
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-calith-orange animate-pulse"></div>
+                                <p id="workout-timer" class="text-lg font-mono font-bold text-white tracking-tighter">00:00:00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span id="workout-move-info" class="text-[10px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-4 py-2 rounded-full border border-calith-orange/20">1 / 5 HAREKET</span>
+                    </div>
+                </div>
+            </div>
+            <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
+                <div id="workout-exercise-card" class="relative group mb-12">
+                    <button onclick="moveExerciseToEnd()" class="absolute top-8 right-8 z-30 w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center justify-center text-gray-400 hover:text-calith-orange hover:bg-calith-orange/10 transition-all group/btn active:scale-95 shadow-2xl" title="Hareketi Sona Bırak">
+                        <i data-lucide="chevrons-down" class="w-5 h-5 mb-0.5"></i>
+                        <span class="text-[7px] font-black uppercase tracking-tighter opacity-0 group-hover/btn:opacity-100 transition-opacity">SONA AT</span>
+                    </button>
+                    <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-32 h-32 bg-white/[0.02] rounded-full flex items-center justify-center rotate-12">
+                            <i data-lucide="dumbbell" class="w-20 h-20 text-white/[0.03]"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">ŞU ANKİ EGZERSİZ</span>
+                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10">
+                                <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
+                                <p id="workout-exercise-target" class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">HEDEF: -</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="workout-rest-timer-box" class="hidden mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-calith-accent/5 animate-pulse"></div>
+                    <div class="relative z-10">
+                        <p class="text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3">DINLENME SÜRESI</p>
+                        <div id="workout-rest-clock" class="text-6xl font-mono font-black text-white tracking-tighter mb-4">00:45</div>
+                        <button onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DINLENMEYI ATLA</button>
+                    </div>
+                </div>
+                <button id="btn-exercise-timer" class="hidden w-full mb-8 py-5 bg-calith-orange/10 border border-calith-orange/30 rounded-3xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.3em] hover:bg-calith-orange hover:text-black transition-all group">
+                    <i data-lucide="timer" class="w-5 h-5 animate-pulse"></i>
+                    <span>SÜRE BAŞLAT</span>
+                </button>
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-4 bg-calith-orange rounded-full"></span>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">SET GEÇMİŞİ</h4>
+                        </div>
+                        <span id="workout-set-info" class="text-[10px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-lg">SET 1 / -</span>
+                    </div>
+                    <div id="workout-sets-list" class="grid grid-cols-1 gap-3">
+                        <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                            <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-8 pb-20">
+                    <div id="workout-inputs-grid" class="grid grid-cols-2 gap-6">
+                        <div id="workout-weight-container" class="relative group">
+                            <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
+                            <input type="number" id="workout-input-weight" value="0" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all">
+                        </div>
+                        <div id="workout-reps-container" class="relative group">
+                            <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
+                            <input type="number" id="workout-input-reps" value="10" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all">
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="nextExercise()" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
+                        <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
+                            <span>SETİ TAMAMLA</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(workout);
+    }
+
+    // 6. PRINT AREA (PDF Export için)
+    if (!document.getElementById('print-area')) {
+        const print = document.createElement('div');
+        print.id = 'print-area';
+        print.style.display = 'none';
+        print.innerHTML = '<div id="print-content"></div>';
+        document.body.appendChild(print);
+    }
+
+    // Lucide ikonlarını yenile (Yeni eklenen elementler için)
+    if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Şık Onay Modalı (Confirm)
+ * Tarayıcının standart confirm() kutusu yerine geçer.
+ */
+function showConfirmModal(message, onConfirm) {
+    // Varsa eskisini temizle
+    const old = document.getElementById('confirm-modal');
+    if (old) old.remove();
+
+    const modalHtml = `
+    <div id="confirm-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-300">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeConfirmModal()"></div>
+        <div class="relative w-full max-w-sm bg-calith-dark border border-white/10 rounded-[3rem] p-8 shadow-2xl transform animate-in zoom-in-95 duration-300 text-center">
+            <div class="w-20 h-20 bg-calith-orange/10 rounded-3xl flex items-center justify-center mb-6 mx-auto border border-calith-orange/20">
+                <i data-lucide="help-circle" class="w-10 h-10 text-calith-orange"></i>
+            </div>
+            <h3 class="font-display text-3xl font-bold mb-4 uppercase tracking-tight text-white italic">EMİN MİSİN?</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-10 font-medium px-4">${message}</p>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="closeConfirmModal()" class="py-5 rounded-2xl bg-white/5 text-gray-500 font-black text-[10px] uppercase tracking-[0.2em] border border-white/10 hover:bg-white/10 hover:text-white transition-all">İPTAL</button>
+                <button id="btn-confirm-action" class="py-5 rounded-2xl bg-calith-orange text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-calith-orange/20 hover:scale-[1.02] active:scale-[0.98] transition-all">DEVAM ET</button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide) lucide.createIcons();
+    
+    document.getElementById('btn-confirm-action').onclick = () => {
+        onConfirm();
+        closeConfirmModal();
+    };
+}
+
+function closeConfirmModal() {
+    const modal = document.getElementById('confirm-modal');
+    if (modal) {
+        modal.classList.add('animate-out', 'fade-out', 'zoom-out-95', 'duration-300');
+        setTimeout(() => modal.remove(), 300);
+    }
 }

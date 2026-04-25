@@ -22,14 +22,12 @@
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
-            <div class="flex items-center gap-2" id="logo-container">
-                <a href="index.html" class="flex items-center gap-2 cursor-pointer" title="Ana Sayfa" aria-label="Ana Sayfaya Git">
-                    <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
-                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
-                </a>
-            </div>
+            <a href="index.html" class="flex items-center gap-2 cursor-pointer" id="logo-container" title="Ana Sayfaya Git">
+                <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </a>
             <div class="hidden md:flex items-center gap-8">
                 <a href="index.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">ANA SAYFA</a>
                 <span class="text-white uppercase font-bold tracking-widest text-sm">ADMIN PANEL</span>
@@ -542,41 +540,39 @@
     </div>
 </section>
 
-<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-calith-orange text-white px-8 py-4 rounded-full shadow-2xl z-50 transform translate-y-32 transition-transform duration-500 flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5"></i><span id="toast-msg" class="font-bold text-sm"></span></div>
-
-<script src="js/app.js?v=202604250132"></script>
-<script>
-    lucide.createIcons();
-    function switchAdminTab(tab) {
-        document.getElementById('section-blog').classList.toggle('hidden', tab !== 'blog');
-        document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
-        document.getElementById('section-programs').classList.toggle('hidden', tab !== 'programs');
-        document.getElementById('section-announcements').classList.toggle('hidden', tab !== 'announcements');
-        document.getElementById('section-homecards').classList.toggle('hidden', tab !== 'homecards');
-        document.getElementById('section-links').classList.toggle('hidden', tab !== 'links');
-        document.getElementById('section-users').classList.toggle('hidden', tab !== 'users');
-        
-        document.getElementById('tab-blog').className = tab === 'blog' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        document.getElementById('tab-products').className = tab === 'products' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        document.getElementById('tab-programs').className = tab === 'programs' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        document.getElementById('tab-announcements').className = tab === 'announcements' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        document.getElementById('tab-homecards').className = tab === 'homecards' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        document.getElementById('tab-links').className = tab === 'links' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        document.getElementById('tab-users').className = tab === 'users' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
-        
-        if (tab === 'products') renderAdminProducts();
-        if (tab === 'programs') renderAdminPrograms();
-        if (tab === 'announcements') renderAdminAnnouncements();
-        if (tab === 'links') renderAdminLinks();
-        if (tab === 'users') renderAdminUsers();
-        if (tab === 'homecards') {
-            if (typeof filterAdminHomecards === 'function') {
-                filterAdminHomecards(typeof currentHomecardFilter !== 'undefined' ? currentHomecardFilter : 'hero', true);
-            } else {
-                renderAdminHomecards();
+    <script src="js/app.js?v=202604250132"></script>
+    <script>
+        lucide.createIcons();
+        function switchAdminTab(tab) {
+            document.getElementById('section-blog').classList.toggle('hidden', tab !== 'blog');
+            document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
+            document.getElementById('section-programs').classList.toggle('hidden', tab !== 'programs');
+            document.getElementById('section-announcements').classList.toggle('hidden', tab !== 'announcements');
+            document.getElementById('section-homecards').classList.toggle('hidden', tab !== 'homecards');
+            document.getElementById('section-links').classList.toggle('hidden', tab !== 'links');
+            document.getElementById('section-users').classList.toggle('hidden', tab !== 'users');
+            
+            document.getElementById('tab-blog').className = tab === 'blog' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-products').className = tab === 'products' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-programs').className = tab === 'programs' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-announcements').className = tab === 'announcements' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-homecards').className = tab === 'homecards' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-links').className = tab === 'links' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-users').className = tab === 'users' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            
+            if (tab === 'products') renderAdminProducts();
+            if (tab === 'programs') renderAdminPrograms();
+            if (tab === 'announcements') renderAdminAnnouncements();
+            if (tab === 'links') renderAdminLinks();
+            if (tab === 'users') renderAdminUsers();
+            if (tab === 'homecards') {
+                if (typeof filterAdminHomecards === 'function') {
+                    filterAdminHomecards(typeof currentHomecardFilter !== 'undefined' ? currentHomecardFilter : 'hero', true);
+                } else {
+                    renderAdminHomecards();
+                }
             }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
