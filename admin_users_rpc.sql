@@ -22,6 +22,7 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql
 SECURITY DEFINER -- auth.users tablosuna erişim için gerekli
+SET search_path = pg_catalog, public
 AS $$
 BEGIN
     -- Sadece 'admin' rolüne sahip kullanıcıların bu fonksiyondan veri çekmesini sağla
