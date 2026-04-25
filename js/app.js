@@ -3605,6 +3605,9 @@ async function loadProfileData(user) {
         if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
 
         // Düzenleme formunu doldur
+        const editName = document.getElementById('edit-full-name');
+        const editWeight = document.getElementById('edit-weight');
+        const editHeight = document.getElementById('edit-height');
         const editAge = document.getElementById('edit-age');
         const editSince = document.getElementById('edit-since');
         const editLevel = document.getElementById('edit-level');
