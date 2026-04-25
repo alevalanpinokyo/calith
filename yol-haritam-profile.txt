@@ -14,7 +14,7 @@ Sistem artık sadece yüzde hesaplamayacak, profesyonel antrenman kurallarını 
 - [x] (2024-04-25) **Smart Suggestion UI:** Ağırlık giriş alanında "💡 ÖNERİLEN: X KG" etiketi. [TEST EDİLDİ]
 - [x] (2024-04-25) **Auto-Calibration Guide:** İlk kez yapılan hareketler için bilgilendirme modalı. [TEST EDİLDİ]
 - [x] (2024-04-25) **Interaktif Geri Bildirim:** Set sonu Form (Temiz/Kirli) ve RPE (Hafif/İdeal/Ağır) modalı. [TEST EDİLDİ]
-- [x] (2026-04-26) **Smart Workout Engine v2:** MAX tekrar, stopwatch (ileri sayım) ve BW PR mantığının tam entegrasyonu. [BİTTİ]
+- [ ] (2026-04-26) **Smart Workout Engine v2:** MAX tekrar, stopwatch (ileri sayım) ve BW PR mantığının tam entegrasyonu. [YARIN CANLI TEST EDİLECEK]
 - **(2026-04-26):** TARTIŞILACAK: BW hareketlerinin PR (Rekor) sistemine dahil edilmesi ve "1RM" yerine "Maksimum Tekrar" mantığının entegrasyonu.
 - [ ] (2024-04-25) **Otomatik Karar Mekanizması:** Antrenman sonu kuralların kontrol edilip haftalık önerinin belirlenmesi. [EDİLMEDİ]
   - *Not (2026-04-25): CNS Yorgunluğu / Deload mekanizması (peş peşe 'Ağır' ve 'Kirli' form dönüşlerinde makro döngüde %20 ağırlık düşürme) bu faza dahil edilecek.*
