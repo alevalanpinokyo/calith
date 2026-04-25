@@ -9,6 +9,13 @@
 -- ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS ban_reason text;
 
 
+-- Mevcut fonksiyonları temizle (Dönüş tipi değişiklikleri için gereklidir)
+DROP FUNCTION IF EXISTS get_admin_users();
+DROP FUNCTION IF EXISTS admin_set_user_role(uuid, text);
+DROP FUNCTION IF EXISTS admin_ban_user(uuid, int);
+DROP FUNCTION IF EXISTS admin_ban_user(uuid, int, text);
+DROP FUNCTION IF EXISTS admin_delete_user(uuid);
+
 CREATE OR REPLACE FUNCTION get_admin_users()
 RETURNS TABLE (
     id uuid,
