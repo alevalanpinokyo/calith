@@ -142,6 +142,7 @@ let currentPd = null;
 let currentBlogId = null;
 let pdQty = 1;
 let isAdminMode = false;
+let myProgramIds = []; // Global sahiplik listesi
 
 // --- WORKOUT STATE ---
 let workoutSession = {
@@ -3474,11 +3475,13 @@ function switchProfileTab(tabId) {
     const container = document.getElementById('user-programs-list');
     if (!container) return;
 
+    console.log('Switching to profile tab:', tabId);
+
     // Loading State
     container.innerHTML = `
-        <div class="py-20 flex flex-col items-center justify-center animate-pulse">
-            <div class="w-12 h-12 rounded-full border-4 border-calith-orange/20 border-t-calith-orange animate-spin mb-4"></div>
-            <p class="text-gray-500 font-bold text-[10px] uppercase tracking-widest">Yükleniyor...</p>
+        <div class="py-20 flex flex-col items-center justify-center">
+            <div class="w-10 h-10 rounded-full border-4 border-calith-orange/20 border-t-calith-orange animate-spin mb-4"></div>
+            <p class="text-gray-500 font-bold text-[10px] uppercase tracking-widest animate-pulse">Yükleniyor...</p>
         </div>
     `;
 
@@ -3654,9 +3657,12 @@ async function loadUserPrograms(userId) {
 
 function renderUserPrograms(programs) {
     const activeTab = document.querySelector('.profile-tab.active');
-    if (activeTab && activeTab.id !== 'btn-tab-ready') return;
-
     const container = document.getElementById('user-programs-list');
+    
+    if (!activeTab || activeTab.id !== 'btn-tab-ready') {
+        console.warn('RenderUserPrograms: Beklenen sekme (ready) aktif değil, iptal edildi.');
+        return;
+    }
     if (!container) return;
 
     if (programs.length === 0) {
@@ -3726,9 +3732,12 @@ async function loadWorkoutLogs(userId) {
 
 function renderWorkoutLogs(logs) {
     const activeTab = document.querySelector('.profile-tab.active');
-    if (activeTab && activeTab.id !== 'btn-tab-history') return;
-
     const container = document.getElementById('user-programs-list');
+
+    if (!activeTab || activeTab.id !== 'btn-tab-history') {
+        console.warn('RenderWorkoutLogs: Beklenen sekme (history) aktif değil, iptal edildi.');
+        return;
+    }
     if (!container) return;
 
     if (logs.length === 0) return;
@@ -4155,7 +4164,7 @@ function renderFrontendLinks() {
 
 // --- WORKOUT ENGINE FUNCTIONS ---
 
-let myProgramIds = []; // Global sahiplik listesi
+// Global sahiplik listesi artık dosya başında tanımlı.
 let exerciseTimerInterval = null;
 let countdownInterval = null;
 
