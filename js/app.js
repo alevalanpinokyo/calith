@@ -4273,13 +4273,15 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     const day = days[dayIndex];
     const exercises = (day.exercises || []).map(ex => {
         if (typeof ex === 'object') {
+            const isMax = String(ex.reps || "").toUpperCase().includes('MAX');
             return {
                 name: ex.name,
                 target: `${ex.sets} x ${ex.reps}${ex.type === 'secs' ? 'sn' : ''}`,
                 targetSets: parseInt(ex.sets) || 1,
-                targetReps: parseInt(ex.reps) || 10,
+                targetReps: isMax ? 999 : (parseInt(ex.reps) || 10),
                 type: ex.type || 'reps',
                 isBW: !!ex.isBW,
+                isMax: isMax,
                 sets: []
             };
         }
@@ -4594,6 +4596,7 @@ function updateWorkoutUI() {
     const targetStr = String(ex.target || "").toLowerCase();
     const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
     const isBW = ex.isBW || targetStr.includes('bw');
+    const isMax = ex.isMax || targetStr.includes('max');
 
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
     if (els.target) {
@@ -4609,9 +4612,17 @@ function updateWorkoutUI() {
     if (els.weight) els.weight.value = 0;
     
     let tReps = 10;
-    const repsMatch = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
-    if (repsMatch) tReps = parseInt(repsMatch[1]);
-    if (els.reps) els.reps.value = tReps;
+    if (isMax) {
+        tReps = 0;
+    } else {
+        const repsMatch = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
+        if (repsMatch) tReps = parseInt(repsMatch[1]);
+    }
+    
+    if (els.reps) {
+        els.reps.value = isMax ? "" : tReps;
+        els.reps.placeholder = isMax ? "MAX" : "";
+    }
 
     const workoutModeEl = document.getElementById('workout-mode');
     if (workoutModeEl) {
@@ -4622,8 +4633,8 @@ function updateWorkoutUI() {
     if (isTimed) {
         if (els.timerBtn) {
             els.timerBtn.classList.remove('hidden');
-            els.timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${tReps}sn)`;
-            els.timerBtn.onclick = () => startExerciseTimer(tReps);
+            els.timerBtn.querySelector('span').textContent = isMax ? `SAYACI BAŞLAT (MAKSİMUM)` : `HAREKETE BAŞLA (${tReps}sn)`;
+            els.timerBtn.onclick = () => startExerciseTimer(tReps, isMax);
         }
         if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
         if (els.weightCont) els.weightCont.classList.add('hidden');
@@ -4822,8 +4833,9 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     ex.sets.push({ weight, reps, isClean, feel });
 
-    // FAZ 1: Rekor Kontrolü ve 1RM Güncelleme
-    if (weight > 0 && reps > 0 && isClean) {
+    // FAZ 1: Rekor Kontrolü ve PR Güncelleme
+    const isBW = ex.isBW || targetStr.includes('bw') || weight <= 0;
+    if (reps > 0 && isClean && (weight > 0 || isBW)) {
         updateExerciseBest(ex.name, weight, reps);
     }
 
@@ -4917,7 +4929,7 @@ function startRestTimer() {
     }, 1000);
 }
 
-function startExerciseTimer(duration) {
+function startExerciseTimer(duration, isMax = false) {
     clearInterval(restInterval);
     clearInterval(exerciseTimerInterval);
     clearInterval(countdownInterval);
@@ -4956,19 +4968,19 @@ function startExerciseTimer(duration) {
             clock.textContent = 'BAŞLA!';
             if (navigator.vibrate) navigator.vibrate([100, 50, 300]);
 
-            // 0.8sn sonra asıl geri sayımı başlat
+            // 0.8sn sonra asıl sayımı başlat
             setTimeout(() => {
-                runExerciseCountdown(duration, clock, box, label, timerBtn);
+                runExerciseCountdown(duration, clock, box, label, timerBtn, isMax);
             }, 800);
         }
     }, 1000);
 }
 
-function runExerciseCountdown(duration, clock, box, label, timerBtn) {
-    // Hareket geri sayım moduna geç
+function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = false) {
+    // Hareket sayım moduna geç
     box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-orange/20 to-transparent border border-calith-orange/30 text-center relative overflow-hidden";
     if (label) {
-        label.textContent = 'HAREKET SÜRESİ';
+        label.textContent = isMax ? 'MAKSİMUM SÜRE' : 'HAREKET SÜRESİ';
         label.className = 'text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-3';
     }
     clock.className = 'text-6xl font-mono font-black text-white tracking-tighter mb-4';
@@ -4978,43 +4990,50 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn) {
         skipBtn.textContent = 'SETİ BİTİR';
         skipBtn.classList.remove('hidden');
         skipBtn.onclick = () => {
-            const elapsed = duration - timeLeft;
+            const finalVal = isMax ? elapsed : duration - timeLeft;
             clearInterval(exerciseTimerInterval);
             
             // Seti kaydet
             const repsInput = document.getElementById('workout-input-reps');
-            if (repsInput) repsInput.value = elapsed;
+            if (repsInput) repsInput.value = Math.max(0, finalVal);
             
             completeSet();
         };
     }
 
     let timeLeft = duration;
+    let elapsed = 0;
     const formatTime = (t) => {
         const m = Math.floor(t / 60);
         const s = t % 60;
         return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     };
-    clock.textContent = formatTime(timeLeft);
+    clock.textContent = formatTime(isMax ? 0 : timeLeft);
 
     exerciseTimerInterval = setInterval(() => {
-        timeLeft--;
+        if (isMax) {
+            elapsed++;
+            clock.textContent = formatTime(elapsed);
+            // Stopwatch modunda durma yok, kullanıcı SETİ BİTİR diyene kadar gider
+        } else {
+            timeLeft--;
+            // Son 3 saniye titreşim
+            if (timeLeft <= 3 && timeLeft > 0) {
+                clock.classList.add('text-red-400');
+                if (navigator.vibrate) navigator.vibrate(50);
+            }
+            clock.textContent = timeLeft > 0 ? formatTime(timeLeft) : '00:00';
 
-        // Son 3 saniye titreşim
-        if (timeLeft <= 3 && timeLeft > 0) {
-            clock.classList.add('text-red-400');
-            if (navigator.vibrate) navigator.vibrate(50);
+            if (timeLeft <= 0) {
+                clearInterval(exerciseTimerInterval);
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+
+                const skipBtn = document.getElementById('btn-skip-rest');
+                if (skipBtn) skipBtn.classList.add('hidden');
+            }
         }
-
-        clock.textContent = timeLeft > 0 ? formatTime(timeLeft) : '00:00';
-
-        if (timeLeft <= 0) {
-            clearInterval(exerciseTimerInterval);
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
-
-            const skipBtn = document.getElementById('btn-skip-rest');
-            if (skipBtn) skipBtn.classList.add('hidden');
-
+    }, 1000);
+}
             // TAMAM butonunu göster
             box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 text-center relative overflow-hidden";
             if (label) {
@@ -5489,7 +5508,13 @@ function calculate1RM(weight, reps) {
 
 async function updateExerciseBest(exerciseName, weight, reps) {
     if (!currentUser) return;
-    const oneRM = calculate1RM(weight, reps);
+    
+    const ex = workoutSession?.exercises?.find(e => e.name === exerciseName);
+    const targetStr = String(ex?.target || "").toLowerCase();
+    const isBW = ex?.isBW || weight <= 0 || targetStr.includes('bw');
+    
+    // PR Mantığı: BW ise sadece reps (tekrar/saniye) önemlidir, değilse 1RM hesaplanır
+    const oneRM = isBW ? 0 : calculate1RM(weight, reps);
     const sb = getSupabase();
     if (!sb) return;
 
@@ -5501,11 +5526,22 @@ async function updateExerciseBest(exerciseName, weight, reps) {
             .maybeSingle();
 
         if (existing) {
-            if (oneRM > existing.one_rm) {
+            let isNewRecord = false;
+            if (isBW) {
+                // BW rekoru: Daha fazla tekrar/saniye
+                if (reps > existing.reps) isNewRecord = true;
+            } else {
+                // Weighted rekoru: Daha yüksek 1RM
+                if (oneRM > existing.one_rm) isNewRecord = true;
+            }
+
+            if (isNewRecord) {
                 await sb.from('user_exercise_stats').update({
                     weight, reps, one_rm: oneRM, updated_at: new Date().toISOString()
                 }).eq('id', existing.id);
-                showToast(`🔥 YENİ REKOR! ${exerciseName.toUpperCase()}: ${oneRM}KG 1RM`);
+                
+                const recordMsg = isBW ? `${reps} ${ex?.type === 'secs' ? 'SANİYE' : 'TEKRAR'}` : `${oneRM}KG 1RM`;
+                showToast(`🔥 YENİ REKOR! ${exerciseName.toUpperCase()}: ${recordMsg}`);
             }
         } else {
             await sb.from('user_exercise_stats').insert([{
@@ -5563,23 +5599,25 @@ function renderPersonalRecords(records) {
             </button>
         </div>
         <div class="grid md:grid-cols-2 gap-4">
-            ${records.map(r => `
+            ${records.map(r => {
+                const isBW = r.one_rm <= 0;
+                return `
                 <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <h4 class="text-white font-black uppercase tracking-tight mb-1 group-hover:text-calith-orange transition-colors">${r.exercise_name}</h4>
-                            <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">En İyi Set: ${r.weight}kg x ${r.reps}</p>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">${isBW ? 'Maksimum Performans' : `En İyi Set: ${r.weight}kg x ${r.reps}`}</p>
                         </div>
                         <div class="text-right">
-                            <div class="text-2xl font-black text-calith-orange font-mono">${r.one_rm}</div>
-                            <div class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">TAHMİNİ 1RM</div>
+                            <div class="text-2xl font-black text-calith-orange font-mono">${isBW ? r.reps : r.one_rm}</div>
+                            <div class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${isBW ? 'MAKS. SKOR' : 'TAHMİNİ 1RM'}</div>
                         </div>
                     </div>
                     <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
                         <div class="bg-gradient-to-r from-calith-orange to-calith-accent h-full" style="width: 100%"></div>
                     </div>
                 </div>
-            `).join('')}
+            `}).join('')}
         </div>
     `;
     if (window.lucide) lucide.createIcons();

@@ -168,11 +168,11 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 **Hedef:** Admin panelinden gelen "MAX", "SN" ve "BW" verilerinin antrenman motoru tarafından akıllıca işlenmesi.
 
 ### Yapılacaklar:
-1. [ ] **Parser Güncelleme:** `ex.reps` "MAX" ise bunu algılayıp `isMax: true` flag'i ekle.
-2. [ ] **Stopwatch Modu:** `isTimed && isMax` durumunda geri sayım yerine 0'dan yukarı sayan sayaç ekle.
-3. [ ] **BW PR Mantığı:** Ağırlık 0 ise rekoru `reps` üzerinden tut.
-4. [ ] **UI Uyumluluğu:** MAX hareketlerde girdi alanlarını "Sonuç" odaklı güncelle.
+1. [x] **Parser Güncelleme:** `ex.reps` "MAX" ise bunu algılayıp `isMax: true` flag'i ekle. ✅
+2. [x] **Stopwatch Modu:** `isTimed && isMax` durumunda geri sayım yerine 0'dan yukarı sayan sayaç ekle. ✅
+3. [x] **BW PR Mantığı:** Ağırlık 0 ise rekoru `reps` üzerinden tut. ✅
+4. [x] **UI Uyumluluğu:** MAX hareketlerde girdi alanlarını "Sonuç" odaklı güncelle. ✅
 
-**Durum:** Planlandı, Kodlanacak.
+**Durum:** Tamamlandı, Kod Üzerinden Doğrulandı.
 
 
