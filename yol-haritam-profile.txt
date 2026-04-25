@@ -4,38 +4,37 @@ Bu döküman, Calith'in bir içerik sitesinden "Yapay Zeka Destekli Dijital Koç
 
 ---
 
-## FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU
+## ✅ FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU (TAMAMLANDI)
 Sistemin kullanıcıyı tanıması ve öneri yapabilmesi için gerekli temel taşlar.
 
-- [ ] **Exercise Stats Tablosu:** Supabase üzerinde `user_exercise_best` tablosu oluşturulacak. (Kullanıcının her hareket için yaptığı Max Weight ve Rep verisi).
-- [ ] **1RM Hesaplama Utility:** JS tarafında Brzycki Formülü (`weight * (36 / (37 - reps))`) entegre edilecek.
-- [ ] **Profil Entegrasyonu:** Kullanıcının mevcut 1RM değerlerini görebileceği bir "Personal Records (PR)" sekmesi eklenecek.
+- [x] **Exercise Stats Tablosu:** Supabase üzerinde `user_exercise_stats` tablosu (SQL paylaşıldı).
+- [x] **1RM Hesaplama Utility:** Brzycki Formülü `app.js` içine eklendi.
+- [x] **Otomatik Rekor Takibi:** `updateExerciseBest` fonksiyonu her set sonunda çalışacak şekilde bağlandı.
+- [x] **Profil Entegrasyonu:** "Rekorlarım (PR)" sekmesi ve UI render sistemi kuruldu.
 
-## FAZ 2: AKILLI ÖNERİ MOTORU (SMART RECOMMENDATION)
+## 🔄 FAZ 2: AKILLI ÖNERİ MOTORU (SIRADAKİ)
 Antrenman sırasında kullanıcıya rehberlik edecek zeka.
 
-- [ ] **Hedef Bazlı Katsayılar:** 
-    - Hipertrofi: 1RM * 0.75
-    - Güç: 1RM * 0.90
-- [ ] **Workout Overlay Güncellemesi:** Hareket ekranında "Önerilen: X KG" ibaresi dinamik olarak gösterilecek.
-- [ ] **Input Auto-Fill:** Eğer kullanıcı daha önce o hareketi yaptıysa, son yaptığı ağırlık placeholder olarak gelecek.
+- [ ] **Smart Suggestion UI:** Ağırlık giriş alanında "💡 ÖNERİLEN: X KG" etiketi ve otomatik doldurma.
+- [ ] **Hedef Bazlı Hesaplama:** Profildeki hedefe göre (Kas: %75, Güç: %90) katsayı entegrasyonu.
+- [ ] **Dinamik 1RM Artışı:** Kullanıcı önerilenin üstüne çıktığında o antrenman içindeki sonraki önerilerin anlık güncellenmesi.
+- [ ] **İstikrar Analizi:** Tüm setler hedefe ulaştıysa antrenman sonunda "+2.5kg Artırım" tavsiyesi.
 
-## FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
+## 📅 FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
 Antrenman bittiğinde verinin işlenmesi.
 
 - [ ] **Suggested vs. Actual Analizi:** Kullanıcının önerilen ağırlığın üstüne çıkıp çıkmadığı kontrol edilecek.
 - [ ] **Progressive Overload Takibi:** Her antrenman sonunda "Haftalık Gelişim: +%5" gibi metrikler hesaplanacak.
-- [ ] **Otomatik PR Güncelleme:** Antrenman sırasında eski rekorundan daha iyi bir set yaparsa sistem bunu algılayıp `user_exercise_best` tablosunu otomatik güncelleyecek.
+- [ ] **Gelişim Grafikleri:** Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js).
 
-## FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
+## 🚀 FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
 Başarıların sergilenmesi.
 
-- [ ] **Gelişim Grafikleri:** Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js).
-- [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma.
+- [ ] **PR Kartları:** Yeni bir rekor kırıldığında indirilebilir şık bir "New Record" görseli oluşturma.
+- [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma (Instagram uyumlu).
 
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
-- **Kural 1:** Kullanıcıdan manuel veri girişi istemek yerine, antrenman yaptıkça sistemin "en iyi setleri" otomatik ayıklaması öncelikli olacak.
-- **Kural 2:** Önerilen ağırlık her zaman "güvenli bölgede" kalacak, sakatlığı önlemek için agresif artışlar yapılmayacak.
-- **Kural 3:** 1RM hesaplamaları sadece 1-12 tekrar arası setler için geçerli olacak (yüksek tekrarlarda formül sapabiliyor).
+- **Durum:** Temel atıldı, sistem artık seni tanıyor ve rekorlarını tutuyor.
+- **Sıradaki Adım:** Faz 2'nin UI ve hesaplama kodlarının yazılması.
