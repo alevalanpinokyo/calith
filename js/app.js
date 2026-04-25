@@ -4872,6 +4872,7 @@ function setQuickIcon(type, name) {
  * Bu fonksiyon tüm sayfalarda (index, skills, shop vb.) aynı modal ve overlay yapılarının
  * otomatik olarak DOM'a eklenmesini sağlar. Böylece bir yerde yapılan değişiklik her yerde geçerli olur.
  */
+/* CALITH APP JS - VERSIYON: 202604250200 */
 function initSharedUI() {
     // 1. TOAST (Bildirimler)
     if (!document.getElementById('toast')) {
@@ -4980,14 +4981,24 @@ function initSharedUI() {
     if (!document.getElementById('video-modal')) {
         const video = document.createElement('div');
         video.id = 'video-modal';
-        video.className = 'fixed inset-0 z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none';
+        video.className = 'fixed inset-0 z-[10000] opacity-0 transition-opacity duration-300 pointer-events-none flex items-center justify-center';
         video.innerHTML = `
-            <div class="video-modal-backdrop bg-black/95 backdrop-blur-lg absolute inset-0" onclick="closeVideoModal()"></div>
-            <div class="relative z-10 w-full px-4 flex flex-col items-center justify-center min-h-screen">
-                <button onclick="closeVideoModal()" class="mb-4 w-12 h-12 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-                <div class="w-full max-w-4xl rounded-2xl overflow-hidden border border-white/20 bg-black shadow-2xl shadow-calith-orange/10" id="video-container"></div>
+            <div class="video-modal-backdrop bg-black/90 backdrop-blur-md absolute inset-0" onclick="closeVideoModal()"></div>
+            <div class="relative z-10 w-full max-w-4xl px-4 sm:px-6 py-10">
+                <div id="video-modal-content" class="bg-[#050505] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] transition-all duration-500 transform scale-95">
+                    <div class="p-4 sm:p-5 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                        <div class="flex items-center gap-3 px-2">
+                            <div class="w-2 h-2 rounded-full bg-calith-orange animate-pulse"></div>
+                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em]">CALITH PLAYER</span>
+                        </div>
+                        <button onclick="closeVideoModal()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-white border border-white/5">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="w-full bg-black aspect-video flex items-center justify-center overflow-hidden" id="video-container">
+                        <!-- Video buraya gelecek -->
+                    </div>
+                </div>
             </div>
         `;
         document.body.appendChild(video);
