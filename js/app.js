@@ -4752,10 +4752,10 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
         targetSets = match ? parseInt(match[1]) : 4;
     }
 
-    console.log(`[Calith Debug] SET: ${workoutSession.currSet}, HEDEF: ${targetSets}`);
+    console.log(`[Calith Debug] SET: ${workoutSession.currSet}, HEDEF: ${targetSets}, TARGET_RAW: "${ex.target}", TARGET_SETS_RAW: ${ex.targetSets}`);
 
     if (workoutSession.currSet === targetSets) {
-        console.log('[Calith Debug] Hedef Tamam! Modal ve Alert tetikleniyor...');
+        console.log('[Calith Debug] Hedef Tamam → showNextExerciseModal');
         showNextExerciseModal();
         // Fallback Alert (Modal açılmazsa diye garanti)
         setTimeout(() => {
