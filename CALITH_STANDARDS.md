@@ -32,6 +32,13 @@ Calith bir spor uygulamasıdır ve kullanıcıların çoğu mobilden erişir.
 - **Kural:** Butonlar ve etkileşimli alanlar "parmak dostu" büyüklükte olmalıdır.
 - **Kural:** Videolar modal içinde `playsinline` parametresiyle açılmalı, tarayıcının tam ekran oynatıcısına zorlanmamalıdır.
 
+## 5. İLETİŞİM VE ONAY MEKANİZMASI
+Gereksiz kod karmaşasını ve kontrolsüz push'ları önlemek için şu iletişim protokolü uygulanır:
+
+- **Soru vs. Aksiyon:** Kullanıcı bir soru soruyorsa, AI herhangi bir kod düzenlemesi yapmadan önce konuyu tartışmalı ve izin almalıdır. Sadece doğrudan bir **Hata (Bug)** bildirildiğinde hızlı aksiyon alınabilir.
+- **Büyük Ölçekli Değişiklikler:** Yapılacak düzenleme yaklaşık **200 satır ve üzerini** kapsıyorsa veya projenin genel yapısını etkiliyorsa; AI önce yapacağı değişikliği detaylıca anlatmalı, planı sunmalı ve kullanıcıdan **ONAY** aldıktan sonra işe başlamalıdır.
+- **Push Sıklığı:** Her küçük değişiklik için ayrı ayrı push atmak yerine, mantıksal bir bütünlük oluştuğunda toplu push tercih edilmelidir.
+
 ---
 
 **NOT:** Bu kurallara uymayan kodlar "teknik borç" (technical debt) yaratır ve gelecekte sistemin çökmesine neden olur. Amacımız her zaman profesyonel ve ölçeklenebilir bir yapı kurmaktır.
