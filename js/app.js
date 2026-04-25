@@ -4442,6 +4442,16 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     updateWorkoutUI();
     startWorkoutClock();
 
+    // Kalibrasyon Kontrolü
+    const firstEx = workoutSession.exercises[0];
+    getSmartRecommendation(firstEx.name).then(rec => {
+        if (!rec) {
+            setTimeout(() => {
+                showToast("🚀 KALİBRASYON BAŞLADI: İlk sette kendine uygun bir ağırlık seç, seni tanımaya başlayayım kanka!", 5000);
+            }, 1000);
+        }
+    });
+
     showToast('Antrenman Başladı! Başarılar kanka.');
     if (window.lucide) lucide.createIcons();
 }
@@ -4554,8 +4564,26 @@ function updateWorkoutUI() {
         if (rec && els.recBox && els.recText) {
             els.recBox.classList.remove('hidden');
             els.recText.textContent = `ÖNERİLEN: ${rec} KG`;
-            // Eğer ilk setse otomatik doldur
-            if (workoutSession.currSet === 1 && els.weight) {
+            
+            const reasonEl = document.getElementById('workout-recommendation-reason');
+            if (reasonEl) {
+                if (ex.sets.length > 0) {
+                    const lastSet = ex.sets[ex.sets.length - 1];
+                    if (lastSet.isClean) {
+                        reasonEl.textContent = "GELİŞİM İÇİN ARTIR";
+                        reasonEl.className = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
+                    } else {
+                        reasonEl.textContent = "FORM İÇİN DÜŞÜR";
+                        reasonEl.className = "text-[8px] font-black text-red-500 uppercase tracking-tighter";
+                    }
+                } else {
+                    reasonEl.textContent = "REKORA GÖRE";
+                    reasonEl.className = "text-[8px] font-bold text-gray-500 uppercase tracking-tighter";
+                }
+            }
+
+            // Eğer ilk setse veya kalibrasyon yeni bittiyse otomatik doldur
+            if ((workoutSession.currSet === 1 || ex.sets.length === 1) && els.weight && els.weight.value == 0) {
                 els.weight.value = rec;
             }
         } else if (els.recBox) {
@@ -4762,6 +4790,9 @@ function completeSet() {
 
     workoutSession.currSet++;
     document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
+    
+    // UI'ı Yenile (Öneriler güncellensin)
+    updateWorkoutUI();
 }
 
 function startRestTimer() {
