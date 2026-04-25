@@ -4432,6 +4432,9 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     if (restBox) restBox.classList.add('hidden');
 
     updateWorkoutUI();
+    
+    // Zamanlayıcıyı kesin olarak başlat
+    if (!workoutSession.startTime) workoutSession.startTime = Date.now();
     startWorkoutClock();
 
     // Kalibrasyon Kontrolü
@@ -4588,109 +4591,61 @@ function updateWorkoutUI() {
     window.currentWeightFeel = 'ideal';
 
     // Metin Güncellemeleri
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+    const isBW = ex.isBW || targetStr.includes('bw');
+
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
     if (els.target) {
         let targetText = (ex.target || '').toUpperCase();
-        if (isBW && !isTimed) targetText += ' (VÜCUT AĞIRLIĞI)';
+        if (isBW && !isTimed) targetText = targetText.replace('VÜCUT AĞIRLIĞI', '').trim() + ' (VÜCUT AĞIRLIĞI)';
         els.target.textContent = targetText;
     }
     if (els.title) els.title.textContent = workoutSession.program?.title?.toUpperCase() || 'CALITH ANTRENMAN';
     if (els.move) els.move.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
     if (els.set) els.set.textContent = `SET ${workoutSession.currSet}`;
 
-    // Tip Kontrolü
-    const targetStr = String(ex.target || "").toLowerCase();
-    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
-
     // Değerleri Hazırla
     if (els.weight) els.weight.value = 0;
     
     let tReps = 10;
-    // Hedef içinden sayısal değeri çek (Gelişmiş regex)
     const repsMatch = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
     if (repsMatch) tReps = parseInt(repsMatch[1]);
     if (els.reps) els.reps.value = tReps;
 
-    // UI Durum Yönetimi
-    const uiDebug = {
-        exercise: ex.name,
-        target: ex.target,
-        type: ex.type,
-        isTimed,
-        elementsFound: {
-            timerBtn: !!els.timerBtn,
-            repsLabel: !!els.repsLabel,
-            weightCont: !!els.weightCont,
-            grid: !!els.grid
-        }
-    };
-    console.log("Workout UI Update (DETAYLI):", uiDebug);
-    
     const workoutModeEl = document.getElementById('workout-mode');
     if (workoutModeEl) {
         workoutModeEl.setAttribute('data-exercise-type', isTimed ? 'secs' : 'reps');
     }
 
-    // BW (Bodyweight) Kontrolü
-    const isBW = ex.isBW || targetStr.includes('bw');
-    if (isBW && !isTimed) {
-        if (els.weightCont) els.weightCont.classList.add('hidden');
-        if (els.grid) els.grid.className = "grid grid-cols-1 gap-4 mb-8";
-        if (els.weight) {
-            els.weight.value = 0;
-            els.weight.disabled = true;
-        }
-    } else if (!isTimed) {
-        if (els.weightCont) els.weightCont.classList.remove('hidden');
-        if (els.grid) els.grid.className = "grid grid-cols-2 gap-4 mb-8";
-        if (els.weight) els.weight.disabled = false;
-    }
-
+    // Arayüz Durum Yönetimi (Timed / BW / Normal)
     if (isTimed) {
         if (els.timerBtn) {
             els.timerBtn.classList.remove('hidden');
             els.timerBtn.querySelector('span').textContent = `HAREKETE BAŞLA (${tReps}sn)`;
             els.timerBtn.onclick = () => startExerciseTimer(tReps);
         }
-        if (els.repsLabel) {
-            els.repsLabel.textContent = 'SÜRE (SN)';
-            console.log("Label güncellendi: SÜRE (SN)");
-        }
-        
-        // Ağırlığı GİZLE
-        if (els.weightCont) {
-            els.weightCont.style.setProperty('display', 'none', 'important');
-            els.weightCont.classList.add('hidden');
-            console.log("Ağırlık kutusu gizlendi (display: none)");
-        }
-        
-        // SETİ TAMAMLA butonunu GİZLE (sadece sayaç ile tamamlanabilir)
-        if (els.completeBtn) {
-            els.completeBtn.style.setProperty('display', 'none', 'important');
-            els.completeBtn.classList.add('hidden');
-        }
-
-        if (els.grid) {
-            els.grid.classList.remove('grid-cols-2');
-            els.grid.classList.add('grid-cols-1');
+        if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
+        if (els.weightCont) els.weightCont.classList.add('hidden');
+        if (els.completeBtn) els.completeBtn.classList.add('hidden');
+        if (els.grid) els.grid.className = "grid grid-cols-1 gap-4 mb-8";
+    } else if (isBW) {
+        if (els.timerBtn) els.timerBtn.classList.add('hidden');
+        if (els.repsLabel) els.repsLabel.textContent = 'TEKRAR';
+        if (els.weightCont) els.weightCont.classList.add('hidden');
+        if (els.completeBtn) els.completeBtn.classList.remove('hidden');
+        if (els.grid) els.grid.className = "grid grid-cols-1 gap-4 mb-8";
+        if (els.weight) {
+            els.weight.value = 0;
+            els.weight.disabled = true;
         }
     } else {
         if (els.timerBtn) els.timerBtn.classList.add('hidden');
         if (els.repsLabel) els.repsLabel.textContent = 'TEKRAR';
-        
-        // Ağırlığı ve Butonu GÖSTER
-        if (els.weightCont) {
-            els.weightCont.style.setProperty('display', 'block', 'important');
-            els.weightCont.classList.remove('hidden');
-        }
-        if (els.completeBtn) {
-            els.completeBtn.style.setProperty('display', 'flex', 'important');
-            els.completeBtn.classList.remove('hidden');
-        }
-        if (els.grid) {
-            els.grid.classList.remove('grid-cols-1');
-            els.grid.classList.add('grid-cols-2');
-        }
+        if (els.weightCont) els.weightCont.classList.remove('hidden');
+        if (els.completeBtn) els.completeBtn.classList.remove('hidden');
+        if (els.grid) els.grid.className = "grid grid-cols-2 gap-4 mb-8";
+        if (els.weight) els.weight.disabled = false;
     }
 
     // Progres Bar
