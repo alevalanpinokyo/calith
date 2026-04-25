@@ -4778,6 +4778,9 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     workoutSession.currSet++;
     document.getElementById('workout-set-info').textContent = `SET ${workoutSession.currSet}`;
     
+    // Dinlenme Başlat
+    startRestTimer();
+
     // UI'ı Yenile (Öneriler güncellensin)
     updateWorkoutUI();
 }
