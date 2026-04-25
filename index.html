@@ -54,12 +54,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-hidden">
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
-            <div class="flex items-center gap-2 cursor-pointer" id="logo-container" onclick="window.location.href='index.html'">
+            <a href="index.html" class="flex items-center gap-2 cursor-pointer" id="logo-container">
                 <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
                     <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
                 </div>
                 <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
-            </div>
+            </a>
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
@@ -73,12 +73,12 @@
 
             <!-- Actions -->
             <div class="flex items-center gap-2 md:gap-4">
-                <a href="javascript:void(0)" onclick="showProfile()" class="hidden md:flex text-white font-medium text-sm items-center gap-2 mr-4 hover:text-calith-orange transition-colors">
+                <a href="profile.html" class="hidden md:flex text-white font-medium text-sm items-center gap-2 mr-4 hover:text-calith-orange transition-colors">
                     <i data-lucide="user-circle" class="w-4 h-4"></i> PROFİLİM
                 </a>
-                <button class="hidden md:block btn-primary px-6 py-2.5 rounded-full font-semibold text-sm" onclick="window.location.href='skills.html'">
+                <a href="skills.html" class="hidden md:block btn-primary px-6 py-2.5 rounded-full font-semibold text-sm inline-block text-center">
                     Hemen Başla
-                </button>
+                </a>
                 <button class="md:hidden p-2 text-white" onclick="showAuthModal()" aria-label="Giriş Yap / Üye Ol">
                     <i data-lucide="user" class="w-6 h-6"></i>
                 </button>
@@ -170,34 +170,34 @@
                             <div id="hero-slider-track" class="relative flex transition-transform duration-500 ease-in-out h-full w-[300%]">
                                 
                                 <!-- Slide 1 -->
-                                <div class="w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center cursor-pointer group" onclick="window.location.href='premium.html'">
+                                <a href="premium.html" class="block w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center group">
                                     <div class="w-20 h-20 rounded-2xl bg-calith-orange/20 flex items-center justify-center text-calith-orange mb-6 group-hover:scale-110 group-hover:bg-calith-orange group-hover:text-white transition-all shadow-[0_0_20px_rgba(255,107,53,0.3)]">
                                         <i data-lucide="video" class="w-10 h-10"></i>
                                     </div>
                                     <span class="text-xs uppercase font-bold tracking-widest text-calith-orange mb-3 block">ÜCRETSİZ EĞİTİM</span>
                                     <h4 class="font-display text-3xl font-bold mb-4 group-hover:text-white text-gray-100 transition-colors leading-tight">Canlı Form Analizi</h4>
                                     <p class="text-base text-gray-400 leading-relaxed px-2">Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.</p>
-                                </div>
+                                </a>
                                 
                                 <!-- Slide 2 -->
-                                <div class="w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center cursor-pointer group" onclick="window.location.href='blog.html'">
+                                <a href="blog.html" class="block w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center group">
                                     <div class="w-20 h-20 rounded-2xl bg-calith-accent/20 flex items-center justify-center text-calith-accent mb-6 group-hover:scale-110 group-hover:bg-calith-accent group-hover:text-white transition-all shadow-[0_0_20px_rgba(0,217,255,0.3)]">
                                         <i data-lucide="flame" class="w-10 h-10"></i>
                                     </div>
                                     <span class="text-xs uppercase font-bold tracking-widest text-calith-accent mb-3 block">YENİ İÇERİK EKLENDİ</span>
                                     <h4 class="font-display text-3xl font-bold mb-4 group-hover:text-white text-gray-100 transition-colors leading-tight">Sıfırdan İlk Barfiks</h4>
                                     <p class="text-base text-gray-400 leading-relaxed px-2">Asla çekemem diyenler için hazırladığımız özel eğitim serisi yayında.</p>
-                                </div>
+                                </a>
                                 
                                 <!-- Slide 3 -->
-                                <div class="w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center cursor-pointer group" onclick="window.location.href='premium.html'">
+                                <a href="premium.html" class="block w-1/3 h-full flex-shrink-0 p-6 flex flex-col items-center justify-center text-center group">
                                     <div class="w-20 h-20 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-500 mb-6 group-hover:scale-110 group-hover:bg-green-500 group-hover:text-white transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)]">
                                         <i data-lucide="target" class="w-10 h-10"></i>
                                     </div>
                                     <span class="text-xs uppercase font-bold tracking-widest text-green-500 mb-3 block">🏆 HAFTANIN GÖREVİ</span>
                                     <h4 class="font-display text-3xl font-bold mb-4 group-hover:text-white text-gray-100 transition-colors leading-tight">100 Şınav Challenge</h4>
                                     <p class="text-base text-gray-400 leading-relaxed px-2">Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!</p>
-                                </div>
+                                </a>
                                 
                             </div>
                         </div>
@@ -400,7 +400,7 @@
                         <div class="skeleton w-1/2 h-8"></div>
                     </div>
                 </div>
-                <button onclick="window.location.href='skills.html'" class="w-full btn-outline border-white/10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Programı İndir →</button>
+                <a href="skills.html" class="block text-center w-full btn-outline border-white/10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Programı İndir →</a>
             </div>
             
             <div class="product-card backdrop-blur-3xl bg-white/5 border border-calith-orange/30 rounded-3xl p-8 hover:border-calith-orange/50 transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2 shadow-2xl shadow-calith-orange/10">
@@ -419,7 +419,7 @@
                         <div class="skeleton w-1/2 h-8"></div>
                     </div>
                 </div>
-                <button onclick="window.location.href='shop.html'" class="w-full btn-primary py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Ürünleri İncele →</button>
+                <a href="shop.html" class="block text-center w-full btn-primary py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Ürünleri İncele →</a>
             </div>
             
             <div class="product-card backdrop-blur-3xl bg-white/5 border border-white/5 rounded-3xl p-8 hover:border-white/20 transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
@@ -438,7 +438,7 @@
                         <div class="skeleton w-1/2 h-8"></div>
                     </div>
                 </div>
-                <button onclick="window.location.href='shop.html'" class="w-full btn-outline border-white/10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Ürünleri İncele →</button>
+                <a href="shop.html" class="block text-center w-full btn-outline border-white/10 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest mt-auto shadow-xl transition-all hover:scale-[1.02]">Ürünleri İncele →</a>
             </div>
         </div>
         
@@ -523,8 +523,8 @@
             </div>
         </div>
         <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in">
-            <button onclick="window.location.href='blog.html'" class="btn-outline px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest">Sen De Hikayeni Paylaş</button>
-            <button onclick="window.location.href='premium.html'" class="btn-primary px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-calith-orange/20">Topluluğa Katıl →</button>
+            <a href="blog.html" class="inline-block text-center btn-outline px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest">Sen De Hikayeni Paylaş</a>
+            <a href="premium.html" class="inline-block text-center btn-primary px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-calith-orange/20">Topluluğa Katıl →</a>
         </div>
     </div>
 </section>

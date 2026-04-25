@@ -217,7 +217,7 @@ function renderLandingBlog() {
     const container = document.getElementById('landing-blog-preview');
     if (!container) return;
     container.innerHTML = blogPosts.slice(0, 3).map(p => `
-        <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
+        <a href="blog.html?b=${p.id}" class="block product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
             <div class="aspect-video relative overflow-hidden">
                 <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent"></div>
@@ -233,7 +233,7 @@ function renderLandingBlog() {
                     OKU <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </div>
             </div>
-        </article>
+        </a>
     `).join('');
     if (window.lucide) lucide.createIcons();
 }
@@ -318,7 +318,7 @@ function renderBlog(filter = 'all') {
     }
 
     list.innerHTML = filtered.map((p, i) => `
-        <article onclick="window.location.href='blog.html?b=${p.id}'" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover fade-in stagger-${(i % 3) + 1}">
+        <a href="blog.html?b=${p.id}" class="block product-card group cursor-pointer rounded-3xl overflow-hidden card-hover fade-in stagger-${(i % 3) + 1}">
             <div class="aspect-video relative overflow-hidden">
                 <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 <div class="absolute inset-0 bg-gradient-to-t from-calith-dark via-transparent to-transparent opacity-60"></div>
@@ -334,7 +334,7 @@ function renderBlog(filter = 'all') {
                     OKU <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </div>
             </div>
-        </article>
+        </a>
     `).join('');
     if (window.lucide) lucide.createIcons();
     initScrollReveal();
@@ -2434,7 +2434,7 @@ function renderFrontendHomecards() {
                 const borderClass = isPop ? 'border-calith-orange/30 shadow-2xl shadow-calith-orange/5' : 'border-white/5';
 
                 return `
-                <div onclick="window.location.href='${lvl.link_url || 'skills.html'}'" class="bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative fade-in stagger-${(i % 3) + 1}">
+                <a href="${lvl.link_url || 'skills.html'}" class="block bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative fade-in stagger-${(i % 3) + 1}">
                     ${isPop ? '<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">' + lvl.badge + '</div>' : ''}
                     <div class="text-5xl mb-6">${lvl.icon || '🌱'}</div>
                     <h3 class="font-display text-2xl font-bold mb-2 uppercase">${lvl.title}</h3>
@@ -2442,10 +2442,10 @@ function renderFrontendHomecards() {
                         <p class="text-[15px] text-gray-300 leading-relaxed tracking-wide whitespace-pre-line">${lvl.desc_text || ''}</p>
                     </div>
                     <div class="mt-auto">
-                        <button class="w-full ${isPop ? 'btn-primary' : 'btn-outline border-white/10 group-hover:border-calith-orange group-hover:bg-calith-orange group-hover:text-white'} py-4 rounded-xl font-bold text-sm transition-all uppercase tracking-widest mb-3">Ben Buradayım</button>
+                        <div class="w-full ${isPop ? 'btn-primary' : 'btn-outline border-white/10 group-hover:border-calith-orange group-hover:bg-calith-orange group-hover:text-white'} py-4 rounded-xl font-bold text-sm transition-all uppercase tracking-widest mb-3">Ben Buradayım</div>
                         <span class="text-xs ${isPop ? 'text-calith-orange' : 'text-gray-500'} font-bold uppercase tracking-widest group-hover:text-calith-orange transition-colors">→ ${lvl.link_text || 'İncele'}</span>
                     </div>
-                </div>
+                </a>
                 `;
             }).join('');
             if (window.lucide) lucide.createIcons();
@@ -2603,7 +2603,7 @@ function renderFrontendHomecards() {
                             ${descHtml}
                         </div>
                     </div>
-                    ${eq.link_text ? `<button onclick="window.location.href='${eq.link_url || 'shop.html'}'" class="w-full ${btnClass} py-5 rounded-2xl font-bold text-sm uppercase tracking-widest mt-10 shadow-xl transition-all hover:scale-[1.02]">${eq.link_text}</button>` : ''}
+                    ${eq.link_text ? `<a href="${eq.link_url || 'shop.html'}" class="block text-center w-full ${btnClass} py-5 rounded-2xl font-bold text-sm uppercase tracking-widest mt-10 shadow-xl transition-all hover:scale-[1.02]">${eq.link_text}</a>` : ''}
                 </div>
                 `;
             }).join('');
