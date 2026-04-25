@@ -4833,6 +4833,9 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     ex.sets.push({ weight, reps, isClean, feel });
 
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+
     // FAZ 1: Rekor Kontrolü ve PR Güncelleme
     const isBW = ex.isBW || targetStr.includes('bw') || weight <= 0;
     if (reps > 0 && isClean && (weight > 0 || isBW)) {
@@ -4840,8 +4843,6 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     }
 
     // Saniye Bazlı Hareket Kontrolü
-    const targetStr = String(ex.target || "").toLowerCase();
-    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
     const workoutModeEl = document.getElementById('workout-mode');
     if (workoutModeEl && isTimed) {
         workoutModeEl.setAttribute('data-exercise-type', 'secs');
@@ -5030,38 +5031,31 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
 
                 const skipBtn = document.getElementById('btn-skip-rest');
                 if (skipBtn) skipBtn.classList.add('hidden');
-            }
-        }
-    }, 1000);
-}
-            // TAMAM butonunu göster
-            box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 text-center relative overflow-hidden";
-            if (label) {
-                label.textContent = '🔥 SÜRE DOLDU!';
-                label.className = 'text-[10px] font-black text-green-400 uppercase tracking-[0.3em] mb-3';
-            }
-            clock.className = 'text-4xl font-mono font-black text-green-400 tracking-tighter mb-6';
-            clock.textContent = 'TAMAMLANDI';
 
-            // TAMAM butonu ekle
-            const existingBtn = box.querySelector('#timer-done-btn');
-            if (!existingBtn) {
-                const doneBtn = document.createElement('button');
-                doneBtn.id = 'timer-done-btn';
-                doneBtn.className = 'px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-widest rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/30';
-                doneBtn.textContent = '✓  TAMAM';
-                doneBtn.onclick = () => {
-                    // Seti kaydet
-                    const repsInput = document.getElementById('workout-input-reps');
-                    if (repsInput) repsInput.value = duration;
-                    doneBtn.remove();
-                    completeSet();
-                    
-                    // Not: HAREKETE BAŞLA butonu sadece skipRest() içinde (dinlenme atlandığında) görünür yapılacak.
-                };
-                box.querySelector('.relative.z-10')
-                    ? box.querySelector('.relative.z-10').appendChild(doneBtn)
-                    : box.appendChild(doneBtn);
+                // TAMAMLANDI EKRANI
+                box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 text-center relative overflow-hidden";
+                if (label) {
+                    label.textContent = '🔥 SÜRE DOLDU!';
+                    label.className = 'text-[10px] font-black text-green-400 uppercase tracking-[0.3em] mb-3';
+                }
+                clock.className = 'text-4xl font-mono font-black text-green-400 tracking-tighter mb-6';
+                clock.textContent = 'TAMAMLANDI';
+
+                // TAMAM butonu ekle
+                const existingBtn = box.querySelector('#timer-done-btn');
+                if (!existingBtn) {
+                    const doneBtn = document.createElement('button');
+                    doneBtn.id = 'timer-done-btn';
+                    doneBtn.className = 'px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-widest rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/30';
+                    doneBtn.textContent = '✓  TAMAM';
+                    doneBtn.onclick = () => {
+                        const repsInput = document.getElementById('workout-input-reps');
+                        if (repsInput) repsInput.value = duration;
+                        doneBtn.remove();
+                        completeSet();
+                    };
+                    box.querySelector('.relative.z-10') ? box.querySelector('.relative.z-10').appendChild(doneBtn) : box.appendChild(doneBtn);
+                }
             }
         }
     }, 1000);
