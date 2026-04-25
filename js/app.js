@@ -4784,8 +4784,16 @@ function startRestTimer() {
     clearInterval(restInterval);
     clearInterval(exerciseTimerInterval);
     clearInterval(countdownInterval);
+
     const box = document.getElementById('workout-rest-timer-box');
     const clock = document.getElementById('workout-rest-clock');
+
+    // NULL CHECK - element yoksa sessizce çık
+    if (!box || !clock) {
+        console.warn('[Calith] startRestTimer: rest box veya clock bulunamadı!');
+        return;
+    }
+
     const label = box.querySelector('p');
     
     // Rest UI (Accent/Blue)
@@ -4798,7 +4806,7 @@ function startRestTimer() {
     box.classList.remove('hidden');
 
     let timePassed = 0;
-    clock.textContent = '00:00'; // Hemen sıfırla, 1 saniye beklemesin
+    clock.textContent = '00:00';
 
     restInterval = setInterval(() => {
         timePassed++;
