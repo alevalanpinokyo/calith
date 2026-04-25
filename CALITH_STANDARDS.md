@@ -14,8 +14,9 @@ Projedeki tüm ortak kullanıcı arayüzü bileşenleri tek bir merkezden yönet
 ## 2. VERSİYONLAMA VE CACHE BUSTING (Update Version)
 Kullanıcıların tarayıcılarındaki eski önbellek (cache) dosyaları nedeniyle hatalarla karşılaşmasını önlemek için her güncellemede versiyon numarası artırılmalıdır.
 
-- **Kural:** `js/app.js` veya `styles.css` üzerinde bir değişiklik yapıldığında, bu dosyaların çağrıldığı TÜM HTML dosyalarındaki `?v=` parametresi güncellenmelidir.
-- **Format:** Versiyon formatı tarih bazlı olmalıdır (Örn: `?v=202604250200`).
+- **Kritik Kural:** Her push işleminden önce mutlaka kök dizindeki `update_version.py` scripti çalıştırılmalıdır (`python update_version.py`).
+- **Kural:** Bu işlem, TÜM HTML dosyalarındaki `?v=` parametresini otomatik olarak güncelleyerek tarayıcı cache sorunlarını engeller.
+- **Yasak:** Script çalıştırılmadan ve HTML dosyalarında "M" (Modified) değişikliği oluşmadan push yapılması kesinlikle yasaktır.
 - **Neden?** Bu sayede tarayıcı dosyanın değiştiğini anlar ve eski, hatalı dosyayı kullanmak yerine yenisini indirir.
 
 ## 3. ASYNC VERİ YÜKLEME VE SKELETON
