@@ -1,7 +1,7 @@
 # CALITH - MEVCUT HATALAR VE DEVİR TESLİM RAPORU
-**Tarih:** 2026-04-25  
-**Versiyon:** v=202604251524  
-**Devreden:** Antigravity AI (bf6a6599-8438-46f9-b0e6-2652f90c3cd2)
+**Tarih:** 2026-04-26  
+**Versiyon:** v=202604260021  
+**Devreden:** Antigravity AI (be9f3e18-900b-4269-b830-f35394b0dbc1)
 
 ---
 
@@ -21,6 +21,21 @@ Bu class `styles.css` içinde `opacity: 0` olarak tanımlanmıştı ve Intersect
 Modalın kendi backgroundu (`rgba(0,0,0,0.95)`) ekranı kaplayıp karartırken, modal içindeki öğeler görünmez (`opacity: 0`) olduğu için kullanıcı simsiyah bir ekran görüyordu.
 
 **Yapılan İşlem:** `fade-in` class'ı `showSetFeedbackModal` içerisinden kaldırılarak sorun tamamen çözüldü. Artık Set Tamamlama akışı ve ardından dinlenme sayacı sorunsuz çalışıyor.
+
+---
+
+## ✅ ÇÖZÜLEN HATA: BW Egzersizlerinde Gereksiz "KG" İbaresi
+
+### Sorunun Özeti
+Vücut ağırlığı (BW - Bodyweight) ile yapılan egzersizlerde (örneğin: Barfiks, Şınav), set tamamlama modalında "0KG x 10 TEKRAR" gibi anlamsız bir gösterim oluyordu.
+
+### Çözüm
+`showSetFeedbackModal` fonksiyonu güncellendi:
+- Egzersizin `isBW` özelliği veya isminde "bw" geçip geçmediği kontrol ediliyor.
+- Eğer BW egzersizi ise sadece "X TEKRAR" gösteriliyor, "KG" kısmı gizleniyor.
+- Normal egzersizlerde "X KG x Y TEKRAR" yapısı korunuyor.
+
+---
 
 ### Şu An Kodun Durumu
 ```js
@@ -63,9 +78,9 @@ Eğer **hiçbir log görünmüyorsa** → `onclick="submitSetFeedback(...)"` HTM
 
 | Özellik | Durum |
 |---|---|
-| Kalibrasyon Rehberi Modal | ✅ Kod tamam, **Set Tamamlama sorunu yüzünden test edilemedi** |
-| "Temiz mi?" + RPE Geri Bildirim Modal | ✅ Kod tamam, **Set Tamamlama sorunu yüzünden test edilemedi** |
-| Akıllı Öneri (💡 ÖNERİLEN: X KG) | ✅ Kod tamam, **Set Tamamlama sorunu yüzünden test edilemedi** |
+| Kalibrasyon Rehberi Modal | ✅ Kod tamam, test edilebilir |
+| "Temiz mi?" + RPE Geri Bildirim Modal | ✅ Kod tamam, test edilebilir |
+| Akıllı Öneri (💡 ÖNERİLEN: X KG) | ✅ Kod tamam, test edilebilir |
 | TEST: Rekorları Sıfırla Butonu | ✅ Çalışıyor |
 | Geçmiş Boş Durumu Fix | ✅ Çalışıyor |
 
@@ -89,7 +104,7 @@ Eğer **hiçbir log görünmüyorsa** → `onclick="submitSetFeedback(...)"` HTM
 | `startWorkout(p, dayIndex)` | ~4260 | Antrenmanı başlatır, overlay oluşturur |
 | `completeSet()` | ~4725 | Seti tamamlar, feedback modal açar |
 | `showSetFeedbackModal(w, r)` | ~5588 | Geri bildirim popupını gösterir |
-| `submitSetFeedback(w, r)` | ~5672 | **SORUNLU** - siyah ekranın kaynağı burada aranıyor |
+| `submitSetFeedback(w, r)` | ~5672 | Modal verilerini işler ve süreci devam ettirir |
 | `processSetWithFeedback(w,r,c,f)` | ~4731 | Set verisini kaydeder, rest timer başlatır |
 | `startRestTimer()` | ~4783 | Dinlenme sayacını gösterir |
 | `updateWorkoutUI()` | ~4525 | Hareket UI'ını günceller (async getSmartRecommendation içerir) |
