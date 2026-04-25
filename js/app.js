@@ -3462,6 +3462,10 @@ function renderProfileSection() {
                     <span class="relative z-10">Kendi Programım</span>
                     <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
                 </button>
+                <button onclick="switchProfileTab('prs')" id="btn-tab-prs" class="profile-tab relative pb-4 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
+                    <span class="relative z-10">Rekorlarım (PR)</span>
+                    <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
+                </button>
                 <button onclick="switchProfileTab('history')" id="btn-tab-history" class="profile-tab relative pb-4 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-gray-300 whitespace-nowrap transition-all">
                     <span class="relative z-10">Geçmiş</span>
                     <div class="tab-indicator absolute bottom-0 left-0 w-full h-1 bg-calith-orange rounded-full opacity-0"></div>
@@ -3535,6 +3539,11 @@ function switchProfileTab(tabId) {
             </div>
         `;
         if (window.lucide) lucide.createIcons();
+    } else if (tabId === 'prs') {
+        const sb = getSupabase();
+        sb.auth.getUser().then(({ data: { user } }) => {
+            if (user) loadPersonalRecords(user.id);
+        });
     } else if (tabId === 'history') {
         const sb = getSupabase();
         sb.auth.getUser().then(({ data: { user } }) => {
@@ -4646,6 +4655,11 @@ function completeSet() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     ex.sets.push({ weight, reps });
 
+    // FAZ 1: Rekor Kontrolü ve 1RM Güncelleme
+    if (weight > 0 && reps > 0) {
+        updateExerciseBest(ex.name, weight, reps);
+    }
+
     // Dinlenme Başlat (İleri Sayım)
     startRestTimer();
 
@@ -5256,4 +5270,105 @@ function closeConfirmModal() {
         modal.querySelector('.relative').style.transform = 'scale(0.95)';
         setTimeout(() => modal.remove(), 300);
     }
+}
+
+// --- SMART PROGRESSION ENGINE (FAZ 1) ---
+
+function calculate1RM(weight, reps) {
+    if (reps <= 0) return 0;
+    if (reps === 1) return weight;
+    // Brzycki Formülü: weight * (36 / (37 - reps))
+    return Math.round((weight * (36 / (37 - reps))) * 10) / 10;
+}
+
+async function updateExerciseBest(exerciseName, weight, reps) {
+    if (!currentUser) return;
+    const oneRM = calculate1RM(weight, reps);
+    const sb = getSupabase();
+    if (!sb) return;
+
+    try {
+        const { data: existing } = await sb.from('user_exercise_stats')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .eq('exercise_name', exerciseName)
+            .maybeSingle();
+
+        if (existing) {
+            if (oneRM > existing.one_rm) {
+                await sb.from('user_exercise_stats').update({
+                    weight, reps, one_rm: oneRM, updated_at: new Date().toISOString()
+                }).eq('id', existing.id);
+                showToast(`🔥 YENİ REKOR! ${exerciseName.toUpperCase()}: ${oneRM}KG 1RM`);
+            }
+        } else {
+            await sb.from('user_exercise_stats').insert([{
+                user_id: currentUser.id,
+                exercise_name: exerciseName,
+                weight, reps, one_rm: oneRM
+            }]);
+            showToast(`📈 İlk rekorun kaydedildi: ${exerciseName}`);
+        }
+    } catch (e) {
+        console.error('PR Update Error:', e);
+    }
+}
+
+async function loadPersonalRecords(userId) {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { data, error } = await sb.from('user_exercise_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .order('one_rm', { ascending: false });
+
+    if (!error && data) {
+        renderPersonalRecords(data);
+    }
+}
+
+function renderPersonalRecords(records) {
+    const activeTab = document.querySelector('.profile-tab.active');
+    if (activeTab && activeTab.id !== 'btn-tab-prs') return;
+
+    const container = document.getElementById('user-programs-list');
+    if (!container) return;
+
+    if (!records || records.length === 0) {
+        container.innerHTML = `
+            <div class="py-20 text-center">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="trophy" class="w-8 h-8 text-gray-600"></i>
+                </div>
+                <h3 class="text-white font-bold mb-2">Henüz Rekorun Yok</h3>
+                <p class="text-gray-500 text-sm max-w-xs mx-auto">Antrenman sırasında ağırlık ve tekrar girdikçe en iyi derecelerin burada listelenecek.</p>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="grid md:grid-cols-2 gap-4">
+            ${records.map(r => `
+                <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-white font-black uppercase tracking-tight mb-1 group-hover:text-calith-orange transition-colors">${r.exercise_name}</h4>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">En İyi Set: ${r.weight}kg x ${r.reps}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-calith-orange font-mono">${r.one_rm}</div>
+                            <div class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">TAHMİNİ 1RM</div>
+                        </div>
+                    </div>
+                    <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-calith-orange to-calith-accent h-full" style="width: 100%"></div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    if (window.lucide) lucide.createIcons();
 }
