@@ -4305,9 +4305,6 @@ function closeNextModal() {
     }
 }
 
-    if (window.lucide) lucide.createIcons();
-}
-
 function moveExerciseToEnd() {
     if (!workoutSession || !workoutSession.exercises || workoutSession.exercises.length <= 1) return;
     
