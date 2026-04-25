@@ -4696,7 +4696,7 @@ function updateDynamicRecommendation() {
     if (match) targetReps = parseInt(match[1]);
 
     // RIR (Reps in Reserve - Cepte kalan tekrar) belirleme
-    let rir = 2; // İdeal
+    let rir = 3; // İdeal (RPE 7-8 gibi düşün)
     let reasonText = "İDEAL AĞIRLIK";
     let reasonClass = "text-[8px] font-bold text-calith-accent uppercase tracking-tighter";
 
@@ -4706,11 +4706,11 @@ function updateDynamicRecommendation() {
         reasonClass = "text-[8px] font-black text-red-500 uppercase tracking-tighter";
     } else {
         if (lastSet.feel === 'light') {
-            rir = 4; // Hafifse cepte çok tekrar var
-            reasonText = "HAFİF GELDİ - ARTIRILDI";
+            rir = 10; // HAFİF: Çok agresif zıplama için cepteki tekrarı yüksek tutuyoruz
+            reasonText = "HAFİF GELDİ - AGRESİF ARTIRI";
             reasonClass = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
         } else if (lastSet.feel === 'heavy') {
-            rir = 0; // Ağırsa limit
+            rir = 0; // AĞIR: Limit (RPE 10)
             reasonText = "AĞIR GELDİ - LİMİT";
             reasonClass = "text-[8px] font-black text-orange-500 uppercase tracking-tighter";
         }
@@ -4722,6 +4722,11 @@ function updateDynamicRecommendation() {
 
     // Hedef tekrara göre yeni ağırlığı hesapla: Weight = 1RM / (1 + TargetReps/30)
     let newWeight = estimated1RM / (1 + targetReps / 30);
+
+    // Agresiflik Bonusu: Eğer hafifse ve form temizse %10 ekstra ekle
+    if (lastSet.isClean && lastSet.feel === 'light') {
+        newWeight *= 1.15; // %15 ekstra zıplat
+    }
 
     // Aynı kiloyu öneriyorsa veya ufak bir fark varsa mesajı düzelt
     if (Math.abs(newWeight - weight) < 1 && lastSet.isClean && lastSet.feel === 'ideal') {
