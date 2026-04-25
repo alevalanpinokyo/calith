@@ -4183,6 +4183,9 @@ async function startWorkoutMode(programId, dayIndex = 0) {
             </div>
             <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
                 <div id="workout-exercise-card" class="relative group mb-12">
+                    <button onclick="moveExerciseToEnd()" class="absolute top-6 right-6 z-20 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-calith-orange hover:bg-calith-orange/10 transition-all group/btn" title="Hareketi Sona Bırak">
+                        <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+                    </button>
                     <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                     <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm">
                         <div class="relative z-10">
@@ -4300,6 +4303,47 @@ function closeNextModal() {
         modal.classList.add('animate-out', 'fade-out', 'zoom-out', 'duration-300');
         setTimeout(() => modal.remove(), 300);
     }
+}
+
+    if (window.lucide) lucide.createIcons();
+}
+
+function moveExerciseToEnd() {
+    if (!workoutSession || !workoutSession.exercises || workoutSession.exercises.length <= 1) return;
+    
+    const currentIndex = workoutSession.currExerciseIdx;
+    const isLast = currentIndex === workoutSession.exercises.length - 1;
+    
+    if (isLast) {
+        showToast("Zaten son harekettesin kanka! 🔥");
+        return;
+    }
+
+    if (!confirm("Bu hareketi gerçekten antrenman sonuna bırakmak istiyor musun?")) return;
+
+    // Hareketi diziden çıkar ve sona ekle
+    const exerciseToMove = workoutSession.exercises.splice(currentIndex, 1)[0];
+    workoutSession.exercises.push(exerciseToMove);
+    
+    // Not: currExerciseIdx'i değiştirmemize gerek yok çünkü 
+    // şu anki index'e bir sonraki hareket kaymış oldu.
+    // Ancak set sayısını ve listeyi sıfırlamamız lazım.
+    workoutSession.currSet = 1;
+    
+    // Set listesini temizle (Sanki bu harekete hiç başlamamışız gibi)
+    const setsList = document.getElementById('workout-sets-list');
+    if (setsList) {
+        setsList.innerHTML = `
+            <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
+            </div>
+        `;
+    }
+    
+    showToast(`${exerciseToMove.name.toUpperCase()} sona bırakıldı!`);
+    
+    // UI Güncelle
+    updateWorkoutUI();
 }
 
 function updateWorkoutUI() {
