@@ -5397,6 +5397,12 @@ function renderPersonalRecords(records) {
     }
 
     container.innerHTML = `
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-white font-bold uppercase tracking-tight">Kişisel Rekorların</h3>
+            <button onclick="resetExerciseStats()" class="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all">
+                ⚠️ TEST: VERİLERİ SIFIRLA
+            </button>
+        </div>
         <div class="grid md:grid-cols-2 gap-4">
             ${records.map(r => `
                 <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
@@ -5481,5 +5487,26 @@ function setFormStatus(isClean) {
     } else {
         btnBad.className = "w-12 h-12 rounded-2xl border-2 border-red-500 bg-red-500/20 flex items-center justify-center text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]";
         btnGood.className = "w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500 hover:bg-green-500/10";
+    }
+}
+
+async function resetExerciseStats() {
+    if (!confirm("DİKKAT: Tüm hareket rekorların silinecek. Emin misin kanka?")) return;
+    
+    const sb = getSupabase();
+    if (!sb || !currentUser) return;
+
+    showToast("Veriler sıfırlanıyor...");
+    
+    const { error } = await sb.from('user_exercise_stats')
+        .delete()
+        .eq('user_id', currentUser.id);
+
+    if (error) {
+        showToast("Sıfırlama başarısız!");
+        console.error(error);
+    } else {
+        showToast("Tüm rekorlar silindi! Sıfırdan başlayabilirsin.");
+        switchProfileTab('prs'); // Tabı yenile
     }
 }
