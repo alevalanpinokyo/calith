@@ -3435,6 +3435,15 @@ function renderProfileSection() {
                     <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">SPOR GEÇMİŞİ (YIL)</label>
                     <input type="number" id="edit-since" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="3">
                 </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">DENEYİM SEVİYESİ</label>
+                    <select id="edit-level" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all appearance-none">
+                        <option value="BAŞLANGIÇ" class="bg-calith-dark">BAŞLANGIÇ</option>
+                        <option value="ORTA" class="bg-calith-dark">ORTA SEVİYE</option>
+                        <option value="İLERİ" class="bg-calith-dark">İLERİ SEVİYE</option>
+                        <option value="PROFESYONEL" class="bg-calith-dark">PROFESYONEL</option>
+                    </select>
+                </div>
             </div>
             <div class="mt-8 flex justify-end gap-4">
                 <button onclick="toggleEditProfile()" class="px-6 py-3 text-gray-500 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">İptal</button>
@@ -3594,21 +3603,17 @@ async function loadProfileData(user) {
         if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
 
         // Düzenleme formunu doldur
-        const editName = document.getElementById('edit-full-name');
-        const editWeight = document.getElementById('edit-weight');
-        const editHeight = document.getElementById('edit-height');
         const editAge = document.getElementById('edit-age');
         const editSince = document.getElementById('edit-since');
+        const editLevel = document.getElementById('edit-level');
         const editGoal = document.getElementById('edit-goal');
 
         if (editName) editName.value = data.full_name || user.user_metadata?.full_name || '';
         if (editWeight) editWeight.value = data.weight || '';
         if (editHeight) editHeight.value = data.height || '';
         if (editAge) editAge.value = data.age || '';
-        if (editSince) {
-            const editSinceInput = document.getElementById('edit-since');
-            if (editSinceInput) editSinceInput.value = data.since || '';
-        }
+        if (editSince) editSince.value = data.since || '';
+        if (editLevel) editLevel.value = data.fitness_level || 'BAŞLANGIÇ';
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 
@@ -3649,6 +3654,7 @@ async function saveProfileData() {
         height: parseFloat(document.getElementById('edit-height').value),
         age: parseInt(document.getElementById('edit-age').value),
         since: parseInt(document.getElementById('edit-since').value),
+        fitness_level: document.getElementById('edit-level').value,
         goal: document.getElementById('edit-goal').value
     };
 
