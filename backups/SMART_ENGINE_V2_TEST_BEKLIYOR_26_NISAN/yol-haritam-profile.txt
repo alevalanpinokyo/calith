@@ -1,0 +1,40 @@
+# CALITH: AKILLI GELİŞİM VE ANTRENMAN ASİSTANI (YOL HARİTASI)
+
+Bu döküman, Calith'in bir içerik sitesinden "Yapay Zeka Destekli Dijital Koç"a dönüşüm planını içerir.
+
+---
+
+## ✅ FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU (TAMAMLANDI)
+- [x] (2024-04-25) Exercise Stats Tablosu & 1RM Hesaplama. [TEST EDİLDİ]
+- [x] (2024-04-25) Profilde "Rekorlarım (PR)" Sekmesi. [TEST EDİLDİ]
+
+## 🔄 FAZ 2: AKILLI ÖNERİ VE KURAL MOTORU (GÜNCEL SÜREÇ)
+Sistem artık sadece yüzde hesaplamayacak, profesyonel antrenman kurallarını (DUP vb.) uygulayacak.
+
+- [x] (2024-04-25) **Smart Suggestion UI:** Ağırlık giriş alanında "💡 ÖNERİLEN: X KG" etiketi. [TEST EDİLDİ]
+- [x] (2024-04-25) **Auto-Calibration Guide:** İlk kez yapılan hareketler için bilgilendirme modalı. [TEST EDİLDİ]
+- [x] (2024-04-25) **Interaktif Geri Bildirim:** Set sonu Form (Temiz/Kirli) ve RPE (Hafif/İdeal/Ağır) modalı. [TEST EDİLDİ]
+- [ ] (2026-04-26) **Smart Workout Engine v2:** MAX tekrar, stopwatch (ileri sayım) ve BW PR mantığının tam entegrasyonu. [YARIN CANLI TEST EDİLECEK]
+- **(2026-04-26):** TARTIŞILACAK: BW hareketlerinin PR (Rekor) sistemine dahil edilmesi ve "1RM" yerine "Maksimum Tekrar" mantığının entegrasyonu.
+- [ ] (2024-04-25) **Otomatik Karar Mekanizması:** Antrenman sonu kuralların kontrol edilip haftalık önerinin belirlenmesi. [EDİLMEDİ]
+  - *Not (2026-04-25): CNS Yorgunluğu / Deload mekanizması (peş peşe 'Ağır' ve 'Kirli' form dönüşlerinde makro döngüde %20 ağırlık düşürme) bu faza dahil edilecek.*
+
+## 📅 FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
+- [ ] **Victory Screen (Zafer Ekranı):** Antrenman sonu toplam hacim (volume), kırılan rekorlar ve süre özeti gösteren premium özet ekranı. [EDİLMEDİ]
+- [ ] **Sessiz Zeka (Silent Intelligence):** Kalibrasyon sonrası kullanıcıyı yormadan arkada çalışan takip sistemi. [EDİLMEDİ]
+- [ ] **Progressive Overload Takibi:** Her antrenman sonunda "Haftalık Gelişim: +%5" gibi metrikler hesaplanacak. [EDİLMEDİ]
+- [ ] **Gelişim Grafikleri:** Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js). [EDİLMEDİ]
+
+## 🚀 FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
+- [ ] **PR Kartları:** Yeni bir rekor kırıldığında indirilebilir şık bir "New Record" görseli oluşturma. [EDİLMEDİ]
+- [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma. [EDİLMEDİ]
+
+---
+
+### GÜNCEL DURUM VE NOTLAR:
+- **(2026-04-26):** TARTIŞILACAK: BW hareketlerinin PR (Rekor) sistemine dahil edilmesi ve "1RM" yerine "Maksimum Tekrar" mantığının entegrasyonu.
+- **(2026-04-26):** Vücut ağırlığı (BW) egzersizlerinde geri bildirim modalında "kg" ibaresinin gizlenmesi sağlandı.
+- **(2026-04-25):** Set tamamlama (Feedback Modal) sonrası yaşanan "Siyah Ekran" hatası düzeltildi (IntersectionObserver ve fade-in class çakışması).
+- **(2024-04-25):** Geri bildirim modalından sonra dinlenme sayacının başlamama hatası düzeltildi.
+- **(2024-04-25):** Profil PR ve Geçmiş sekmelerindeki sonsuz yüklenme (empty state) hatası giderildi.
+- **(2024-04-25):** Demir Kural: Yol haritası ve Versiyon güncelleme zorunlulukları anayasaya eklendi.
