@@ -4183,8 +4183,9 @@ async function startWorkoutMode(programId, dayIndex = 0) {
             </div>
             <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
                 <div id="workout-exercise-card" class="relative group mb-12">
-                    <button onclick="moveExerciseToEnd()" class="absolute top-6 right-6 z-20 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-calith-orange hover:bg-calith-orange/10 transition-all group/btn" title="Hareketi Sona Bırak">
-                        <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+                    <button onclick="moveExerciseToEnd()" class="absolute top-8 right-8 z-20 w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center justify-center text-gray-500 hover:text-calith-orange hover:bg-calith-orange/10 transition-all group/btn active:scale-95 shadow-xl" title="Hareketi Sona Bırak">
+                        <i data-lucide="chevrons-down" class="w-5 h-5 mb-0.5"></i>
+                        <span class="text-[7px] font-black uppercase tracking-tighter opacity-0 group-hover/btn:opacity-100 transition-opacity">SONA AT</span>
                     </button>
                     <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                     <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm">
