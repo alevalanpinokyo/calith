@@ -154,4 +154,10 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 1. Her push öncesi `python update_version.py` çalıştır
 2. Her değişiklik `yol-haritam-profile.txt`'ye işlenmeli
 3. 200+ satır değişiklik için kullanıcıdan onay al
-4. Kullanıcı soru soruyorsa önce konuş, sonra kod yaz
+---
+
+## 💡 Gelecek Planları & Tartışılacaklar
+
+- **BW PR Mantığı:** Şu anki 1RM hesaplaması ağırlıksız (BW) hareketlerde 0 sonuç veriyor. Bu hareketlerin "Maksimum Tekrar" üzerinden PR olarak kaydedilmesi ve profil ekranında farklı gösterilmesi (örn: "Barfiks: 22 Tekrar") tartışılacak.
+- **Workout Logs Delete Policy:** SQL sorgusu çalıştırıldı, silme yetkisi doğrulandı. ✅
+
