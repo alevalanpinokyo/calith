@@ -87,19 +87,33 @@
     </div>
 </main>
 
-    <script src="js/app.js?v=202604250132"></script>
+    <script src="js/app.js?v=202604250200"></script>
     <script>
         lucide.createIcons();
         document.addEventListener('DOMContentLoaded', async () => {
             const sb = getSupabase();
             if (!sb) return;
+
+            // İlk olarak kullanıcıyı kontrol et
             const { data: { user } } = await sb.auth.getUser();
-            if (!user) { window.location.href = 'index.html'; return; }
+            if (!user) { 
+                window.location.href = 'index.html'; 
+                return; 
+            }
+
+            // Temel arayüzü bas
             if (typeof renderProfileSection === 'function') renderProfileSection();
-            if (typeof loadProfileData === 'function') await loadProfileData(user);
-            if (typeof loadPosts === 'function') await loadPosts();
-            if (typeof loadUserPrograms === 'function') await loadUserPrograms(user.id);
-            lucide.createIcons();
+
+            // Tüm verileri PARALEL yükle (Hız optimizasyonu)
+            await Promise.all([
+                loadProfileData(user),
+                loadPosts()
+            ]);
+
+            // Her şey hazır olunca varsayılan sekmeyi aç
+            if (typeof switchProfileTab === 'function') switchProfileTab('ready');
+            
+            if (window.lucide) lucide.createIcons();
         });
     </script>
 </body>

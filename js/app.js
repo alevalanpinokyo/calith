@@ -3474,6 +3474,14 @@ function switchProfileTab(tabId) {
     const container = document.getElementById('user-programs-list');
     if (!container) return;
 
+    // Loading State
+    container.innerHTML = `
+        <div class="py-20 flex flex-col items-center justify-center animate-pulse">
+            <div class="w-12 h-12 rounded-full border-4 border-calith-orange/20 border-t-calith-orange animate-spin mb-4"></div>
+            <p class="text-gray-500 font-bold text-[10px] uppercase tracking-widest">Yükleniyor...</p>
+        </div>
+    `;
+
     if (tabId === 'ready') {
         const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
         renderUserPrograms(myPrograms);
@@ -3522,18 +3530,20 @@ async function loadProfileData(user) {
 
     // Hızlı bilgi yükle (Metadatadan)
     if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
-    document.getElementById('profile-email').textContent = user.email;
+    const emailEl = document.getElementById('profile-email');
+    if (emailEl) emailEl.textContent = user.email;
 
-    // Her iki tabloyu paralel çek
-    // user_roles = gerçek yetki kaynağı | profiles = profil verisi
-    const [profileResult, roleResult] = await Promise.all([
+    // TÜM VERİLERİ PARALEL ÇEK (Hız optimizasyonu)
+    const [profileResult, roleResult, programsResult] = await Promise.all([
         sb.from('profiles').select('*').eq('id', user.id).single(),
-        sb.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
+        sb.from('user_roles').select('role').eq('user_id', user.id).maybeSingle(),
+        sb.from('user_programs').select('program_id').eq('user_id', user.id)
     ]);
 
     // Skeleton efektini kaldır
     elements.forEach(el => { if (el) el.classList.remove('skeleton'); });
 
+    // 1. PROFİL BİLGİLERİ
     const data = profileResult.data;
     if (!profileResult.error && data) {
         if (data.full_name && nameEl) nameEl.textContent = data.full_name;
@@ -3552,10 +3562,11 @@ async function loadProfileData(user) {
         const levelEl = document.getElementById('profile-level');
         if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
 
-        // Formu doldur
+        // Düzenleme formunu doldur
         const editName = document.getElementById('edit-full-name');
         const editWeight = document.getElementById('edit-weight');
         const editHeight = document.getElementById('edit-height');
+        const editAge = document.getElementById('edit-age');
         const editGoal = document.getElementById('edit-goal');
 
         if (editName) editName.value = data.full_name || user.user_metadata?.full_name || '';
@@ -3565,36 +3576,29 @@ async function loadProfileData(user) {
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 
-    // ===== ROZET SİSTEMİ =====
-    // Önce user_roles'a bak (yetkili kaynak), yoksa profiles.role'a fallback
+    // 2. ROZET SİSTEMİ
     if (badgeEl) {
-        const authorizedRole = roleResult.data?.role;          // user_roles tablosu
-        const profileRole = profileResult.data?.role;       // profiles tablosu (fallback)
+        const authorizedRole = roleResult.data?.role;
+        const profileRole = profileResult.data?.role;
         const role = (authorizedRole || profileRole || 'user').toLowerCase();
 
         const roleConfig = {
-            admin: {
-                label: '⚡ ADMİN',
-                classes: 'bg-red-500/15 text-red-400 border-red-500/30'
-            },
-            mod: {
-                label: '🛡 MOD',
-                classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
-            },
-            premium: {
-                label: '👑 PREMİUM',
-                classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
-            },
-            user: {
-                label: 'ÜYE',
-                classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20'
-            }
+            admin: { label: '⚡ ADMİN', classes: 'bg-red-500/15 text-red-400 border-red-500/30' },
+            mod: { label: '🛡 MOD', classes: 'bg-blue-500/15 text-blue-400 border-blue-500/30' },
+            premium: { label: '👑 PREMİUM', classes: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' },
+            user: { label: 'ÜYE', classes: 'bg-calith-orange/10 text-calith-orange border-calith-orange/20' }
         };
 
         const config = roleConfig[role] || roleConfig['user'];
         badgeEl.textContent = config.label;
         badgeEl.className = 'px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border ' + config.classes;
     }
+
+    // 3. PROGRAMLAR SİSTEMİ (Sadece veriyi hazırla, render etme)
+    if (!programsResult.error && programsResult.data) {
+        myProgramIds = programsResult.data.map(d => String(d.program_id));
+    }
+}
 }
 
 
@@ -3629,23 +3633,29 @@ async function saveProfileData() {
 }
 
 async function loadUserPrograms(userId) {
+    // Bu fonksiyon artık loadProfileData içinde paralel çalışıyor
+    // Ancak manuel çağrılırsa (program sildiğinde vb.) diye desteği koruyoruz
     const sb = getSupabase();
     if (!sb) return;
 
     const { data, error } = await sb.from('user_programs').select('program_id').eq('user_id', userId);
-
     if (error) return;
 
     if (data) {
-        const programIds = data.map(d => String(d.program_id));
-        myProgramIds = programIds; 
-
-        const myPrograms = posts.filter(p => programIds.includes(String(p.id)));
-        renderUserPrograms(myPrograms);
+        myProgramIds = data.map(d => String(d.program_id));
+        // Eğer şu an 'ready' sekmesi açıksa render et
+        const activeTab = document.querySelector('.profile-tab.active');
+        if (activeTab && activeTab.id === 'btn-tab-ready') {
+            const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
+            renderUserPrograms(myPrograms);
+        }
     }
 }
 
 function renderUserPrograms(programs) {
+    const activeTab = document.querySelector('.profile-tab.active');
+    if (activeTab && activeTab.id !== 'btn-tab-ready') return;
+
     const container = document.getElementById('user-programs-list');
     if (!container) return;
 
@@ -3715,7 +3725,10 @@ async function loadWorkoutLogs(userId) {
 }
 
 function renderWorkoutLogs(logs) {
-    const container = document.getElementById('user-programs-list'); // Sekmeli yapıya göre container ID artık ortak
+    const activeTab = document.querySelector('.profile-tab.active');
+    if (activeTab && activeTab.id !== 'btn-tab-history') return;
+
+    const container = document.getElementById('user-programs-list');
     if (!container) return;
 
     if (logs.length === 0) return;
