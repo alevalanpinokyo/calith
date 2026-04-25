@@ -3793,8 +3793,20 @@ function renderWorkoutLogs(logs) {
         return;
     }
     if (!container) return;
-
-    if (logs.length === 0) return;
+    
+    if (logs.length === 0) {
+        container.innerHTML = `
+            <div class="py-20 text-center">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="calendar-x" class="w-8 h-8 text-gray-600"></i>
+                </div>
+                <h3 class="text-white font-bold mb-2">Geçmiş Tertemiz</h3>
+                <p class="text-gray-500 text-sm max-w-xs mx-auto">Henüz kayıtlı bir antrenmanın yok. İlk antrenmanına başladığında burası dolacak kanka!</p>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+    }
 
     container.innerHTML = logs.map(log => {
         const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
