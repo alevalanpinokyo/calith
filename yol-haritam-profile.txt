@@ -5,36 +5,28 @@ Bu döküman, Calith'in bir içerik sitesinden "Yapay Zeka Destekli Dijital Koç
 ---
 
 ## ✅ FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU (TAMAMLANDI)
-Sistemin kullanıcıyı tanıması ve öneri yapabilmesi için gerekli temel taşlar.
+- [x] Exercise Stats Tablosu & 1RM Hesaplama.
+- [x] Profilde "Rekorlarım (PR)" Sekmesi.
 
-- [x] **Exercise Stats Tablosu:** Supabase üzerinde `user_exercise_stats` tablosu (SQL paylaşıldı).
-- [x] **1RM Hesaplama Utility:** Brzycki Formülü `app.js` içine eklendi.
-- [x] **Otomatik Rekor Takibi:** `updateExerciseBest` fonksiyonu her set sonunda çalışacak şekilde bağlandı.
-- [x] **Profil Entegrasyonu:** "Rekorlarım (PR)" sekmesi ve UI render sistemi kuruldu.
+## 🔄 FAZ 2: AKILLI ÖNERİ VE KURAL MOTORU (GÜNCELLENDİ)
+Sistem artık sadece yüzde hesaplamayacak, profesyonel antrenman kurallarını (DUP vb.) uygulayacak.
 
-## 🔄 FAZ 2: AKILLI ÖNERİ MOTORU (SIRADAKİ)
-Antrenman sırasında kullanıcıya rehberlik edecek zeka.
-
+- [ ] **Pro Progression Rules:** Hareket bazlı özel kural tanımlama (Örn: 4x4 temiz ise artır).
+- [ ] **"Temiz Tekrar" Kontrolü:** Set sonu form kalitesi girişi (Evet/Hayır).
+- [ ] **Otomatik Karar Mekanizması:** Antrenman sonu kuralların kontrol edilip haftalık önerinin (Weight Lock/Increment) belirlenmesi.
 - [ ] **Smart Suggestion UI:** Ağırlık giriş alanında "💡 ÖNERİLEN: X KG" etiketi ve otomatik doldurma.
-- [ ] **Hedef Bazlı Hesaplama:** Profildeki hedefe göre (Kas: %75, Güç: %90) katsayı entegrasyonu.
-- [ ] **Dinamik 1RM Artışı:** Kullanıcı önerilenin üstüne çıktığında o antrenman içindeki sonraki önerilerin anlık güncellenmesi.
-- [ ] **İstikrar Analizi:** Tüm setler hedefe ulaştıysa antrenman sonunda "+2.5kg Artırım" tavsiyesi.
 
 ## 📅 FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
-Antrenman bittiğinde verinin işlenmesi.
-
-- [ ] **Suggested vs. Actual Analizi:** Kullanıcının önerilen ağırlığın üstüne çıkıp çıkmadığı kontrol edilecek.
+- [ ] **Sessiz Zeka (Silent Intelligence):** Kalibrasyon sonrası kullanıcıyı yormadan arkada çalışan takip sistemi.
 - [ ] **Progressive Overload Takibi:** Her antrenman sonunda "Haftalık Gelişim: +%5" gibi metrikler hesaplanacak.
 - [ ] **Gelişim Grafikleri:** Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js).
 
 ## 🚀 FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
-Başarıların sergilenmesi.
-
 - [ ] **PR Kartları:** Yeni bir rekor kırıldığında indirilebilir şık bir "New Record" görseli oluşturma.
-- [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma (Instagram uyumlu).
+- [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma.
 
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
-- **Durum:** Temel atıldı, sistem artık seni tanıyor ve rekorlarını tutuyor.
-- **Sıradaki Adım:** Faz 2'nin UI ve hesaplama kodlarının yazılması.
+- **DUP Desteği:** Sistem artık "Tekrar mı kilo mu?" önceliğini senin kurallarına göre belirleyecek.
+- **UX Odaklılık:** Kalibrasyon 1 kez yapılacak, sonrasında sistem sessizce seni takip edecek.
