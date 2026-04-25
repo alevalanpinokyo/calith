@@ -3316,6 +3316,10 @@ function renderProfileSection() {
                             <i data-lucide="mail" class="w-3 h-3"></i>
                             YÜKLENİYOR...
                         </p>
+                        <p id="profile-since" class="text-gray-600 font-bold text-[9px] uppercase tracking-[0.2em] mt-1.5 flex items-center justify-center md:justify-start gap-2">
+                            <i data-lucide="calendar" class="w-3 h-3"></i>
+                            KATILIM: YÜKLENİYOR...
+                        </p>
                     </div>
                 </div>
 
@@ -3332,7 +3336,7 @@ function renderProfileSection() {
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 relative z-10">
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-8 relative z-10">
                 <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
                     <div class="flex items-center gap-3 mb-1">
                         <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
@@ -3369,6 +3373,15 @@ function renderProfileSection() {
                     </div>
                     <div id="profile-level" class="text-lg font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
                 </div>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-7 h-7 rounded-lg bg-green-500/10 flex items-center justify-center">
+                            <i data-lucide="clock" class="w-3.5 h-3.5 text-green-500"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Yaş</span>
+                    </div>
+                    <div id="profile-age" class="text-lg font-display font-bold">--</div>
+                </div>
             </div>
         </div>
 
@@ -3400,6 +3413,10 @@ function renderProfileSection() {
                         <option value="İlk Barfiks" class="bg-calith-dark">İlk Barfiksini Çekmek</option>
                         <option value="Skill Öğrenmek" class="bg-calith-dark">Skill Öğrenmek (L-Sit, Handstand vb.)</option>
                     </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">YAŞ</label>
+                    <input type="number" id="edit-age" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="25">
                 </div>
             </div>
             <div class="mt-8 flex justify-end gap-4">
@@ -3494,11 +3511,13 @@ async function loadProfileData(user) {
     const nameEl = document.getElementById('profile-name');
     const weightEl = document.getElementById('profile-weight');
     const heightEl = document.getElementById('profile-height');
+    const ageEl = document.getElementById('profile-age');
     const goalEl = document.getElementById('profile-goal');
     const badgeEl = document.getElementById('profile-badge');
+    const sinceEl = document.getElementById('profile-since');
 
     // Başlangıçta skeleton efektini ekle
-    const elements = [nameEl, weightEl, heightEl, goalEl];
+    const elements = [nameEl, weightEl, heightEl, ageEl, goalEl, sinceEl];
     elements.forEach(el => { if (el) el.classList.add('skeleton'); });
 
     // Hızlı bilgi yükle (Metadatadan)
@@ -3520,7 +3539,15 @@ async function loadProfileData(user) {
         if (data.full_name && nameEl) nameEl.textContent = data.full_name;
         if (weightEl) weightEl.textContent = data.weight ? data.weight + ' KG' : '--';
         if (heightEl) heightEl.textContent = data.height ? data.height + ' CM' : '--';
+        if (ageEl) ageEl.textContent = data.age || '--';
         if (goalEl) goalEl.textContent = data.goal || '--';
+
+        if (sinceEl) {
+            const date = data.created_at ? new Date(data.created_at) : new Date(user.created_at);
+            const formattedDate = date.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long' });
+            sinceEl.innerHTML = `<i data-lucide="calendar" class="w-3 h-3"></i> KATILIM: ${formattedDate.toUpperCase()}`;
+            if (window.lucide) lucide.createIcons();
+        }
 
         const levelEl = document.getElementById('profile-level');
         if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
@@ -3534,6 +3561,7 @@ async function loadProfileData(user) {
         if (editName) editName.value = data.full_name || user.user_metadata?.full_name || '';
         if (editWeight) editWeight.value = data.weight || '';
         if (editHeight) editHeight.value = data.height || '';
+        if (editAge) editAge.value = data.age || '';
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 
@@ -3585,6 +3613,7 @@ async function saveProfileData() {
         full_name: document.getElementById('edit-full-name').value,
         weight: parseFloat(document.getElementById('edit-weight').value),
         height: parseFloat(document.getElementById('edit-height').value),
+        age: parseInt(document.getElementById('edit-age').value),
         goal: document.getElementById('edit-goal').value
     };
 
