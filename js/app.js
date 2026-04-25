@@ -3875,11 +3875,21 @@ async function renderAdminUsers() {
             ? '<span class="bg-red-500/20 text-red-500 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">ADMİN</span>'
             : (u.role === 'premium' ? '<span class="bg-calith-orange/20 text-calith-orange px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">PREMİUM</span>' : '<span class="bg-white/10 text-gray-400 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">KULLANICI</span>');
         
+        let banBadge = '';
+        if (u.banned_until) {
+            const banDate = new Date(u.banned_until);
+            if (banDate > new Date()) {
+                const daysLeft = Math.ceil((banDate - new Date()) / (1000 * 60 * 60 * 24));
+                banBadge = `<div class="mt-2 inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2 py-1 rounded text-[10px] font-bold tracking-widest border border-red-500/20"><i data-lucide="alert-triangle" class="w-3 h-3"></i> BANLI (${daysLeft} GÜN) ${u.ban_reason ? ' Sebep: ' + u.ban_reason : ''}</div>`;
+            }
+        }
+        
         return `
             <tr class="hover:bg-white/5 transition-colors">
                 <td class="p-4">
                     <p class="font-bold text-white text-sm">${u.full_name || 'İsimsiz'}</p>
                     <p class="text-[11px] text-gray-500">${u.email || '-'}</p>
+                    ${banBadge}
                 </td>
                 <td class="p-4">${roleBadge}</td>
                 <td class="p-4 text-xs text-gray-400">
@@ -3930,12 +3940,18 @@ async function adminBanUser(userId) {
     const banDays = parseInt(days);
     if (isNaN(banDays) || banDays < 0) return;
 
+    let reason = null;
+    if (banDays > 0) {
+        reason = prompt("Ban sebebi nedir? (Boş bırakırsanız sebep yazılmaz):");
+    }
+
     const sb = getSupabase();
-    const { error } = await sb.rpc('admin_ban_user', { target_user_id: userId, ban_duration_days: banDays });
+    const { error } = await sb.rpc('admin_ban_user', { target_user_id: userId, ban_duration_days: banDays, reason: reason });
     if (error) {
         alert("Ban işlemi başarısız: " + error.message);
     } else {
         showToast(banDays === 0 ? "Kullanıcının banı kaldırıldı." : "Kullanıcı " + banDays + " gün banlandı.");
+        renderAdminUsers();
     }
 }
 

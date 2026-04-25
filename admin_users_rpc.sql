@@ -3,9 +3,10 @@
 -- tablolarını birleştirerek tüm kullanıcı verilerini güvenli bir şekilde 
 -- çekebilmesini sağlayan bir fonksiyon oluşturur.
 
--- Eğer profiles tablosuna 'age' ve 'since' kolonlarını henüz eklemediyseniz, aşağıdaki iki satırın başındaki -- işaretini kaldırıp çalıştırın:
+-- Eğer profiles tablosuna 'age', 'since' ve 'ban_reason' kolonlarını henüz eklemediyseniz, aşağıdaki satırların başındaki -- işaretini kaldırıp çalıştırın:
 -- ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS age integer;
 -- ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS since integer;
+-- ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS ban_reason text;
 
 
 CREATE OR REPLACE FUNCTION get_admin_users()
@@ -18,7 +19,9 @@ RETURNS TABLE (
     weight numeric,
     age integer,
     since integer,
-    profile_created_at timestamptz
+    profile_created_at timestamptz,
+    banned_until timestamptz,
+    ban_reason text
 )
 LANGUAGE plpgsql
 SECURITY DEFINER -- auth.users tablosuna erişim için gerekli
@@ -48,7 +51,9 @@ BEGIN
         p.weight,
         p.age,
         p.since,
-        p.created_at AS profile_created_at
+        p.created_at AS profile_created_at,
+        au.banned_until,
+        p.ban_reason
     FROM 
         auth.users au
     LEFT JOIN 
@@ -102,8 +107,8 @@ $$;
 REVOKE EXECUTE ON FUNCTION admin_set_user_role(uuid, text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION admin_set_user_role(uuid, text) TO authenticated;
 
--- 2. Kullanıcı Banlama Fonksiyonu (banned_until kullanımı)
-CREATE OR REPLACE FUNCTION admin_ban_user(target_user_id uuid, ban_duration_days int)
+-- 2. Kullanıcı Banlama Fonksiyonu (banned_until ve ban_reason kullanımı)
+CREATE OR REPLACE FUNCTION admin_ban_user(target_user_id uuid, ban_duration_days int, reason text DEFAULT NULL)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -123,14 +128,16 @@ BEGIN
 
     IF ban_duration_days > 0 THEN
         UPDATE auth.users SET banned_until = now() + (ban_duration_days || ' days')::interval WHERE id = target_user_id;
+        UPDATE public.profiles SET ban_reason = reason WHERE id = target_user_id;
     ELSE
         UPDATE auth.users SET banned_until = null WHERE id = target_user_id;
+        UPDATE public.profiles SET ban_reason = null WHERE id = target_user_id;
     END IF;
 END;
 $$;
 
-REVOKE EXECUTE ON FUNCTION admin_ban_user(uuid, int) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION admin_ban_user(uuid, int) TO authenticated;
+REVOKE EXECUTE ON FUNCTION admin_ban_user(uuid, int, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION admin_ban_user(uuid, int, text) TO authenticated;
 
 -- 3. Kullanıcı Silme Fonksiyonu
 CREATE OR REPLACE FUNCTION admin_delete_user(target_user_id uuid)
