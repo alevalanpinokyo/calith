@@ -40,6 +40,13 @@ Gereksiz kod karmaşasını ve kontrolsüz push'ları önlemek için şu iletiş
 - **Büyük Ölçekli Değişiklikler:** Yapılacak düzenleme yaklaşık **200 satır ve üzerini** kapsıyorsa veya projenin genel yapısını etkiliyorsa; AI önce yapacağı değişikliği detaylıca anlatmalı, planı sunmalı ve kullanıcıdan **ONAY** aldıktan sonra işe başlamalıdır.
 - **Push Sıklığı:** Her küçük değişiklik için ayrı ayrı push atmak yerine, mantıksal bir bütünlük oluştuğunda toplu push tercih edilmelidir.
 
+## 9. DEMİR KURAL: YOL HARİTASI VE SÜREÇ TAKİBİ
+Projenin tüm gelişim süreci, öneriler ve tamamlanan işler merkezi bir dökümanda izlenmelidir.
+
+- **Kural:** Her yeni özellik, öneri veya hata düzeltmesi `yol-haritam-profile.txt` dosyasına işlenmelidir.
+- **Format:** Görevler tarihli, durum bilgili (Test Edildi / Test Edilecek / Edilmedi) ve checkbox (`[ ]`, `[x]`) formatında olmalıdır.
+- **Süreklilik:** "Nerede kalmıştık?" sorusunun tek ve kesin cevabı bu dosyadır. Geliştirici her push öncesi bu dosyayı güncellemekle yükümlüdür.
+
 ---
 
 **NOT:** Bu kurallara uymayan kodlar "teknik borç" (technical debt) yaratır ve gelecekte sistemin çökmesine neden olur. Amacımız her zaman profesyonel ve ölçeklenebilir bir yapı kurmaktır.
