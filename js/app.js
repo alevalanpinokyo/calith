@@ -178,11 +178,40 @@ function checkActiveWorkout() {
         try {
             const tempSession = JSON.parse(saved);
             if (tempSession && tempSession.active && tempSession.exercises && tempSession.exercises.length > 0) {
-                // Kalıcı bir "Devam Et" uyarı barı veya modal gösterilebilir
-                // Şimdilik toast ile haber verip konsola yazalım, gelişmiş UI eklenebilir
-                console.log('[Calith] Yarım kalan antrenman bulundu. Kurtarmak için restoreWorkoutState() çağrılabilir.');
-                showToast('Yarım kalan bir antrenmanınız var. Kütüphaneden veya profilden devam edebilirsiniz.');
-                // Otomatik geri yüklemek istersek: restoreWorkoutState();
+                // Ekranda zaten varsa tekrar oluşturma
+                if (document.getElementById('workout-recovery-banner')) return;
+
+                const dayName = tempSession.dayName || 'Antrenman';
+                const progName = tempSession.program?.title || 'Özel Program';
+
+                const banner = document.createElement('div');
+                banner.id = 'workout-recovery-banner';
+                // Glassmorphism tasarımlı, mobilde alttan, desktopta sağ alttan çıkan banner
+                banner.className = 'fixed bottom-24 left-4 right-4 md:left-auto md:right-8 md:bottom-8 md:w-96 z-[9000] bg-black/80 backdrop-blur-2xl border border-calith-orange/30 p-5 rounded-3xl shadow-2xl shadow-calith-orange/10 translate-y-[150%] transition-transform duration-500 flex flex-col gap-3';
+                
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-calith-orange/20 flex items-center justify-center animate-pulse border border-calith-orange/50 shrink-0">
+                            <i data-lucide="activity" class="w-5 h-5 text-calith-orange"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="text-white font-black text-sm uppercase tracking-wider truncate">Yarım Kalan Antrenman</h4>
+                            <p class="text-xs text-gray-400 font-mono truncate">${progName} • ${dayName}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="restoreWorkoutState(); document.getElementById('workout-recovery-banner').remove();" class="flex-1 bg-calith-orange text-black font-black text-xs py-3 rounded-xl uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all">Kaldığın Yerden Devam Et</button>
+                        <button onclick="clearWorkoutState(); document.getElementById('workout-recovery-banner').remove();" class="px-4 bg-white/5 text-white font-bold text-xs py-3 rounded-xl hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10" title="İptal Et"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                `;
+
+                document.body.appendChild(banner);
+                if (window.lucide) lucide.createIcons();
+
+                // CSS Animasyonu (Aşağıdan yukarı kayarak gelmesi için delay)
+                setTimeout(() => {
+                    banner.classList.remove('translate-y-[150%]');
+                }, 100);
             }
         } catch (e) {
             console.error('Workout session check failed:', e);
