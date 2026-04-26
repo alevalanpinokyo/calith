@@ -3876,7 +3876,8 @@ async function loadWorkoutLogs(userId) {
             .limit(10);
 
         if (error) throw error;
-        renderWorkoutLogs(data || []);
+        window.currentWorkoutLogs = data || [];
+        renderWorkoutLogs(window.currentWorkoutLogs);
     } catch (e) {
         console.error('Load Logs Error:', e);
         renderWorkoutLogs([]); // Hata durumunda da boş ekranı göster (spinner dursun)
@@ -3911,7 +3912,7 @@ function renderWorkoutLogs(logs) {
         const time = new Date(log.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
         return `
-            <div class="group bg-white/[0.02] border border-white/5 p-4 rounded-2xl flex items-center justify-between hover:border-calith-accent/30 transition-all">
+            <div onclick="showWorkoutLogDetail('${log.id}')" class="group bg-white/[0.02] border border-white/5 p-4 rounded-2xl flex items-center justify-between hover:border-calith-accent/30 hover:bg-white/[0.04] transition-all cursor-pointer">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-xl bg-calith-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <i data-lucide="award" class="w-5 h-5 text-calith-accent"></i>
@@ -3929,6 +3930,83 @@ function renderWorkoutLogs(logs) {
         `;
     }).join('');
 
+    if (window.lucide) lucide.createIcons();
+}
+
+function showWorkoutLogDetail(logId) {
+    const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
+    if (!log) return;
+
+    const data = log.workout_data;
+    const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Varsa eski modalı sil
+    const old = document.getElementById('log-detail-modal');
+    if (old) old.remove();
+
+    const modalHtml = `
+    <div id="log-detail-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4" style="background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);">
+        <div class="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-[2.5rem] flex flex-col max-h-[90vh] shadow-2xl animate-in zoom-in duration-300">
+            <!-- Header -->
+            <div class="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-calith-orange/10 flex items-center justify-center">
+                        <i data-lucide="award" class="w-5 h-5 text-calith-orange"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-black uppercase tracking-tight text-sm">${log.program_title}</h3>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${date} • ${log.duration}</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('log-detail-modal').remove()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+                ${data.exercises.map((ex, idx) => `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="text-calith-orange font-mono font-black text-xs">0${idx+1}</span>
+                                <h4 class="text-white font-black uppercase tracking-tight text-sm">${ex.name}</h4>
+                            </div>
+                            <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest">${ex.target}</span>
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            ${ex.sets.map((set, si) => {
+                                const feelColors = { light: 'text-blue-400 bg-blue-500/10', ideal: 'text-green-400 bg-green-500/10', heavy: 'text-red-400 bg-red-500/10' };
+                                const feelLabel = { light: 'HAFİF', ideal: 'İDEAL', heavy: 'AĞIR' };
+                                return `
+                                <div class="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si+1}. SET</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-mono font-bold text-white">${set.weight > 0 ? set.weight + 'kg x ' : ''}${set.reps}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${set.isClean ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}">${set.isClean ? 'TEMİZ' : 'KİRLİ'}</span>
+                                        <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${feelColors[set.feel] || 'text-gray-500 bg-white/5'}">${feelLabel[set.feel] || 'NORMAL'}</span>
+                                    </div>
+                                </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 border-t border-white/5 bg-white/[0.01] text-center">
+                <p class="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Calith Smart Training Engine v2</p>
+            </div>
+        </div>
+    </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
     if (window.lucide) lucide.createIcons();
 }
 
