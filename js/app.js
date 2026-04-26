@@ -161,6 +161,55 @@ let workoutSession = {
 let workoutInterval = null;
 let restInterval = null;
 
+// --- WORKOUT RECOVERY (AUTO-SAVE) ---
+function saveWorkoutState() {
+    if (workoutSession && workoutSession.active) {
+        localStorage.setItem('calith_workout_session', JSON.stringify(workoutSession));
+    }
+}
+
+function clearWorkoutState() {
+    localStorage.removeItem('calith_workout_session');
+}
+
+function checkActiveWorkout() {
+    const saved = localStorage.getItem('calith_workout_session');
+    if (saved) {
+        try {
+            const tempSession = JSON.parse(saved);
+            if (tempSession && tempSession.active && tempSession.exercises && tempSession.exercises.length > 0) {
+                // Kalıcı bir "Devam Et" uyarı barı veya modal gösterilebilir
+                // Şimdilik toast ile haber verip konsola yazalım, gelişmiş UI eklenebilir
+                console.log('[Calith] Yarım kalan antrenman bulundu. Kurtarmak için restoreWorkoutState() çağrılabilir.');
+                showToast('Yarım kalan bir antrenmanınız var. Kütüphaneden veya profilden devam edebilirsiniz.');
+                // Otomatik geri yüklemek istersek: restoreWorkoutState();
+            }
+        } catch (e) {
+            console.error('Workout session check failed:', e);
+        }
+    }
+}
+
+function restoreWorkoutState() {
+    const saved = localStorage.getItem('calith_workout_session');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.active) {
+                workoutSession = parsed;
+                showSection('workout-mode');
+                renderWorkoutUI();
+                startWorkoutClock(); // Saati kaldığı yerden devam ettirir (Date.now() - startTime)
+                showToast('Antrenman başarıyla kurtarıldı! 🔥');
+                return true;
+            }
+        } catch (e) {
+            console.error('Workout restore failed:', e);
+        }
+    }
+    return false;
+}
+
 function showSection(section) {
     const target = document.getElementById(section);
 
@@ -2940,6 +2989,7 @@ async function submitLeadForm() {
 document.addEventListener('DOMContentLoaded', async () => {
     // Merkezi UI Bileşenlerini Başlat
     initSharedUI();
+    checkActiveWorkout();
 
     // 1. Initial page state & logic
     if (typeof init === 'function') init();
@@ -4316,6 +4366,8 @@ async function startWorkoutMode(programId, dayIndex = 0) {
         history: []
     };
 
+    saveWorkoutState();
+
     // Workout Overlay'i Oluştur (yoksa inject et)
     let overlayEl = document.getElementById('workout-mode');
     if (!overlayEl || !document.getElementById('workout-recommendation-box')) {
@@ -4876,6 +4928,8 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     const setInfoEl = document.getElementById('workout-set-info');
     if (setInfoEl) setInfoEl.textContent = `SET ${workoutSession.currSet}`;
 
+    saveWorkoutState();
+
     // Set geçmişini render et
     renderWorkoutSets();
 
@@ -5084,6 +5138,7 @@ function skipRest() {
 function nextExercise() {
     workoutSession.currExerciseIdx++;
     workoutSession.currSet = 1;
+    saveWorkoutState();
 
     if (workoutSession.currExerciseIdx >= workoutSession.exercises.length) {
         finishWorkout();
@@ -5113,6 +5168,7 @@ function confirmExitWorkout() {
 
 function closeWorkoutMode() {
     workoutSession.active = false;
+    clearWorkoutState();
     clearInterval(workoutInterval);
     clearInterval(restInterval);
     document.getElementById('workout-mode').classList.add('hidden');
