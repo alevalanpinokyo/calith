@@ -168,11 +168,11 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 **Hedef:** Admin panelinden gelen "MAX", "SN" ve "BW" verilerinin antrenman motoru tarafından akıllıca işlenmesi.
 
 ### Yapılacaklar:
-1. [ ] **Parser Güncelleme:** `ex.reps` "MAX" ise bunu algılayıp `isMax: true` flag'i ekle. (Kod hazır, canlı test bekliyor)
-2. [ ] **Stopwatch Modu:** `isTimed && isMax` durumunda geri sayım yerine 0'dan yukarı sayan sayaç ekle. (Kod hazır, canlı test bekliyor)
-3. [ ] **BW PR Mantığı:** Ağırlık 0 ise rekoru `reps` üzerinden tut. (Kod hazır, canlı test bekliyor)
-4. [ ] **UI Uyumluluğu:** MAX hareketlerde girdi alanlarını "Sonuç" odaklı güncelle. (Kod hazır, canlı test bekliyor)
+1. [x] **Parser Güncelleme:** `ex.reps` "MAX" ise bunu algılayıp `isMax: true` flag'i ekle. (TEST EDİLDİ)
+2. [x] **Stopwatch Modu:** `isTimed && isMax` durumunda geri sayım yerine 0'dan yukarı sayan sayaç ekle. (TEST EDİLDİ)
+3. [x] **BW PR Mantığı:** Ağırlık 0 ise rekoru `reps` üzerinden tut. (TEST EDİLDİ)
+4. [x] **UI Uyumluluğu:** MAX hareketlerde girdi alanlarını "Sonuç" odaklı güncelle. (TEST EDİLDİ)
 
-**Durum:** Kodlama bitti ancak Dürüstlük Kuralı gereği "Yarın Canlı Test Edilecek" statüsüne çekildi.
+**Durum:** Kodlama tamamlandı ve canlı ortamda başarıyla test edildi. Tüm akışlar (kronometre, veri girişi, set tamamlama ve dinlenme süresi) sorunsuz çalışıyor.
 
 
