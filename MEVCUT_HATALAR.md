@@ -182,3 +182,17 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 1. [ ] **Süreli Hareketlerde (SN) KG Hatası:** Örneğin 9 saniyelik Plank yapıldığında, Set Tamamlandı (Geçmiş) kutusunda "9 sn" yerine yanlışlıkla "9 kg" gibi ağırlık birimi yazması.
 2. [ ] **"Hareketi Geç" Butonu Onayı:** Antrenman esnasında "Hareketi Geç" butonuna yanlışlıkla basılabiliyor. Doğrudan diğer harekete geçmek yerine "Bu hareketi atlamak istediğinize emin misiniz?" şeklinde bir onay penceresi (confirm/modal) eklenmesi.
 
+---
+
+## ✅ ÇÖZÜLEN ÖZELLİK: Workout Recovery (Auto-Save)
+
+### Özellik Özeti
+Kullanıcı antrenman ortasında sayfayı yenilese, tarayıcıyı kapatsa veya sekme uyku moduna geçse bile antrenman verileri kaybolmaz.
+
+### Teknik Detaylar
+1.  **Hafıza (Persistence):** `localStorage` üzerinde `calith_workout_session` anahtarı ile tüm `workoutSession` objesi saklanır.
+2.  **Otomatik Kayıt:** `saveWorkoutState()` fonksiyonu her set bitiminde, hareket değişiminde ve antrenman başlangıcında çağrılır.
+3.  **Kurtarma (Recovery):** Sayfa her yüklendiğinde `DOMContentLoaded` içinde `checkActiveWorkout()` çalışır.
+4.  **Banner Sistemi:** Eğer aktif bir session varsa, ekranın sağ altında (mobilde ortada) şık bir cam efektli (glassmorphism) banner çıkar ve kullanıcıya "Kaldığın Yerden Devam Et" seçeneği sunar.
+5.  **Temizlik:** Antrenman başarıyla bitirildiğinde veya kullanıcı iptal ettiğinde `clearWorkoutState()` ile hafıza temizlenir.
+

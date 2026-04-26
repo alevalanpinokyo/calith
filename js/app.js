@@ -4890,6 +4890,7 @@ function renderWorkoutSets() {
 
     const targetStr = String(ex.target || "").toLowerCase();
     const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+    const isBW = ex.isBW || targetStr.includes('bw');
 
     container.innerHTML = ex.sets.map((set, i) => `
         <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-pulse" style="animation: fade-in 0.3s ease-out forwards;">
