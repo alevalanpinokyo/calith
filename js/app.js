@@ -226,7 +226,18 @@ function restoreWorkoutState() {
             const parsed = JSON.parse(saved);
             if (parsed && parsed.active) {
                 workoutSession = parsed;
+                ensureWorkoutOverlay(); // Eksik DOM elemanlarını yaratır
                 showSection('workout-mode');
+                
+                const overlayEl = document.getElementById('workout-mode');
+                if (overlayEl) overlayEl.classList.remove('hidden');
+                
+                const titleEl = document.getElementById('workout-program-title');
+                if (titleEl && workoutSession.program) titleEl.textContent = workoutSession.program.title.toUpperCase();
+                
+                const restBox = document.getElementById('workout-rest-timer-box');
+                if (restBox) restBox.classList.add('hidden');
+
                 renderWorkoutUI();
                 startWorkoutClock(); // Saati kaldığı yerden devam ettirir (Date.now() - startTime)
                 showToast('Antrenman başarıyla kurtarıldı! 🔥');
@@ -4330,74 +4341,7 @@ function isProgramAdded(programId) {
     return userProgs.some(id => String(id) === String(programId));
 }
 
-async function startWorkoutMode(programId, dayIndex = 0) {
-    // Hem programPosts içinde hem de tüm posts içinde ara (sayfa farketmeksizin)
-    const p = posts.find(item => String(item.id) === String(programId));
-    if (!p) return showToast('Program verisi bulunamadı.');
-
-    // Program içeriğini parse et
-    let days = [];
-    try {
-        const data = JSON.parse(p.content);
-        days = Array.isArray(data) ? data : (data.days || []);
-    } catch (e) {
-        showToast('Bu program eski formatta, antrenman modu desteklenmiyor.');
-        return;
-    }
-
-    if (days.length === 0) return showToast('Antrenman günü bulunamadı.');
-
-    // Seçilen günü al (Eğer geçerli değilse 1. günü al)
-    if (dayIndex >= days.length || dayIndex < 0) dayIndex = 0;
-    const day = days[dayIndex];
-    const exercises = (day.exercises || []).map(ex => {
-        if (typeof ex === 'object') {
-            const isMax = String(ex.reps || "").toUpperCase().includes('MAX');
-            return {
-                name: ex.name,
-                target: `${ex.sets} x ${ex.reps}${ex.type === 'secs' ? 'sn' : ''}`,
-                targetSets: parseInt(ex.sets) || 1,
-                targetReps: isMax ? 999 : (parseInt(ex.reps) || 10),
-                type: ex.type || 'reps',
-                isBW: !!ex.isBW,
-                isMax: isMax,
-                sets: []
-            };
-        }
-
-        // Eski format fallback
-        const parts = String(ex).split('(');
-        const name = parts[0].trim();
-        let target = '4 x 12';
-        if (parts[1]) target = parts[1].replace(')', '').trim();
-
-        return {
-            name,
-            target,
-            targetSets: target.includes('x') ? parseInt(target.split('x')[0]) : 4,
-            targetReps: target.includes('x') ? parseInt(target.split('x')[1]) : 12,
-            type: (target.toLowerCase().includes('sn') || target.toLowerCase().includes('sec')) ? 'secs' : 'reps',
-            sets: []
-        };
-    });
-
-    if (exercises.length === 0) return showToast('Bu gün için egzersiz tanımlanmamış.');
-
-    // State Hazırla
-    workoutSession = {
-        active: true,
-        program: p,
-        dayName: day.name || 'GÜN 1',
-        startTime: Date.now(),
-        exercises: exercises,
-        currExerciseIdx: 0,
-        currSet: 1,
-        history: []
-    };
-
-    saveWorkoutState();
-
-    // Workout Overlay'i Oluştur (yoksa inject et)
+function ensureWorkoutOverlay() {
     let overlayEl = document.getElementById('workout-mode');
     if (!overlayEl || !document.getElementById('workout-recommendation-box')) {
         if (overlayEl) overlayEl.remove(); // Eskisini temizle ki yeni kodlar (akıllı kutular) gelsin
@@ -4504,8 +4448,79 @@ async function startWorkoutMode(programId, dayIndex = 0) {
             </div>
         </section>`;
         document.body.insertAdjacentHTML('beforeend', overlayHTML);
-        overlayEl = document.getElementById('workout-mode');
     }
+}
+
+async function startWorkoutMode(programId, dayIndex = 0) {
+    // Hem programPosts içinde hem de tüm posts içinde ara (sayfa farketmeksizin)
+    const p = posts.find(item => String(item.id) === String(programId));
+    if (!p) return showToast('Program verisi bulunamadı.');
+
+    // Program içeriğini parse et
+    let days = [];
+    try {
+        const data = JSON.parse(p.content);
+        days = Array.isArray(data) ? data : (data.days || []);
+    } catch (e) {
+        showToast('Bu program eski formatta, antrenman modu desteklenmiyor.');
+        return;
+    }
+
+    if (days.length === 0) return showToast('Antrenman günü bulunamadı.');
+
+    // Seçilen günü al (Eğer geçerli değilse 1. günü al)
+    if (dayIndex >= days.length || dayIndex < 0) dayIndex = 0;
+    const day = days[dayIndex];
+    const exercises = (day.exercises || []).map(ex => {
+        if (typeof ex === 'object') {
+            const isMax = String(ex.reps || "").toUpperCase().includes('MAX');
+            return {
+                name: ex.name,
+                target: `${ex.sets} x ${ex.reps}${ex.type === 'secs' ? 'sn' : ''}`,
+                targetSets: parseInt(ex.sets) || 1,
+                targetReps: isMax ? 999 : (parseInt(ex.reps) || 10),
+                type: ex.type || 'reps',
+                isBW: !!ex.isBW,
+                isMax: isMax,
+                sets: []
+            };
+        }
+
+        // Eski format fallback
+        const parts = String(ex).split('(');
+        const name = parts[0].trim();
+        let target = '4 x 12';
+        if (parts[1]) target = parts[1].replace(')', '').trim();
+
+        return {
+            name,
+            target,
+            targetSets: target.includes('x') ? parseInt(target.split('x')[0]) : 4,
+            targetReps: target.includes('x') ? parseInt(target.split('x')[1]) : 12,
+            type: (target.toLowerCase().includes('sn') || target.toLowerCase().includes('sec')) ? 'secs' : 'reps',
+            sets: []
+        };
+    });
+
+    if (exercises.length === 0) return showToast('Bu gün için egzersiz tanımlanmamış.');
+
+    // State Hazırla
+    workoutSession = {
+        active: true,
+        program: p,
+        dayName: day.name || 'GÜN 1',
+        startTime: Date.now(),
+        exercises: exercises,
+        currExerciseIdx: 0,
+        currSet: 1,
+        history: []
+    };
+
+    saveWorkoutState();
+
+    // Workout Overlay'i Oluştur (yoksa inject et)
+    ensureWorkoutOverlay();
+    let overlayEl = document.getElementById('workout-mode');
 
     // UI Hazırla
     overlayEl.classList.remove('hidden');
