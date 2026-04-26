@@ -196,3 +196,15 @@ Kullanıcı antrenman ortasında sayfayı yenilese, tarayıcıyı kapatsa veya s
 4.  **Banner Sistemi:** Eğer aktif bir session varsa, ekranın sağ altında (mobilde ortada) şık bir cam efektli (glassmorphism) banner çıkar ve kullanıcıya "Kaldığın Yerden Devam Et" seçeneği sunar.
 5.  **Temizlik:** Antrenman başarıyla bitirildiğinde veya kullanıcı iptal ettiğinde `clearWorkoutState()` ile hafıza temizlenir.
 
+---
+
+## ✅ ÇÖZÜLEN ÖZELLİK: Antrenman Detay Görünümü & Paylaşım
+
+### Özellik Özeti
+Geçmiş antrenmanların detaylarını görme ve bu detayları metin olarak kopyalayıp paylaşma özelliği eklendi.
+
+### Teknik Detaylar
+1.  **Detay Modalı:** `showWorkoutLogDetail(logId)` fonksiyonu ile geçmiş antrenmanların set bazlı verileri (ağırlık, tekrar, form, RPE) şık bir modalda listelenir.
+2.  **Kopyala Butonu:** Modalın sağ üst köşesine eklenen "Kopyala" butonu (`copyWorkoutToClipboard`), antrenman özetini emoji destekli ve düzenli bir metin formatına dönüştürür.
+3.  **Clipboard API:** `navigator.clipboard.writeText` kullanılarak modern tarayıcı uyumlu kopyalama işlemi gerçekleştirilir.
+

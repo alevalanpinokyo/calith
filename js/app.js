@@ -3958,9 +3958,14 @@ function showWorkoutLogDetail(logId) {
                         <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${date} • ${log.duration}</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('log-detail-modal').remove()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="copyWorkoutToClipboard('${log.id}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-calith-orange" title="Özeti Kopyala">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="document.getElementById('log-detail-modal').remove()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Content -->
@@ -4711,6 +4716,11 @@ function updateWorkoutUI() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!ex) return finishWorkout();
 
+    const targetStr = String(ex.target || "").toLowerCase();
+    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+    const isBW = ex.isBW || targetStr.includes('bw');
+    const isMax = ex.isMax || targetStr.includes('max');
+
     // Elementleri tek seferde bul
     const els = {
         name: document.getElementById('workout-exercise-name'),
@@ -4767,11 +4777,6 @@ function updateWorkoutUI() {
     window.currentWeightFeel = 'ideal';
 
     // Metin Güncellemeleri
-    const targetStr = String(ex.target || "").toLowerCase();
-    const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
-    const isBW = ex.isBW || targetStr.includes('bw');
-    const isMax = ex.isMax || targetStr.includes('max');
-
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
     if (els.target) {
         let targetText = (ex.target || '').toUpperCase();
