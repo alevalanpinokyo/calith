@@ -238,7 +238,7 @@ function restoreWorkoutState() {
                 const restBox = document.getElementById('workout-rest-timer-box');
                 if (restBox) restBox.classList.add('hidden');
 
-                renderWorkoutUI();
+                updateWorkoutUI();
                 startWorkoutClock(); // Saati kaldığı yerden devam ettirir (Date.now() - startTime)
                 showToast('Antrenman başarıyla kurtarıldı! 🔥');
                 return true;
