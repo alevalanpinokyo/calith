@@ -27,6 +27,7 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **Kayıt ve Çalıştırma:** Kaydedilen programın `app.js`'teki mevcut motorda sorunsuz oynatılması. [BEKLİYOR]
 
 ## 📅 FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
+- [ ] **Workout Recovery (Auto-Save):** Kullanıcı tarayıcıyı kapatsa veya kameraya/WhatsApp'a girip sekme uyku moduna geçse bile `localStorage` üzerinden antrenmanın (set ve hareket sırasının) kaldığı yerden devam etmesi. [EDİLMEDİ - KRİTİK]
 - [ ] **Victory Screen (Zafer Ekranı):** Antrenman sonu toplam hacim (volume), kırılan rekorlar ve süre özeti gösteren premium özet ekranı. [EDİLMEDİ]
 - [ ] **Sessiz Zeka (Silent Intelligence):** Kalibrasyon sonrası kullanıcıyı yormadan arkada çalışan takip sistemi. [EDİLMEDİ]
 - [ ] **Progressive Overload Takibi:** Her antrenman sonunda "Haftalık Gelişim: +%5" gibi metrikler hesaplanacak. [EDİLMEDİ]
