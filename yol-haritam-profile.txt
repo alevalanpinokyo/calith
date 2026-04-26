@@ -28,9 +28,20 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 
 ## 📅 FAZ 3: CANLI TAKİP VE GELİŞİM ANALİZİ
 - [x] **Workout Recovery (Auto-Save):** Kullanıcı tarayıcıyı kapatsa veya kameraya/WhatsApp'a girip sekme uyku moduna geçse bile `localStorage` üzerinden antrenmanın (set ve hareket sırasının) kaldığı yerden devam etmesi. [TEST EDİLDİ]
-- [ ] **Workout Detail View:** Geçmiş antrenmanlara tıklandığında yapılan setleri, ağırlıkları ve geri bildirimleri (form/hissi) gösteren detaylı özet ekranı. [BEKLİYOR]
-- [ ] **Weekly/Monthly Progress Reports:** Haftalık ve aylık gelişim özetleri, toplam hacim ve rekor analizleri. [BEKLİYOR]
-- [ ] **Gelişim Grafikleri:** Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js). [EDİLMEDİ]
+- [TAMAMLANDI] Antrenman Detay Görünümü (Geçmişe tıklayınca setleri görme)
+- [TAMAMLANDI] Antrenman Özeti Kopyala/Paylaş butonu
+
+### FAZ 3: ANALİTİK VE RAPORLAMA (Sıradaki Adım)
+- [BEKLEMEDE] Geçmiş Sekmesi Filtreleme (Haftalık / Aylık / Tüm Zamanlar)
+- [BEKLEMEDE] Genel İstatistik Kartları Tasarımı:
+    * Bu ay toplam kaç gün spor yapıldı?
+    * Ortalama antrenman süresi analizi.
+    * Başarı oranı ve Pas geçilen hareket istatistiği.
+- [BEKLEMEDE] Gelişmiş Parametreler:
+    * Hacim (Volume) Gelişimi Takibi.
+    * Sertlik Dağılımı (RPE Analizi).
+    * Kişisel Rekor (PR) Sayacı.
+- [BEKLEMEDE]: Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js).
 
 ## 🚀 FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
 - [ ] **PR Kartları:** Yeni bir rekor kırıldığında indirilebilir şık bir "New Record" görseli oluşturma. [EDİLMEDİ]
