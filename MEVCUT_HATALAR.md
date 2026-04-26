@@ -175,4 +175,10 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 
 **Durum:** Kodlama tamamlandı ve canlı ortamda başarıyla test edildi. Tüm akışlar (kronometre, veri girişi, set tamamlama ve dinlenme süresi) sorunsuz çalışıyor.
 
+---
+
+## 🐞 UI/UX İYİLEŞTİRMELERİ VE KÜÇÜK HATALAR (Sonraki Aşamalarda Çözülecek)
+
+1. [ ] **Süreli Hareketlerde (SN) KG Hatası:** Örneğin 9 saniyelik Plank yapıldığında, Set Tamamlandı (Geçmiş) kutusunda "9 sn" yerine yanlışlıkla "9 kg" gibi ağırlık birimi yazması.
+2. [ ] **"Hareketi Geç" Butonu Onayı:** Antrenman esnasında "Hareketi Geç" butonuna yanlışlıkla basılabiliyor. Doğrudan diğer harekete geçmek yerine "Bu hareketi atlamak istediğinize emin misiniz?" şeklinde bir onay penceresi (confirm/modal) eklenmesi.
 
