@@ -57,11 +57,7 @@ AI (Antigravity), geliştirdiği özelliklerde ve yaptığı testlerde %100 dür
 ## 11. YEDEKLEME (BACKUP) KURALI
 Projenin güvenliği ve geri dönüş noktaları için düzenli yedekleme esastır.
 
-- **Kural:** Kullanıcı "backup al" dediğinde, o anki tüm proje dosyaları (HTML, CSS, JS, Kurallar ve Scriptler) `backups` klasörü altında yeni bir klasöre kopyalanır.
-- **Standart Adlandırma:** Klasör ismi **`YYYYMMDD_HHMM_TYPE_DESCRIPTION`** formatında olmalıdır (Örn: `20260427_0015_FEAT_WorkoutDetail`).
-    *   `YYYYMMDD_HHMM`: Tarih ve Saat.
-    *   `TYPE`: FEAT (Özellik), FIX (Hata), UI (Tasarım), CHORE (Genel).
-    *   `DESCRIPTION`: Kısa İngilizce/Türkçe açıklama.
+- **Kural:** Kullanıcı "backup al" dediğinde, o anki tüm proje dosyaları (HTML, CSS, JS, Kurallar ve Scriptler) `backups` klasörü altında anlamlı bir isimle (Örn: `OZELLIK_ADI_FIX_TARIH`) yeni bir klasöre kopyalanır.
 - **Kural:** Yedekleme işlemi sırasında `.git` ve `backups` klasörünün kendisi dışarıda tutulur.
 
 ---
