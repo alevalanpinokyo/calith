@@ -4015,6 +4015,77 @@ function showWorkoutLogDetail(logId) {
     if (window.lucide) lucide.createIcons();
 }
 
+function copyWorkoutToClipboard(logId) {
+    console.log('[Calith] Kopyalama başlatıldı, ID:', logId);
+    const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
+    
+    if (!log) {
+        console.error('[Calith] Log bulunamadı!');
+        return showToast('Hata: Veri bulunamadı.');
+    }
+
+    let data = log.workout_data;
+    if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch(e) { console.error('Parse hatası:', e); }
+    }
+
+    if (!data || !data.exercises) {
+        console.error('[Calith] Egzersiz verisi eksik!', data);
+        return showToast('Hata: Egzersiz verisi bulunamadı.');
+    }
+
+    const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    
+    let text = `🔥 CALITH ANTRENMAN ÖZETİ - ${date}\n`;
+    text += `----------------------------------------\n`;
+    text += `📊 Program: ${log.program_title || 'Özel'}\n`;
+    text += `⏱️ Süre: ${log.duration || '-'}\n\n`;
+
+    data.exercises.forEach((ex, idx) => {
+        text += `${idx + 1}. ${ex.name ? ex.name.toUpperCase() : 'Bilinmeyen Hareket'} (${ex.target || '-'})\n`;
+        if (ex.sets && Array.isArray(ex.sets)) {
+            ex.sets.forEach((set, si) => {
+                const feelLabel = { light: 'Hafif', ideal: 'İdeal', heavy: 'Ağır' };
+                const weightStr = (set.weight && set.weight > 0) ? `${set.weight}kg x ` : '';
+                const cleanStr = set.isClean ? 'Temiz' : 'Kirli';
+                const feelStr = feelLabel[set.feel] || 'Normal';
+                text += `   - ${si + 1}. Set: ${weightStr}${set.reps || 0} (${cleanStr} - ${feelStr})\n`;
+            });
+        }
+        text += `\n`;
+    });
+
+    text += `----------------------------------------\n`;
+    text += `💪 Calith ile güçlenmeye devam! #Calith #Training`;
+
+    console.log('[Calith] Kopyalanacak Metin:\n', text);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Antrenman özeti kopyalandı! 📋');
+        }).catch(err => {
+            console.error('Clipboard hatası:', err);
+            fallbackCopyTextToClipboard(text);
+        });
+    } else {
+        fallbackCopyTextToClipboard(text);
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showToast('Antrenman özeti kopyalandı! 📋');
+    } catch (err) {
+        showToast('Kopyalama başarısız oldu.');
+    }
+    document.body.removeChild(textArea);
+}
+
 // Program Card Toggle (Her kart bağımsız açılır/kapanır)
 function toggleScheduleGroup(index) {
     const indices = index <= 2 ? [0, 1, 2] : [3, 4];
