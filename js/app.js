@@ -1296,8 +1296,10 @@ async function renderAdminExercises() {
 
     // Yükleniyor göster
     if (exerciseLibrary.length === 0) {
+        const sb = getSupabase();
+        if (!sb) return;
         list.innerHTML = '<div class="py-8 text-center text-gray-500 animate-pulse uppercase text-[10px] font-bold tracking-widest">Kütüphane Yükleniyor...</div>';
-        const { data, error } = await supabase.from('exercises').select('*').order('name', { ascending: true });
+        const { data, error } = await sb.from('exercises').select('*').order('name', { ascending: true });
         if (error) {
             console.error('Kütüphane hatası:', error);
             list.innerHTML = '<div class="py-8 text-center text-red-500 text-[10px] font-bold tracking-widest">YÜKLEME HATASI</div>';
@@ -1354,11 +1356,13 @@ async function saveExercise() {
     const exData = { name, video_url, category, difficulty, is_bw };
 
     try {
+        const sb = getSupabase();
+        if (!sb) throw new Error('Supabase hazir degil');
         let error;
         if (id) {
-            ({ error } = await supabase.from('exercises').update(exData).eq('id', id));
+            ({ error } = await sb.from('exercises').update(exData).eq('id', id));
         } else {
-            ({ error } = await supabase.from('exercises').insert([exData]));
+            ({ error } = await sb.from('exercises').insert([exData]));
         }
 
         if (error) throw error;
@@ -1391,7 +1395,9 @@ function editExercise(id) {
 async function deleteExercise(id) {
     if (!confirm('Bu hareketi kütüphaneden silmek istediğine emin misin?')) return;
 
-    const { error } = await supabase.from('exercises').delete().eq('id', id);
+    const sb = getSupabase();
+    if (!sb) return;
+    const { error } = await sb.from('exercises').delete().eq('id', id);
     if (error) {
         showToast('Silme hatası: ' + error.message, 'error');
     } else {
@@ -1423,7 +1429,9 @@ async function showExerciseSuggestions(input) {
 
     // Kütüphane boşsa (Admin panelinde değilsek) çek
     if (exerciseLibrary.length === 0) {
-        const { data } = await supabase.from('exercises').select('*').order('name', { ascending: true });
+        const sb = getSupabase();
+        if (!sb) return;
+        const { data } = await sb.from('exercises').select('*').order('name', { ascending: true });
         exerciseLibrary = data || [];
     }
 
