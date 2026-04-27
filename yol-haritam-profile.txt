@@ -47,6 +47,11 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **PR Kartları:** Yeni bir rekor kırıldığında indirilebilir şık bir "New Record" görseli oluşturma. [EDİLMEDİ]
 - [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma. [EDİLMEDİ]
 
+### 🚀 FAZ 3.0: USER EMPOWERMENT (GELECEK)
+- [ ] **Custom Program Builder:** Kullanıcıların kendi antrenman programlarını (Kütüphaneyi kullanarak) sıfırdan oluşturabilmesi.
+- [ ] **Program Paylaşımı:** Kullanıcıların kendi yazdığı programları arkadaşlarıyla veya toplulukla paylaşabilmesi.
+- [ ] **Kişisel İstatistik Paneli:** Program bazlı gelişim grafiklerinin kullanıcıya özel sunulması.
+
 ### 🚨 DETAYLI TEST EDİLECEK LİSTESİ (ACİL)
 - [x] **Admin Kütüphane:** Hareket ekleme, silme ve düzenleme (Supabase RLS sorunsuz mu?). [TAMAM ✅]
 - [x] **Omni-Box:** Program yazarken önerilerin gelmesi ve BW/Video bilgisini çekmesi. [TAMAM ✅]
