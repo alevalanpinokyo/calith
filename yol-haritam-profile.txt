@@ -53,6 +53,8 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **Kişisel İstatistik Paneli:** Program bazlı gelişim grafiklerinin kullanıcıya özel sunulması.
 
 ### 🚨 DETAYLI TEST EDİLECEK LİSTESİ (ACİL)
+- [ ] **Mobil Arayüz:** Mobildeki taşma ve kayma sorunlarının giderilmesi. [YARIN BAKILACAK 📱]
+- [ ] **Feedback Renkleri:** Antrenman sonu set bildirimlerindeki (Hafif/İdeal/Ağır) renklerin geri getirilmesi. [YARIN BAKILACAK 🎨]
 - [ ] **Admin Kullanıcı Silme:** RPC fonksiyonu sonrası silme işlemi çalışıyor mu?
 - [ ] **Geçmiş Antrenman Düzenleme:** Setleri düzenleme ve kaydetme (RPE/Ağırlık/Tekrar).
 - [ ] **Antrenman Kaydı Silme:** Geçmişten antrenman silme işlemi sorunsuz mu?
