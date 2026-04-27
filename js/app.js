@@ -3146,39 +3146,39 @@ function hideAdminLoading() {
 }
 
 function updateAuthUI() {
-    // Tüm olası auth butonlarını seç
-    const authElements = document.querySelectorAll('.nav-auth-btn, [onclick*="showAuthModal"], [onclick*="showProfile"], [onclick*="handleLogout"]');
+    // Tüm olası auth butonlarını ve 'Profilim' yazan her şeyi seç
+    const authElements = document.querySelectorAll('.nav-auth-btn, [onclick*="showAuthModal"], [onclick*="showProfile"], [onclick*="handleLogout"], .profile-link');
 
     authElements.forEach(el => {
-        const isMobile = el.closest('#mobile-menu') || el.classList.contains('md:hidden');
+        const isMobile = el.closest('#mobile-menu') || el.classList.contains('md:hidden') || el.classList.contains('mobile-nav-item');
         
+        // Mevcut ikon varsa sakla
+        const icon = el.querySelector('i');
+        const iconHtml = icon ? icon.outerHTML : '';
+
         if (currentUser) {
-            // GİRİŞ YAPILMIŞSA
+            // GİRİŞ YAPILMIŞSA -> PROFİLİM
             if (isMobile) {
-                if (el.tagName === 'BUTTON') {
+                if (el.tagName === 'BUTTON' || el.classList.contains('mobile-nav-item')) {
                     el.textContent = 'PROFİLİM';
                     el.classList.add('text-calith-accent');
                 }
                 el.setAttribute('onclick', "showProfile()");
             } else {
-                // Desktop
-                const icon = el.querySelector('i');
-                el.innerHTML = (icon ? icon.outerHTML : '') + ' PROFİLİM';
+                el.innerHTML = iconHtml + ' PROFİLİM';
                 el.setAttribute('onclick', "showProfile()");
                 el.classList.add('text-calith-accent');
             }
         } else {
-            // ÇIKIŞ YAPILMIŞSA
+            // ÇIKIŞ YAPILMIŞSA -> GİRİŞ YAP
             if (isMobile) {
-                if (el.tagName === 'BUTTON') {
+                if (el.tagName === 'BUTTON' || el.classList.contains('mobile-nav-item')) {
                     el.textContent = 'GİRİŞ YAP';
                     el.classList.remove('text-calith-accent');
                 }
                 el.setAttribute('onclick', 'showAuthModal()');
             } else {
-                // Desktop
-                const icon = el.querySelector('i');
-                el.innerHTML = (icon ? icon.outerHTML : '') + ' GİRİŞ YAP';
+                el.innerHTML = iconHtml + ' GİRİŞ YAP';
                 el.setAttribute('onclick', "showAuthModal()");
                 el.classList.remove('text-calith-accent');
             }
