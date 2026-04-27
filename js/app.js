@@ -4220,9 +4220,14 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
-    const data = { ...log.workout_data };
-    const sets = data.exercises[exerciseIdx].sets;
+    // Veriyi derin kopyala ve string/obj kontrolü yap
+    let rawData = log.workout_data;
+    if (typeof rawData === 'string') {
+        try { rawData = JSON.parse(rawData); } catch(e) { console.error(e); }
+    }
+    const data = JSON.parse(JSON.stringify(rawData)); // Derin kopya
     
+    const sets = data.exercises[exerciseIdx].sets;
     sets.splice(setIdx, 1);
 
     const sb = getSupabase();
@@ -4235,6 +4240,8 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
     } else {
         showToast('Set silindi! 🗑️');
         log.workout_data = data;
+        
+        // Modalın içindeki Lucide ikonlarını yenilemek için küçük bir gecikme ile tekrar render
         showWorkoutLogDetail(logId);
     }
 }
@@ -4327,7 +4334,9 @@ function showWorkoutLogDetail(logId) {
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-    if (window.lucide) lucide.createIcons();
+    setTimeout(() => {
+        if (window.lucide) lucide.createIcons();
+    }, 50);
 }
 
 function copyWorkoutToClipboard(logId) {
