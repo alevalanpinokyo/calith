@@ -4236,12 +4236,12 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
     const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
 
     if (error) {
+        console.error('[Calith] Set Silme Hatası:', error);
         showToast('Hata: ' + error.message);
     } else {
+        console.log('[Calith] Set başarıyla silindi, UI güncelleniyor...');
         showToast('Set silindi! 🗑️');
         log.workout_data = data;
-        
-        // Modalın içindeki Lucide ikonlarını yenilemek için küçük bir gecikme ile tekrar render
         showWorkoutLogDetail(logId);
     }
 }
