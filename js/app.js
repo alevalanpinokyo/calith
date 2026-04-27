@@ -5251,8 +5251,13 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
     if (skipBtn) {
         skipBtn.textContent = 'SETİ BİTİR';
         skipBtn.classList.remove('hidden');
+        // İLK 1 SANİYE PASİF YAP (Kilitlenmeyi önlemek için)
+        skipBtn.classList.add('pointer-events-none', 'opacity-30');
+        
         skipBtn.onclick = () => {
             const finalVal = isMax ? elapsed : duration - timeLeft;
+            if (finalVal <= 0) return; // 0 saniyede bitirmeyi engelle
+            
             clearInterval(exerciseTimerInterval);
             
             // Seti kaydet
@@ -5273,6 +5278,11 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
     clock.textContent = formatTime(isMax ? 0 : timeLeft);
 
     exerciseTimerInterval = setInterval(() => {
+        // Butonu aktif et (Eğer pasifse)
+        if (skipBtn && skipBtn.classList.contains('pointer-events-none')) {
+            skipBtn.classList.remove('pointer-events-none', 'opacity-30');
+        }
+
         if (isMax) {
             elapsed++;
             clock.textContent = formatTime(elapsed);
