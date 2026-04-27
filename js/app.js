@@ -5033,7 +5033,7 @@ function updateWorkoutUI() {
 
     // Video Linkini Kütüphaneden Çek
     let videoUrl = null;
-    const libraryEx = exerciseLibrary.find(e => e.name.toLowerCase() === ex.name.toLowerCase());
+    const libraryEx = exerciseLibrary.find(e => e.name.trim().toLowerCase() === ex.name.trim().toLowerCase());
     if (libraryEx && libraryEx.video_url) {
         videoUrl = libraryEx.video_url;
     }
