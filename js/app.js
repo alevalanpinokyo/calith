@@ -4180,11 +4180,16 @@ async function deleteWorkoutLog(logId) {
     });
 }
 
-async function editWorkoutSet(logId, exerciseIdx, setIdx) {
+window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
-    const data = { ...log.workout_data };
+    // Veriyi derin kopyala (JSON mimarisi)
+    let rawData = log.workout_data;
+    if (typeof rawData === 'string') {
+        try { rawData = JSON.parse(rawData); } catch(e) { console.error(e); }
+    }
+    const data = JSON.parse(JSON.stringify(rawData));
     const set = data.exercises[exerciseIdx].sets[setIdx];
 
     const newWeight = prompt(`Yeni Ağırlık (kg) - Mevcut: ${set.weight}`, set.weight);
@@ -4206,15 +4211,13 @@ async function editWorkoutSet(logId, exerciseIdx, setIdx) {
         showToast('Hata: ' + error.message);
     } else {
         showToast('Set güncellendi! 🔥');
-        // Cache'i güncelle ve modalı yeniden render et
         log.workout_data = data;
         showWorkoutLogDetail(logId);
-        // Eğer rekor kırıldıysa best tablosunu da güncelle (Opsiyonel ama iyi olur)
         updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps);
     }
 }
 
-async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
+window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     // 1. Logu bul
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) {
@@ -4224,15 +4227,12 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
 
     if (!confirm("Bu seti tamamen silmek istediğinize emin misiniz?")) return;
 
-    console.log('[Calith] Silme işlemi tetiklendi:', { logId, exerciseIdx, setIdx });
-
     // 2. Veriyi JSON üzerinden derin kopyala (Referans hatasını önler)
     const data = JSON.parse(JSON.stringify(log.workout_data));
     
     // 3. Seti uçur
     if (data.exercises[exerciseIdx] && data.exercises[exerciseIdx].sets) {
         data.exercises[exerciseIdx].sets.splice(setIdx, 1);
-        console.log('[Calith] Set diziden çıkarıldı. Kalan setler:', data.exercises[exerciseIdx].sets.length);
     }
 
     const sb = getSupabase();
@@ -4245,7 +4245,6 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
         console.error('[Calith] Supabase Silme Hatası:', error);
         showToast('Hata: ' + error.message);
     } else {
-        console.log('[Calith] Silme başarılı, UI yenileniyor...');
         showToast('Set başarıyla silindi! 🗑️');
         log.workout_data = data; 
         showWorkoutLogDetail(logId);
