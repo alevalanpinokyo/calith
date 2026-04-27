@@ -4600,7 +4600,7 @@ function ensureWorkoutOverlay() {
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <button onclick="nextExercise()" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
+                        <button onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
                         <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
                             <span>SETİ TAMAMLA</span>
                             <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
