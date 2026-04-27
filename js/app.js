@@ -3981,6 +3981,9 @@ function showWorkoutLogDetail(logId) {
                         </div>
                         <div class="grid grid-cols-1 gap-2">
                             ${ex.sets.map((set, si) => {
+                                const targetStr = String(ex.target || "").toLowerCase();
+                                const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+                                const isBW = targetStr.includes('bw') || set.weight <= 0;
                                 const feelColors = { light: 'text-blue-400 bg-blue-500/10', ideal: 'text-green-400 bg-green-500/10', heavy: 'text-red-400 bg-red-500/10' };
                                 const feelLabel = { light: 'HAFİF', ideal: 'İDEAL', heavy: 'AĞIR' };
                                 return `
@@ -3988,7 +3991,7 @@ function showWorkoutLogDetail(logId) {
                                     <div class="flex items-center gap-3">
                                         <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si+1}. SET</span>
                                         <div class="flex items-center gap-2">
-                                            <span class="text-xs font-mono font-bold text-white">${set.weight > 0 ? set.weight + 'kg x ' : ''}${set.reps}</span>
+                                            <span class="text-xs font-mono font-bold text-white">${(!isTimed && !isBW) ? set.weight + 'kg x ' : ''}${set.reps}${isTimed ? 'sn' : ''}</span>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -4045,11 +4048,16 @@ function copyWorkoutToClipboard(logId) {
         text += `${idx + 1}. ${ex.name ? ex.name.toUpperCase() : 'Bilinmeyen Hareket'} (${ex.target || '-'})\n`;
         if (ex.sets && Array.isArray(ex.sets)) {
             ex.sets.forEach((set, si) => {
+                const targetStr = String(ex.target || "").toLowerCase();
+                const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+                const isBW = targetStr.includes('bw') || set.weight <= 0;
+
                 const feelLabel = { light: 'Hafif', ideal: 'İdeal', heavy: 'Ağır' };
-                const weightStr = (set.weight && set.weight > 0) ? `${set.weight}kg x ` : '';
+                const weightStr = (!isTimed && !isBW) ? `${set.weight}kg x ` : '';
+                const repsStr = `${set.reps}${isTimed ? 'sn' : ''}`;
                 const cleanStr = set.isClean ? 'Temiz' : 'Kirli';
                 const feelStr = feelLabel[set.feel] || 'Normal';
-                text += `   - ${si + 1}. Set: ${weightStr}${set.reps || 0} (${cleanStr} - ${feelStr})\n`;
+                text += `   - ${si + 1}. Set: ${weightStr}${repsStr} (${cleanStr} - ${feelStr})\n`;
             });
         }
         text += `\n`;
@@ -5679,7 +5687,7 @@ function initSharedUI() {
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="nextExercise()" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
+                        <button onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
                         <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
                             <span>SETİ TAMAMLA</span>
                             <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
