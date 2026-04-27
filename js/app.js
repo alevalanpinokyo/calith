@@ -4822,8 +4822,8 @@ function updateWorkoutUI() {
     // Akıllı Öneri Getir
     getSmartRecommendation(ex.name).then(rec => {
         if (rec && els.recBox && els.recText) {
-            els.recBox.classList.remove('hidden');
-            els.recText.textContent = isBW ? `ÖNERİLEN: ${rec} TEKRAR` : `ÖNERİLEN: ${rec} KG`;
+            const recUnit = isTimed ? 'SANİYE' : (isBW ? 'TEKRAR' : 'KG');
+            els.recText.textContent = `ÖNERİLEN: ${rec} ${recUnit}`;
             
             const reasonEl = document.getElementById('workout-recommendation-reason');
             if (reasonEl) {
@@ -6003,14 +6003,18 @@ async function resetExerciseStats() {
 function showSetFeedbackModal(weight, reps) {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     const targetStr = String(ex?.target || "").toLowerCase();
+    const isTimed = ex?.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
     const isBW = ex?.isBW || targetStr.includes('bw');
+    
+    const unitLabel = isTimed ? 'SN' : 'TEKRAR';
+    const displayValue = isTimed ? `${reps} ${unitLabel}` : (isBW ? `${reps} ${unitLabel}` : `${weight}KG x ${reps} ${unitLabel}`);
 
     const modalHtml = `
         <div id="set-feedback-modal" class="fixed inset-0 z-[1200] flex items-center justify-center px-6" style="background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);">
             <div class="relative bg-calith-dark w-full max-w-sm rounded-[3rem] p-8 text-center border border-white/10 shadow-2xl animate-in zoom-in duration-300">
                 <div class="mb-8">
                     <h4 class="text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-2">SET TAMAMLANDI</h4>
-                    <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${isBW ? reps + ' TEKRAR' : weight + 'KG x ' + reps + ' TEKRAR'}</p>
+                    <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${displayValue}</p>
                 </div>
 
                 <!-- Form Durumu -->
