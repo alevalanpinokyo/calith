@@ -3634,7 +3634,7 @@ function renderProfileSection() {
                         <i data-lucide="settings" class="w-3.5 h-3.5 group-hover/btn:rotate-90 transition-transform"></i>
                         PROFİLİ DÜZENLE
                     </button>
-                    <button onclick="logout()" class="px-5 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center gap-2">
+                    <button onclick="handleLogout()" class="px-5 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center gap-2">
                         <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
