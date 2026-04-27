@@ -4970,67 +4970,82 @@ function updateDynamicRecommendation() {
     const match = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
     if (match) targetReps = parseInt(match[1]);
 
-    // RIR (Reps in Reserve - Cepte kalan tekrar) belirleme
-    let rir = 3; // İdeal (RPE 7-8 gibi düşün)
-    let reasonText = "İDEAL AĞIRLIK";
+    // RIR (Reps in Reserve - Cepte kalan tekrar) belirleme ve Yeni Ağırlık/Tekrar Hesaplama
+    let rir = 0; 
+    let reasonText = "HEDEFTE KAL";
     let reasonClass = "text-[8px] font-bold text-calith-accent uppercase tracking-tighter";
-
-    if (!lastSet.isClean) {
-        rir = -2; // Form bozuksa kapasitenin altındasın demektir
-        reasonText = "FORM BOZUK - DÜŞÜRÜLDÜ";
-        reasonClass = "text-[8px] font-black text-red-500 uppercase tracking-tighter";
-    } else {
-        if (lastSet.feel === 'light') {
-            rir = 10; // HAFİF: Çok agresif zıplama için cepteki tekrarı yüksek tutuyoruz
-            reasonText = "HAFİF GELDİ - AGRESİF ARTIRI";
-            reasonClass = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
-        } else if (lastSet.feel === 'heavy') {
-            rir = 0; // AĞIR: Limit (RPE 10)
-            reasonText = "AĞIR GELDİ - LİMİT";
-            reasonClass = "text-[8px] font-black text-orange-500 uppercase tracking-tighter";
-        }
-    }
-
-    // BW Kontrolü
-    const isBW = ex.isBW || targetStr.includes('bw');
     
-    // Epley Formülü ile anlık 1RM Tahmini (Ağırlıklı hareketler için)
-    const effectiveReps = reps + rir;
     let newWeight = weight;
     let newReps = targetReps;
+    const isBW = ex.isBW || targetStr.includes('bw');
 
-    if (!isBW) {
-        const estimated1RM = weight * (1 + effectiveReps / 30);
-        // Hedef tekrara göre yeni ağırlığı hesapla: Weight = 1RM / (1 + TargetReps/30)
-        newWeight = estimated1RM / (1 + targetReps / 30);
-
-        // Agresiflik Bonusu: Eğer hafifse ve form temizse %15 ekstra ekle
-        if (lastSet.isClean && lastSet.feel === 'light') {
-            newWeight *= 1.15;
-        }
+    // 1. Form Bozuk veya Ağır Geldiyse (Kapasite aşımı - Ağırlık düşürülmeli)
+    if (!lastSet.isClean || lastSet.feel === 'heavy') {
+        rir = 0; 
+        reasonText = !lastSet.isClean ? "FORM BOZUK - DÜŞÜRÜLDÜ" : "AĞIR GELDİ - DÜŞÜRÜLDÜ";
+        reasonClass = !lastSet.isClean ? "text-[8px] font-black text-red-500 uppercase tracking-tighter" : "text-[8px] font-black text-orange-500 uppercase tracking-tighter";
         
-        // 0.5 katlarına yuvarla
-        newWeight = Math.round(newWeight * 2) / 2;
+        if (!isBW) {
+            // Yapabildiği tekrara göre 1RM hesapla
+            const estimated1RM = weight * (1 + reps / 30);
+            // Hedeflenen tekrar için uygun ağırlığı bul (Epley)
+            newWeight = estimated1RM / (1 + targetReps / 30);
+            
+            // Kullanıcı zaten hedefe ulaştıysa ama "Ağır" dediyse (RPE 10), formülü %5 düşürerek yumuşat
+            if (reps >= targetReps) newWeight *= 0.95; 
 
-        // Eğer ağırlık zaten 0 ise veya çok küçükse BW mantığına geçiş yapabilir
-        if (newWeight <= 0) {
-            newWeight = 0;
-            // Ağırlık bittiyse tekrarı artır
-            newReps = Math.round(effectiveReps - 2); 
+            newWeight = Math.round(newWeight * 2) / 2; // 0.5 katlarına yuvarla
+            if (newWeight < 0) newWeight = 0;
+        } else {
+            // Vücut ağırlığında ağırlık düşemeyeceğimiz için hedef tekrarı kısıyoruz
+            newReps = Math.max(1, reps - 2); 
         }
-    } else {
-        // Bodyweight Hareketi: Sadece tekrar sayısını ayarla
-        // İdeal RIR 2-3 olduğu için, kapasiteden 2 çıkarıyoruz
-        newReps = Math.round(effectiveReps - 2);
-        if (newReps < 1) newReps = 1;
-        newWeight = 0;
+    } 
+    // 2. İdeal (Hedefte kal - Ağırlığı koru)
+    else if (lastSet.feel === 'ideal') {
+        reasonText = "İDEAL - HEDEFTE KAL";
+        reasonClass = "text-[8px] font-bold text-calith-accent uppercase tracking-tighter";
+        
+        // Savaşçı Payı: Eğer hedefe çok yakınsan (1-2 tekrar farkı) kilo düşürme!
+        const repDiff = targetReps - reps;
+        const tolerance = targetReps <= 5 ? 1 : 2; // Düşük tekrarlarda 1, yüksekte 2 tekrar tolerans
+
+        if (reps < targetReps && !isBW) {
+            if (repDiff <= tolerance) {
+                newWeight = weight;
+                reasonText = "HEDEFE YAKINSIN - AYNI KAL";
+            } else {
+                const estimated1RM = weight * (1 + reps / 30);
+                newWeight = Math.round((estimated1RM / (1 + targetReps / 30)) * 2) / 2;
+                reasonText = "HEDEFE ULAŞMAK İÇİN DÜŞÜRÜLDÜ";
+            }
+        } else if (reps < targetReps && isBW) {
+            newReps = (repDiff <= tolerance) ? targetReps : reps;
+            if (repDiff <= tolerance) reasonText = "ZORLA - HEDEFTE KAL";
+        }
+    }
+    // 3. Hafif (Ağırlığı artır)
+    else if (lastSet.feel === 'light') {
+        reasonText = "HAFİF GELDİ - ARTIRILDI";
+        reasonClass = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
+        
+        if (!isBW) {
+            // Hedefi yakaladıysa %5 artır
+            if (reps >= targetReps) {
+                newWeight = Math.round((weight * 1.05) * 2) / 2; 
+            } else {
+                // Hedefi yakalayamadı ama hafif diyorsa çok mantıklı değil, ağırlığı koruyup hedef tekrarı zorlasın
+                newWeight = weight;
+            }
+        } else {
+            // BW'de tekrarı %20 artır (min +1)
+            newReps = reps + Math.max(1, Math.round(reps * 0.20));
+        }
     }
 
-    // Aynı kiloyu/tekrarı öneriyorsa veya ufak bir fark varsa mesajı düzelt
-    if (!isBW && Math.abs(newWeight - weight) < 1 && lastSet.isClean && lastSet.feel === 'ideal') {
-        reasonText = "HEDEFTE KAL";
-    } else if (isBW && newReps === reps && lastSet.feel === 'ideal') {
-        reasonText = "HEDEFTE KAL";
+    // Eşik kontrolü (BW'ye düşüş)
+    if (!isBW && newWeight <= 0) {
+        newWeight = 0;
     }
 
     const recBox = document.getElementById('workout-recommendation-box');

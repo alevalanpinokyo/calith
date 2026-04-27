@@ -209,6 +209,13 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 - **Çözüm:** `skippedToEnd` flag + sarı banner ile "Yapmak İstiyorum" / "Atla" seçeneği sunulur.
 - Fonksiyonlar: `skipExerciseAndContinue()`, `clearSkippedFlag()`
 
+### 4. Akıllı Ağırlık Algoritması (Savaşçı Payı)
+- **Sorun:** "İdeal" hissiyatta bile agresif kilo artırıyor veya hedefi 1 tekrarla kaçırınca hemen kilo düşürüyordu.
+- **Çözüm:** 
+  - **İdeal Form:** Hedefe ulaşıldıysa ağırlığı korur (Artırmaz).
+  - **Savaşçı Payı:** Hedef 1-2 tekrarla kaçırıldıysa (Tolerans) kilo düşürmez, "Aynı Kal" der.
+  - **Agresiflik Kontrolü:** "Hafif" hissiyatta artış oranı %15'ten %5'e çekildi (Güvenli gelişim).
+
 ---
 
 ## ✅ ÇÖZÜLEN ÖZELLİK: Workout Recovery (Auto-Save)
