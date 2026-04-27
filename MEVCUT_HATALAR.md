@@ -190,7 +190,24 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 ## 🐞 UI/UX İYİLEŞTİRMELERİ VE KÜÇÜK HATALAR (Sonraki Aşamalarda Çözülecek)
 
 1. [ ] **Süreli Hareketlerde (SN) KG Hatası:** Örneğin 9 saniyelik Plank yapıldığında, Set Tamamlandı (Geçmiş) kutusunda "9 sn" yerine yanlışlıkla "9 kg" gibi ağırlık birimi yazması.
-2. [ ] **"Hareketi Geç" Butonu Onayı:** Antrenman esnasında "Hareketi Geç" butonuna yanlışlıkla basılabiliyor. Doğrudan diğer harekete geçmek yerine "Bu hareketi atlamak istediğinize emin misiniz?" şeklinde bir onay penceresi (confirm/modal) eklenmesi.
+
+---
+
+## ✅ ÇÖZÜLEN: Set Silme, Dinlenme Kilidi ve Opsiyonel Hareket Atlama (2026-04-27)
+
+### 1. Set Silme (X Butonu)
+- **Sorun:** Yanlış ağırlık/tekrar girip seti tamamladıktan sonra geri dönüş yoktu.
+- **Çözüm:** Her set kutucuğuna kırmızı X silme butonu eklendi. Onay modalı ile silinir.
+- Fonksiyon: `deleteWorkoutSet(index)`
+
+### 2. Dinlenme Süresinde Buton Kilidi
+- **Sorun:** Dinlenme sayacı çalışırken "Seti Tamamla" butonu ve inputlar aktifti.
+- **Çözüm:** `startRestTimer()` çalıştığında butonlar/inputlar kilitlenir, `skipRest()` ile açılır.
+
+### 3. Opsiyonel Hareket Atlama
+- **Sorun:** Sona atılan hareketler sahte veri girilmesini gerektiriyordu.
+- **Çözüm:** `skippedToEnd` flag + sarı banner ile "Yapmak İstiyorum" / "Atla" seçeneği sunulur.
+- Fonksiyonlar: `skipExerciseAndContinue()`, `clearSkippedFlag()`
 
 ---
 

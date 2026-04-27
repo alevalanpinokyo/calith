@@ -4600,7 +4600,7 @@ function ensureWorkoutOverlay() {
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <button onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
+                        <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
                         <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
                             <span>SETİ TAMAMLA</span>
                             <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
@@ -4767,6 +4767,7 @@ function moveExerciseToEnd() {
     showConfirmModal("Bu hareketi gerçekten antrenman sonuna bırakmak istiyor musun? Yorulduysan dert etme kanka, sona atıp sonra bitirebilirsin! 🔥", () => {
         // Hareketi diziden çıkar ve sona ekle
         const exerciseToMove = workoutSession.exercises.splice(currentIndex, 1)[0];
+        exerciseToMove.skippedToEnd = true;
         workoutSession.exercises.push(exerciseToMove);
         
         // Not: currExerciseIdx'i değiştirmemize gerek yok çünkü 
@@ -4923,6 +4924,31 @@ function updateWorkoutUI() {
         els.progress.style.width = `${progress}%`;
     }
 
+    // Sona atılmış hareket kontrolü (Opsiyonel hareket atlama)
+    const existingBanner = document.getElementById('skipped-exercise-banner');
+    if (existingBanner) existingBanner.remove();
+
+    if (ex.skippedToEnd) {
+        const restBox = document.getElementById('workout-rest-timer-box');
+        if (restBox) {
+            const banner = document.createElement('div');
+            banner.id = 'skipped-exercise-banner';
+            banner.className = 'mb-8 p-6 rounded-[2rem] bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-center';
+            banner.innerHTML = `
+                <div class="flex items-center justify-center gap-2 mb-4">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-yellow-400"></i>
+                    <p class="text-[10px] font-black text-yellow-400 uppercase tracking-widest">BU HAREKETİ DAHA ÖNCE SONA BIRAKTIN</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="clearSkippedFlag()" class="flex-1 py-4 bg-white/5 rounded-2xl text-[10px] font-black text-white uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all active:scale-95">🏋️ YAPMAK İSTİYORUM</button>
+                    <button onclick="skipExerciseAndContinue()" class="flex-1 py-4 bg-red-500/20 rounded-2xl text-[10px] font-black text-red-400 uppercase tracking-widest border border-red-500/20 hover:bg-red-500/30 transition-all active:scale-95">⏭️ ATLA</button>
+                </div>
+            `;
+            restBox.before(banner);
+            if (window.lucide) lucide.createIcons();
+        }
+    }
+
     renderWorkoutSets();
 }
 
@@ -5055,7 +5081,7 @@ function renderWorkoutSets() {
     const isBW = ex.isBW || targetStr.includes('bw');
 
     container.innerHTML = ex.sets.map((set, i) => `
-        <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl animate-pulse" style="animation: fade-in 0.3s ease-out forwards;">
+        <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl" style="animation: fade-in 0.3s ease-out forwards;">
             <div class="flex items-center gap-3">
                 <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">${i + 1}. SET</span>
                 <div class="h-4 w-px bg-white/5"></div>
@@ -5071,11 +5097,57 @@ function renderWorkoutSets() {
                     <i data-lucide="${isTimed ? 'clock' : 'zap'}" class="w-3.5 h-3.5 text-calith-orange"></i>
                     <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}${isTimed ? 'sn' : ''}</span>
                 </div>
+                <button onclick="deleteWorkoutSet(${i})" class="w-7 h-7 flex items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 hover:text-red-300 transition-all active:scale-90 ml-1" title="Seti Sil">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
             </div>
         </div>
     `).join('');
 
     if (window.lucide) lucide.createIcons();
+}
+
+function deleteWorkoutSet(index) {
+    if (!workoutSession) return;
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    if (!ex || !ex.sets[index]) return;
+
+    const set = ex.sets[index];
+    const setInfo = set.weight > 0 ? `${set.weight}kg x ${set.reps}` : `${set.reps} tekrar`;
+
+    showConfirmModal(`${index + 1}. Seti silmek istediğine emin misin? (${setInfo})`, () => {
+        ex.sets.splice(index, 1);
+        if (workoutSession.currSet > 1) workoutSession.currSet--;
+
+        const setInfoEl = document.getElementById('workout-set-info');
+        if (setInfoEl) setInfoEl.textContent = `SET ${workoutSession.currSet}`;
+
+        renderWorkoutSets();
+        saveWorkoutState();
+        showToast(`${index + 1}. Set silindi!`);
+    });
+}
+
+function skipExerciseAndContinue() {
+    if (!workoutSession) return;
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    if (ex) {
+        ex.skipped = true;
+        ex.sets = [];
+    }
+    const banner = document.getElementById('skipped-exercise-banner');
+    if (banner) banner.remove();
+    showToast('Hareket atlandı! 👊');
+    nextExercise();
+}
+
+function clearSkippedFlag() {
+    if (!workoutSession) return;
+    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+    if (ex) ex.skippedToEnd = false;
+    const banner = document.getElementById('skipped-exercise-banner');
+    if (banner) banner.remove();
+    showToast('Hareketi yapmaya karar verdin! 💪');
 }
 
 function completeSet() {
@@ -5177,6 +5249,23 @@ function startRestTimer() {
         skipBtn.onclick = skipRest;
     }
     box.classList.remove('hidden');
+
+    // Dinlenme sırasında Seti Tamamla butonunu ve inputları devre dışı bırak
+    const completeBtn = document.getElementById('btn-complete-set');
+    const nextBtn = document.getElementById('btn-next-exercise');
+    if (completeBtn) {
+        completeBtn.disabled = true;
+        completeBtn.classList.add('opacity-30', 'pointer-events-none');
+    }
+    if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.classList.add('opacity-30', 'pointer-events-none');
+    }
+    document.querySelectorAll('#workout-input-weight, #workout-input-reps')
+        .forEach(el => { el.disabled = true; el.classList.add('opacity-30'); });
+
+    // Dinlenme kutusuna scroll
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     let timePassed = 0;
     clock.textContent = '00:00';
@@ -5337,6 +5426,20 @@ function skipRest() {
     clearInterval(exerciseTimerInterval);
     clearInterval(countdownInterval);
     document.getElementById('workout-rest-timer-box').classList.add('hidden');
+
+    // Buton ve inputları tekrar aktif et
+    const completeBtn = document.getElementById('btn-complete-set');
+    const nextBtn = document.getElementById('btn-next-exercise');
+    if (completeBtn) {
+        completeBtn.disabled = false;
+        completeBtn.classList.remove('opacity-30', 'pointer-events-none');
+    }
+    if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('opacity-30', 'pointer-events-none');
+    }
+    document.querySelectorAll('#workout-input-weight, #workout-input-reps')
+        .forEach(el => { el.disabled = false; el.classList.remove('opacity-30'); });
 
     // Dinlenme bitince HAREKETE BAŞLA butonunu tekrar göster (saniye bazlıysa)
     if (workoutSession && workoutSession.active) {
@@ -5697,7 +5800,7 @@ function initSharedUI() {
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
+                        <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
                         <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
                             <span>SETİ TAMAMLA</span>
                             <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
