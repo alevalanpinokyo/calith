@@ -4215,30 +4215,35 @@ async function editWorkoutSet(logId, exerciseIdx, setIdx) {
 }
 
 async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
-    console.log('[Calith] Silme islemi basladi:', { logId, exerciseIdx, setIdx });
-
+    // 1. Logu bul
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
-    // Çalışan editWorkoutSet mantığına (shallow copy) geri dönüyoruz
-    const data = { ...log.workout_data };
+    // 2. VERİ MİMARİSİ: JSON olduğu için en sağlamı Deep Clone yapmaktır
+    // Böylece referans karmaşası olmaz, Supabase değişikliği net anlar.
+    const data = JSON.parse(JSON.stringify(log.workout_data));
     
-    // Seti sil
-    data.exercises[exerciseIdx].sets.splice(setIdx, 1);
+    // 3. SETİ SİL
+    if (data.exercises[exerciseIdx] && data.exercises[exerciseIdx].sets) {
+        data.exercises[exerciseIdx].sets.splice(setIdx, 1);
+    }
 
     const sb = getSupabase();
     if (!sb) return;
 
+    // 4. VERİTABANINI GÜNCELLE
     const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
 
     if (error) {
         console.error('[Calith] Set Silme Hatası:', error);
         showToast('Hata: ' + error.message);
     } else {
-        console.log('[Calith] Set başarıyla silindi, UI güncelleniyor...');
+        console.log('[Calith] Set başarıyla silindi. Yeni veri:', data);
         showToast('Set silindi! 🗑️');
-        log.workout_data = data; // Cache'i güncelle
-        showWorkoutLogDetail(logId); // Modalı yenile
+        
+        // 5. CACHE VE UI GÜNCELLE
+        log.workout_data = data; 
+        showWorkoutLogDetail(logId);
     }
 }
 
