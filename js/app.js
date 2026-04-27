@@ -3195,6 +3195,9 @@ function updateAuthUI() {
     });
 
     if (window.lucide) lucide.createIcons();
+    
+    // Flicker önleme: UI hazır olduğunda göster
+    document.body.classList.add('auth-ui-ready');
 }
 
 // --- LEAD OR EMAIL COLLECTION ---

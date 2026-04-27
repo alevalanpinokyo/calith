@@ -113,6 +113,26 @@ body {
 .stagger-2 { transition-delay: 0.2s; }
 .stagger-3 { transition-delay: 0.3s; }
 
+/* Auth UI Flicker Prevention */
+.nav-auth-btn, .profile-link, [onclick*="showAuthModal"], [onclick*="showProfile"] {
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    transform: translateY(-2px);
+}
+
+.auth-ui-ready .nav-auth-btn, 
+.auth-ui-ready .profile-link, 
+.auth-ui-ready .nav-auth-btn, 
+.auth-ui-ready [onclick*="showAuthModal"], 
+.auth-ui-ready [onclick*="showProfile"] {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nav-auth-btn:hover {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
 .nav-blur {
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
