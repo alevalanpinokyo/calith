@@ -53,11 +53,14 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **Kişisel İstatistik Paneli:** Program bazlı gelişim grafiklerinin kullanıcıya özel sunulması.
 
 ### 🚨 DETAYLI TEST EDİLECEK LİSTESİ (ACİL)
+- [ ] **Admin Kullanıcı Silme:** RPC fonksiyonu sonrası silme işlemi çalışıyor mu?
+- [ ] **Geçmiş Antrenman Düzenleme:** Setleri düzenleme ve kaydetme (RPE/Ağırlık/Tekrar).
+- [ ] **Antrenman Kaydı Silme:** Geçmişten antrenman silme işlemi sorunsuz mu?
+- [ ] **Video İzle Butonu:** Senkronizasyon sorunu çözüldü mü, her zaman görünüyor mu?
 - [x] **Admin Kütüphane:** Hareket ekleme, silme ve düzenleme (Supabase RLS sorunsuz mu?). [TAMAM ✅]
 - [x] **Omni-Box:** Program yazarken önerilerin gelmesi ve BW/Video bilgisini çekmesi. [TAMAM ✅]
 - [x] **DUP Gün Tipleri:** Admin panelinde H/M/L seçiminin kaydedilmesi ve düzenleme modunda geri gelmesi. [TAMAM ✅]
 - [x] **Antrenman UI:** Üstteki Gün Tipi rozetinin (Ağır/Orta/Hafif) doğru renk ve metinle görünmesi. [TAMAM ✅]
-- [ ] **Video İzle Butonu:** Kütüphanede videosu olan hareketlerde butonun çıkması ve modali açması. **[FIX EDİLDİ - TEST EDİLECEK 🛠️]**
 - [ ] **Smart Recommendation:** RPE sonrası ağırlık önerisinin "Savaşçı Payı" mantığıyla (ideal formda artırmama vb.) çalışması. **[GERÇEK ANTRENMANDA TEST EDİLECEK 🏋️‍♂️]**
 
 ---
