@@ -4605,7 +4605,7 @@ async function renderAdminUsers() {
 }
 
 async function adminChangeRole(userId, currentRole) {
-    const newRole = prompt(`Mevcut Rol: ${currentRole}\nYeni rolü yazın (premium, user):\n\n(Not: Güvenlik gereği "admin" rolü buradan atanamaz.)`, currentRole);
+    const newRole = prompt(`Mevcut Rol: ${currentRole}\nYeni rolü yazın (admin, premium, user):`, currentRole);
     if (!newRole || newRole === currentRole) return;
     
     if (!['admin', 'premium', 'user'].includes(newRole)) {
