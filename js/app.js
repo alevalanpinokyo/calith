@@ -4848,13 +4848,12 @@ async function startWorkoutMode(programId, dayIndex = 0) {
         return;
     }
 
-    // Kütüphaneyi arka planda yükle (Video eşleşmesi için)
+    // Kütüphaneyi yükle ve BEKLE (Video eşleşmesi için kritik)
     if (exerciseLibrary.length === 0) {
         const sb = getSupabase();
         if (sb) {
-            sb.from('exercises').select('*').then(({data}) => {
-                if (data) exerciseLibrary = data;
-            });
+            const { data } = await sb.from('exercises').select('*');
+            if (data) exerciseLibrary = data;
         }
     }
 
