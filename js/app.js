@@ -4309,7 +4309,7 @@ function showWorkoutLogDetail(logId) {
                                         <button onclick="editWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-calith-orange/10 text-calith-orange hover:bg-calith-orange hover:text-white transition-all ml-2" title="Seti Düzenle">
                                             <i data-lucide="edit-3" class="w-3 h-3"></i>
                                         </button>
-                                        <button onclick="deleteWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
+                                        <button onclick="console.log('Silme butonuna basildi!'); deleteWorkoutSet('${log.id}', ${idx}, ${si})" class="w-6 h-6 flex items-center justify-center rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
                                             <i data-lucide="trash-2" class="w-3 h-3"></i>
                                         </button>
                                     </div>
