@@ -3073,23 +3073,24 @@ async function submitRegister() {
 async function handleLogout() {
     const sb = getSupabase();
     if (sb) await sb.auth.signOut();
+    
+    // Tüm state'i temizle
     currentUser = null;
     isAdminMode = false;
+    
     showToast('Çıkış yapıldı');
+    
+    // Navbar'ı anında güncelle
     updateAuthUI();
 
-    // Sayfa veya aktif section kontrolü
-    const isProfileVisible = document.getElementById('profile') && !document.getElementById('profile').classList.contains('hidden');
-    const isSpecialPage = window.location.pathname.includes('profile.html') || window.location.pathname.includes('admin.html');
-
-    if (isSpecialPage || isProfileVisible) {
-        setTimeout(() => {
-            if (window.location.pathname.includes('index.html') || isProfileVisible) {
-                showSection('landing');
-            } else {
-                window.location.href = 'index.html';
-            }
-        }, 500);
+    // Direkt anasayfaya yönlendir
+    if (window.location.pathname.includes('admin.html') || window.location.pathname.includes('profile.html')) {
+        window.location.href = 'index.html';
+    } else {
+        // Eğer index.html içindeysek ana sayfaya (landing) dön
+        showSection('landing');
+        // Sayfayı yenilemek en temizi (State kalıntıları için)
+        setTimeout(() => window.location.reload(), 300);
     }
 }
 
@@ -3145,50 +3146,46 @@ function hideAdminLoading() {
 }
 
 function updateAuthUI() {
-    // Desktop Nav Auth Button & Icon
-    const authElements = document.querySelectorAll('[onclick="showAuthModal()"], [onclick="showProfile()"], [onclick="handleLogout()"], [onclick*="profile.html"]');
+    // Tüm olası auth butonlarını seç
+    const authElements = document.querySelectorAll('.nav-auth-btn, [onclick*="showAuthModal"], [onclick*="showProfile"], [onclick*="handleLogout"]');
 
     authElements.forEach(el => {
-        const isMobileIcon = el.classList.contains('md:hidden') && el.querySelector('[data-lucide="user"]');
-        const isMobileMenuBtn = el.closest('#mobile-menu') && el.tagName === 'BUTTON';
-
-        if (isMobileIcon) {
-            if (currentUser) {
+        const isMobile = el.closest('#mobile-menu') || el.classList.contains('md:hidden');
+        
+        if (currentUser) {
+            // GİRİŞ YAPILMIŞSA
+            if (isMobile) {
+                if (el.tagName === 'BUTTON') {
+                    el.textContent = 'PROFİLİM';
+                    el.classList.add('text-calith-accent');
+                }
+                el.setAttribute('onclick', "showProfile()");
+            } else {
+                // Desktop
+                const icon = el.querySelector('i');
+                el.innerHTML = (icon ? icon.outerHTML : '') + ' PROFİLİM';
                 el.setAttribute('onclick', "showProfile()");
                 el.classList.add('text-calith-accent');
-                el.classList.remove('text-white');
-            } else {
-                el.setAttribute('onclick', 'showAuthModal()');
-                el.classList.add('text-white');
-                el.classList.remove('text-calith-accent');
-            }
-        } else if (isMobileMenuBtn) {
-            if (currentUser) {
-                el.textContent = 'PROFİLİM';
-                el.setAttribute('onclick', "showProfile()");
-                el.classList.add('text-calith-accent');
-                el.classList.remove('text-red-500', 'text-white');
-            } else {
-                el.textContent = 'GİRİŞ YAP / ÜYE OL';
-                el.setAttribute('onclick', 'showAuthModal()');
-                el.classList.remove('text-red-500', 'text-calith-accent');
-                el.classList.add('text-white');
             }
         } else {
-            // Desktop or generic buttons
-            if (currentUser) {
-                if (el.textContent.includes('GİRİŞ YAP') || el.textContent.includes('ÜYE OL') || el.textContent.includes('Giriş Yap')) {
-                    el.innerHTML = el.querySelector('i') ? el.innerHTML.replace(/Giriş Yap|GİRİŞ YAP \/ ÜYE OL/g, 'PROFİLİM') : 'PROFİLİM';
-                    el.setAttribute('onclick', "showProfile()");
+            // ÇIKIŞ YAPILMIŞSA
+            if (isMobile) {
+                if (el.tagName === 'BUTTON') {
+                    el.textContent = 'GİRİŞ YAP';
+                    el.classList.remove('text-calith-accent');
                 }
+                el.setAttribute('onclick', 'showAuthModal()');
             } else {
-                if (el.textContent.includes('PROFİLİM') || el.textContent.includes('Profilim')) {
-                    el.innerHTML = el.querySelector('i') ? el.innerHTML.replace(/PROFİLİM|Profilim/g, 'GİRİŞ YAP') : 'GİRİŞ YAP';
-                    el.setAttribute('onclick', "showAuthModal()");
-                }
+                // Desktop
+                const icon = el.querySelector('i');
+                el.innerHTML = (icon ? icon.outerHTML : '') + ' GİRİŞ YAP';
+                el.setAttribute('onclick', "showAuthModal()");
+                el.classList.remove('text-calith-accent');
             }
         }
     });
+
+    if (window.lucide) lucide.createIcons();
 }
 
 // --- LEAD OR EMAIL COLLECTION ---
