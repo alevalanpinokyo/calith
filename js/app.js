@@ -4218,35 +4218,39 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
 }
 
 window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
-    // 1. Logu bul
+    // 1. Logu cache'den bul
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
-    if (!log) {
-        console.error('[Calith] Log bulunamadı:', logId);
-        return;
-    }
+    if (!log) return showToast('Hata: Log bulunamadı.');
 
-    if (!confirm("Bu seti tamamen silmek istediğinize emin misiniz?")) return;
+    // 2. Onay al
+    if (!confirm("Bu seti silmek istediğine emin misin kanka?")) return;
 
-    // 2. Veriyi JSON üzerinden derin kopyala (Referans hatasını önler)
-    const data = JSON.parse(JSON.stringify(log.workout_data));
+    console.log('[Calith] Silme Öncesi Veri:', JSON.parse(JSON.stringify(log.workout_data)));
+
+    // 3. Veriyi kopyala ve seti uçur
+    const newData = JSON.parse(JSON.stringify(log.workout_data));
+    const exercise = newData.exercises[exerciseIdx];
     
-    // 3. Seti uçur
-    if (data.exercises[exerciseIdx] && data.exercises[exerciseIdx].sets) {
-        data.exercises[exerciseIdx].sets.splice(setIdx, 1);
+    if (exercise && exercise.sets) {
+        console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set siliniyor...`);
+        exercise.sets.splice(setIdx, 1); // Satırı çıkar
     }
 
+    // 4. Veritabanına "Yeni" objeyi gönder
     const sb = getSupabase();
-    if (!sb) return;
-
-    // 4. Supabase'e fırlat
-    const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
+    const { error } = await sb.from('workout_logs')
+        .update({ workout_data: newData })
+        .eq('id', logId);
 
     if (error) {
-        console.error('[Calith] Supabase Silme Hatası:', error);
-        showToast('Hata: ' + error.message);
+        console.error('[Calith] Silme Hatası:', error);
+        showToast('Silinemedi: ' + error.message);
     } else {
-        showToast('Set başarıyla silindi! 🗑️');
-        log.workout_data = data; 
+        console.log('[Calith] Silme Sonrası Veri:', newData);
+        showToast('Set uçuruldu! 🗑️');
+        
+        // 5. Cache'i ve UI'ı anında güncelle
+        log.workout_data = newData;
         showWorkoutLogDetail(logId);
     }
 }
