@@ -78,6 +78,7 @@
                 <button onclick="switchAdminTab('blog')" id="tab-blog" class="px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white">BLOG YÖNETİMİ</button>
                 <button onclick="switchAdminTab('products')" id="tab-products" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ÜRÜN YÖNETİMİ</button>
                 <button onclick="switchAdminTab('programs')" id="tab-programs" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">PROGRAM YÖNETİMİ</button>
+                <button onclick="switchAdminTab('exercises')" id="tab-exercises" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">EGZERSİZ KÜTÜPHANESİ</button>
                 <button onclick="switchAdminTab('announcements')" id="tab-announcements" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">DUYURU PANO</button>
                 <button onclick="switchAdminTab('homecards')" id="tab-homecards" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">ANA SAYFA KARTLARI</button>
                 <button onclick="switchAdminTab('links')" id="tab-links" class="px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white">LİNKLER</button>
@@ -121,6 +122,60 @@
                 <div class="lg:col-span-2 space-y-6">
                     <h2 class="font-display text-2xl font-bold uppercase">MEVCUT YAZILAR</h2>
                     <div id="admin-post-list" class="grid gap-4"></div>
+                </div>
+            </div>
+
+            <!-- EGZERSİZ KÜTÜPHANESİ SECTION -->
+            <div id="section-exercises" class="hidden grid lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-8 rounded-3xl border border-white/10 relative">
+                    <h3 class="font-display text-2xl font-bold uppercase">EGZERSİZ <span class="text-calith-orange">EKLE</span></h3>
+                    <input type="hidden" id="ex-edit-id">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Hareket Adı (Benzersiz)</label>
+                            <input type="text" id="ex-name" placeholder="Örn: Weighted Pull-up" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Video Rehber URL (YouTube vb.)</label>
+                            <input type="url" id="ex-video" placeholder="https://youtube.com/..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Kategori</label>
+                                <select id="ex-category" title="Kategori Seçimi" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                                    <option value="pull">Çekiş (Pull)</option>
+                                    <option value="push">İtiş (Push)</option>
+                                    <option value="legs">Bacak (Legs)</option>
+                                    <option value="core">Core / Karın</option>
+                                    <option value="skill">Statik / Skill</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Zorluk</label>
+                                <select id="ex-difficulty" title="Zorluk Seviyesi" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white">
+                                    <option value="beginner">Başlangıç</option>
+                                    <option value="intermediate" selected>Orta Seviye</option>
+                                    <option value="advanced">İleri Seviye</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-black/20 rounded-xl border border-white/5">
+                            <input type="checkbox" id="ex-is-bw" checked class="w-5 h-5 rounded bg-transparent border-white/20 text-calith-orange focus:ring-0 cursor-pointer">
+                            <label for="ex-is-bw" class="text-xs font-bold text-gray-400 uppercase tracking-widest cursor-pointer">Vücut Ağırlığı (BW)</label>
+                        </div>
+                        <button onclick="saveExercise()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">KÜTÜPHANEYE KAYDET</button>
+                        <button onclick="resetExerciseForm()" class="w-full btn-outline border-white/10 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Formu Temizle</button>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-display text-2xl font-bold uppercase">KÜTÜPHANE LİSTESİ</h2>
+                        <div class="relative w-64">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
+                            <input type="text" id="ex-search" oninput="renderAdminExercises()" placeholder="Hareket ara..." class="w-full bg-white/5 border border-white/10 pl-10 pr-4 py-2 rounded-xl text-xs outline-none focus:border-calith-orange">
+                        </div>
+                    </div>
+                    <div id="admin-ex-list" class="grid gap-3"></div>
                 </div>
             </div>
 
@@ -540,13 +595,14 @@
     </div>
 </section>
 
-    <script src="js/app.js?v=202604271909"></script>
+    <script src="js/app.js?v=202604271932"></script>
     <script>
         lucide.createIcons();
         function switchAdminTab(tab) {
             document.getElementById('section-blog').classList.toggle('hidden', tab !== 'blog');
             document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
             document.getElementById('section-programs').classList.toggle('hidden', tab !== 'programs');
+            document.getElementById('section-exercises').classList.toggle('hidden', tab !== 'exercises');
             document.getElementById('section-announcements').classList.toggle('hidden', tab !== 'announcements');
             document.getElementById('section-homecards').classList.toggle('hidden', tab !== 'homecards');
             document.getElementById('section-links').classList.toggle('hidden', tab !== 'links');
@@ -555,6 +611,7 @@
             document.getElementById('tab-blog').className = tab === 'blog' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
             document.getElementById('tab-products').className = tab === 'products' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
             document.getElementById('tab-programs').className = tab === 'programs' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
+            document.getElementById('tab-exercises').className = tab === 'exercises' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
             document.getElementById('tab-announcements').className = tab === 'announcements' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
             document.getElementById('tab-homecards').className = tab === 'homecards' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
             document.getElementById('tab-links').className = tab === 'links' ? "px-8 py-3 rounded-xl font-bold text-sm bg-calith-orange text-white shadow-lg" : "px-8 py-3 rounded-xl font-bold text-sm text-gray-400 hover:text-white";
@@ -562,6 +619,7 @@
             
             if (tab === 'products') renderAdminProducts();
             if (tab === 'programs') renderAdminPrograms();
+            if (tab === 'exercises') renderAdminExercises();
             if (tab === 'announcements') renderAdminAnnouncements();
             if (tab === 'links') renderAdminLinks();
             if (tab === 'users') renderAdminUsers();

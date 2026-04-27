@@ -1223,9 +1223,18 @@ function addExerciseRow(dayNum, data = null) {
     const row = document.createElement('div');
     row.className = 'exercise-row flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5 group transition-all hover:border-calith-orange/30';
     row.id = `row-${rowId}`;
+    row.style.position = 'relative';
 
     row.innerHTML = `
-        <input type="text" placeholder="Hareket Adı" class="ex-name flex-1 bg-transparent border-none p-0 text-[11px] font-bold outline-none focus:ring-0 text-white placeholder-gray-700" value="${data ? data.name : ''}">
+        <div class="flex-1 relative">
+            <input type="text" placeholder="Hareket Adı" 
+                class="ex-name w-full bg-transparent border-none p-0 text-[11px] font-bold outline-none focus:ring-0 text-white placeholder-gray-700" 
+                value="${data ? data.name : ''}"
+                oninput="showExerciseSuggestions(this)"
+                onblur="setTimeout(() => hideExerciseSuggestions(this), 200)"
+                autocomplete="off">
+            <div class="ex-suggestions hidden absolute z-[100] left-0 right-0 top-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl"></div>
+        </div>
         <div class="flex items-center gap-1 shrink-0 border-l border-white/10 pl-2">
             <input type="text" placeholder="S" title="Set" class="ex-sets w-8 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-calith-orange outline-none focus:ring-0" value="${data ? data.sets : ''}">
             <span class="text-gray-700 text-[10px]">×</span>
@@ -1275,6 +1284,194 @@ function renderAdminPrograms() {
     `).join('');
 
     if (window.lucide) lucide.createIcons();
+}
+
+// --- EGZERSİZ KÜTÜPHANESİ YÖNETİMİ ---
+let exerciseLibrary = [];
+
+async function renderAdminExercises() {
+    const list = document.getElementById('admin-ex-list');
+    const searchInput = document.getElementById('ex-search');
+    if (!list) return;
+
+    // Yükleniyor göster
+    if (exerciseLibrary.length === 0) {
+        list.innerHTML = '<div class="py-8 text-center text-gray-500 animate-pulse uppercase text-[10px] font-bold tracking-widest">Kütüphane Yükleniyor...</div>';
+        const { data, error } = await supabase.from('exercises').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Kütüphane hatası:', error);
+            list.innerHTML = '<div class="py-8 text-center text-red-500 text-[10px] font-bold tracking-widest">YÜKLEME HATASI</div>';
+            return;
+        }
+        exerciseLibrary = data || [];
+    }
+
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    const filtered = exerciseLibrary.filter(ex => ex.name.toLowerCase().includes(searchTerm) || ex.category.toLowerCase().includes(searchTerm));
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="py-8 text-center text-gray-500 text-[10px] font-bold tracking-widest uppercase">Egzersiz bulunamadı.</div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(ex => `
+        <div class="bg-black/20 p-4 rounded-2xl border border-white/5 flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-calith-orange/10 flex items-center justify-center text-calith-orange">
+                    <i data-lucide="${ex.category === 'pull' ? 'arrow-up-circle' : ex.category === 'push' ? 'arrow-down-circle' : 'dumbbell'}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-white">${ex.name}</h4>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${ex.category}</span>
+                        ${ex.is_bw ? '<span class="text-[8px] px-1.5 py-0.5 rounded bg-calith-orange/10 text-calith-orange font-black">BW</span>' : ''}
+                        ${ex.video_url ? '<span class="text-[8px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-500 font-black">VIDEO</span>' : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick="editExercise('${ex.id}')" class="p-2 text-gray-500 hover:text-white transition-colors"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                <button onclick="deleteExercise('${ex.id}')" class="p-2 text-gray-500 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
+}
+
+async function saveExercise() {
+    const id = document.getElementById('ex-edit-id').value;
+    const name = document.getElementById('ex-name').value.trim();
+    const video_url = document.getElementById('ex-video').value.trim();
+    const category = document.getElementById('ex-category').value;
+    const difficulty = document.getElementById('ex-difficulty').value;
+    const is_bw = document.getElementById('ex-is-bw').checked;
+
+    if (!name) {
+        showToast('Lütfen hareket adını girin!', 'error');
+        return;
+    }
+
+    const exData = { name, video_url, category, difficulty, is_bw };
+
+    try {
+        let error;
+        if (id) {
+            ({ error } = await supabase.from('exercises').update(exData).eq('id', id));
+        } else {
+            ({ error } = await supabase.from('exercises').insert([exData]));
+        }
+
+        if (error) throw error;
+
+        showToast(id ? 'Egzersiz güncellendi!' : 'Yeni egzersiz eklendi!', 'success');
+        resetExerciseForm();
+        exerciseLibrary = []; // Listeyi yenilemek için sıfırla
+        renderAdminExercises();
+    } catch (err) {
+        console.error('Kaydetme hatası:', err);
+        showToast('Hata: ' + err.message, 'error');
+    }
+}
+
+function editExercise(id) {
+    const ex = exerciseLibrary.find(e => e.id === id);
+    if (!ex) return;
+
+    document.getElementById('ex-edit-id').value = ex.id;
+    document.getElementById('ex-name').value = ex.name;
+    document.getElementById('ex-video').value = ex.video_url || '';
+    document.getElementById('ex-category').value = ex.category;
+    document.getElementById('ex-difficulty').value = ex.difficulty;
+    document.getElementById('ex-is-bw').checked = ex.is_bw;
+
+    document.querySelector('#section-exercises h3').innerHTML = 'EGZERSİZ <span class="text-calith-orange">DÜZENLE</span>';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function deleteExercise(id) {
+    if (!confirm('Bu hareketi kütüphaneden silmek istediğine emin misin?')) return;
+
+    const { error } = await supabase.from('exercises').delete().eq('id', id);
+    if (error) {
+        showToast('Silme hatası: ' + error.message, 'error');
+    } else {
+        showToast('Hareket kütüphaneden silindi.', 'success');
+        exerciseLibrary = exerciseLibrary.filter(e => e.id !== id);
+        renderAdminExercises();
+    }
+}
+
+function resetExerciseForm() {
+    document.getElementById('ex-edit-id').value = '';
+    document.getElementById('ex-name').value = '';
+    document.getElementById('ex-video').value = '';
+    document.getElementById('ex-category').value = 'pull';
+    document.getElementById('ex-difficulty').value = 'intermediate';
+    document.getElementById('ex-is-bw').checked = true;
+    document.querySelector('#section-exercises h3').innerHTML = 'EGZERSİZ <span class="text-calith-orange">EKLE</span>';
+}
+
+// --- AKILLI ÖNERİ (OMNI-BOX) MANTIĞI ---
+async function showExerciseSuggestions(input) {
+    const container = input.nextElementSibling;
+    const query = input.value.toLowerCase().trim();
+    
+    if (query.length < 1) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    // Kütüphane boşsa (Admin panelinde değilsek) çek
+    if (exerciseLibrary.length === 0) {
+        const { data } = await supabase.from('exercises').select('*').order('name', { ascending: true });
+        exerciseLibrary = data || [];
+    }
+
+    const matches = exerciseLibrary.filter(ex => ex.name.toLowerCase().includes(query)).slice(0, 5);
+
+    if (matches.length === 0) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.innerHTML = matches.map(ex => `
+        <div class="px-4 py-3 hover:bg-calith-orange/10 cursor-pointer border-b border-white/5 last:border-none flex items-center justify-between group"
+             onclick="selectExerciseSuggestion(this, '${ex.id}')">
+            <div class="flex items-center gap-3">
+                <i data-lucide="${ex.category === 'pull' ? 'arrow-up-circle' : 'dumbbell'}" class="w-3 h-3 text-calith-orange"></i>
+                <span class="text-[11px] font-bold text-gray-300 group-hover:text-white">${ex.name}</span>
+            </div>
+            ${ex.is_bw ? '<span class="text-[8px] font-black text-calith-orange/50 uppercase tracking-tighter">BW</span>' : ''}
+        </div>
+    `).join('');
+    
+    container.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+}
+
+function selectExerciseSuggestion(suggestionEl, exerciseId) {
+    const ex = exerciseLibrary.find(e => e.id === exerciseId);
+    if (!ex) return;
+
+    const row = suggestionEl.closest('.exercise-row');
+    const input = row.querySelector('.ex-name');
+    const isBwCheckbox = row.querySelector('.ex-is-bw');
+
+    // Değerleri bas
+    input.value = ex.name;
+    if (isBwCheckbox) isBwCheckbox.checked = ex.is_bw;
+
+    // Önerileri kapat
+    row.querySelector('.ex-suggestions').classList.add('hidden');
+    
+    showToast(`${ex.name} kütüphaneden bağlandı.`, 'success');
+}
+
+function hideExerciseSuggestions(input) {
+    setTimeout(() => {
+        const container = input.nextElementSibling;
+        if (container) container.classList.add('hidden');
+    }, 200);
 }
 
 function editProgram(id) {

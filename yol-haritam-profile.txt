@@ -50,8 +50,9 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
-- **(2026-04-27):** ÇÖZÜLDÜ: Saniye (SN) birim hataları, Hareketi Geç onayı ve Sayaç kilitlenme koruması eklendi.
-- **(2026-04-27):** ÇÖZÜLDÜ: Dinamik ağırlık algoritması "Savaşçı Payı" ile güncellendi (Hedefe yakınken kilo düşürme engellendi, İdeal formda gereksiz artış kaldırıldı).
+- **(2026-04-27):** ÖNCELİK: Akıllı Egzersiz Kütüphanesi ve Omni-Box geliştirildi. **[TEST EDİLECEK - RİSKLİ]**
+- **(2026-04-27):** ÇÖZÜLDÜ: Saniye (SN) birim hataları, Hareketi Geç onayı ve Sayaç kilitlenme koruması eklendi. **[TEST EDİLECEK]**
+- **(2026-04-27):** ÇÖZÜLDÜ: Dinamik ağırlık algoritması "Savaşçı Payı" ile güncellendi.
 - **(2026-04-27):** ÇÖZÜLDÜ: Set silme (X butonu), dinlenme sırasında buton kilidi ve opsiyonel hareket atlama özellikleri eklendi.
 - **(2026-04-26):** ÇÖZÜLDÜ: BW hareketlerinin PR (Rekor) sistemine dahil edilmesi ve "1RM" yerine "Maksimum Tekrar" mantığının entegrasyonu başarıyla test edildi.
 - **(2026-04-26):** Vücut ağırlığı (BW) egzersizlerinde geri bildirim modalında "kg" ibaresinin gizlenmesi sağlandı.
