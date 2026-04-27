@@ -6601,7 +6601,12 @@ function selectFeedback(type, value) {
         };
         Object.keys(buttons).forEach(key => {
             if (key === value) {
-                buttons[key].className = `py-4 rounded-2xl border-2 ${key === 'heavy' ? 'border-red-500 bg-red-500/10 text-red-500' : 'border-calith-orange bg-calith-orange/10 text-calith-orange'} flex flex-col items-center gap-2 shadow-xl transition-all`;
+                let colorClass = 'border-calith-orange bg-calith-orange/10 text-calith-orange';
+                if (key === 'heavy') colorClass = 'border-red-500 bg-red-500/10 text-red-500';
+                else if (key === 'ideal') colorClass = 'border-green-500 bg-green-500/10 text-green-500';
+                else if (key === 'light') colorClass = 'border-blue-500 bg-blue-500/10 text-blue-500';
+                
+                buttons[key].className = `py-4 rounded-2xl border-2 ${colorClass} flex flex-col items-center gap-2 shadow-xl transition-all`;
             } else {
                 buttons[key].className = "py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-white/5 transition-all";
             }
