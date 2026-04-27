@@ -4214,6 +4214,31 @@ async function editWorkoutSet(logId, exerciseIdx, setIdx) {
     }
 }
 
+async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
+    if (!confirm("Bu seti silmek istediğinize emin misiniz?")) return;
+
+    const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
+    if (!log) return;
+
+    const data = { ...log.workout_data };
+    const sets = data.exercises[exerciseIdx].sets;
+    
+    sets.splice(setIdx, 1);
+
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
+
+    if (error) {
+        showToast('Hata: ' + error.message);
+    } else {
+        showToast('Set silindi! 🗑️');
+        log.workout_data = data;
+        showWorkoutLogDetail(logId);
+    }
+}
+
 function showWorkoutLogDetail(logId) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
@@ -4280,6 +4305,9 @@ function showWorkoutLogDetail(logId) {
                                         <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${feelColors[set.feel] || 'text-gray-500 bg-white/5'}">${feelLabel[set.feel] || 'NORMAL'}</span>
                                         <button onclick="editWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-calith-orange/10 text-calith-orange hover:bg-calith-orange hover:text-white transition-all ml-2" title="Seti Düzenle">
                                             <i data-lucide="edit-3" class="w-3 h-3"></i>
+                                        </button>
+                                        <button onclick="deleteWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
+                                            <i data-lucide="trash-2" class="w-3 h-3"></i>
                                         </button>
                                     </div>
                                 </div>
