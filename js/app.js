@@ -4220,15 +4220,11 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
-    // Veriyi derin kopyala ve string/obj kontrolü yap
-    let rawData = log.workout_data;
-    if (typeof rawData === 'string') {
-        try { rawData = JSON.parse(rawData); } catch(e) { console.error(e); }
-    }
-    const data = JSON.parse(JSON.stringify(rawData)); // Derin kopya
+    // Çalışan editWorkoutSet mantığına (shallow copy) geri dönüyoruz
+    const data = { ...log.workout_data };
     
-    const sets = data.exercises[exerciseIdx].sets;
-    sets.splice(setIdx, 1);
+    // Seti sil
+    data.exercises[exerciseIdx].sets.splice(setIdx, 1);
 
     const sb = getSupabase();
     if (!sb) return;
@@ -4241,8 +4237,8 @@ async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
     } else {
         console.log('[Calith] Set başarıyla silindi, UI güncelleniyor...');
         showToast('Set silindi! 🗑️');
-        log.workout_data = data;
-        showWorkoutLogDetail(logId);
+        log.workout_data = data; // Cache'i güncelle
+        showWorkoutLogDetail(logId); // Modalı yenile
     }
 }
 
