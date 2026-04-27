@@ -3167,6 +3167,7 @@ function updateAuthUI() {
 
         if (currentUser) {
             // GİRİŞ YAPILMIŞSA -> PROFİLİM
+            el.setAttribute('href', 'profile.html'); // Linki aktifleştir
             if (isMobile) {
                 if (el.tagName === 'BUTTON' || el.classList.contains('mobile-nav-item')) {
                     el.textContent = 'PROFİLİM';
@@ -3180,6 +3181,7 @@ function updateAuthUI() {
             }
         } else {
             // ÇIKIŞ YAPILMIŞSA -> GİRİŞ YAP
+            el.setAttribute('href', 'javascript:void(0)'); // Linki DEAKTİF ET (Çakışmayı önler)
             if (isMobile) {
                 if (el.tagName === 'BUTTON' || el.classList.contains('mobile-nav-item')) {
                     el.textContent = 'GİRİŞ YAP';
