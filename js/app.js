@@ -4131,15 +4131,76 @@ function renderWorkoutLogs(logs) {
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${date} • ${time}</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs font-mono font-bold text-white">${log.duration}</div>
-                    <div class="text-[9px] text-gray-600 font-black uppercase tracking-widest">${log.day_name}</div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-xs font-mono font-bold text-white">${log.duration}</div>
+                        <div class="text-[9px] text-gray-600 font-black uppercase tracking-widest">${log.day_name}</div>
+                    </div>
+                    <div class="flex items-center gap-1 border-l border-white/5 pl-4 ml-2">
+                        <button onclick="event.stopPropagation(); deleteWorkoutLog('${log.id}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-600 hover:text-red-500 hover:bg-red-500/10 transition-all" title="Kaydı Sil">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
 
     if (window.lucide) lucide.createIcons();
+}
+
+async function deleteWorkoutLog(logId) {
+    showConfirmModal("Bu antrenman kaydını kalıcı olarak silmek istediğine emin misin kanka? Bu işlem geri alınamaz!", async () => {
+        const sb = getSupabase();
+        if (!sb) return;
+
+        const { error } = await sb.from('workout_logs').delete().eq('id', logId);
+
+        if (error) {
+            showToast('Hata: ' + error.message);
+        } else {
+            showToast('Kayıt silindi.');
+            // Listeyi yenile
+            if (currentUser) loadWorkoutLogs(currentUser.id);
+            // Modal açıksa kapat
+            const modal = document.getElementById('log-detail-modal');
+            if (modal) modal.remove();
+        }
+    });
+}
+
+async function editWorkoutSet(logId, exerciseIdx, setIdx) {
+    const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
+    if (!log) return;
+
+    const data = { ...log.workout_data };
+    const set = data.exercises[exerciseIdx].sets[setIdx];
+
+    const newWeight = prompt(`Yeni Ağırlık (kg) - Mevcut: ${set.weight}`, set.weight);
+    if (newWeight === null) return;
+    
+    const newReps = prompt(`Yeni Tekrar/Saniye - Mevcut: ${set.reps}`, set.reps);
+    if (newReps === null) return;
+
+    // Veriyi güncelle
+    set.weight = parseFloat(newWeight) || 0;
+    set.reps = parseInt(newReps) || 0;
+
+    const sb = getSupabase();
+    if (!sb) return;
+
+    const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
+
+    if (error) {
+        showToast('Hata: ' + error.message);
+    } else {
+        showToast('Set güncellendi! 🔥');
+        // Cache'i güncelle ve modalı yeniden render et
+        log.workout_data = data;
+        showWorkoutLogDetail(logId);
+        // Eğer rekor kırıldıysa best tablosunu da güncelle (Opsiyonel ama iyi olur)
+        updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps);
+    }
 }
 
 function showWorkoutLogDetail(logId) {
@@ -4196,7 +4257,7 @@ function showWorkoutLogDetail(logId) {
                                 const feelColors = { light: 'text-blue-400 bg-blue-500/10', ideal: 'text-green-400 bg-green-500/10', heavy: 'text-red-400 bg-red-500/10' };
                                 const feelLabel = { light: 'HAFİF', ideal: 'İDEAL', heavy: 'AĞIR' };
                                 return `
-                                <div class="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl">
+                                <div class="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl group/set">
                                     <div class="flex items-center gap-3">
                                         <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si+1}. SET</span>
                                         <div class="flex items-center gap-2">
@@ -4206,6 +4267,9 @@ function showWorkoutLogDetail(logId) {
                                     <div class="flex items-center gap-2">
                                         <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${set.isClean ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}">${set.isClean ? 'TEMİZ' : 'KİRLİ'}</span>
                                         <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${feelColors[set.feel] || 'text-gray-500 bg-white/5'}">${feelLabel[set.feel] || 'NORMAL'}</span>
+                                        <button onclick="editWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-calith-orange/10 text-calith-orange hover:bg-calith-orange hover:text-white transition-all ml-2" title="Seti Düzenle">
+                                            <i data-lucide="edit-3" class="w-3 h-3"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 `;
