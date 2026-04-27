@@ -4234,6 +4234,12 @@ window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     if (exercise && exercise.sets) {
         console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set siliniyor...`);
         exercise.sets.splice(setIdx, 1); // Satırı çıkar
+        
+        // EĞER HAREKETTE HİÇ SET KALMADIYSA HAREKETİ DE SİL
+        if (exercise.sets.length === 0) {
+            console.log(`[Calith] ${exercise.name} hareketinde set kalmadığı için hareket siliniyor...`);
+            newData.exercises.splice(exerciseIdx, 1);
+        }
     }
 
     // 4. Veritabanına "Yeni" objeyi gönder
