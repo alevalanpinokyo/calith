@@ -4217,31 +4217,36 @@ async function editWorkoutSet(logId, exerciseIdx, setIdx) {
 async function deleteWorkoutSet(logId, exerciseIdx, setIdx) {
     // 1. Logu bul
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
-    if (!log) return;
+    if (!log) {
+        console.error('[Calith] Log bulunamadı:', logId);
+        return;
+    }
 
-    // 2. VERİ MİMARİSİ: JSON olduğu için en sağlamı Deep Clone yapmaktır
-    // Böylece referans karmaşası olmaz, Supabase değişikliği net anlar.
+    if (!confirm("Bu seti tamamen silmek istediğinize emin misiniz?")) return;
+
+    console.log('[Calith] Silme işlemi tetiklendi:', { logId, exerciseIdx, setIdx });
+
+    // 2. Veriyi JSON üzerinden derin kopyala (Referans hatasını önler)
     const data = JSON.parse(JSON.stringify(log.workout_data));
     
-    // 3. SETİ SİL
+    // 3. Seti uçur
     if (data.exercises[exerciseIdx] && data.exercises[exerciseIdx].sets) {
         data.exercises[exerciseIdx].sets.splice(setIdx, 1);
+        console.log('[Calith] Set diziden çıkarıldı. Kalan setler:', data.exercises[exerciseIdx].sets.length);
     }
 
     const sb = getSupabase();
     if (!sb) return;
 
-    // 4. VERİTABANINI GÜNCELLE
+    // 4. Supabase'e fırlat
     const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
 
     if (error) {
-        console.error('[Calith] Set Silme Hatası:', error);
+        console.error('[Calith] Supabase Silme Hatası:', error);
         showToast('Hata: ' + error.message);
     } else {
-        console.log('[Calith] Set başarıyla silindi. Yeni veri:', data);
-        showToast('Set silindi! 🗑️');
-        
-        // 5. CACHE VE UI GÜNCELLE
+        console.log('[Calith] Silme başarılı, UI yenileniyor...');
+        showToast('Set başarıyla silindi! 🗑️');
         log.workout_data = data; 
         showWorkoutLogDetail(logId);
     }
@@ -4311,11 +4316,11 @@ function showWorkoutLogDetail(logId) {
                                     <div class="flex items-center gap-2">
                                         <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${set.isClean ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}">${set.isClean ? 'TEMİZ' : 'KİRLİ'}</span>
                                         <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${feelColors[set.feel] || 'text-gray-500 bg-white/5'}">${feelLabel[set.feel] || 'NORMAL'}</span>
-                                        <button onclick="editWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-calith-orange/10 text-calith-orange hover:bg-calith-orange hover:text-white transition-all ml-2" title="Seti Düzenle">
-                                            <i data-lucide="edit-3" class="w-3 h-3"></i>
+                                        <button onclick="editWorkoutSet('${log.id}', ${idx}, ${si})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-gray-400 hover:bg-calith-orange hover:text-white transition-all ml-4" title="Düzenle">
+                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
                                         </button>
-                                        <button onclick="deleteWorkoutSet('${log.id}', ${idx}, ${si})" class="opacity-0 group-hover/set:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
-                                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                                        <button onclick="deleteWorkoutSet('${log.id}', ${idx}, ${si})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
                                         </button>
                                     </div>
                                 </div>
