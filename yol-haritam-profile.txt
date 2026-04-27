@@ -50,6 +50,7 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
+- **(2026-04-27):** ÇÖZÜLDÜ: Saniye (SN) birim hataları, Hareketi Geç onayı ve Sayaç kilitlenme koruması eklendi.
 - **(2026-04-26):** ÇÖZÜLDÜ: BW hareketlerinin PR (Rekor) sistemine dahil edilmesi ve "1RM" yerine "Maksimum Tekrar" mantığının entegrasyonu başarıyla test edildi.
 - **(2026-04-26):** Vücut ağırlığı (BW) egzersizlerinde geri bildirim modalında "kg" ibaresinin gizlenmesi sağlandı.
 - **(2026-04-25):** Set tamamlama (Feedback Modal) sonrası yaşanan "Siyah Ekran" hatası düzeltildi (IntersectionObserver ve fade-in class çakışması).

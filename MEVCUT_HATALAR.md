@@ -1,7 +1,7 @@
 # CALITH - MEVCUT HATALAR VE DEVİR TESLİM RAPORU
-**Tarih:** 2026-04-26  
-**Versiyon:** v=202604260021  
-**Devreden:** Antigravity AI (be9f3e18-900b-4269-b830-f35394b0dbc1)
+**Tarih:** 2026-04-27  
+**Versiyon:** v=202604271226  
+**Devreden:** Antigravity AI (389c045a-4665-4c2f-ad53-80de5de4444e)
 
 ---
 
@@ -37,7 +37,17 @@ Vücut ağırlığı (BW - Bodyweight) ile yapılan egzersizlerde (örneğin: Ba
 
 ---
 
-### Şu An Kodun Durumu
+## ✅ ÇÖZÜLEN HATA: Saniye (SN) Birim ve Etiket Hataları (2026-04-27)
+- Plank, L-Sit gibi saniye bazlı hareketlerde birim (kg/sn) karışıklığı giderildi.
+- Feedback modalı ve akıllı öneri kutusu dinamik birim (SN/SANİYE) kullanacak şekilde revize edildi.
+
+---
+
+## ✅ ÇÖZÜLEN HATA: Sayaç Kilitlenmesi ve Yanlışlıkla Geçme (2026-04-27)
+- Sayaç butonuna 1 saniyelik "hız sınırı" (disable) eklendi, 0 saniyede kilitlenme önlendi.
+- Hareketi geç butonuna her iki UI modunda da onay modalı eklendi.
+
+---
 ```js
 // app.js - submitSetFeedback (satır ~5672)
 function submitSetFeedback(weight, reps) {
