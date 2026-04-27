@@ -1156,6 +1156,7 @@ async function saveProgram() {
     for (let i = 1; i <= 5; i++) {
         const dayName = document.getElementById(`prog-day-${i}-name`).value.trim();
         const dayBadge = document.getElementById(`prog-day-${i}-badge`).value.trim();
+        const dayType = document.getElementById(`prog-day-${i}-type`).value;
 
         // Dinamik satırlardan egzersizleri topla
         const exerciseList = document.getElementById(`prog-day-${i}-exercises-list`);
@@ -1176,7 +1177,7 @@ async function saveProgram() {
             });
         }
 
-        days.push({ name: dayName, badge: dayBadge, exercises: exercises });
+        days.push({ name: dayName, badge: dayBadge, type: dayType, exercises: exercises });
     }
 
     const notes = document.getElementById('prog-notes').value.trim();
@@ -1508,6 +1509,9 @@ function editProgram(id) {
             if (i > 5) return;
             document.getElementById(`prog-day-${i}-name`).value = day.name || '';
             document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
+            if (document.getElementById(`prog-day-${i}-type`)) {
+                document.getElementById(`prog-day-${i}-type`).value = day.type || 'none';
+            }
 
             // Egzersizleri ekle
             if (day.exercises && Array.isArray(day.exercises)) {
@@ -4728,7 +4732,10 @@ function ensureWorkoutOverlay() {
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
                         <div>
-                            <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">PROGRAM ADI</h2>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">PROGRAM ADI</h2>
+                                <span id="workout-day-type-badge" class="hidden text-[7px] font-black px-1.5 py-0.5 rounded bg-calith-orange text-black uppercase tracking-tighter"></span>
+                            </div>
                             <div class="flex items-center gap-3">
                                 <div class="w-2 h-2 rounded-full bg-calith-orange animate-pulse"></div>
                                 <p id="workout-timer" class="text-lg font-mono font-bold text-white tracking-tighter">00:00:00</p>
@@ -4751,6 +4758,14 @@ function ensureWorkoutOverlay() {
                         <div class="relative z-10">
                             <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">ŞU ANKİ EGZERSİZ</span>
                             <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
+                            
+                            <!-- VIDEO BUTTON -->
+                            <div id="workout-video-container" class="flex flex-col items-center gap-4 mb-4">
+                                <button id="workout-video-btn" class="hidden px-4 py-2 bg-calith-orange/10 border border-calith-orange/20 rounded-xl flex items-center gap-2 hover:bg-calith-orange/20 transition-all group/vbtn">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-calith-orange"></i>
+                                    <span class="text-[9px] font-black text-white uppercase tracking-widest">Hareketi İzle</span>
+                                </button>
+                            </div>
                             <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10">
                                 <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
                                 <p id="workout-exercise-target" class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">HEDEF: -</p>
@@ -4876,6 +4891,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
         active: true,
         program: p,
         dayName: day.name || 'GÜN 1',
+        dayType: day.type || 'none',
         startTime: Date.now(),
         exercises: exercises,
         currExerciseIdx: 0,
@@ -5006,13 +5022,22 @@ function updateWorkoutUI() {
     const isBW = ex.isBW || targetStr.includes('bw');
     const isMax = ex.isMax || targetStr.includes('max');
 
+    // Video Linkini Kütüphaneden Çek
+    let videoUrl = null;
+    const libraryEx = exerciseLibrary.find(e => e.name.toLowerCase() === ex.name.toLowerCase());
+    if (libraryEx && libraryEx.video_url) {
+        videoUrl = libraryEx.video_url;
+    }
+
     // Elementleri tek seferde bul
     const els = {
         name: document.getElementById('workout-exercise-name'),
+        videoBtn: document.getElementById('workout-video-btn'), // Yeni eklenecek
         target: document.getElementById('workout-exercise-target'),
         move: document.getElementById('workout-move-info'),
         set: document.getElementById('workout-set-info'),
         title: document.getElementById('workout-program-title'),
+        dayBadge: document.getElementById('workout-day-type-badge'),
         progress: document.getElementById('workout-progress-bar'),
         weight: document.getElementById('workout-input-weight'),
         reps: document.getElementById('workout-input-reps'),
@@ -5024,6 +5049,33 @@ function updateWorkoutUI() {
         recBox: document.getElementById('workout-recommendation-box'),
         recText: document.getElementById('workout-recommendation-text')
     };
+
+    // Gün Tipi Rozetini Güncelle
+    if (els.dayBadge) {
+        const type = workoutSession.dayType || 'none';
+        if (type !== 'none') {
+            els.dayBadge.classList.remove('hidden');
+            let label = 'NORMAL';
+            let color = 'bg-gray-500';
+            if (type === 'heavy') { label = 'HEAVY (AĞIR)'; color = 'bg-red-500'; }
+            else if (type === 'medium') { label = 'MEDIUM (ORTA)'; color = 'bg-calith-orange'; }
+            else if (type === 'light') { label = 'LIGHT (HAFİF)'; color = 'bg-green-500'; }
+            els.dayBadge.textContent = label;
+            els.dayBadge.className = `text-[7px] font-black px-1.5 py-0.5 rounded ${color} text-white uppercase tracking-tighter`;
+        } else {
+            els.dayBadge.classList.add('hidden');
+        }
+    }
+
+    // Video Butonunu Güncelle
+    if (els.videoBtn) {
+        if (videoUrl) {
+            els.videoBtn.classList.remove('hidden');
+            els.videoBtn.onclick = () => openVideoModal(videoUrl);
+        } else {
+            els.videoBtn.classList.add('hidden');
+        }
+    }
 
     // Akıllı Öneri Getir
     getSmartRecommendation(ex.name).then(rec => {
