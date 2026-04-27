@@ -3146,8 +3146,17 @@ function hideAdminLoading() {
 }
 
 function updateAuthUI() {
-    // Tüm olası auth butonlarını ve 'Profilim' yazan her şeyi seç
-    const authElements = document.querySelectorAll('.nav-auth-btn, [onclick*="showAuthModal"], [onclick*="showProfile"], [onclick*="handleLogout"], .profile-link');
+    // 1. Önce bilinen tüm auth butonlarını seç
+    let authElements = Array.from(document.querySelectorAll('.nav-auth-btn, [onclick*="showAuthModal"], [onclick*="showProfile"], [onclick*="handleLogout"], .profile-link, [href="profile.html"]'));
+
+    // 2. İçinde 'PROFİLİM' veya 'GİRİŞ YAP' geçen TÜM link ve butonları da ekle (Her ihtimale karşı)
+    const allLinksAndButtons = document.querySelectorAll('nav a, nav button');
+    allLinksAndButtons.forEach(el => {
+        const txt = el.textContent.toUpperCase();
+        if (txt.includes('PROFİLİM') || txt.includes('GİRİŞ YAP') || txt.includes('ÜYE OL')) {
+            if (!authElements.includes(el)) authElements.push(el);
+        }
+    });
 
     authElements.forEach(el => {
         const isMobile = el.closest('#mobile-menu') || el.classList.contains('md:hidden') || el.classList.contains('mobile-nav-item');
