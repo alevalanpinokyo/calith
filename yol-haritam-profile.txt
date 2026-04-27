@@ -48,12 +48,12 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma. [EDİLMEDİ]
 
 ### 🚨 DETAYLI TEST EDİLECEK LİSTESİ (ACİL)
-- [ ] **Admin Kütüphane:** Hareket ekleme, silme ve düzenleme (Supabase RLS sorunsuz mu?).
-- [ ] **Omni-Box:** Program yazarken önerilerin gelmesi ve BW/Video bilgisini çekmesi.
-- [ ] **DUP Gün Tipleri:** Admin panelinde H/M/L seçiminin kaydedilmesi ve düzenleme modunda geri gelmesi.
-- [ ] **Antrenman UI:** Üstteki Gün Tipi rozetinin (Ağır/Orta/Hafif) doğru renk ve metinle görünmesi.
-- [ ] **Video İzle Butonu:** Kütüphanede videosu olan hareketlerde butonun çıkması ve modali açması.
-- [ ] **Smart Recommendation:** RPE sonrası ağırlık önerisinin "Savaşçı Payı" mantığıyla (ideal formda artırmama vb.) çalışması.
+- [x] **Admin Kütüphane:** Hareket ekleme, silme ve düzenleme (Supabase RLS sorunsuz mu?). [TAMAM ✅]
+- [x] **Omni-Box:** Program yazarken önerilerin gelmesi ve BW/Video bilgisini çekmesi. [TAMAM ✅]
+- [x] **DUP Gün Tipleri:** Admin panelinde H/M/L seçiminin kaydedilmesi ve düzenleme modunda geri gelmesi. [TAMAM ✅]
+- [x] **Antrenman UI:** Üstteki Gün Tipi rozetinin (Ağır/Orta/Hafif) doğru renk ve metinle görünmesi. [TAMAM ✅]
+- [ ] **Video İzle Butonu:** Kütüphanede videosu olan hareketlerde butonun çıkması ve modali açması. **[FIX EDİLDİ - TEST EDİLECEK 🛠️]**
+- [ ] **Smart Recommendation:** RPE sonrası ağırlık önerisinin "Savaşçı Payı" mantığıyla (ideal formda artırmama vb.) çalışması. **[GERÇEK ANTRENMANDA TEST EDİLECEK 🏋️‍♂️]**
 
 ---
 

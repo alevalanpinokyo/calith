@@ -4848,6 +4848,16 @@ async function startWorkoutMode(programId, dayIndex = 0) {
         return;
     }
 
+    // Kütüphaneyi arka planda yükle (Video eşleşmesi için)
+    if (exerciseLibrary.length === 0) {
+        const sb = getSupabase();
+        if (sb) {
+            sb.from('exercises').select('*').then(({data}) => {
+                if (data) exerciseLibrary = data;
+            });
+        }
+    }
+
     if (days.length === 0) return showToast('Antrenman günü bulunamadı.');
 
     // Seçilen günü al (Eğer geçerli değilse 1. günü al)
