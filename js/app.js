@@ -2212,33 +2212,42 @@ function renderAdminAnnouncements() {
         const label = a.label || '';
         const icon = a.icon || 'bell';
         const color = a.color || 'calith-orange';
-        const link = (a.link || '').replace('https://', '').replace('http://', '');
+        const rawLink = (a.link || '').replace('https://', '').replace('http://', '');
+        const safeLink = rawLink.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         const image = (a.image && a.image.trim() !== '') ? a.image : null;
 
+        let processedImage = image;
+        if (image && image.includes('<iframe')) {
+            const srcMatch = image.match(/src=["'](.*?)["']/i);
+            if (srcMatch) processedImage = srcMatch[1];
+        }
+
         let mediaHtml = '';
-        if (image) {
+        if (processedImage) {
             const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
-            const ytMatch = image.match(ytRegex);
+            const ytMatch = processedImage.match(ytRegex);
             
             if (ytMatch) {
                 const videoId = ytMatch[1];
-                const isShorts = image.includes('/shorts/');
+                const isShorts = processedImage.includes('/shorts/');
                 
                 if (isShorts) {
                     mediaHtml = `
-                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full block" style="border: 0; aspect-ratio: 9/16; max-width: 220px; margin: 0 auto;" allowfullscreen></iframe>
+                    <div class="w-full max-w-[220px] mx-auto bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 177.77%;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
                     </div>`;
                 } else {
                     mediaHtml = `
-                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full block" style="border: 0; aspect-ratio: 16/9;" allowfullscreen></iframe>
+                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 56.25%;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
                     </div>`;
                 }
             } else {
+                // Güvenlik: HTML tagları varsa img içine koyma
+                const safeImg = processedImage.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 mediaHtml = `
                 <div class="w-full bg-black/30 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 mt-2 max-h-[250px]">
-                    <img src="${image}" class="w-full h-full object-contain">
+                    <img src="${safeImg}" class="w-full h-full object-contain">
                 </div>`;
             }
         }
@@ -2257,7 +2266,7 @@ function renderAdminAnnouncements() {
 
             ${mediaHtml}
 
-            ${link ? `<div class="text-[10px] text-gray-400 bg-white/5 px-3 py-2 rounded-lg truncate border border-white/5 mt-1">🔗 ${link}</div>` : ''}
+            ${safeLink ? `<div class="text-[10px] text-gray-400 bg-white/5 px-3 py-2 rounded-lg truncate border border-white/5 mt-1">🔗 ${safeLink}</div>` : ''}
 
             <div class="grid grid-cols-2 gap-2 mt-auto pt-2">
                 <button onclick="editAnnouncement('${a.id}')" title="Düzenle" class="h-10 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[11px] font-bold uppercase tracking-wider gap-2"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i> Düzenle</button>
