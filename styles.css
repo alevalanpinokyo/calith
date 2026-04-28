@@ -13,6 +13,15 @@ html, body {
     touch-action: pan-y;
 }
 
+/* Scrollbar Gizleme Utility */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 /* Konteyner Kilidi */
 .max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl, .container {
     width: 100% !important;
