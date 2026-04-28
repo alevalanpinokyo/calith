@@ -2212,8 +2212,8 @@ function renderAdminAnnouncements() {
         return `
         <div class="bg-calith-dark/40 border border-white/5 p-3 md:p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all gap-3 min-h-[80px] overflow-hidden">
             <div class="flex items-center gap-3 min-w-0 flex-1">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-black/50 flex items-center justify-center">
-                    ${image ? `<img src="${image}" class="w-full h-full object-cover">` : `<i data-lucide="${icon}" class="w-5 h-5 text-${color}"></i>`}
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-black flex items-center justify-center">
+                    ${image ? `<img src="${image}" class="w-full h-full object-contain">` : `<i data-lucide="${icon}" class="w-5 h-5 text-${color}"></i>`}
                 </div>
                 <div class="min-w-0 flex-1">
                     <h4 class="font-bold text-[13px] md:text-sm text-white truncate leading-tight">${title}</h4>

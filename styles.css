@@ -663,8 +663,9 @@ body {
     #admin-ann-list .flex-shrink-0 img {
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover !important;
+        object-fit: contain !important; /* KIRPILMASIN, TAM GÖRÜNSÜN */
         display: block !important;
+        background: black !important;
     }
 
     /* Modal / İç Pencere Küçültme */
