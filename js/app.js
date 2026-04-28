@@ -2226,13 +2226,13 @@ function renderAdminAnnouncements() {
                 
                 if (isShorts) {
                     mediaHtml = `
-                    <div class="w-full max-w-[220px] mx-auto bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 177.77%;">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full aspect-[9/16] max-w-[220px] mx-auto block" style="border: 0;" allowfullscreen></iframe>
                     </div>`;
                 } else {
                     mediaHtml = `
-                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 56.25%;">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full aspect-video block" style="border: 0;" allowfullscreen></iframe>
                     </div>`;
                 }
             } else {
