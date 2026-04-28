@@ -466,12 +466,12 @@
         <!-- ANA SAYFA KARTLARI SECTION -->
         <div id="section-homecards" class="hidden space-y-8 mt-12">
             <!-- TABS -->
-            <div class="flex flex-wrap gap-2 border-b border-white/5 pb-4" id="hc-filter-buttons">
-                <button onclick="filterAdminHomecards('hero')" id="hc-filter-hero" class="text-xs font-bold uppercase py-2 px-4 rounded-lg bg-calith-orange text-white transition-colors">Ana Başlık (Hero)</button>
-                <button onclick="filterAdminHomecards('benefits')" id="hc-filter-benefits" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Kazançlar</button>
-                <button onclick="filterAdminHomecards('levels')" id="hc-filter-levels" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Seviyeler</button>
-                <button onclick="filterAdminHomecards('schedule')" id="hc-filter-schedule" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Program</button>
-                <button onclick="filterAdminHomecards('equipment')" id="hc-filter-equipment" class="text-xs font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">Ekipman</button>
+            <div class="flex overflow-x-auto no-scrollbar gap-2 border-b border-white/5 pb-4 whitespace-nowrap mb-4" id="hc-filter-buttons">
+                <button onclick="filterAdminHomecards('hero')" id="hc-filter-hero" class="text-[10px] font-bold uppercase py-2 px-4 rounded-lg bg-calith-orange text-white transition-colors shrink-0">Ana Başlık (Hero)</button>
+                <button onclick="filterAdminHomecards('benefits')" id="hc-filter-benefits" class="text-[10px] font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors shrink-0">Kazançlar</button>
+                <button onclick="filterAdminHomecards('levels')" id="hc-filter-levels" class="text-[10px] font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors shrink-0">Seviyeler</button>
+                <button onclick="filterAdminHomecards('schedule')" id="hc-filter-schedule" class="text-[10px] font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors shrink-0">Program</button>
+                <button onclick="filterAdminHomecards('equipment')" id="hc-filter-equipment" class="text-[10px] font-bold uppercase py-2 px-4 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors shrink-0">Ekipman</button>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-6 md:gap-12">
@@ -635,7 +635,7 @@
     </div>
 </section>
 
-    <script src="js/app.js?v=202604281902"></script>
+    <script src="js/app.js?v=202604281916"></script>
     <script>
         lucide.createIcons();
         function switchAdminTab(tab) {

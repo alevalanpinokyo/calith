@@ -64,12 +64,14 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [x] **DUP Gün Tipleri:** Admin panelinde H/M/L seçiminin kaydedilmesi ve düzenleme modunda geri gelmesi. [TAMAM ✅]
 - [x] **Antrenman UI:** Üstteki Gün Tipi rozetinin (Ağır/Orta/Hafif) doğru renk ve metinle görünmesi. [TAMAM ✅]
 - [ ] **Smart Recommendation:** RPE sonrası ağırlık önerisinin "Savaşçı Payı" mantığıyla (ideal formda artırmama vb.) çalışması. **[GERÇEK ANTRENMANDA TEST EDİLECEK 🏋️‍♂️]**
-- [ ] **Admin Paneli Mobil UI:** Sekme kaydırma, responsive gridler ve sabit genişliklerin temizlenmesi. **[TEST EDİLECEK]**
+- [x] **Admin Paneli Mobil UI:** Sekme kaydırma, responsive gridler ve sabit genişliklerin temizlenmesi. [TEST EDİLDİ]
+  - [x] Duyuru Panosu kutu taşmalarının giderilmesi. [TEST EDİLDİ]
+  - [x] Ana Sayfa Kartları alt filtre butonlarının kaydırmalı yapılması. [TEST EDİLDİ]
 
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
-- **(2026-04-28):** ÇÖZÜLDÜ: Admin Paneli mobil taşma sorunları (Sekmeler, Formlar, Gridler) responsive hale getirildi. **[TEST EDİLECEK]**
+- **(2026-04-28):** ÇÖZÜLDÜ: Admin Paneli mobil taşma sorunları (Sekmeler, Duyurular, Kartlar) responsive hale getirildi. [TEST EDİLDİ]
 - **(2026-04-27):** ÖNCELİK: Akıllı Egzersiz Kütüphanesi, Omni-Box ve DUP Gün Tipleri geliştirildi. **[KRİTİK - DETAYLI TEST EDİLECEK]**
 - **(2026-04-27):** ÇÖZÜLDÜ: Saniye (SN) birim hataları, Hareketi Geç onayı ve Sayaç kilitlenme koruması eklendi. **[TEST EDİLECEK]**
 - **(2026-04-27):** ÇÖZÜLDÜ: Dinamik ağırlık algoritması "Savaşçı Payı" ile güncellendi.

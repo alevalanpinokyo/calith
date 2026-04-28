@@ -2207,17 +2207,17 @@ function renderAdminAnnouncements() {
             : `<div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-${a.color} flex-shrink-0"><i data-lucide="${a.icon}" class="w-5 h-5"></i></div>`;
 
         return `
-        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
-            <div class="flex items-center gap-4">
+        <div class="bg-calith-dark/50 border border-white/5 p-3 md:p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all gap-3">
+            <div class="flex items-center gap-3 md:gap-4 min-w-0">
                 ${mediaHtml}
-                <div>
-                    <h4 class="font-bold text-sm text-white">${a.title}</h4>
-                    <p class="text-xs text-gray-500 uppercase tracking-widest">${a.label} • Link: ${a.link}</p>
+                <div class="min-w-0">
+                    <h4 class="font-bold text-xs md:text-sm text-white truncate">${a.title}</h4>
+                    <p class="text-[9px] md:text-xs text-gray-500 uppercase tracking-widest truncate">${a.label} • ${a.link}</p>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="editAnnouncement('${a.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all"><i data-lucide="edit-2" class="w-4 h-4 text-white hover:text-white"></i></button>
-                <button onclick="deleteAnnouncement('${a.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4 text-white hover:text-white"></i></button>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="editAnnouncement('${a.id}')" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all"><i data-lucide="edit-2" class="w-3 h-3 md:w-4 md:h-4 text-white"></i></button>
+                <button onclick="deleteAnnouncement('${a.id}')" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-3 h-3 md:w-4 md:h-4 text-white"></i></button>
             </div>
         </div>
         `;
@@ -2678,21 +2678,20 @@ function renderAdminHomecards() {
     const mainCards = filtered.filter(hc => hc.id !== 'schedule_settings');
     const scheduleSettings = filtered.find(hc => hc.id === 'schedule_settings');
 
-    list.innerHTML = mainCards.map(hc => `
-        <div class="glass-card hover:bg-white/5 p-5 rounded-2xl flex items-center justify-between group transition-all duration-300">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-calith-orange/10 flex items-center justify-center text-3xl shadow-inner">${hc.icon || '📌'}</div>
-                <div>
-                    <h4 class="font-bold text-base text-white tracking-tight">${hc.title}</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-[9px] bg-white/5 text-gray-500 px-2 py-0.5 rounded-full uppercase font-black tracking-widest border border-white/5">${hc.section}</span>
-                        ${hc.badge ? `<span class="text-[9px] bg-calith-orange/10 text-calith-orange px-2 py-0.5 rounded-full uppercase font-black tracking-widest border border-calith-orange/20">${hc.badge}</span>` : ''}
+        <div class="glass-card hover:bg-white/5 p-4 md:p-5 rounded-2xl flex items-center justify-between group transition-all duration-300 gap-3">
+            <div class="flex items-center gap-3 md:gap-5 min-w-0">
+                <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-calith-orange/10 flex items-center justify-center text-xl md:text-3xl shadow-inner shrink-0">${hc.icon || '📌'}</div>
+                <div class="min-w-0">
+                    <h4 class="font-bold text-sm md:text-base text-white tracking-tight truncate">${hc.title}</h4>
+                    <div class="flex flex-wrap items-center gap-1 md:gap-2 mt-1">
+                        <span class="text-[8px] md:text-[9px] bg-white/5 text-gray-500 px-1.5 py-0.5 rounded-full uppercase font-black tracking-widest border border-white/5">${hc.section}</span>
+                        ${hc.badge ? `<span class="text-[8px] md:text-[9px] bg-calith-orange/10 text-calith-orange px-1.5 py-0.5 rounded-full uppercase font-black tracking-widest border border-calith-orange/20">${hc.badge}</span>` : ''}
                     </div>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="editHomecard('${hc.id}')" class="w-11 h-11 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all shadow-lg" title="Düzenle"><i data-lucide="edit-2" class="w-5 h-5 pointer-events-none"></i></button>
-                <button onclick="deleteHomecard('${hc.id}')" class="w-11 h-11 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-xl transition-all shadow-lg" title="Sil"><i data-lucide="trash-2" class="w-5 h-5 pointer-events-none"></i></button>
+            <div class="flex gap-1 md:gap-2 shrink-0">
+                <button onclick="editHomecard('${hc.id}')" class="w-8 h-8 md:w-11 md:h-11 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-lg md:rounded-xl transition-all" title="Düzenle"><i data-lucide="edit-2" class="w-3 h-3 md:w-5 md:h-5"></i></button>
+                <button onclick="deleteHomecard('${hc.id}')" class="w-8 h-8 md:w-11 md:h-11 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-lg md:rounded-xl transition-all" title="Sil"><i data-lucide="trash-2" class="w-3 h-3 md:w-5 md:h-5"></i></button>
             </div>
         </div>
     `).join('');
@@ -4555,19 +4554,19 @@ function renderAdminLinks() {
     }
 
     list.innerHTML = userLinks.map(l => `
-        <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-calith-orange">
-                    ${l.icon_type === 'lucide' ? `<i data-lucide="${l.icon_name || 'link'}" class="w-5 h-5"></i>` : `<i class="fa-brands fa-${l.icon_name || 'link'} text-xl"></i>`}
+        <div class="bg-calith-dark/50 border border-white/5 p-3 md:p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all gap-3">
+            <div class="flex items-center gap-3 md:gap-4 min-w-0">
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-white/5 flex items-center justify-center text-calith-orange shrink-0">
+                    ${l.icon_type === 'lucide' ? `<i data-lucide="${l.icon_name || 'link'}" class="w-4 h-4 md:w-5 md:h-5"></i>` : `<i class="fa-brands fa-${l.icon_name || 'link'} text-lg"></i>`}
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm text-white">${l.title}</h4>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">${l.category} • Sıra: ${l.order_index}</p>
+                <div class="min-w-0">
+                    <h4 class="font-bold text-xs md:text-sm text-white truncate">${l.title}</h4>
+                    <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest truncate">${l.category} • Sıra: ${l.order_index}</p>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="editLink('${l.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all"><i data-lucide="edit-2" class="w-4 h-4 text-white"></i></button>
-                <button onclick="deleteLink('${l.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4 text-white"></i></button>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="editLink('${l.id}')" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all"><i data-lucide="edit-2" class="w-3 h-3 md:w-4 md:h-4 text-white"></i></button>
+                <button onclick="deleteLink('${l.id}')" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/10 hover:bg-red-500 rounded-xl transition-all"><i data-lucide="trash-2" class="w-3 h-3 md:w-4 md:h-4 text-white"></i></button>
             </div>
         </div>
     `).join('');
