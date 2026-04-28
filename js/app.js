@@ -2133,18 +2133,21 @@ function openVideoModal(videoSource) {
         if (ytMatch) {
             const videoId = ytMatch[1];
             container.innerHTML = `
-                <div class="aspect-video w-full bg-black">
+                <div class="w-full h-full bg-black flex items-center justify-center overflow-hidden rounded-xl">
                     <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1" 
-                        class="w-full h-full" frameborder="0" 
+                        class="w-full h-full max-h-[85vh]" 
+                        style="border: 0; aspect-ratio: auto;"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen></iframe>
                 </div>`;
         } else if (videoSource.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i) || videoSource.includes('storage') || videoSource.includes('supabase')) {
             // Direkt Video Dosyası (Supabase storage veya mp4 linki)
             container.innerHTML = `
-                <video src="${videoSource}" 
-                    class="w-full max-h-[85vh] bg-black" 
-                    controls autoplay playsinline></video>`;
+                <div class="w-full h-full bg-black flex items-center justify-center overflow-hidden rounded-xl">
+                    <video src="${videoSource}" 
+                        class="max-w-full max-h-[85vh] object-contain" 
+                        controls autoplay playsinline></video>
+                </div>`;
         } else {
             // Video değilse dış link olarak aç
             window.open(videoSource, '_blank');
