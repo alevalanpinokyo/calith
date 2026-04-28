@@ -2215,20 +2215,48 @@ function renderAdminAnnouncements() {
         const link = (a.link || '').replace('https://', '').replace('http://', '');
         const image = (a.image && a.image.trim() !== '') ? a.image : null;
 
+        let mediaHtml = '';
+        if (image) {
+            const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
+            const ytMatch = image.match(ytRegex);
+            
+            if (ytMatch) {
+                const videoId = ytMatch[1];
+                const isShorts = image.includes('/shorts/');
+                // Shorts ise çok uzamasın diye genişlik kısıtlaması, normal video ise yatay oran
+                const aspectClass = isShorts ? 'aspect-[9/16] w-full max-w-[220px] mx-auto' : 'aspect-video w-full';
+                
+                mediaHtml = `
+                <div class="w-full bg-black/30 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 mt-2">
+                    <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="${aspectClass}" style="border: 0;" allowfullscreen></iframe>
+                </div>`;
+            } else {
+                mediaHtml = `
+                <div class="w-full bg-black/30 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 mt-2 max-h-[250px]">
+                    <img src="${image}" class="w-full h-full object-contain">
+                </div>`;
+            }
+        }
+
         return `
-        <div class="bg-calith-dark/40 border border-white/5 p-3 md:p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all gap-3 min-h-[80px] overflow-hidden">
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-black flex items-center justify-center">
-                    ${image ? `<img src="${image}" class="w-full h-full object-contain">` : `<i data-lucide="${icon}" class="w-5 h-5 text-${color}"></i>`}
+        <div class="bg-calith-dark/40 border border-white/5 p-4 rounded-2xl flex flex-col gap-3 group hover:border-calith-orange/30 transition-all h-full">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-calith-orange/10 flex items-center justify-center text-${color}">
+                    <i data-lucide="${icon}" class="w-5 h-5"></i>
                 </div>
-                <div class="min-w-0 flex-1">
-                    <h4 class="font-bold text-[13px] md:text-sm text-white truncate leading-tight">${title}</h4>
-                    <p class="text-[9px] md:text-xs text-gray-500 uppercase tracking-widest truncate mt-0.5">${label} ${link ? `• ${link}` : ''}</p>
+                <div class="min-w-0 flex-1 pt-0.5">
+                    <h4 class="font-bold text-sm text-white leading-tight break-words">${title}</h4>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${label}</p>
                 </div>
             </div>
-            <div class="flex gap-1.5 shrink-0">
-                <button onclick="editAnnouncement('${a.id}')" title="Düzenle" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-lg md:rounded-xl transition-all border border-white/5"><i data-lucide="edit-2" class="w-3.5 h-3.5 md:w-4 md:h-4"></i></button>
-                <button onclick="deleteAnnouncement('${a.id}')" title="Sil" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-lg md:rounded-xl transition-all border border-white/5"><i data-lucide="trash-2" class="w-3.5 h-3.5 md:w-4 md:h-4"></i></button>
+
+            ${mediaHtml}
+
+            ${link ? `<div class="text-[10px] text-gray-400 bg-white/5 px-3 py-2 rounded-lg truncate border border-white/5 mt-1">🔗 ${link}</div>` : ''}
+
+            <div class="grid grid-cols-2 gap-2 mt-auto pt-2">
+                <button onclick="editAnnouncement('${a.id}')" title="Düzenle" class="h-10 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[11px] font-bold uppercase tracking-wider gap-2"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i> Düzenle</button>
+                <button onclick="deleteAnnouncement('${a.id}')" title="Sil" class="h-10 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[11px] font-bold uppercase tracking-wider gap-2"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Sil</button>
             </div>
         </div>
         `;
