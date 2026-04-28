@@ -599,78 +599,61 @@ body {
     grid-column: span 1 !important;
 }
 /* ==========================================================================
-   ADMIN PANEL MOBILE NUCLEAR LOCK (NÜKLEER ÇÖZÜM)
+   ADMIN PANEL MOBILE FIX (TEMİZ VE ÇALIŞAN ÇÖZÜM)
    ========================================================================== */
 @media (max-width: 768px) {
-    /* 1. Her şeyi ekran genişliğine hapset */
-    *, ::before, ::after {
-        max-width: 100vw !important;
-        overflow-wrap: break-word !important;
-    }
-
+    /* 1. Genel Taşmayı Engelle */
     html, body {
         width: 100% !important;
         max-width: 100vw !important;
         overflow-x: hidden !important;
-        position: relative !important;
     }
 
-    /* 2. Admin alanındaki gridleri dikey düzene zorla */
-    #admin-editor .grid, 
-    #section-announcements,
-    #section-blog,
-    #section-products,
-    #section-exercises,
-    #section-programs {
+    /* 2. Üst Menü (Tablar) - Yatay Scroll Düzeni */
+    #admin-editor .flex.overflow-x-auto {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 0.5rem !important;
+        padding: 0.5rem !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        background: rgba(255,255,255,0.05) !important;
+        border-radius: 1rem !important;
+    }
+
+    #admin-editor .flex.overflow-x-auto button {
+        padding: 0.6rem 1.25rem !important;
+        font-size: 11px !important;
+        white-space: nowrap !important; /* Kırılmasın */
+        width: auto !important;
+        min-width: fit-content !important;
+    }
+
+    /* 3. Sadece Aktif Sekmeleri Dikey Yap (Hidden olanları bozma) */
+    #admin-editor section:not(.hidden),
+    #admin-editor .grid:not(.hidden) {
         display: flex !important;
         flex-direction: column !important;
-        gap: 1.5rem !important;
+        gap: 1.25rem !important;
         width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
     }
 
-    /* 3. Kart yapılarını kısıtla */
+    /* 4. Kart Yapıları */
     #admin-editor div[class*="bg-calith-gray"],
-    #admin-editor .rounded-2xl,
     #admin-editor .rounded-3xl {
         width: 100% !important;
-        max-width: calc(100vw - 2rem) !important; /* Kenarlardan 1rem boşluk */
-        margin: 0 auto !important;
-        padding: 1rem !important;
+        max-width: 100% !important;
+        padding: 1.25rem !important;
+        margin-bottom: 1rem !important;
     }
 
-    /* 4. Butonları ve inputları ehlileştir */
-    #admin-editor button, 
-    #admin-editor input, 
-    #admin-editor select, 
-    #admin-editor textarea {
+    /* 5. Buton ve Inputlar */
+    #admin-editor button:not(.shrink-0) {
         width: 100% !important;
-        max-width: 100% !important;
-        white-space: normal !important;
-        font-size: 12px !important;
         letter-spacing: normal !important;
-    }
-
-    /* 5. Tab navigasyonu (Scrollable alan) */
-    #admin-editor .flex.overflow-x-auto {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0.5rem !important;
-        display: flex !important;
-        flex-wrap: nowrap !important;
-    }
-
-    /* 6. Duyuru listesi özel düzeltme */
-    #admin-ann-list > div {
-        flex-direction: column !important;
-        padding: 1rem !important;
-    }
-    
-    #admin-ann-list .shrink-0 {
-        width: 100% !important;
-        margin-top: 0.5rem;
-        display: flex;
-        justify-content: flex-end;
+        font-size: 12px !important;
+        padding-top: 0.8rem !important;
+        padding-bottom: 0.8rem !important;
     }
 }
