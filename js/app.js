@@ -2044,12 +2044,23 @@ function renderAnnouncementsSlider() {
         const onClickAction = `handleAnnouncementClick(${index})`;
 
         const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
-        const ytMatch = ann.link ? ann.link.match(ytRegex) : null;
+        
+        // Kullanıcı linki "Hedef Link" veya "Video URL" kutularından birine yapıştırmış olabilir.
+        const potentialYtString = (ann.link || '') + ' ' + (ann.image || '');
+        const ytMatch = potentialYtString.match(ytRegex);
         const ytId = ytMatch ? ytMatch[1] : '';
         const isYoutube = !!ytId;
 
         let imageUrl = ann.image;
-        if ((!imageUrl || imageUrl.trim() === '') && isYoutube) {
+        
+        // Eğer iframe HTML kodu paste edilmişse, sadece resim çekmek için url'i temizle
+        if (imageUrl && imageUrl.includes('<iframe')) {
+            const srcMatch = imageUrl.match(/src=["'](.*?)["']/i);
+            if (srcMatch) imageUrl = srcMatch[1];
+        }
+
+        // Eğer resim alanı boşsa VEYA resim alanında youtube linki/iframe varsa, YouTube'dan otomatik kapak resmi (thumbnail) çek
+        if (isYoutube && (!imageUrl || imageUrl.trim() === '' || ytRegex.test(imageUrl) || imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be'))) {
             imageUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
         }
 
@@ -2102,16 +2113,29 @@ function renderAnnouncementsSlider() {
  */
 window.handleAnnouncementClick = function(index) {
     const ann = announcements[index];
-    if (!ann || !ann.link) return;
+    if (!ann) return;
 
     const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
-    const isYoutube = ytRegex.test(ann.link);
-    const isVideo = isYoutube || ann.link.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i);
+    const potentialLink = ann.link || ann.image || '';
+    
+    // Video kontrolü (link veya imaj kutusunda olabilir)
+    const isYoutube = ytRegex.test(potentialLink);
+    const isVideo = isYoutube || potentialLink.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i);
 
     if (isVideo) {
-        openVideoModal(ann.link);
+        // Videonun olduğu gerçek kaynağı bul (öncelik link, sonra image)
+        let videoSource = '';
+        if (ann.link && (ytRegex.test(ann.link) || ann.link.match(/\.(mp4|webm|ogg|mov|m4v)/i))) {
+            videoSource = ann.link;
+        } else if (ann.image) {
+            videoSource = ann.image;
+        }
+        openVideoModal(videoSource);
     } else {
-        window.location.href = ann.link;
+        // Sadece normal bir linkse ve mevcutsa yeni sekmeye git
+        if (ann.link) {
+            window.location.href = ann.link;
+        }
     }
 };
 
