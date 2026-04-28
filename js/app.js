@@ -2218,7 +2218,7 @@ function renderAdminAnnouncements() {
                     </div>
                     <span class="text-[10px] text-calith-orange font-black uppercase tracking-[0.2em]">${a.label}</span>
                 </div>
-                <div class="text-[9px] text-gray-600 font-bold font-mono">${a.link.replace('https://', '').replace('http://', '').substring(0, 20)}...</div>
+                <div class="text-[9px] text-gray-600 font-bold font-mono">${(a.link || '').replace('https://', '').replace('http://', '').substring(0, 20)}...</div>
             </div>
 
             <div class="space-y-4">
