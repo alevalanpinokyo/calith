@@ -599,95 +599,41 @@ body {
     grid-column: span 1 !important;
 }
 /* ==========================================================================
-   ADMIN PANEL MOBILE FIX (TEMİZ VE ÇALIŞAN ÇÖZÜM)
+   ADMIN PANEL MOBILE CLEAN FIX
    ========================================================================== */
 @media (max-width: 768px) {
-    /* 1. Genel Taşmayı ve Header'ı Engelle */
+    /* Taşmayı kökten engelle */
     html, body {
-        width: 100% !important;
-        max-width: 100vw !important;
         overflow-x: hidden !important;
+        position: relative;
     }
 
-    #global-nav {
-        left: 0 !important;
-        right: 0 !important;
+    /* Admin ana taşıyıcılar */
+    #admin-editor, .max-w-6xl {
         width: 100% !important;
-        max-width: 100vw !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        overflow-x: hidden;
     }
 
-    /* 2. Üst Menü (Tablar) */
-    #admin-editor .flex.overflow-x-auto {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 0.5rem !important;
-        padding: 0.5rem !important;
-        width: 100% !important;
-        overflow-x: auto !important;
-    }
-
-    /* 2. Üst Menü (Tablar) */
-    #admin-editor .flex.overflow-x-auto {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 0.5rem !important;
-        padding: 0.5rem !important;
-        width: 100% !important;
-        overflow-x: auto !important;
-    }
-
-    #admin-editor .flex.overflow-x-auto button {
-        padding: 0.6rem 1.25rem !important;
-        font-size: 11px !important;
-        white-space: nowrap !important;
-        width: auto !important;
-        min-width: fit-content !important;
-    }
-
-    /* 3. Sadece Aktif Sekmeleri Dikey Yap */
-    #admin-editor section:not(.hidden),
-    #admin-editor .grid:not(.hidden) {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 1.25rem !important;
-        width: 100% !important;
-    }
-
-    /* 4. Duyuru Kartları Özel Düzen */
+    /* Duyuru Kartları - Kompakt ve Orantılı */
     #admin-ann-list .flex-shrink-0 {
         width: 44px !important;
         height: 44px !important;
         min-width: 44px !important;
-        flex: 0 0 44px !important;
     }
 
-    #admin-ann-list h4 {
-        font-size: 13px !important;
-        line-height: 1.4 !important;
-    }
-    
     #admin-ann-list > div {
-        padding: 1rem !important;
-        gap: 0.75rem !important;
-    }
-
-    /* 4. Kart Yapıları */
-    #admin-editor div[class*="bg-calith-gray"],
-    #admin-editor .rounded-3xl {
-        width: 100% !important;
-        max-width: 100% !important;
+        flex-direction: column;
         padding: 1.25rem !important;
-        margin-bottom: 1rem !important;
+        gap: 1rem;
     }
 
-    /* 5. Buton ve Inputlar */
-    #admin-editor button:not(.shrink-0) {
-        width: 100% !important;
-        letter-spacing: normal !important;
-        font-size: 12px !important;
-        padding-top: 0.8rem !important;
-        padding-bottom: 0.8rem !important;
+    /* Butonlar ekrana sığsın */
+    #admin-editor button {
+        white-space: normal !important;
+        height: auto;
+        min-height: 2.5rem;
     }
 }
