@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALITH | Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { calith: { orange: '#FF6B35', dark: '#0A0A0A', gray: '#1A1A1A', accent: '#00D9FF' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-calith-dark text-white">
+
+<div class="grain"></div>
+
+<nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <a href="index.html" class="flex items-center gap-2 cursor-pointer" id="logo-container" title="Ana Sayfaya Git">
+                <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
+                <a href="skills.html" class="text-white font-medium text-sm">PROGRAMLAR</a>
+                <a href="shop.html" class="text-white font-medium text-sm">EKİPMAN</a>
+                <a href="blog.html" class="text-white font-medium text-sm">ÖĞREN</a>
+                <a href="about.html" class="text-white font-medium text-sm">HAKKIMIZDA</a>
+                <a href="premium.html" class="text-calith-orange font-bold text-sm tracking-widest hover:text-white transition-colors uppercase">KOÇLUK</a>
+            </div>
+            <div class="flex items-center gap-4">
+                
+                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
+        <div class="px-4 py-4 space-y-3">
+            <a href="index.html" class="block text-white py-2">ANA SAYFA</a>
+            <a href="skills.html" class="block text-white py-2">PROGRAMLAR</a>
+            <a href="shop.html" class="block text-white py-2 font-medium">EKİPMAN</a>
+            <a href="blog.html" class="block text-white py-2">ÖĞREN</a>
+            <a href="about.html" class="block text-white py-2">HAKKIMIZDA</a>
+            <a href="premium.html" class="block text-calith-orange font-bold py-2 uppercase tracking-widest">KOÇLUK</a>
+            <button onclick="showAuthModal()" class="w-full text-left py-2 font-bold text-white border-t border-white/10 mt-2 pt-4">GİRİŞ YAP / ÜYE OL</button>
+        </div>
+    </div>
+</nav>
+
+<section id="blog" class="min-h-screen pt-32 pb-20 fade-in">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 tracking-tight">KONDİSYON <span class="gradient-text">& BİLGİ</span></h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Calisthenics dünyasından en güncel teknikler, beslenme tüyoları ve makaleler.</p>
+        </div>
+        <div id="blog-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+</section>
+
+<section id="blog-detail" class="hidden min-h-screen pt-32 pb-20 fade-in">
+    <div class="max-w-4xl mx-auto px-4">
+        <button onclick="showSection('blog')" class="mb-10 text-gray-400 hover:text-white flex items-center gap-2 group">
+            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Geri Dön
+        </button>
+        <div id="post-content" class="bg-calith-gray/30 border border-white/5 p-8 md:p-12 rounded-3xl"></div>
+    </div>
+</section>
+
+</footer>
+
+
+
+    <script src="js/app.js?v=202604282046"></script>
+    <script>
+        lucide.createIcons();
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

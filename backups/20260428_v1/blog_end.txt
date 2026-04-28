@@ -1,0 +1,528 @@
+    <!-- Marquee Text -->
+    <div class="border-y border-primary py-6 overflow-hidden bg-secondary/20">
+        <div class="marquee-container">
+            <div class="marquee-content text-4xl md:text-6xl font-black tracking-tighter opacity-20">
+                PULL-UP • DIP • MUSCLE-UP • HANDSTAND • PLANCHE • FRONT LEVER • PULL-UP • DIP • MUSCLE-UP • HANDSTAND • PLANCHE • FRONT LEVER •
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="max-w-7xl mx-auto px-4 py-24">
+        <div class="bg-secondary border border-primary rounded-3xl p-8 md:p-16 text-center reveal relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
+            <h2 class="text-3xl md:text-5xl font-black tracking-tighter mb-6 relative z-10">BAŞLAMAYA HAZIR MISIN?</h2>
+            <p class="text-secondary text-lg mb-8 max-w-2xl mx-auto relative z-10">Binlerce kişi CALITH ile evinde profesyonel antrenman yapıyor. Sen de aramıza katıl.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+                <button onclick="showSection('shop')" class="px-8 py-4 bg-white text-black font-bold tracking-wider hover:bg-gray-200 transition-colors rounded-full">
+                    EKİPMAN ALIŞVERİŞİ
+                </button>
+                <button onclick="showSection('blog')" class="px-8 py-4 border border-white/30 font-bold tracking-wider hover:bg-white/10 transition-colors rounded-full">
+                    ÜCRETSİZ BAŞLA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Blog Preview -->
+    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
+        <div class="flex justify-between items-end mb-12 reveal">
+            <div>
+                <p class="text-accent font-bold tracking-wider mb-2">BLOG</p>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tighter">SON YAZILAR</h2>
+            </div>
+            <button onclick="showSection('blog')" class="text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2 group">
+                Tümünü Gör <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+        <div id="landing-blog-preview" class="grid md:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-primary">
+        <div class="max-w-2xl mx-auto text-center reveal">
+            <i class="fas fa-envelope text-4xl mb-6 opacity-50"></i>
+            <h2 class="text-3xl font-black tracking-tighter mb-4">GÜNCEL KAL</h2>
+            <p class="text-secondary mb-8">Yeni yazılar ve özel indirimlerden haberdar ol.</p>
+            <form class="flex gap-2" onsubmit="event.preventDefault(); showToast('Abone oldunuz!');">
+                <input type="email" placeholder="E-posta adresin" class="flex-1 bg-secondary border border-primary px-6 py-4 rounded-full focus:outline-none focus:border-white transition-colors">
+                <button type="submit" class="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors">
+                    ABONE OL
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- SKILL LIBRARY -->
+<section id="skill-library" class="hidden min-h-screen pt-24 pb-20 page-transition theme-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16 reveal">
+            <p class="text-accent font-bold tracking-[0.3em] mb-4">SKILL LIBRARY</p>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">ÜCRETSİZ PROGRAMLAR</h1>
+            <p class="text-secondary max-w-2xl mx-auto text-lg leading-relaxed">
+                Vücut ağırlığı antrenmanının zirvesine giden yol. Her seviye için adım adım rehberler.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Handstand -->
+            <div class="group relative bg-secondary border border-primary rounded-3xl overflow-hidden hover-lift p-8 cursor-pointer" onclick="showSkill('handstand')">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-hand-holding-heart text-8xl"></i>
+                </div>
+                <h3 class="text-3xl font-black mb-4">Handstand</h3>
+                <p class="text-secondary mb-8 leading-relaxed">Denge ve omuz kuvvetinin temeli. Duvar destekli çalışmalardan serbest duruşa.</p>
+                <div class="flex items-center gap-2 text-sm font-bold tracking-widest text-white group-hover:text-accent transition-colors">
+                    ÖĞRENMEYE BAŞLA <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </div>
+
+            <!-- L-Sit -->
+            <div class="group relative bg-secondary border border-primary rounded-3xl overflow-hidden hover-lift p-8 cursor-pointer" onclick="showSkill('l-sit')">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-chair text-8xl"></i>
+                </div>
+                <h3 class="text-3xl font-black mb-4">L-Sit</h3>
+                <p class="text-secondary mb-8 leading-relaxed">Core kontrolü ve scapula kuvveti. Yerden veya bardan destekle statik kuvvetin girişi.</p>
+                <div class="flex items-center gap-2 text-sm font-bold tracking-widest text-white group-hover:text-accent transition-colors">
+                    ÖĞRENMEYE BAŞLA <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </div>
+
+            <!-- Tuck Planche -->
+            <div class="group relative bg-secondary border border-primary rounded-3xl overflow-hidden hover-lift p-8 cursor-pointer" onclick="showSkill('planche')">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-bolt text-8xl"></i>
+                </div>
+                <h3 class="text-3xl font-black mb-4">Tuck Planche</h3>
+                <p class="text-secondary mb-8 leading-relaxed">İleri seviye itiş kuvveti. Plank varyasyonlarından planche duruşuna geçiş.</p>
+                <div class="flex items-center gap-2 text-sm font-bold tracking-widest text-white group-hover:text-accent transition-colors">
+                    ÖĞRENMEYE BAŞLA <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </div>
+
+            <!-- Ring Muscle Up -->
+            <div class="group relative bg-secondary border border-primary rounded-3xl overflow-hidden hover-lift p-8 cursor-pointer" onclick="showSkill('muscle-up')">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-circle-notch text-8xl"></i>
+                </div>
+                <h3 class="text-3xl font-black mb-4">Ring Muscle Up</h3>
+                <p class="text-secondary mb-8 leading-relaxed">Halkada patlayıcı güç ve çekiş-itiş koordinasyonu. False grip teknikleri.</p>
+                <div class="flex items-center gap-2 text-sm font-bold tracking-widest text-white group-hover:text-accent transition-colors">
+                    ÖĞRENMEYE BAŞLA <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </div>
+
+            <!-- Back Lever -->
+            <div class="group relative bg-secondary border border-primary rounded-3xl overflow-hidden hover-lift p-8 cursor-pointer" onclick="showSkill('back-lever')">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-anchor text-8xl"></i>
+                </div>
+                <h3 class="text-3xl font-black mb-4">Back Lever</h3>
+                <p class="text-secondary mb-8 leading-relaxed">Sırt ve arka zincir kontrolü. Bar veya halkada vücudun yatay pozisyonu.</p>
+                <div class="flex items-center gap-2 text-sm font-bold tracking-widest text-white group-hover:text-accent transition-colors">
+                    ÖĞRENMEYE BAŞLA <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SKILL DETAIL -->
+<section id="skill-detail" class="hidden min-h-screen pt-24 pb-20 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4">
+        <button onclick="showSection('skill-library')" class="mb-8 text-sm text-secondary hover:text-white transition-colors flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> Skill Library'e Dön
+        </button>
+        <div id="skill-detail-content"></div>
+    </div>
+</section>
+
+<!-- PREMIUM PROGRAMS -->
+<section id="premium" class="hidden min-h-screen pt-24 pb-20 page-transition theme-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16 reveal">
+            <p class="text-accent font-bold tracking-[0.3em] mb-4">PREMIUM</p>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">PRO PROGRAMLAR</h1>
+            <p class="text-secondary max-w-2xl mx-auto text-lg">
+                Uzmanlar tarafından hazırlanmış, sonuç odaklı ve bilimsel temelli antrenman planları.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Yer Hareketleri -->
+            <div class="bg-secondary border border-primary rounded-3xl p-8 flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center text-4xl mb-6">🧘</div>
+                <h3 class="text-2xl font-black mb-4">Yer Hareketleri</h3>
+                <p class="text-secondary text-sm mb-8">Push-up, Handstand, Core ve yer bazlı statik kuvvet çalışmaları.</p>
+                <div class="w-full space-y-4">
+                    <button onclick="showPremiumDetail('ground', 'beginner')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">BAŞLANGIÇ - 499₺</button>
+                    <button onclick="showPremiumDetail('ground', 'intermediate')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">ORTA - 699₺</button>
+                    <button onclick="showPremiumDetail('ground', 'advanced')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">İLERİ - 899₺</button>
+                </div>
+            </div>
+
+            <!-- Paralel Bar -->
+            <div class="bg-secondary border border-primary rounded-3xl p-8 flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center text-4xl mb-6">⏸️</div>
+                <h3 class="text-2xl font-black mb-4">Paralel Bar / Dips</h3>
+                <p class="text-secondary text-sm mb-8">Dips varyasyonları, Planche ve itiş kuvvetinin temelleri.</p>
+                <div class="w-full space-y-4">
+                    <button onclick="showPremiumDetail('parallettes', 'beginner')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">BAŞLANGIÇ - 499₺</button>
+                    <button onclick="showPremiumDetail('parallettes', 'intermediate')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">ORTA - 699₺</button>
+                    <button onclick="showPremiumDetail('parallettes', 'advanced')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">İLERİ - 899₺</button>
+                </div>
+            </div>
+
+            <!-- Halka -->
+            <div class="bg-secondary border border-primary rounded-3xl p-8 flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center text-4xl mb-6">⭕</div>
+                <h3 class="text-2xl font-black mb-4">Halka / Rings</h3>
+                <p class="text-secondary text-sm mb-8">Stabilizasyon, Muscle Up ve halka üzerinde ileri seviye kontrol.</p>
+                <div class="w-full space-y-4">
+                    <button onclick="showPremiumDetail('rings', 'beginner')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">BAŞLANGIÇ - 499₺</button>
+                    <button onclick="showPremiumDetail('rings', 'intermediate')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">ORTA - 699₺</button>
+                    <button onclick="showPremiumDetail('rings', 'advanced')" class="w-full py-4 border border-primary rounded-xl hover:bg-white hover:text-black transition-all font-bold tracking-widest text-xs">İLERİ - 899₺</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SEARCH MODAL -->
+<div id="search-modal" class="hidden fixed inset-0 z-[70] bg-black/95 backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none">
+    <div class="max-w-3xl mx-auto px-6 pt-32">
+        <div class="flex items-center justify-between mb-12">
+            <h2 class="text-3xl font-black tracking-tighter">SİTEDE ARA</h2>
+            <button onclick="toggleSearch()" class="p-2 text-white/50 hover:text-white transition-colors" title="Kapat" aria-label="Arama Modalını Kapat"><i class="fas fa-times text-2xl"></i></button>
+        </div>
+        <div class="relative">
+            <input type="text" id="search-input" placeholder="Program, ekipman veya yazı ara..." 
+                   class="w-full bg-transparent border-b-2 border-white/20 py-4 text-2xl md:text-4xl font-black focus:outline-none focus:border-white transition-colors">
+            <div class="absolute right-0 top-1/2 -translate-y-1/2"><i class="fas fa-search text-2xl opacity-30"></i></div>
+        </div>
+        <div id="search-results" class="mt-12 space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+            <p class="text-secondary italic">Aramak için bir şeyler yazın...</p>
+        </div>
+    </div>
+</div>
+
+<!-- SHOP -->
+<section id="shop" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="bg-black text-white text-center py-2.5 text-xs font-medium tracking-wider">🚚 500₺ ÜZERİ KARGO BEDAVA • 14 GÜN İADE</div>
+
+    <div class="bg-secondary py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">EKİPMAN</h1>
+            <p class="text-secondary max-w-xl mx-auto">Antrenmanını bir üst seviyeye taşı. Profesyonel calisthenics ekipmanları.</p>
+        </div>
+    </div>
+
+    <div class="sticky top-16 z-30 bg-primary border-b border-primary shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex gap-2 overflow-x-auto">
+            <button onclick="filterProducts('all')" class="shop-filter active px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap bg-black text-white" data-filter="all">Tümü</button>
+            <button onclick="filterProducts('bar')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="bar">Barfiks</button>
+            <button onclick="filterProducts('parallettes')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="parallettes">Paralel</button>
+            <button onclick="filterProducts('rings')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="rings">Halka</button>
+            <button onclick="filterProducts('band')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="band">Band</button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+    </div>
+</section>
+
+<!-- PRODUCT DETAIL -->
+<section id="product-detail" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <button onclick="showSection('shop')" class="mb-6 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm ürünler</button>
+        <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+            <div class="aspect-square bg-secondary rounded-lg overflow-hidden"><img id="pd-image" src="" class="w-full h-full object-cover"></div>
+            <div class="flex flex-col justify-center">
+                <p id="pd-category" class="text-sm text-secondary font-medium tracking-wider mb-2"></p>
+                <h1 id="pd-name" class="text-3xl md:text-4xl font-black tracking-tighter mb-4"></h1>
+                <div class="flex items-baseline gap-3 mb-6"><span id="pd-price" class="text-3xl font-bold"></span><span id="pd-old-price" class="text-lg text-secondary line-through"></span></div>
+                <p id="pd-desc" class="text-secondary mb-6 leading-relaxed"></p>
+                <div class="mb-6">
+                    <p class="text-sm font-medium mb-3">ADET</p>
+                    <div class="flex items-center border border-primary w-fit rounded">
+                        <button onclick="changePdQty(-1)" class="px-4 py-2 hover:bg-secondary transition-colors">-</button>
+                        <span id="pd-qty" class="px-4 py-2 font-medium min-w-[3rem] text-center">1</span>
+                        <button onclick="changePdQty(1)" class="px-4 py-2 hover:bg-secondary transition-colors">+</button>
+                    </div>
+                </div>
+                <button onclick="addToCartFromDetail()" class="flex-1 bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">SEPETE EKLE</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div class="text-center mb-16 reveal">
+            <p class="text-accent font-bold tracking-wider mb-4">BLOG & REHBERLER</p>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">BLOG</h1>
+            <p class="text-secondary max-w-2xl mx-auto text-lg">Temelden ileri seviyeye tüm rehberler, programlar ve ipuçları.</p>
+        </div>
+        
+        <!-- Blog Categories -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
+            <button onclick="filterBlog('all')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all active" data-filter="all">Tümü</button>
+            <button onclick="filterBlog('skill-rehberleri')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="skill-rehberleri">Skill Rehberleri</button>
+            <button onclick="filterBlog('strength-endurance')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="strength-endurance">Strength & Endurance</button>
+            <button onclick="filterBlog('beslenme')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="beslenme">Beslenme</button>
+            <button onclick="filterBlog('ekipman-rehberi')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="ekipman-rehberi">Ekipman Rehberi</button>
+        </div>
+
+        <div id="blog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+</section>
+
+<!-- BLOG DETAIL -->
+<section id="blog-detail" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <button onclick="showSection('blog')" class="mb-8 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm yazılar</button>
+        <article id="blog-detail-content" class="blog-content"></article>
+    </div>
+</section>
+<!-- SEARCH MODAL -->
+<div id="search-modal" class="hidden fixed inset-0 z-[70] bg-black/95 backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none">
+    <div class="max-w-3xl mx-auto px-6 pt-32">
+        <div class="flex items-center justify-between mb-12">
+            <h2 class="text-3xl font-black tracking-tighter">SİTEDE ARA</h2>
+            <button onclick="toggleSearch()" class="p-2 text-white/50 hover:text-white transition-colors" title="Kapat" aria-label="Arama Modalını Kapat"><i class="fas fa-times text-2xl"></i></button>
+        </div>
+        <div class="relative">
+            <input type="text" id="search-input" placeholder="Program, ekipman veya yazı ara..." 
+                   class="w-full bg-transparent border-b-2 border-white/20 py-4 text-2xl md:text-4xl font-black focus:outline-none focus:border-white transition-colors">
+            <div class="absolute right-0 top-1/2 -translate-y-1/2"><i class="fas fa-search text-2xl opacity-30"></i></div>
+        </div>
+        <div id="search-results" class="mt-12 space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+            <p class="text-secondary italic">Aramak için bir şeyler yazın...</p>
+        </div>
+    </div>
+</div>
+
+<!-- SHOP -->
+<section id="shop" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="bg-black text-white text-center py-2.5 text-xs font-medium tracking-wider">🚚 500₺ ÜZERİ KARGO BEDAVA • 14 GÜN İADE</div>
+
+    <div class="bg-secondary py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">EKİPMAN</h1>
+            <p class="text-secondary max-w-xl mx-auto">Antrenmanını bir üst seviyeye taşı. Profesyonel calisthenics ekipmanları.</p>
+        </div>
+    </div>
+
+    <div class="sticky top-16 z-30 bg-primary border-b border-primary shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex gap-2 overflow-x-auto">
+            <button onclick="filterProducts('all')" class="shop-filter active px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap bg-black text-white" data-filter="all">Tümü</button>
+            <button onclick="filterProducts('bar')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="bar">Barfiks</button>
+            <button onclick="filterProducts('parallettes')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="parallettes">Paralel</button>
+            <button onclick="filterProducts('rings')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="rings">Halka</button>
+            <button onclick="filterProducts('band')" class="shop-filter px-4 py-2 text-sm font-medium border border-primary rounded-full whitespace-nowrap hover:bg-black hover:text-white transition-colors" data-filter="band">Band</button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+    </div>
+</section>
+
+<!-- PRODUCT DETAIL -->
+<section id="product-detail" class="hidden min-h-screen pt-16 page-transition theme-light">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <button onclick="showSection('shop')" class="mb-6 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm ürünler</button>
+        <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+            <div class="aspect-square bg-secondary rounded-lg overflow-hidden"><img id="pd-image" src="" class="w-full h-full object-cover"></div>
+            <div class="flex flex-col justify-center">
+                <p id="pd-category" class="text-sm text-secondary font-medium tracking-wider mb-2"></p>
+                <h1 id="pd-name" class="text-3xl md:text-4xl font-black tracking-tighter mb-4"></h1>
+                <div class="flex items-baseline gap-3 mb-6"><span id="pd-price" class="text-3xl font-bold"></span><span id="pd-old-price" class="text-lg text-secondary line-through"></span></div>
+                <p id="pd-desc" class="text-secondary mb-6 leading-relaxed"></p>
+                <div class="mb-6">
+                    <p class="text-sm font-medium mb-3">ADET</p>
+                    <div class="flex items-center border border-primary w-fit rounded">
+                        <button onclick="changePdQty(-1)" class="px-4 py-2 hover:bg-secondary transition-colors">-</button>
+                        <span id="pd-qty" class="px-4 py-2 font-medium min-w-[3rem] text-center">1</span>
+                        <button onclick="changePdQty(1)" class="px-4 py-2 hover:bg-secondary transition-colors">+</button>
+                    </div>
+                </div>
+                <button onclick="addToCartFromDetail()" class="flex-1 bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">SEPETE EKLE</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div class="text-center mb-16 reveal">
+            <p class="text-accent font-bold tracking-wider mb-4">BLOG & REHBERLER</p>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">BLOG</h1>
+            <p class="text-secondary max-w-2xl mx-auto text-lg">Temelden ileri seviyeye tüm rehberler, programlar ve ipuçları.</p>
+        </div>
+        
+        <!-- Blog Categories -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
+            <button onclick="filterBlog('all')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all active" data-filter="all">Tümü</button>
+            <button onclick="filterBlog('skill-rehberleri')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="skill-rehberleri">Skill Rehberleri</button>
+            <button onclick="filterBlog('strength-endurance')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="strength-endurance">Strength & Endurance</button>
+            <button onclick="filterBlog('beslenme')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="beslenme">Beslenme</button>
+            <button onclick="filterBlog('ekipman-rehberi')" class="blog-filter px-6 py-2 rounded-full border border-primary text-sm font-medium hover:bg-white hover:text-black transition-all" data-filter="ekipman-rehberi">Ekipman Rehberi</button>
+        </div>
+
+        <div id="blog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+</section>
+
+<!-- BLOG DETAIL -->
+<section id="blog-detail" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <button onclick="showSection('blog')" class="mb-8 text-sm text-secondary hover:text-primary transition-colors flex items-center gap-2">← Tüm yazılar</button>
+        <article id="blog-detail-content" class="blog-content"></article>
+    </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin" class="hidden min-h-screen pt-16 page-transition theme-dark">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <h1 class="text-4xl font-black tracking-tighter mb-8 reveal">ADMIN PANEL</h1>
+        <div id="admin-login" class="max-w-md mx-auto space-y-6 reveal">
+            <div class="text-center mb-8">
+                <i class="fas fa-lock text-4xl mb-4 opacity-50"></i>
+                <p class="text-secondary">Yönetici erişimi için şifre girin</p>
+            </div>
+            <input type="password" id="admin-pass" placeholder="Şifre" class="w-full bg-secondary border border-primary px-4 py-4 rounded-xl text-center text-lg tracking-widest focus:outline-none focus:border-white">
+            <button onclick="checkAdmin()" class="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition-colors">GİRİŞ YAP</button>
+            <p class="text-xs text-center text-secondary mt-4">İpucu: Logo'ya 5 saniye basılı tutarak da erişebilirsiniz</p>
+        </div>
+        <div id="admin-editor" class="hidden space-y-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Yeni Yazı Ekle</h2>
+                <button onclick="logoutAdmin()" class="text-sm text-secondary hover:text-white">Çıkış →</button>
+            </div>
+            <input type="text" id="post-title" placeholder="Başlık" class="w-full bg-transparent text-3xl font-black placeholder-secondary border-none focus:outline-none">
+            <div class="grid md:grid-cols-3 gap-4">
+                <select id="post-category" class="bg-secondary border border-primary px-4 py-3 rounded-lg">
+                    <option value="temel">Temel</option>
+                    <option value="ileri">İleri Seviye</option>
+                    <option value="beslenme">Beslenme</option>
+                    <option value="ekipman">Ekipman</option>
+                </select>
+                <input type="date" id="post-date" class="bg-secondary border border-primary px-4 py-3 rounded-lg">
+                <input type="url" id="post-cover" placeholder="Kapak Görseli URL" class="bg-secondary border border-primary px-4 py-3 rounded-lg">
+            </div>
+            <textarea id="post-excerpt" placeholder="Yazı özeti..." rows="3" class="w-full bg-secondary border border-primary px-4 py-3 rounded-lg resize-none"></textarea>
+            <div class="flex flex-wrap gap-2 bg-secondary p-3 rounded-lg border border-primary">
+                <button onclick="insertFormat('bold')" class="px-4 py-2 border border-primary rounded hover:bg-white hover:text-black transition-colors font-bold">B</button>
+                <button onclick="insertFormat('h2')" class="px-4 py-2 border border-primary rounded hover:bg-white hover:text-black transition-colors">H2</button>
+                <button onclick="insertFormat('ul')" class="px-4 py-2 border border-primary rounded hover:bg-white hover:text-black transition-colors">• Liste</button>
+                <button onclick="insertImage()" class="px-4 py-2 bg-white/10 border border-primary rounded hover:bg-white hover:text-black transition-colors">🖼️ Görsel</button>
+                <button onclick="insertVideo()" class="px-4 py-2 bg-white/10 border border-primary rounded hover:bg-white hover:text-black transition-colors">▶️ Video</button>
+            </div>
+            <div id="editor" contenteditable="true" class="bg-secondary border border-primary rounded-lg p-6 min-h-[400px] focus:outline-none focus:border-white/50 prose prose-invert max-w-none"><p>Yazına başla...</p></div>
+            <div class="flex gap-4 sticky bottom-4 bg-primary/90 backdrop-blur p-4 -mx-4 rounded-xl border border-primary">
+                <button onclick="savePost()" class="flex-1 bg-white text-black py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors">YAYINLA</button>
+                <button onclick="previewPost()" class="px-6 border border-primary rounded-xl hover:bg-white/10 transition-colors">👁️ Önizle</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="hidden min-h-screen pt-24 page-transition theme-dark pb-20">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="grid lg:grid-cols-2 gap-16 items-start">
+            <div>
+                <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-8 reveal">BİZ KİMİZ?</h1>
+                <p class="text-xl text-secondary leading-relaxed mb-12 reveal">CALITH, 2024 yılında kurulan bir calisthenics ve lifestyle markasıdır. Amacımız, minimal ekipmanla maksimum potansiyele ulaşmanızı sağlayacak bilgi ve araçları sunmaktır.</p>
+                
+                <div class="grid grid-cols-2 gap-4 reveal">
+                    <div class="p-6 border border-primary rounded-2xl bg-secondary/30">
+                        <div class="text-3xl font-black mb-1 accent">100%</div>
+                        <div class="text-secondary text-[10px] font-bold tracking-widest uppercase">Tutku</div>
+                    </div>
+                    <div class="p-6 border border-primary rounded-2xl bg-secondary/30">
+                        <div class="text-3xl font-black mb-1 accent">5000+</div>
+                        <div class="text-secondary text-[10px] font-bold tracking-widest uppercase">Mezun</div>
+                    </div>
+                </div>
+
+                <div class="mt-12 space-y-6 reveal">
+                    <div class="flex items-center gap-4">
+                        <i class="fab fa-instagram text-2xl text-secondary hover:text-white transition-colors"></i>
+                        <i class="fab fa-youtube text-2xl text-secondary hover:text-white transition-colors"></i>
+                        <i class="fab fa-twitter text-2xl text-secondary hover:text-white transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-secondary border border-primary rounded-3xl p-8 md:p-12 reveal">
+                <h2 class="text-3xl font-black mb-8">BİZİMLE İLETİŞİME GEÇ</h2>
+                <form class="space-y-4" onsubmit="event.preventDefault(); showToast('Mesajınız gönderildi!'); this.reset();">
+                    <div>
+                        <label for="contact-name" class="block text-[10px] font-bold tracking-widest text-secondary mb-2 uppercase">Ad Soyad</label>
+                        <input id="contact-name" type="text" required class="w-full bg-primary border border-primary rounded-xl px-4 py-3 focus:outline-none focus:border-white transition-colors" placeholder="Adınız Soyadınız">
+                    </div>
+                    <div>
+                        <label for="contact-email" class="block text-[10px] font-bold tracking-widest text-secondary mb-2 uppercase">E-posta</label>
+                        <input id="contact-email" type="email" required class="w-full bg-primary border border-primary rounded-xl px-4 py-3 focus:outline-none focus:border-white transition-colors" placeholder="E-posta adresiniz">
+                    </div>
+                    <div>
+                        <label for="contact-subject" class="block text-[10px] font-bold tracking-widest text-secondary mb-2 uppercase">Konu</label>
+                        <select id="contact-subject" class="w-full bg-primary border border-primary rounded-xl px-4 py-3 focus:outline-none focus:border-white transition-colors" title="İletişim Konusu">
+                            <option>Genel Sorular</option>
+                            <option>Premium Programlar</option>
+                            <option>Ekipman & Sipariş</option>
+                            <option>Skill Library Hakkında</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="contact-message" class="block text-[10px] font-bold tracking-widest text-secondary mb-2 uppercase">Mesajınız</label>
+                        <textarea id="contact-message" rows="5" required class="w-full bg-primary border border-primary rounded-xl px-4 py-3 focus:outline-none focus:border-white transition-colors resize-none" placeholder="Mesajınızı buraya yazın"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-white text-black py-4 rounded-xl font-bold tracking-widest text-xs hover:bg-gray-200 transition-colors">GÖNDER</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CART -->
+<div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+<div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-white text-black z-50 shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 class="text-lg font-black tracking-tighter">SEPET <span id="cart-count-drawer" class="text-gray-500 font-normal">(0)</span></h2>
+        <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-full" title="Kapat" aria-label="Sepeti Kapat"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="text-center py-12 text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i><p>Sepetin boş</p></div>
+    </div>
+    <div class="border-t border-gray-200 p-4 space-y-4 bg-gray-50">
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Ara Toplam</span><span id="cart-subtotal" class="font-medium">0₺</span></div>
+        <div class="flex justify-between text-sm"><span class="text-gray-600">Kargo</span><span id="cart-shipping" class="font-medium text-green-600">Bedava</span></div>
+        <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-3"><span>Toplam</span><span id="cart-total">0₺</span></div>
+        <button onclick="checkout()" class="w-full bg-black text-white py-4 font-bold tracking-wider hover:bg-gray-800 transition-colors">ÖDEME YAP</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full shadow-lg z-50 flex items-center gap-3">
+    <i class="fas fa-check-circle text-green-400"></i>
+    <span id="toast-msg">Sepete eklendi</span>
+</div>
+
+<!-- MOBILE CART -->
+<button onclick="toggleCart()" class="mobile-cart-btn md:hidden w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center">
+    <i class="fas fa-shopping-bag text-xl"></i>
+    <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-white text-black text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">0</span>
+</button>
+
+
+<script src="js/app.js"></script>
+</body>
+</html>

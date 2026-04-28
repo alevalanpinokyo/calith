@@ -2132,14 +2132,11 @@ function openVideoModal(videoSource) {
 
         if (ytMatch) {
             const videoId = ytMatch[1];
-            const isShorts = videoSource.includes('/shorts/');
-            const aspectClass = isShorts ? 'aspect-[9/16] h-[85vh] max-w-full' : 'aspect-video w-full max-w-5xl';
-            
             container.innerHTML = `
                 <div class="w-full h-full bg-black flex items-center justify-center overflow-hidden rounded-xl">
                     <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1" 
-                        class="${aspectClass}" 
-                        style="border: 0; max-height: 85vh;"
+                        class="w-full h-full max-h-[85vh]" 
+                        style="border: 0; aspect-ratio: auto;"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen></iframe>
                 </div>`;
