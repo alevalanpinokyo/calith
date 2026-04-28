@@ -625,6 +625,17 @@ body {
         -webkit-overflow-scrolling: touch;
         gap: 0.5rem !important;
         padding: 0.5rem !important;
+        min-height: 50px;
+    }
+
+    /* Form Elemanlarını Sabitle */
+    #admin-editor input, 
+    #admin-editor select, 
+    #admin-editor textarea {
+        display: block !important;
+        width: 100% !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     /* Duyuru Kartları - Kompakt ve Orantılı */

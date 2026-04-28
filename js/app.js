@@ -2202,40 +2202,27 @@ function renderAdminAnnouncements() {
     }
 
     list.innerHTML = announcements.map(a => {
-        const title = a.title || 'Başlıksız Duyuru';
-        const label = a.label || 'DUYURU';
+        const title = a.title || '';
+        const label = a.label || '';
         const icon = a.icon || 'bell';
+        const color = a.color || 'calith-orange';
         const link = (a.link || '').replace('https://', '').replace('http://', '');
         const image = (a.image && a.image.trim() !== '') ? a.image : null;
 
         return `
-        <div class="bg-calith-dark/40 border border-white/5 p-4 rounded-2xl flex flex-col gap-4 group hover:border-calith-orange/30 transition-all">
-            <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-calith-orange/10 flex items-center justify-center text-calith-orange">
-                        <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
-                    </div>
-                    <span class="text-[10px] text-calith-orange font-bold uppercase tracking-wider">${label}</span>
+        <div class="bg-calith-dark/40 border border-white/5 p-3 md:p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all gap-3 min-h-[80px]">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-black/50 flex items-center justify-center">
+                    ${image ? `<img src="${image}" class="w-full h-full object-cover">` : `<i data-lucide="${icon}" class="w-5 h-5 text-${color}"></i>`}
                 </div>
-                ${link ? `<span class="text-[9px] text-gray-600 font-medium">${link.substring(0, 25)}</span>` : ''}
-            </div>
-
-            <div class="space-y-3">
-                <h4 class="font-bold text-sm text-white leading-tight uppercase">${title}</h4>
-                ${image ? `
-                <div class="w-full aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/50">
-                    <img src="${image}" class="w-full h-full object-cover">
+                <div class="min-w-0">
+                    <h4 class="font-bold text-[13px] md:text-sm text-white truncate leading-tight">${title}</h4>
+                    <p class="text-[9px] md:text-xs text-gray-500 uppercase tracking-widest truncate mt-0.5">${label} ${link ? `• ${link}` : ''}</p>
                 </div>
-                ` : ''}
             </div>
-
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <button onclick="editAnnouncement('${a.id}')" class="h-10 flex items-center justify-center bg-white/5 hover:bg-calith-orange/20 text-gray-400 hover:text-calith-orange rounded-xl transition-all border border-white/5 text-[10px] font-bold uppercase gap-2">
-                    <i data-lucide="edit-2" class="w-3 h-3"></i> DÜZENLE
-                </button>
-                <button onclick="deleteAnnouncement('${a.id}')" class="h-10 flex items-center justify-center bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-500 rounded-xl transition-all border border-white/5 text-[10px] font-bold uppercase gap-2">
-                    <i data-lucide="trash-2" class="w-3 h-3"></i> SİL
-                </button>
+            <div class="flex gap-1.5 shrink-0">
+                <button onclick="editAnnouncement('${a.id}')" title="Düzenle" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-lg md:rounded-xl transition-all border border-white/5"><i data-lucide="edit-2" class="w-3.5 h-3.5 md:w-4 md:h-4"></i></button>
+                <button onclick="deleteAnnouncement('${a.id}')" title="Sil" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-lg md:rounded-xl transition-all border border-white/5"><i data-lucide="trash-2" class="w-3.5 h-3.5 md:w-4 md:h-4"></i></button>
             </div>
         </div>
         `;
