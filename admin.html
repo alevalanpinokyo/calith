@@ -399,31 +399,30 @@
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
                             <textarea id="prod-desc" rows="3" placeholder="Ürün açıklaması..." title="Ürün Açıklaması" class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none mt-1 text-white resize-none placeholder-gray-600"></textarea>
                         </div>
-                        <button onclick="saveProduct()" class="w-full btn-primary py-4 rounded-xl font-bold uppercase tracking-widest">Ürünü Kaydet</button>
-                    </div>
-                </div>
-                <div class="lg:col-span-2 space-y-6">
+</div>
+                        </div>
+                        <div class="lg:col-span-2 space-y-6">
                     <h3 class="font-display text-2xl font-bold uppercase">Ürün Listesi</h3>
                     <div id="admin-product-list" class="grid sm:grid-cols-2 gap-4"></div>
                 </div>
             </div>
 
         <div id="section-announcements" class="hidden grid lg:grid-cols-3 gap-6 md:gap-12 mt-12">
-            <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-white/10">
-                <h3 class="font-display text-2xl font-bold uppercase">DUYURU <span class="text-calith-orange">EKLE</span></h3>
+            <div class="lg:col-span-1 space-y-6 bg-calith-gray/50 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl border border-white/10">
+                <h3 class="font-display text-xl md:text-2xl font-bold uppercase">DUYURU <span class="text-calith-orange">EKLE</span></h3>
                 <input type="hidden" id="ann-edit-id">
                 <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Etiket (Örn: Yaklaşan Etkinlik)</label>
-                        <input type="text" id="ann-label" placeholder="Üst Başlık..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                    <div class="space-y-2">
+                        <label class="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-1">ETİKET (ÖRN: YAKLAŞAN ETKİNLİK)</label>
+                        <input type="text" id="ann-label" placeholder="Üst Başlık..." class="w-full bg-white/5 border border-white/10 rounded-xl p-3 md:p-4 text-sm md:text-base text-white placeholder-gray-500 focus:outline-none focus:border-calith-orange transition-all">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Ana Başlık</label>
-                        <input type="text" id="ann-title" placeholder="Ana Başlık..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white placeholder-gray-600">
+                    <div class="space-y-2">
+                        <label class="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-1">ANA BAŞLIK</label>
+                        <input type="text" id="ann-title" placeholder="Ana Başlık..." class="w-full bg-white/5 border border-white/10 rounded-xl p-3 md:p-4 text-sm md:text-base text-white placeholder-gray-500 focus:outline-none focus:border-calith-orange transition-all">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Açıklama</label>
-                        <textarea id="ann-desc" rows="2" placeholder="Duyuru metni..." class="w-full bg-black/40 border border-white/10 px-4 py-3 rounded-xl outline-none focus:border-calith-orange text-white resize-none placeholder-gray-600"></textarea>
+                    <div class="space-y-2">
+                        <label class="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-1">AÇIKLAMA</label>
+                        <textarea id="ann-desc" rows="2" placeholder="Duyuru metni..." class="w-full bg-white/5 border border-white/10 rounded-xl p-3 md:p-4 text-sm md:text-base text-white placeholder-gray-500 focus:outline-none focus:border-calith-orange transition-all resize-none"></textarea>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -635,7 +634,7 @@
     </div>
 </section>
 
-    <script src="js/app.js?v=202604281929"></script>
+    <script src="js/app.js?v=202604281935"></script>
     <script>
         lucide.createIcons();
         function switchAdminTab(tab) {
