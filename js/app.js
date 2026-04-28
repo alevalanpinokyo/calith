@@ -2678,6 +2678,7 @@ function renderAdminHomecards() {
     const mainCards = filtered.filter(hc => hc.id !== 'schedule_settings');
     const scheduleSettings = filtered.find(hc => hc.id === 'schedule_settings');
 
+    list.innerHTML = mainCards.map(hc => `
         <div class="glass-card hover:bg-white/5 p-4 md:p-5 rounded-2xl flex items-center justify-between group transition-all duration-300 gap-3">
             <div class="flex items-center gap-3 md:gap-5 min-w-0">
                 <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-calith-orange/10 flex items-center justify-center text-xl md:text-3xl shadow-inner shrink-0">${hc.icon || '📌'}</div>
