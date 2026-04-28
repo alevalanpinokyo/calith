@@ -2207,23 +2207,37 @@ function renderAdminAnnouncements() {
             : `<div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-${a.color} flex-shrink-0"><i data-lucide="${a.icon}" class="w-5 h-5"></i></div>`;
 
         return `
-        <div class="bg-calith-dark/40 border border-white/5 p-4 rounded-2xl flex flex-col gap-4 group hover:border-calith-orange/30 transition-all">
-            <div class="flex items-start gap-3 min-w-0">
-                <div class="flex-shrink-0">
-                    ${mediaHtml}
-                </div>
-                <div class="min-w-0 flex-1">
-                    <h4 class="font-bold text-sm text-white leading-tight mb-1.5">${a.title}</h4>
-                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span class="text-[10px] text-calith-orange font-black uppercase tracking-widest">${a.label}</span>
-                        <span class="text-[10px] text-gray-700 font-bold">•</span>
-                        <span class="text-[10px] text-gray-500 font-medium truncate max-w-[120px]">${a.link.replace('https://', '').replace('http://', '')}</span>
+        <div class="bg-calith-dark/40 border border-white/5 p-5 rounded-[2rem] flex flex-col gap-5 group hover:border-calith-orange/30 transition-all relative overflow-hidden">
+            <!-- Arka plan parlaması -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-calith-orange/5 blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-calith-orange/10 flex items-center justify-center text-calith-orange">
+                        <i data-lucide="${a.icon}" class="w-4 h-4"></i>
                     </div>
+                    <span class="text-[10px] text-calith-orange font-black uppercase tracking-[0.2em]">${a.label}</span>
                 </div>
+                <div class="text-[9px] text-gray-600 font-bold font-mono">${a.link.replace('https://', '').replace('http://', '').substring(0, 20)}...</div>
             </div>
-            <div class="flex gap-2 shrink-0 pt-3 border-t border-white/5">
-                <button onclick="editAnnouncement('${a.id}')" class="flex-1 h-9 px-3 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[10px] font-bold uppercase gap-2"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i>Düzenle</button>
-                <button onclick="deleteAnnouncement('${a.id}')" class="flex-1 h-9 px-3 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[10px] font-bold uppercase gap-2"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i>Sil</button>
+
+            <div class="space-y-4">
+                <h4 class="font-display text-lg font-black text-white leading-tight uppercase italic tracking-tight">${a.title}</h4>
+                
+                ${(a.image && a.image.trim() !== '') ? `
+                <div class="w-full aspect-[9/16] max-h-[300px] rounded-2xl overflow-hidden border border-white/10 bg-black/50">
+                    <img src="${a.image}" class="w-full h-full object-cover">
+                </div>
+                ` : ''}
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="editAnnouncement('${a.id}')" class="h-12 flex items-center justify-center bg-white/5 hover:bg-calith-orange/20 text-gray-400 hover:text-calith-orange rounded-xl transition-all border border-white/5 text-[10px] font-black uppercase tracking-widest gap-2">
+                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i> DÜZENLE
+                </button>
+                <button onclick="deleteAnnouncement('${a.id}')" class="h-12 flex items-center justify-center bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-500 rounded-xl transition-all border border-white/5 text-[10px] font-black uppercase tracking-widest gap-2">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> SİL
+                </button>
             </div>
         </div>
         `;
