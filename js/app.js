@@ -2223,12 +2223,18 @@ function renderAdminAnnouncements() {
             if (ytMatch) {
                 const videoId = ytMatch[1];
                 const isShorts = image.includes('/shorts/');
-                const inlineStyle = isShorts ? 'width: 100%; max-width: 220px; margin: 0 auto; aspect-ratio: 9/16; border: 0;' : 'width: 100%; aspect-ratio: 16/9; border: 0;';
                 
-                mediaHtml = `
-                <div class="w-full bg-black/30 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 mt-2">
-                    <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="${inlineStyle}" allowfullscreen></iframe>
-                </div>`;
+                if (isShorts) {
+                    mediaHtml = `
+                    <div class="w-full max-w-[220px] mx-auto bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 177.77%;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                    </div>`;
+                } else {
+                    mediaHtml = `
+                    <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 56.25%;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                    </div>`;
+                }
             } else {
                 mediaHtml = `
                 <div class="w-full bg-black/30 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 mt-2 max-h-[250px]">
