@@ -2207,21 +2207,23 @@ function renderAdminAnnouncements() {
             : `<div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-${a.color} flex-shrink-0"><i data-lucide="${a.icon}" class="w-5 h-5"></i></div>`;
 
         return `
-        <div class="bg-calith-dark/40 border border-white/5 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between group hover:border-calith-orange/30 transition-all gap-4">
-            <div class="flex items-start gap-4 min-w-0">
-                ${mediaHtml}
+        <div class="bg-calith-dark/40 border border-white/5 p-4 rounded-2xl flex flex-col gap-4 group hover:border-calith-orange/30 transition-all">
+            <div class="flex items-start gap-3 min-w-0">
+                <div class="flex-shrink-0">
+                    ${mediaHtml}
+                </div>
                 <div class="min-w-0 flex-1">
-                    <h4 class="font-bold text-sm md:text-base text-white leading-snug mb-1">${a.title}</h4>
+                    <h4 class="font-bold text-sm text-white leading-tight mb-1.5">${a.title}</h4>
                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <span class="text-[10px] text-calith-orange font-black uppercase tracking-widest">${a.label}</span>
-                        <span class="text-[10px] text-gray-600 font-bold">•</span>
-                        <span class="text-[10px] text-gray-500 font-medium truncate max-w-[150px] md:max-w-none">${a.link.replace('https://', '').replace('http://', '')}</span>
+                        <span class="text-[10px] text-gray-700 font-bold">•</span>
+                        <span class="text-[10px] text-gray-500 font-medium truncate max-w-[120px]">${a.link.replace('https://', '').replace('http://', '')}</span>
                     </div>
                 </div>
             </div>
-            <div class="flex gap-2 shrink-0 justify-end pt-2 sm:pt-0 border-t border-white/5 sm:border-0">
-                <button onclick="editAnnouncement('${a.id}')" class="flex-1 sm:flex-none h-10 px-4 sm:w-10 sm:px-0 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all border border-white/5"><i data-lucide="edit-2" class="w-4 h-4"></i><span class="sm:hidden ml-2 text-[10px] font-bold uppercase">Düzenle</span></button>
-                <button onclick="deleteAnnouncement('${a.id}')" class="flex-1 sm:flex-none h-10 px-4 sm:w-10 sm:px-0 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-xl transition-all border border-white/5"><i data-lucide="trash-2" class="w-4 h-4"></i><span class="sm:hidden ml-2 text-[10px] font-bold uppercase">Sil</span></button>
+            <div class="flex gap-2 shrink-0 pt-3 border-t border-white/5">
+                <button onclick="editAnnouncement('${a.id}')" class="flex-1 h-9 px-3 flex items-center justify-center bg-white/5 hover:bg-calith-orange text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[10px] font-bold uppercase gap-2"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i>Düzenle</button>
+                <button onclick="deleteAnnouncement('${a.id}')" class="flex-1 h-9 px-3 flex items-center justify-center bg-white/5 hover:bg-red-500 text-gray-400 hover:text-white rounded-xl transition-all border border-white/5 text-[10px] font-bold uppercase gap-2"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i>Sil</button>
             </div>
         </div>
         `;
