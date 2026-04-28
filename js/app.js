@@ -2223,12 +2223,11 @@ function renderAdminAnnouncements() {
             if (ytMatch) {
                 const videoId = ytMatch[1];
                 const isShorts = image.includes('/shorts/');
-                // Shorts ise çok uzamasın diye genişlik kısıtlaması, normal video ise yatay oran
-                const aspectClass = isShorts ? 'aspect-[9/16] w-full max-w-[220px] mx-auto' : 'aspect-video w-full';
+                const inlineStyle = isShorts ? 'width: 100%; max-width: 220px; margin: 0 auto; aspect-ratio: 9/16; border: 0;' : 'width: 100%; aspect-ratio: 16/9; border: 0;';
                 
                 mediaHtml = `
                 <div class="w-full bg-black/30 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 mt-2">
-                    <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="${aspectClass}" style="border: 0;" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" style="${inlineStyle}" allowfullscreen></iframe>
                 </div>`;
             } else {
                 mediaHtml = `
