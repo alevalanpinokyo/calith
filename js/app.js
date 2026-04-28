@@ -2227,12 +2227,12 @@ function renderAdminAnnouncements() {
                 if (isShorts) {
                     mediaHtml = `
                     <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full aspect-[9/16] max-w-[220px] mx-auto block" style="border: 0;" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full block" style="border: 0; aspect-ratio: 9/16; max-width: 220px; margin: 0 auto;" allowfullscreen></iframe>
                     </div>`;
                 } else {
                     mediaHtml = `
                     <div class="w-full bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full aspect-video block" style="border: 0;" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" class="w-full block" style="border: 0; aspect-ratio: 16/9;" allowfullscreen></iframe>
                     </div>`;
                 }
             } else {
