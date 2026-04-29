@@ -10,6 +10,35 @@ function getSupabase() {
     return null;
 }
 
+let wakeLock = null;
+
+// Screen Wake Lock Helper
+async function requestWakeLock() {
+    if (!('wakeLock' in navigator)) return;
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log('[Calith] Screen Wake Lock aktif. Ekran kapanmayacak! 🛡️');
+    } catch (err) {
+        console.error(`[Calith] Wake Lock Hatası: ${err.message}`);
+    }
+}
+
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release().then(() => {
+            wakeLock = null;
+            console.log('[Calith] Screen Wake Lock serbest bırakıldı.');
+        });
+    }
+}
+
+// Görünürlük değiştiğinde Wake Lock'u tazele
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible' && typeof workoutSession !== 'undefined' && workoutSession?.active) {
+        await requestWakeLock();
+    }
+});
+
 let products = JSON.parse(localStorage.getItem('calith_products_fallback')) || [
     { id: 1, name: "Kapı Barfiks Barı", category: "bar", price: 349, oldPrice: 449, image: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=800&auto=format&fit=crop", desc: "Kolay kurulum, 130kg taşıma kapasitesi. Köpük tutamaçlar.", badge: "ÇOK SATAN" },
     { id: 2, name: "Duvar Barfiks Pro", category: "bar", price: 899, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop", desc: "Çoklu tutuş pozisyonu. Çelik konstrüksiyon.", badge: "PRO" },
@@ -3858,7 +3887,7 @@ function renderProfileSection() {
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">ANA HEDEF</span>
                     </div>
-                    <div id="profile-goal" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold leading-tight truncate w-full">--</div>
+                    <div id="profile-goal" class="text-sm sm:text-base md:text-sm xl:text-lg font-display font-bold leading-tight w-full break-words">--</div>
                 </div>
                 <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
                     <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
@@ -3867,7 +3896,7 @@ function renderProfileSection() {
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">DENEYİM</span>
                     </div>
-                    <div id="profile-level" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
+                    <div id="profile-level" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold text-calith-accent uppercase italic opacity-50">YÜKLENİYOR...</div>
                 </div>
                 <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
                     <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
@@ -4408,7 +4437,7 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
 window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     // 1. Logu cache'den bul
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
-    if (!log) return showToast('Hata: Log bulunamadı.');
+    if (!log) return showToast('Henüz bu antrenman için geçmiş verin yok kanka. İlk rekoru şimdi kıralım! 🦾');
 
     // 2. Onay al
     if (!confirm("Bu seti silmek istediğine emin misin kanka?")) return;
@@ -4548,7 +4577,7 @@ function copyWorkoutToClipboard(logId) {
     
     if (!log) {
         console.error('[Calith] Log bulunamadı!');
-        return showToast('Hata: Veri bulunamadı.');
+        return showToast('Bir şeyler eksik gibi kanka, veriyi bulamadım. Yenilemeyi dener misin? ⚡');
     }
 
     let data = log.workout_data;
@@ -5033,52 +5062,54 @@ function ensureWorkoutOverlay() {
         if (overlayEl) overlayEl.remove(); // Eskisini temizle ki yeni kodlar (akıllı kutular) gelsin
         const overlayHTML = `
         <section id="workout-mode" class="fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black">
-            <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-50">
-                <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-calith-orange/5 blur-[80px] rounded-full"></div>
-                <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-calith-accent/5 blur-[80px] rounded-full"></div>
+            <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-80">
+                <div class="absolute -top-[20%] -left-[20%] w-[80%] h-[80%] bg-calith-orange/[0.12] blur-[120px] rounded-full animate-pulse"></div>
+                <div class="absolute -bottom-[20%] -right-[20%] w-[80%] h-[80%] bg-calith-accent/[0.05] blur-[120px] rounded-full"></div>
             </div>
             <div class="fixed top-0 left-0 right-0 h-1 bg-white/5 z-[1020]">
                 <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange via-white to-calith-accent transition-all duration-700 w-0"></div>
             </div>
-            <div class="sticky top-0 z-[1010] px-6 py-8 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5">
-                <div class="max-w-xl mx-auto flex items-center justify-between">
-                    <div class="flex items-center gap-5">
-                        <button onclick="confirmExitWorkout()" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10 group">
-                            <i data-lucide="x" class="w-5 h-5"></i>
+            <div class="sticky top-0 z-[1010] px-6 py-4 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
+                <div class="max-w-xl mx-auto flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <button onclick="confirmExitWorkout()" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10 active:scale-90">
+                            <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">PROGRAM ADI</h2>
-                                <span id="workout-day-type-badge" class="hidden text-[7px] font-black px-1.5 py-0.5 rounded bg-calith-orange text-black uppercase tracking-tighter"></span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <h2 id="workout-program-title" class="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate">PROGRAM ADI</h2>
+                                <span id="workout-day-type-badge" class="hidden text-[7px] font-black px-1.5 py-0.5 rounded bg-calith-orange text-black uppercase shrink-0"></span>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-2 h-2 rounded-full bg-calith-orange animate-pulse"></div>
-                                <p id="workout-timer" class="text-lg font-mono font-bold text-white tracking-tighter">00:00:00</p>
+                            <div class="flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-calith-orange animate-pulse"></div>
+                                <p id="workout-timer" class="text-base font-mono font-bold text-white tracking-tighter">00:00:00</p>
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <span id="workout-move-info" class="text-[10px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-4 py-2 rounded-full border border-calith-orange/20">1 / 5 HAREKET</span>
+                    <div class="shrink-0">
+                        <span id="workout-move-info" class="text-[9px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-3 py-1.5 rounded-lg border border-calith-orange/20 whitespace-nowrap">1 / 5 HAREKET</span>
                     </div>
                 </div>
             </div>
-            <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
-                <div id="workout-exercise-card" class="relative group mb-12">
-                    <button onclick="moveExerciseToEnd()" class="absolute top-8 right-8 z-20 w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center justify-center text-gray-500 hover:text-calith-orange hover:bg-calith-orange/10 transition-all group/btn active:scale-95 shadow-xl" title="Hareketi Sona Bırak">
-                        <i data-lucide="chevrons-down" class="w-5 h-5 mb-0.5"></i>
-                        <span class="text-[7px] font-black uppercase tracking-tighter opacity-0 group-hover/btn:opacity-100 transition-opacity">SONA AT</span>
-                    </button>
-                    <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                    <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm">
-                        <div class="relative z-10">
-                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">ŞU ANKİ EGZERSİZ</span>
-                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-6 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
+            <div class="max-w-xl mx-auto px-6 py-4 sm:py-6 relative z-10">
+                <div id="workout-exercise-card" class="relative group mb-6">
+                        <div class="relative z-10 flex flex-col items-center text-center w-full">
+                            <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-2 block w-full text-center">ŞU ANKİ EGZERSİZ</span>
+                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-tight text-white w-full text-center line-clamp-2 px-4">YÜKLENİYOR...</h3>
                             
-                            <div class="flex flex-col items-center gap-5">
-                                <!-- HEDEF ROZETİ (ÜSTE ALINDI) -->
-                                <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 rounded-2xl border border-white/10 shadow-xl">
-                                    <i data-lucide="target" class="w-4 h-4 text-calith-orange"></i>
-                                    <p id="workout-exercise-target" class="text-[11px] text-gray-300 font-black uppercase tracking-[0.2em]">HEDEF: -</p>
+                            <div class="flex flex-col items-center gap-4 w-full">
+                                <!-- HEDEF ROZETİ VE SONA AT -->
+                                <div class="flex flex-col items-center gap-6 w-full">
+                                    <div id="workout-exercise-target" class="inline-flex items-center justify-center px-5 py-2.5 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+                                        <!-- Dinamik olarak dolacak: SET | TEKRAR + BW/ICON -->
+                                    </div>
+                                    
+                                    <div class="pt-2">
+                                        <button onclick="moveExerciseToEnd()" class="flex items-center justify-center gap-2 px-7 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-xl text-xs font-black text-calith-orange hover:bg-calith-orange hover:text-black transition-all uppercase tracking-widest active:scale-95 group shadow-lg shadow-calith-orange/5 mx-auto">
+                                            <i data-lucide="list-end" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
+                                            SONA AT
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <!-- VIDEO BUTONU (ALTA ALINDI VE ŞEKİL YAPILDI) -->
@@ -5102,50 +5133,51 @@ function ensureWorkoutOverlay() {
                         <button id="btn-skip-rest" onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DİNLENMEYİ ATLA</button>
                     </div>
                 </div>
-                <div class="mb-12">
-                    <button id="btn-exercise-timer" class="hidden w-full mb-8 py-5 bg-calith-orange/10 border border-calith-orange/30 rounded-3xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.3em] hover:bg-calith-orange hover:text-black transition-all group">
+                <!-- Inputs Grid Moved Up -->
+                <div id="workout-recommendation-box" class="hidden -mb-2 px-6 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-2">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-calith-orange"></i>
+                        <span id="workout-recommendation-text" class="text-[10px] font-black text-white uppercase tracking-widest">ÖNERİLEN: -- KG</span>
+                    </div>
+                    <span id="workout-recommendation-reason" class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">REKORA GÖRE</span>
+                </div>
+
+                <div id="workout-inputs-grid" class="grid grid-cols-2 gap-4">
+                    <div id="workout-weight-container" class="relative group">
+                        <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[8px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
+                        <input type="number" id="workout-input-weight" value="0" min="0" step="0.5" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-4 text-2xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                    </div>
+                    <div id="workout-reps-container" class="relative group">
+                        <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[8px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
+                        <input type="number" id="workout-input-reps" value="10" min="0" step="1" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-4 text-2xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 pt-2 mb-6">
+                    <button id="btn-complete-set" onclick="completeSet()" class="w-full bg-calith-orange text-white py-4 rounded-2xl font-black text-sm uppercase tracking-[0.3em] shadow-[0_15px_40px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
+                        <span>SETİ TAMAMLA</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full bg-white/5 text-gray-500 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] border border-white/5 hover:bg-white/10 hover:text-white transition-all">SIRADAKİ HAREKET</button>
+                </div>
+
+                <!-- Set History Moved to Bottom -->
+                <div class="mb-6 pb-20 border-t border-white/5 pt-8">
+                    <button id="btn-exercise-timer" class="hidden w-full mb-6 py-4 bg-calith-orange/10 border border-calith-orange/30 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.3em] hover:bg-calith-orange hover:text-black transition-all group">
                         <i data-lucide="timer" class="w-5 h-5 animate-pulse"></i>
                         <span>SÜRE BAŞLAT</span>
                     </button>
-                    <div class="flex items-center justify-between mb-6 px-2">
+                    <div class="flex items-center justify-between mb-4 px-2">
                         <div class="flex items-center gap-2">
                             <span class="w-1.5 h-4 bg-calith-orange rounded-full"></span>
                             <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">SET GEÇMİŞİ</h4>
                         </div>
                         <span id="workout-set-info" class="text-[10px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-lg">SET 1</span>
                     </div>
-                    <div id="workout-sets-list" class="grid grid-cols-1 gap-3">
-                        <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                            <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
+                    <div id="workout-sets-list" class="grid grid-cols-1 gap-2">
+                        <div class="py-6 text-center border-2 border-dashed border-white/5 rounded-2xl">
+                            <p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
                         </div>
-                    </div>
-                </div>
-                <div class="space-y-8 pb-20">
-                    <div id="workout-recommendation-box" class="hidden -mb-4 px-6 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-2">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-calith-orange"></i>
-                            <span id="workout-recommendation-text" class="text-[10px] font-black text-white uppercase tracking-widest">ÖNERİLEN: -- KG</span>
-                        </div>
-                        <span id="workout-recommendation-reason" class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">REKORA GÖRE</span>
-                    </div>
-
-                    <div id="workout-inputs-grid" class="grid grid-cols-2 gap-6">
-                        <div id="workout-weight-container" class="relative group">
-                            <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
-                            <input type="number" id="workout-input-weight" value="0" min="0" step="0.5" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
-                        </div>
-                        <div id="workout-reps-container" class="relative group">
-                            <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
-                            <input type="number" id="workout-input-reps" value="10" min="0" step="1" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
-                        <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
-                            <span>SETİ TAMAMLA</span>
-                            <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -5157,7 +5189,7 @@ function ensureWorkoutOverlay() {
 async function startWorkoutMode(programId, dayIndex = 0) {
     // Hem programPosts içinde hem de tüm posts içinde ara (sayfa farketmeksizin)
     const p = posts.find(item => String(item.id) === String(programId));
-    if (!p) return showToast('Program verisi bulunamadı.');
+    if (!p) return showToast('Program verisi yüklenemedi kanka, bağlantını kontrol eder misin? 🕵️‍♂️');
 
     // Program içeriğini parse et
     let days = [];
@@ -5247,6 +5279,9 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     // Zamanlayıcıyı kesin olarak başlat
     if (!workoutSession.startTime) workoutSession.startTime = Date.now();
     startWorkoutClock();
+
+    // Ekranın kapanmasını engelle
+    requestWakeLock();
 
     // Kalibrasyon Kontrolü
     const firstEx = workoutSession.exercises[0];
@@ -5446,9 +5481,18 @@ function updateWorkoutUI() {
     // Metin Güncellemeleri
     if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
     if (els.target) {
-        let targetText = (ex.target || '').toUpperCase();
-        if (isBW && !isTimed) targetText = targetText.replace('VÜCUT AĞIRLIĞI', '').trim() + ' (VÜCUT AĞIRLIĞI)';
-        els.target.textContent = targetText;
+        const unit = isTimed ? 'SN' : (isMax ? 'MAX' : 'TEKRAR');
+        const typeIcon = isBW ? '<span class="ml-2 px-2 py-0.5 bg-calith-orange text-black text-[10px] font-black rounded-md uppercase tracking-tighter shrink-0">BW</span>' : '<i data-lucide="weight" class="ml-2 w-4 h-4 text-gray-500 shrink-0"></i>';
+        
+        els.target.innerHTML = `
+            <div class="flex items-center gap-2 text-xs font-black tracking-widest uppercase whitespace-nowrap">
+                <span class="text-white">${ex.targetSets || 4} SET</span>
+                <span class="text-white/20 font-light">|</span>
+                <span class="text-gray-400">${isMax ? 'MAX' : (ex.targetReps || 12)} ${unit}</span>
+                ${typeIcon}
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
     }
     if (els.title) els.title.textContent = workoutSession.program?.title?.toUpperCase() || 'CALITH ANTRENMAN';
     if (els.move) els.move.textContent = `${workoutSession.currExerciseIdx + 1} / ${workoutSession.exercises.length} HAREKET`;
@@ -5685,8 +5729,7 @@ function renderWorkoutSets() {
     container.innerHTML = ex.sets.map((set, i) => `
         <div class="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl" style="animation: fade-in 0.3s ease-out forwards;">
             <div class="flex items-center gap-3">
-                <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">${i + 1}. SET</span>
-                <div class="h-4 w-px bg-white/5"></div>
+                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest bg-white/5 px-2.5 py-1 rounded-lg">${i + 1}. SET</span>
             </div>
             <div class="flex items-center gap-4">
                 ${(!isTimed && !isBW) ? `
@@ -5695,12 +5738,12 @@ function renderWorkoutSets() {
                     <span class="text-sm font-mono font-bold text-white">${set.weight}kg</span>
                 </div>
                 ` : ''}
-                <div class="flex items-center gap-2 bg-calith-orange/10 px-3 py-1 rounded-lg border border-calith-orange/20">
+                <div class="flex items-center gap-2 bg-calith-orange/10 px-3 py-1.5 rounded-lg border border-calith-orange/20">
                     <i data-lucide="${isTimed ? 'clock' : 'zap'}" class="w-3.5 h-3.5 text-calith-orange"></i>
                     <span class="text-sm font-mono font-bold text-calith-orange">${set.reps}${isTimed ? 'sn' : ''}</span>
                 </div>
-                <button onclick="deleteWorkoutSet(${i})" class="w-7 h-7 flex items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 hover:text-red-300 transition-all active:scale-90 ml-1" title="Seti Sil">
-                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                <button onclick="deleteActiveSet(${i})" class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all active:scale-90 ml-1" title="Seti Sil">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
@@ -5709,7 +5752,7 @@ function renderWorkoutSets() {
     if (window.lucide) lucide.createIcons();
 }
 
-function deleteWorkoutSet(index) {
+function deleteActiveSet(index) {
     if (!workoutSession) return;
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     if (!ex || !ex.sets[index]) return;
@@ -6083,9 +6126,10 @@ function startWorkoutClock() {
 }
 
 function confirmExitWorkout() {
-    if (confirm('Antrenmanı bitirmeden çıkmak istediğine emin misin? Verilerin kaydedilmeyecek.')) {
+    showConfirmModal("Antrenmanı bitirmeden çıkmak istediğine emin misin kanka? Verilerin kaydedilmeyecek.", () => {
+        releaseWakeLock(); // Ekran kilidini serbest bırak
         closeWorkoutMode();
-    }
+    });
 }
 
 function closeWorkoutMode() {
@@ -6097,6 +6141,8 @@ function closeWorkoutMode() {
 }
 
 async function finishWorkout() {
+    // Ekran kilidini serbest bırak
+    releaseWakeLock();
     showToast('Antrenman Tamamlandı! Veriler senkronize ediliyor...');
 
     // Veriyi hazırla

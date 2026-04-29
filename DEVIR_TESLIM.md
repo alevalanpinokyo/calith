@@ -18,6 +18,10 @@ Bugün Calith projesinde hem Admin Panelini hem de Program Detay (Skills) sayfas
 - **Pazartesi Chevron Fix:** İlk gün kartında kaybolan ok butonu ve aksiyon butonu geri getirildi.
 - **Overlap (Çakışma) Çözümü:** Başlık altındaki açıklama metninin orta seviye kartıyla çakışması `mb-16` ve `mt-20` ile kalıcı olarak düzeltildi.
 
+#### 3. Profil Sayfası UI İyileştirmeleri
+- **Truncate Fix:** 'Ana Hedef' kartındaki metin kırpılması kaldırıldı, tam görünürlük sağlandı.
+- **Flicker Fix:** Seviye bilgisindeki yüklenme öncesi 'Başlangıç' çakması giderildi.
+
 ---
 
 ### ⏳ Yarım Kalanlar & Bir Sonraki Odak (ACİL)
