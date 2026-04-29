@@ -76,9 +76,10 @@
 
             <!-- Actions (Sağ Kolon - Her zaman sağda) -->
             <div class="flex items-center gap-3 justify-end">
-                <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 lg:bg-transparent lg:border-none transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> <span class="auth-text tracking-wider whitespace-nowrap text-[10px] lg:text-base">PROFİLİM</span>
+                <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base hidden lg:flex items-center gap-2 transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> <span class="auth-text tracking-wider whitespace-nowrap">PROFİLİM</span>
                 </a>
+                <a href="skills.html" class="hidden md:block btn-primary px-6 py-3 rounded-xl font-bold text-sm text-center shadow-xl shadow-calith-orange/20 hover:scale-105 transition-transform whitespace-nowrap">Hemen Başla</a>
                 <button class="lg:hidden p-2 text-white hover:text-calith-orange transition-colors" onclick="toggleMobileMenu()" aria-label="Menü">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 text-white"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                 </button>
@@ -95,7 +96,7 @@
             <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ÖĞREN</a>
             <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">HAKKIMIZDA</a>
             <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
-            <!-- Profil linki header'a taşındı -->
+            <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base block py-3 transition-colors flex items-center gap-3 border-t border-white/10 mt-4 pt-4 font-bold text-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> <span class="auth-text">PROFİLİM</span></a>
         </div>
     </div>
 </nav>
@@ -618,7 +619,7 @@
 
 
 
-    <script src="js/app.js?v=202604291846"></script>
+    <script src="js/app.js?v=202604291241"></script>
     <script>
         
         // Intersection Observer for animations

@@ -55,8 +55,8 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **Kişisel İstatistik Paneli:** Program bazlı gelişim grafiklerinin kullanıcıya özel sunulması.
 
 ### 🚨 DETAYLI TEST EDİLECEK LİSTESİ (ACİL)
-- [x] (2026-04-29) Mobil Profil & Arayüz: Taşma, kart yayılımı, ortalama, font eşitleme ve dinamik renk (Experience Level) sorunları tamamen giderildi. [TAMAM ✅]
-- [x] (2026-04-29) **Feedback Renkleri:** Kullanıcı geri bildirimine göre renkler ve görsel uyarılar düzeltildi. [TAMAM ✅]
+- [x] **Mobil Arayüz:** Mobildeki taşma ve kayma sorunları giderildi. [TAMAM ✅]
+- [x] **Feedback Renkleri:** Antrenman sonu set bildirimlerindeki (Hafif/İdeal/Ağır) renkler geri getirildi. [TAMAM ✅]
 - [x] **Admin Kullanıcı Silme:** RPC fonksiyonu ve CASCADE silme işlemi kuruldu. [TAMAM ✅]
 - [x] **Geçmiş Antrenman Düzenleme:** Setleri düzenleme/silme ve boş kalan hareketi uçurma eklendi. [TAMAM ✅]
 - [x] **Antrenman Kaydı Silme:** Geçmişten antrenman silme işlemi (CASCADE) sorunsuz çalışıyor. [TAMAM ✅]

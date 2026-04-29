@@ -47,9 +47,10 @@ def get_nav_template(active_page):
 
             <!-- Actions (Sağ Kolon - Her zaman sağda) -->
             <div class="flex items-center gap-3 justify-end">
-                <a href="profile.html" class="{desktop_class('profile')} flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 lg:bg-transparent lg:border-none transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
-                    {user_circle_svg} <span class="auth-text tracking-wider whitespace-nowrap text-[10px] lg:text-base">PROFİLİM</span>
+                <a href="profile.html" class="{desktop_class('profile')} hidden lg:flex items-center gap-2 transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
+                    {user_circle_svg} <span class="auth-text tracking-wider whitespace-nowrap">PROFİLİM</span>
                 </a>
+                {'<a href="skills.html" class="hidden md:block btn-primary px-6 py-3 rounded-xl font-bold text-sm text-center shadow-xl shadow-calith-orange/20 hover:scale-105 transition-transform whitespace-nowrap">Hemen Başla</a>' if active_page == 'index' else ''}
                 <button class="lg:hidden p-2 text-white hover:text-calith-orange transition-colors" onclick="toggleMobileMenu()" aria-label="Menü">
                     {menu_svg}
                 </button>
@@ -66,7 +67,7 @@ def get_nav_template(active_page):
             <a href="blog.html" class="{mobile_class('blog')} block py-2 transition-colors">ÖĞREN</a>
             <a href="about.html" class="{mobile_class('about')} block py-2 transition-colors">HAKKIMIZDA</a>
             <a href="premium.html" class="{mobile_class('premium')} block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
-            <!-- Profil linki header'a taşındı -->
+            <a href="profile.html" class="{mobile_class('profile')} block py-3 transition-colors flex items-center gap-3 border-t border-white/10 mt-4 pt-4 font-bold text-lg">{user_circle_svg} <span class="auth-text">PROFİLİM</span></a>
         </div>
     </div>
 </nav>'''

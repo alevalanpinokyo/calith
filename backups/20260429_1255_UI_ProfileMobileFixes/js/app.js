@@ -1227,63 +1227,43 @@ function addExerciseRow(dayNum, data = null) {
 
     const rowId = Date.now() + Math.random();
     const row = document.createElement('div');
-    row.className = 'exercise-row flex flex-col gap-3 bg-white/[0.03] p-4 rounded-2xl border border-white/5 group transition-all hover:bg-white/[0.06] hover:border-calith-orange/30';
+    row.className = 'exercise-row flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-2 bg-white/5 p-3 sm:p-2 rounded-xl border border-white/5 group transition-all hover:border-calith-orange/30';
     row.id = `row-${rowId}`;
     row.style.position = 'relative';
 
     row.innerHTML = `
-        <div class="w-full relative">
-            <textarea placeholder="Hareket Adı" rows="1"
-                class="ex-name w-full bg-transparent border-none p-0 text-sm md:text-base font-bold outline-none focus:ring-0 text-white placeholder-white/20 resize-none overflow-hidden leading-snug" 
-                oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; showExerciseSuggestions(this)"
+        <div class="w-full sm:flex-1 relative min-w-0">
+            <input type="text" placeholder="Hareket Adı" 
+                class="ex-name w-full bg-transparent border-none p-0 text-[11px] font-bold outline-none focus:ring-0 text-white placeholder-gray-700" 
+                value="${data ? data.name : ''}"
+                oninput="showExerciseSuggestions(this)"
                 onblur="setTimeout(() => hideExerciseSuggestions(this), 200)"
-                autocomplete="off"
-                style="height: auto; min-height: 24px; display: block;">${data ? data.name : ''}</textarea>
+                autocomplete="off">
             <div class="ex-suggestions hidden absolute z-[100] left-0 right-0 top-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl"></div>
         </div>
-
-        <!-- Alt Satır: Kontroller -->
-        <div class="flex items-center justify-between gap-4 w-full pt-3 border-t border-white/5">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-black/40 border border-white/10 rounded-lg px-3 h-9 overflow-hidden">
-                    <input type="text" placeholder="S" title="Set" class="ex-sets w-8 bg-transparent border-none p-0 text-sm text-center font-mono font-black text-calith-orange outline-none focus:ring-0 h-full" value="${data ? data.sets : ''}">
-                    <span class="text-white/20 text-[10px] font-bold uppercase tracking-widest h-full flex items-center">SET</span>
-                    <div class="w-[1px] h-3 bg-white/10 mx-1"></div>
-                    <input type="text" placeholder="R" title="Tekrar/Sn" class="ex-reps w-12 bg-transparent border-none p-0 text-sm text-center font-mono font-black text-white outline-none focus:ring-0 h-full" value="${data ? data.reps : ''}">
-                    <select title="Tür" class="ex-type bg-transparent border-none p-0 text-[10px] font-black uppercase text-gray-400 outline-none focus:ring-0 cursor-pointer hover:text-white transition-colors h-full py-0">
-                        <option value="reps" ${data && data.type === 'reps' ? 'selected' : ''}>TKR</option>
-                        <option value="secs" ${data && data.type === 'secs' ? 'selected' : ''}>SN</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-black/40 border border-white/10 hover:border-calith-orange/30 transition-all group/bw cursor-pointer" title="Vücut Ağırlığı">
-                    <input type="checkbox" class="ex-is-bw w-3.5 h-3.5 rounded bg-transparent border-white/20 text-calith-orange focus:ring-0 cursor-pointer" ${data && data.isBW ? 'checked' : ''}>
-                    <span class="text-[9px] font-black text-gray-500 group-hover/bw:text-calith-orange transition-colors uppercase">BW</span>
-                </div>
+        <div class="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto shrink-0 border-t sm:border-t-0 sm:border-l border-white/10 pt-3 sm:pt-0 sm:pl-3">
+            <div class="flex items-center gap-1">
+                <input type="text" placeholder="S" title="Set" class="ex-sets w-8 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-calith-orange outline-none focus:ring-0" value="${data ? data.sets : ''}">
+                <span class="text-gray-700 text-[10px]">×</span>
+                <input type="text" placeholder="R" title="Tekrar/Sn" class="ex-reps w-12 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-white outline-none focus:ring-0" value="${data ? data.reps : ''}">
+                <select title="Tür" class="ex-type bg-transparent border-none p-0 text-[9px] font-black uppercase text-gray-500 outline-none focus:ring-0 cursor-pointer">
+                    <option value="reps" ${data && data.type === 'reps' ? 'selected' : ''}>TKR</option>
+                    <option value="secs" ${data && data.type === 'secs' ? 'selected' : ''}>SN</option>
+                </select>
             </div>
-            <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all" title="Hareketi Sil">
-                <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-black/20 border border-white/5" title="Vücut Ağırlığı (Ağırlık Girişi Kapanır)">
+                    <input type="checkbox" class="ex-is-bw w-3 h-3 rounded bg-transparent border-white/20 text-calith-orange focus:ring-0 cursor-pointer" ${data && data.isBW ? 'checked' : ''}>
+                    <span class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">BW</span>
+                </div>
+                <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
+                    <i data-lucide="x" class="w-3 h-3"></i>
+                </button>
+            </div>
         </div>
     `;
 
     list.appendChild(row);
-    
-    // Eski verilerin (yüklenen programlar) otomatik genişlemesini sağla
-    const textarea = row.querySelector('textarea');
-    if (textarea) {
-        // Otomatik genişleme fonksiyonu
-        const adjustHeight = (el) => {
-            el.style.height = '5px';
-            el.style.height = (el.scrollHeight + 5) + 'px';
-        };
-
-        // Yazarken çalışsın
-        textarea.addEventListener('input', () => adjustHeight(textarea));
-        
-        // İlk yüklendiğinde çalışsın
-        setTimeout(() => adjustHeight(textarea), 10);
-    }
-    
     if (window.lucide) lucide.createIcons();
 }
 
@@ -1617,31 +1597,21 @@ function addProgramDayBlock() {
         <button type="button" onclick="this.closest('.prog-day-block').remove()" class="absolute -top-3 -right-3 w-8 h-8 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-500 z-10" title="Günü Sil">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
-        <div class="flex flex-col gap-4 border-b border-white/10 pb-4">
-            <!-- Üst Katman: Numara ve İsim -->
-            <div class="flex items-center gap-4">
-                <div class="w-11 h-11 rounded-2xl bg-calith-orange/10 flex items-center justify-center shrink-0 border border-calith-orange/20 shadow-lg shadow-calith-orange/5">
-                    <span class="text-base font-black text-calith-orange">${displayNum}</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
+                    <span class="text-xs font-black text-calith-orange">${displayNum}</span>
                 </div>
-                <input type="text" id="prog-day-${index}-name" placeholder="GÜN ADI (ÖRN: PAZARTESİ)" 
-                    class="bg-transparent border-none p-0 text-2xl font-black outline-none focus:ring-0 text-white placeholder-white/10 w-full uppercase tracking-tighter">
+                <input type="text" id="prog-day-${index}-name" placeholder="GÜN ADI (ÖRN: GÖĞÜS & TRICEPS)" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
             </div>
-            
-            <!-- Alt Katman: Kontroller (Normal/Rozet) -->
             <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1 bg-black/40 border border-white/10 rounded-xl px-3 h-9 max-w-full overflow-hidden">
-                    <select id="prog-day-${index}-type" class="bg-transparent border-none p-0 text-[10px] font-black uppercase text-gray-400 outline-none focus:ring-0 cursor-pointer hover:text-white transition-colors w-24 text-center shrink-0">
-                        <option value="none">NORMAL</option>
-                        <option value="heavy">HEAVY (H)</option>
-                        <option value="medium">MEDIUM (M)</option>
-                        <option value="light">LIGHT (L)</option>
-                    </select>
-                    <div class="w-[1px] h-3 bg-white/10 mx-1 shrink-0"></div>
-                    <input type="text" id="prog-day-${index}-badge" placeholder="ROZET (ÖRN: DUP)" 
-                        class="day-badge-input bg-transparent border-none p-0 text-[10px] font-black uppercase text-calith-orange placeholder-white/10 outline-none focus:ring-0 text-center transition-all" 
-                        style="width: 80px; min-width: 80px;"
-                        oninput="this.style.width = Math.min(300, Math.max(80, (this.value.length + 2) * 7)) + 'px'">
-                </div>
+                <select id="prog-day-${index}-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
+                    <option value="none">Normal</option>
+                    <option value="heavy">Ağır (H)</option>
+                    <option value="medium">Orta (M)</option>
+                    <option value="light">Hafif (L)</option>
+                </select>
+                <input type="text" id="prog-day-${index}-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
             </div>
         </div>
         <div id="prog-day-${index}-exercises-list" class="space-y-2"></div>
@@ -1672,22 +1642,17 @@ function resetProgramForm() {
 // PROGRAM GÖSTERİM FONKSİYONLARI (SKILLS.HTML)
 // ============================================
 function backToProgramList(skipHistory = false) {
-    const mainSec = document.getElementById('programs');
-    const listSec = document.getElementById('program-list-view');
-    const detailSec = document.getElementById('blog-detail');
-
-    if (mainSec) mainSec.classList.add('hidden');
-    if (detailSec) detailSec.classList.add('hidden');
-    if (listSec) {
-        listSec.classList.remove('hidden');
-        listSec.classList.add('active'); // Görünürlüğü tetikle
-    }
-
     if (!skipHistory) {
+        // URL'den p parametresini temizle, level kalsın
         const url = new URL(window.location.href);
         url.searchParams.delete('p');
         window.history.pushState({ path: url.href }, '', url.href);
     }
+
+    const listSec = document.getElementById('program-list-view');
+    const detailSec = document.getElementById('blog-detail');
+    if (detailSec) detailSec.classList.add('hidden');
+    if (listSec) listSec.classList.remove('hidden');
 }
 
 function backToLevels(skipHistory = false) {
@@ -1757,10 +1722,7 @@ function showProgramLevel(level, titleStr, skipHistory = false) {
 
     if (mainSec) mainSec.classList.add('hidden');
     if (detailSec) detailSec.classList.add('hidden');
-    if (listSec) {
-        listSec.classList.remove('hidden');
-        listSec.classList.add('active'); // Görünürlüğü tetikle
-    }
+    if (listSec) listSec.classList.remove('hidden');
 
     const titleEl = document.getElementById('program-list-title');
     if (titleEl) titleEl.innerHTML = titleStr + ' <span class="gradient-text">PROGRAMLARI</span>';
@@ -1848,7 +1810,6 @@ function showProgramDetail(id, skipHistory = false) {
     if (mainSec) mainSec.classList.add('hidden');
     if (listSec) listSec.classList.add('hidden');
     detailSec.classList.remove('hidden');
-    detailSec.classList.add('active'); // Görünürlüğü anında tetikle
 
     // Hem genel posts hem de kullanıcının özel programları (myPrograms) içinde ara
     let p = posts.find(post => String(post.id) === String(id));
@@ -1910,7 +1871,12 @@ function showProgramDetail(id, skipHistory = false) {
                 if (!day.name && (!day.exercises || day.exercises.length === 0)) return '';
 
                 const exList = day.exercises || [];
-                const isRestDay = exList.length === 0; // Sadece egzersiz listesi tamamen boşsa dinlenme günü say
+                const isRestDay = exList.length === 0 ||
+                    (exList.length === 1 && (
+                        String(exList[0].name || exList[0]).toUpperCase().includes('REST') ||
+                        String(exList[0].name || exList[0]).toUpperCase().includes('DİNLEN') ||
+                        String(exList[0].name || exList[0]).toUpperCase().includes('DINLEN')
+                    ));
 
                 let dayContentHtml = '';
 
@@ -1948,21 +1914,19 @@ function showProgramDetail(id, skipHistory = false) {
                         }
 
                         return `
-                        <div class="flex flex-col p-4 bg-white/[0.03] border border-white/5 rounded-2xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all gap-3">
-                            <!-- Üst Satır: Hareket Adı -->
-                            <div class="flex items-start gap-3">
-                                <div class="w-2 h-2 rounded-full bg-calith-orange mt-1.5 shrink-0 shadow-[0_0_8px_rgba(255,107,53,0.5)]"></div>
-                                <span class="text-sm font-bold text-gray-200 uppercase tracking-tight leading-snug break-words flex-1">${name}</span>
+                        <div class="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl group/item hover:bg-white/[0.06] hover:border-calith-orange/20 transition-all">
+                            <div class="flex items-center gap-3 pr-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-calith-orange group-hover/item:scale-125 transition-transform shrink-0"></div>
+                                <span class="text-[13px] font-bold text-gray-200 uppercase tracking-tight leading-tight">${name}</span>
                             </div>
-                            <!-- Alt Satır: Set & Reps Kutuları -->
-                            <div class="flex items-center justify-center gap-2 pt-2 border-t border-white/[0.03]">
-                                <div class="flex items-center gap-2 bg-black/40 border border-white/5 rounded-xl px-3 py-1.5 min-w-[70px] justify-center shadow-lg group-hover/item:border-calith-orange/20 transition-colors">
-                                    <span class="text-sm font-mono font-black text-calith-orange">${sets}</span>
-                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">SET</span>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 w-[70px] justify-center">
+                                    <span class="text-xs font-mono font-bold text-calith-orange">${sets}</span>
+                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">SET</span>
                                 </div>
-                                <div class="flex items-center gap-2 bg-black/40 border border-white/5 rounded-xl px-3 py-1.5 min-w-[90px] justify-center shadow-lg group-hover/item:border-white/20 transition-colors">
-                                    <span class="text-sm font-mono font-black text-white">${reps}</span>
-                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">${type === 'secs' ? 'SN' : 'TEKRAR'}</span>
+                                <div class="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 w-[85px] justify-center">
+                                    <span class="text-xs font-mono font-bold text-white">${reps}</span>
+                                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">${type === 'secs' ? 'SN' : 'TEKRAR'}</span>
                                 </div>
                             </div>
                         </div>
@@ -1980,35 +1944,18 @@ function showProgramDetail(id, skipHistory = false) {
                 }
 
                 return `
-                <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active relative" id="day-card-${i}">
+                <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active" id="day-card-${i}">
                     <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
                                 <span class="text-sm font-black text-calith-orange">0${i + 1}</span>
                             </div>
-                            <div class="flex flex-col min-w-0">
-                                <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors leading-tight">${day.name || 'GÜN ' + (i + 1)}</h4>
-                                <div class="flex flex-col gap-2 mt-2">
-                                    ${(() => {
-                                        const type = String(day.type || 'none').toLowerCase();
-                                        const badge = String(day.badge || '').trim();
-                                        
-                                        let hmlHtml = '';
-                                        if (type === 'heavy') hmlHtml = `<span class="px-2.5 py-1 rounded-md border text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500 border-red-500/20 w-fit">HEAVY (H)</span>`;
-                                        else if (type === 'medium') hmlHtml = `<span class="px-2.5 py-1 rounded-md border text-[9px] font-black uppercase tracking-widest bg-calith-orange/10 text-calith-orange border-calith-orange/20 w-fit">MEDIUM (M)</span>`;
-                                        else if (type === 'light') hmlHtml = `<span class="px-2.5 py-1 rounded-md border text-[9px] font-black uppercase tracking-widest bg-calith-accent/10 text-calith-accent border-calith-accent/20 w-fit">LIGHT (L)</span>`;
-                                        
-                                        let badgeHtml = '';
-                                        if (badge) {
-                                            badgeHtml = `<span class="px-2.5 py-1 rounded-md border text-xs font-bold uppercase tracking-widest bg-white/5 text-gray-300 border-white/10 w-fit max-w-[240px] truncate">${badge.toUpperCase()}</span>`;
-                                        }
-                                        
-                                        return hmlHtml + badgeHtml;
-                                    })()}
-                                </div>
+                            <div>
+                                <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors">${day.name || 'GÜN ' + (i + 1)}</h4>
+                                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${day.badge || 'ANTRENMAN'}</p>
                             </div>
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center chevron-icon shrink-0">
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center chevron-icon">
                             <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
                         </div>
                     </div>
@@ -2022,10 +1969,21 @@ function showProgramDetail(id, skipHistory = false) {
             };
 
             programHtml = `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    ${days.map((day, i) => renderCard(day, i)).join('')}
+                <div class="mb-12">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-1.5 h-6 bg-calith-orange rounded-full"></span>
+                        <h4 class="text-sm font-black text-white/50 uppercase tracking-[0.2em]">ANA RUTİN (GÜN 1-2-3)</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${group1.map((day, i) => renderCard(day, i)).join('')}</div>
                 </div>
-            `;
+                ${group2.length > 0 ? `
+                <div class="mb-12">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-1.5 h-6 bg-calith-accent rounded-full"></span>
+                        <h4 class="text-sm font-black text-white/50 uppercase tracking-[0.2em]">TAMAMLAYICI & TOPARLANMA (GÜN 4-5)</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${group2.map((day, i) => renderCard(day, i + 3)).join('')}</div>
+                </div>` : ''}`;
         }
 
         if (notes) {
@@ -2043,7 +2001,7 @@ function showProgramDetail(id, skipHistory = false) {
 
     contentDiv.innerHTML = `
         <div class="mb-12">
-            <h1 class="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter mb-4 leading-none uppercase break-words">${p.title}</h1>
+            <h1 class="text-4xl md:text-7xl font-black tracking-tighter mb-4 leading-none uppercase">${p.title}</h1>
             <div class="flex items-center gap-3">
                 <span class="px-3 py-1 bg-calith-orange text-black text-[10px] font-black uppercase tracking-widest rounded-lg">CALITH PROGRAM</span>
                 <span class="text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em]">${p.category.replace('program_', '')} SEVİYE</span>
@@ -3789,7 +3747,7 @@ function renderProfileSection() {
 
     mount.innerHTML = `
         <!-- Profil Header Card -->
-        <div class="glass-card rounded-3xl p-4 sm:p-6 md:p-8 mb-8 relative overflow-hidden group border border-white/10 shadow-2xl">
+        <div class="glass-card rounded-3xl p-4 sm:p-8 mb-8 relative overflow-hidden group border border-white/10 shadow-2xl">
             <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
             
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between w-full gap-6 pb-8 border-b border-white/5">
@@ -3832,60 +3790,60 @@ function renderProfileSection() {
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mt-8 relative z-10 w-full max-w-none">
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mt-8 relative z-10 w-full max-w-none">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
                             <i data-lucide="scale" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500"></i>
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">GÜNCEL KİLO</span>
                     </div>
-                    <div id="profile-weight" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold">-- KG</div>
+                    <div id="profile-weight" class="text-lg sm:text-xl md:text-2xl font-display font-bold">-- KG</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
                             <i data-lucide="ruler" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500"></i>
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">BOY (CM)</span>
                     </div>
-                    <div id="profile-height" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold">-- CM</div>
+                    <div id="profile-height" class="text-lg sm:text-xl md:text-2xl font-display font-bold">-- CM</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
                             <i data-lucide="target" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-500"></i>
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">ANA HEDEF</span>
                     </div>
-                    <div id="profile-goal" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold leading-tight truncate w-full">--</div>
+                    <div id="profile-goal" class="text-sm sm:text-base md:text-lg font-display font-bold leading-tight truncate">--</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-calith-accent/10 flex items-center justify-center shrink-0">
                             <i data-lucide="medal" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-calith-accent"></i>
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">DENEYİM</span>
                     </div>
-                    <div id="profile-level" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
+                    <div id="profile-level" class="text-lg sm:text-xl md:text-2xl font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
                             <i data-lucide="clock" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500"></i>
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">YAŞ</span>
                     </div>
-                    <div id="profile-age" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold">--</div>
+                    <div id="profile-age" class="text-lg sm:text-xl md:text-2xl font-display font-bold">--</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full flex flex-col items-center text-center">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-pink-500/10 flex items-center justify-center shrink-0">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-pink-500"></i>
                         </div>
                         <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">GEÇMİŞ</span>
                     </div>
-                    <div id="profile-experience" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold">-- YIL</div>
+                    <div id="profile-experience" class="text-lg sm:text-xl md:text-2xl font-display font-bold">-- YIL</div>
                 </div>
             </div>
         </div>
@@ -4103,18 +4061,7 @@ async function loadProfileData(user) {
         }
 
         const levelEl = document.getElementById('profile-level');
-        if (levelEl) {
-            const level = (data.fitness_level || 'BAŞLANGIÇ').toUpperCase();
-            levelEl.textContent = level;
-            
-            // Dinamik Renk Ataması
-            levelEl.className = "text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold uppercase transition-colors duration-500";
-            if (level.includes('BAŞLANGIÇ')) levelEl.classList.add('text-gray-400');
-            else if (level.includes('ORTA')) levelEl.classList.add('text-blue-400');
-            else if (level.includes('İLERİ')) levelEl.classList.add('text-purple-400');
-            else if (level.includes('PROFESYONEL')) levelEl.classList.add('text-calith-orange');
-            else levelEl.classList.add('text-white');
-        }
+        if (levelEl) levelEl.textContent = data.fitness_level || 'BAŞLANGIÇ';
 
         // Düzenleme formunu doldur
         const editName = document.getElementById('edit-full-name');
@@ -6570,25 +6517,19 @@ function renderPersonalRecords(records) {
                 ⚠️ TEST: VERİLERİ SIFIRLA
             </button>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
             ${records.map(r => {
-                const nameLower = r.exercise_name.toLowerCase();
-                const isTimed = nameLower.includes('plank') || nameLower.includes('hold') || nameLower.includes('sit') || nameLower.includes('stand') || nameLower.includes('stay');
                 const isBW = r.one_rm <= 0;
-                const unit = isTimed ? 'SN' : 'TEKRAR';
-                
                 return `
-                <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
+                <div class="glass-card rounded-2xl p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="flex-1 pr-4">
-                            <h4 class="text-white font-black uppercase tracking-tight mb-1 group-hover:text-calith-orange transition-colors text-sm sm:text-base truncate" title="${r.exercise_name}">${r.exercise_name}</h4>
-                            <p class="text-[9px] sm:text-[10px] text-gray-500 uppercase font-bold tracking-widest">
-                                ${isBW ? `En İyi Derece: ${r.reps} ${unit}` : `En İyi Set: ${r.weight}kg x ${r.reps}`}
-                            </p>
+                        <div>
+                            <h4 class="text-white font-black uppercase tracking-tight mb-1 group-hover:text-calith-orange transition-colors">${r.exercise_name}</h4>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">${isBW ? 'Maksimum Performans' : `En İyi Set: ${r.weight}kg x ${r.reps}`}</p>
                         </div>
-                        <div class="text-right shrink-0">
-                            <div class="text-xl sm:text-2xl font-black text-calith-orange font-mono leading-none mb-1">${isBW ? r.reps : r.one_rm}</div>
-                            <div class="text-[8px] sm:text-[9px] text-gray-500 font-bold uppercase tracking-widest">${isBW ? 'MAKS. SKOR' : 'TAHMİNİ 1RM'}</div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-calith-orange font-mono">${isBW ? r.reps : r.one_rm}</div>
+                            <div class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${isBW ? 'MAKS. SKOR' : 'TAHMİNİ 1RM'}</div>
                         </div>
                     </div>
                     <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">

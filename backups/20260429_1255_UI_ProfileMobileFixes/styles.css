@@ -27,41 +27,17 @@ body {
     scrollbar-width: none;  /* Firefox */
 }
 
-/* Autofill ve Form Elemanları Karanlık Tema */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #1A1A1A inset !important;
-    -webkit-text-fill-color: white !important;
-    transition: background-color 5000s ease-in-out 0s;
+/* Konteyner Kilidi */
+.max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl, .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow-x: hidden !important;
 }
 
-select, option, input, textarea {
-    color-scheme: dark !important;
-    background-color: #1A1A1A;
-    color: white;
-}
-
-/* Konteyner Ayarları (Admin Paneli Hariç) */
-body:not(.admin-page) .max-w-7xl { max-width: 80rem; width: 100%; margin: 0 auto; }
-body:not(.admin-page) .max-w-6xl { max-width: 72rem; width: 100%; margin: 0 auto; }
-body:not(.admin-page) .max-w-5xl { max-width: 64rem; width: 100%; margin: 0 auto; }
-body:not(.admin-page) .max-w-4xl { max-width: 56rem; width: 100%; margin: 0 auto; }
-body:not(.admin-page) .max-w-3xl { max-width: 48rem; width: 100%; margin: 0 auto; }
-body:not(.admin-page) .container { width: 100%; margin: 0 auto; }
-
-@media (max-width: 768px) {
-    body:not(.admin-page) .max-w-7xl, 
-    body:not(.admin-page) .max-w-6xl, 
-    body:not(.admin-page) .max-w-5xl, 
-    body:not(.admin-page) .max-w-4xl, 
-    body:not(.admin-page) .max-w-3xl, 
-    body:not(.admin-page) .container {
-        max-width: 100vw !important;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
+@media (min-width: 1280px) {
+    .max-w-7xl { max-width: 80rem !important; }
 }
 
 :root {
@@ -431,8 +407,8 @@ body {
         padding: 0 10px !important;
     }
 
-    /* Hero İstatistik alanı - Sadece anasayfada kısıtla */
-    #landing .grid.grid-cols-2 { 
+    /* Hero İstatistik alanı */
+    .grid.grid-cols-2 { 
         width: 100% !important;
         max-width: 340px !important;                      /* İstatistikleri daralt */
         margin-left: auto !important;
@@ -535,20 +511,7 @@ body {
 }
 
 .accordion-content.expanded {
-    max-height: none !important; /* İçerik ne kadar uzunsa o kadar uzasın, kesilmesin */
-    opacity: 1;
-}
-
-/* Mobil Taşma Önleyici (Balyoz) */
-@media (max-width: 768px) {
-    html, body {
-        overflow-x: hidden !important;
-        position: relative;
-    }
-    #blog-detail, #programs, .max-w-7xl, .max-w-6xl {
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-    }
+    max-height: 1000px; /* Yeterince büyük bir değer */
 }
 
 /* Kapalıyken içerik sonuna hafif sönümleme efekti */
