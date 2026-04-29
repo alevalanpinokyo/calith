@@ -215,132 +215,15 @@
                                 <option value="large">Büyük (Tam Boy)</option>
                             </select>
                         </div>
-                        <div id="prog-days-container" class="space-y-6 pt-4 border-t border-white/5">
-                            <h4 class="text-xs font-black text-calith-orange uppercase tracking-[0.2em] mb-4">Program Günleri (5 Gün)</h4>
-                            
-                            <!-- Day 1 -->
-                            <div class="bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-black text-calith-orange">01</span>
-                                        </div>
-                                        <input type="text" id="prog-day-1-name" placeholder="GÜN ADI (ÖRN: GÖĞÜS & TRICEPS)" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <select id="prog-day-1-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
-                                            <option value="none">Normal</option>
-                                            <option value="heavy">Ağır (H)</option>
-                                            <option value="medium">Orta (M)</option>
-                                            <option value="light">Hafif (L)</option>
-                                        </select>
-                                        <input type="text" id="prog-day-1-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
-                                    </div>
-                                </div>
-                                <div id="prog-day-1-exercises-list" class="space-y-2"></div>
-                                <button type="button" onclick="addExerciseRow(1)" class="w-full py-3 rounded-xl border border-dashed border-white/10 text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:border-calith-orange/50 hover:text-calith-orange transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
+                        <div class="space-y-6 pt-4 border-t border-white/5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                                <h4 class="text-xs font-black text-calith-orange uppercase tracking-[0.2em]">Program Günleri</h4>
+                                <button type="button" onclick="addProgramDayBlock()" class="text-[10px] bg-white/5 border border-white/10 text-white px-4 py-2 rounded-xl hover:bg-calith-orange hover:border-calith-orange transition-all font-bold tracking-widest flex items-center justify-center gap-2">
+                                    <i data-lucide="plus" class="w-3 h-3"></i> YENİ GÜN EKLE
                                 </button>
                             </div>
-
-                            <!-- Day 2 -->
-                            <div class="bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-black text-calith-orange">02</span>
-                                        </div>
-                                        <input type="text" id="prog-day-2-name" placeholder="GÜN ADI" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <select id="prog-day-2-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
-                                            <option value="none">Normal</option>
-                                            <option value="heavy">Ağır (H)</option>
-                                            <option value="medium">Orta (M)</option>
-                                            <option value="light">Hafif (L)</option>
-                                        </select>
-                                        <input type="text" id="prog-day-2-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
-                                    </div>
-                                </div>
-                                <div id="prog-day-2-exercises-list" class="space-y-2"></div>
-                                <button type="button" onclick="addExerciseRow(2)" class="w-full py-3 rounded-xl border border-dashed border-white/10 text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:border-calith-orange/50 hover:text-calith-orange transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
-                                </button>
-                            </div>
-
-                            <!-- Day 3 -->
-                            <div class="bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-black text-calith-orange">03</span>
-                                        </div>
-                                        <input type="text" id="prog-day-3-name" placeholder="GÜN ADI" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <select id="prog-day-3-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
-                                            <option value="none">Normal</option>
-                                            <option value="heavy">Ağır (H)</option>
-                                            <option value="medium">Orta (M)</option>
-                                            <option value="light">Hafif (L)</option>
-                                        </select>
-                                        <input type="text" id="prog-day-3-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
-                                    </div>
-                                </div>
-                                <div id="prog-day-3-exercises-list" class="space-y-2"></div>
-                                <button type="button" onclick="addExerciseRow(3)" class="w-full py-3 rounded-xl border border-dashed border-white/10 text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:border-calith-orange/50 hover:text-calith-orange transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
-                                </button>
-                            </div>
-
-                            <!-- Day 4 -->
-                            <div class="bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-black text-calith-orange">04</span>
-                                        </div>
-                                        <input type="text" id="prog-day-4-name" placeholder="GÜN ADI" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <select id="prog-day-4-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
-                                            <option value="none">Normal</option>
-                                            <option value="heavy">Ağır (H)</option>
-                                            <option value="medium">Orta (M)</option>
-                                            <option value="light">Hafif (L)</option>
-                                        </select>
-                                        <input type="text" id="prog-day-4-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
-                                    </div>
-                                </div>
-                                <div id="prog-day-4-exercises-list" class="space-y-2"></div>
-                                <button type="button" onclick="addExerciseRow(4)" class="w-full py-3 rounded-xl border border-dashed border-white/10 text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:border-calith-orange/50 hover:text-calith-orange transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
-                                </button>
-                            </div>
-
-                            <!-- Day 5 -->
-                            <div class="bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-black text-calith-orange">05</span>
-                                        </div>
-                                        <input type="text" id="prog-day-5-name" placeholder="GÜN ADI" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <select id="prog-day-5-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
-                                            <option value="none">Normal</option>
-                                            <option value="heavy">Ağır (H)</option>
-                                            <option value="medium">Orta (M)</option>
-                                            <option value="light">Hafif (L)</option>
-                                        </select>
-                                        <input type="text" id="prog-day-5-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
-                                    </div>
-                                </div>
-                                <div id="prog-day-5-exercises-list" class="space-y-2"></div>
-                                <button type="button" onclick="addExerciseRow(5)" class="w-full py-3 rounded-xl border border-dashed border-white/10 text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:border-calith-orange/50 hover:text-calith-orange transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
-                                </button>
+                            <div id="prog-days-container" class="space-y-6">
+                                <!-- Dinamik günler buraya eklenecek -->
                             </div>
                         </div>
 
@@ -635,7 +518,7 @@
     </div>
 </section>
 
-    <script src="js/app.js?v=202604282341"></script>
+    <script src="js/app.js?v=202604290857"></script>
     <script>
         lucide.createIcons();
         function switchAdminTab(tab) {

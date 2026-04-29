@@ -68,7 +68,7 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
   - [x] Duyuru Panosu kutu taşmalarının giderilmesi. [TEST EDİLDİ]
   - [x] Ana Sayfa Kartları alt filtre butonlarının kaydırmalı yapılması. [TEST EDİLDİ]
   - [x] Duyuru Panosu YouTube Iframe Kırpılma / Uyumsuzluk Hataları. [TAMAM ✅]
-- [ ] **Admin Paneli Program Yönetimi:** Program yönetimi sekmesinin mobil responsive tasarımı kontrol edilecek. **[KRİTİK - SIRADAKİ ADIM]**
+- [x] **Admin Paneli Program Yönetimi:** Program yönetimi sekmesinin mobil responsive tasarımı kontrol edildi. [TAMAM ✅]
 
 ---
 

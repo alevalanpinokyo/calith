@@ -1151,33 +1151,38 @@ async function saveProgram() {
 
     if (!title) return alert('Başlık gerekli!');
 
-    // 5 Günlük veriyi topla
+    // Dinamik günleri topla
     const days = [];
-    for (let i = 1; i <= 5; i++) {
-        const dayName = document.getElementById(`prog-day-${i}-name`).value.trim();
-        const dayBadge = document.getElementById(`prog-day-${i}-badge`).value.trim();
-        const dayType = document.getElementById(`prog-day-${i}-type`).value;
+    const container = document.getElementById('prog-days-container');
+    if (container) {
+        const dayBlocks = container.querySelectorAll('.prog-day-block');
+        dayBlocks.forEach((block) => {
+            const index = block.dataset.dayIndex;
+            const dayName = document.getElementById(`prog-day-${index}-name`).value.trim();
+            const dayBadge = document.getElementById(`prog-day-${index}-badge`).value.trim();
+            const dayType = document.getElementById(`prog-day-${index}-type`).value;
 
-        // Dinamik satırlardan egzersizleri topla
-        const exerciseList = document.getElementById(`prog-day-${i}-exercises-list`);
-        const exercises = [];
+            // Dinamik satırlardan egzersizleri topla
+            const exerciseList = document.getElementById(`prog-day-${index}-exercises-list`);
+            const exercises = [];
 
-        if (exerciseList) {
-            const rows = exerciseList.querySelectorAll('.exercise-row');
-            rows.forEach(row => {
-                const name = row.querySelector('.ex-name').value.trim();
-                const sets = row.querySelector('.ex-sets').value.trim();
-                const reps = row.querySelector('.ex-reps').value.trim();
-                const type = row.querySelector('.ex-type').value;
-                const isBW = row.querySelector('.ex-is-bw').checked;
+            if (exerciseList) {
+                const rows = exerciseList.querySelectorAll('.exercise-row');
+                rows.forEach(row => {
+                    const name = row.querySelector('.ex-name').value.trim();
+                    const sets = row.querySelector('.ex-sets').value.trim();
+                    const reps = row.querySelector('.ex-reps').value.trim();
+                    const type = row.querySelector('.ex-type').value;
+                    const isBW = row.querySelector('.ex-is-bw').checked;
 
-                if (name) {
-                    exercises.push({ name, sets, reps, type, isBW });
-                }
-            });
-        }
+                    if (name) {
+                        exercises.push({ name, sets, reps, type, isBW });
+                    }
+                });
+            }
 
-        days.push({ name: dayName, badge: dayBadge, type: dayType, exercises: exercises });
+            days.push({ name: dayName, badge: dayBadge, type: dayType, exercises: exercises });
+        });
     }
 
     const notes = document.getElementById('prog-notes').value.trim();
@@ -1222,12 +1227,12 @@ function addExerciseRow(dayNum, data = null) {
 
     const rowId = Date.now() + Math.random();
     const row = document.createElement('div');
-    row.className = 'exercise-row flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/5 group transition-all hover:border-calith-orange/30';
+    row.className = 'exercise-row flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-2 bg-white/5 p-3 sm:p-2 rounded-xl border border-white/5 group transition-all hover:border-calith-orange/30';
     row.id = `row-${rowId}`;
     row.style.position = 'relative';
 
     row.innerHTML = `
-        <div class="flex-1 relative">
+        <div class="w-full sm:flex-1 relative min-w-0">
             <input type="text" placeholder="Hareket Adı" 
                 class="ex-name w-full bg-transparent border-none p-0 text-[11px] font-bold outline-none focus:ring-0 text-white placeholder-gray-700" 
                 value="${data ? data.name : ''}"
@@ -1236,21 +1241,25 @@ function addExerciseRow(dayNum, data = null) {
                 autocomplete="off">
             <div class="ex-suggestions hidden absolute z-[100] left-0 right-0 top-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl"></div>
         </div>
-        <div class="flex items-center gap-1 shrink-0 border-l border-white/10 pl-2">
-            <input type="text" placeholder="S" title="Set" class="ex-sets w-8 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-calith-orange outline-none focus:ring-0" value="${data ? data.sets : ''}">
-            <span class="text-gray-700 text-[10px]">×</span>
-            <input type="text" placeholder="R" title="Tekrar/Sn" class="ex-reps w-12 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-white outline-none focus:ring-0" value="${data ? data.reps : ''}">
-            <select title="Tür" class="ex-type bg-transparent border-none p-0 text-[9px] font-black uppercase text-gray-500 outline-none focus:ring-0 cursor-pointer">
-                <option value="reps" ${data && data.type === 'reps' ? 'selected' : ''}>TKR</option>
-                <option value="secs" ${data && data.type === 'secs' ? 'selected' : ''}>SN</option>
-            </select>
-            <div class="flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded-lg bg-black/20 border border-white/5" title="Vücut Ağırlığı (Ağırlık Girişi Kapanır)">
-                <input type="checkbox" class="ex-is-bw w-3 h-3 rounded bg-transparent border-white/20 text-calith-orange focus:ring-0 cursor-pointer" ${data && data.isBW ? 'checked' : ''}>
-                <span class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">BW</span>
+        <div class="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto shrink-0 border-t sm:border-t-0 sm:border-l border-white/10 pt-3 sm:pt-0 sm:pl-3">
+            <div class="flex items-center gap-1">
+                <input type="text" placeholder="S" title="Set" class="ex-sets w-8 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-calith-orange outline-none focus:ring-0" value="${data ? data.sets : ''}">
+                <span class="text-gray-700 text-[10px]">×</span>
+                <input type="text" placeholder="R" title="Tekrar/Sn" class="ex-reps w-12 bg-transparent border-none p-0 text-[11px] text-center font-mono font-bold text-white outline-none focus:ring-0" value="${data ? data.reps : ''}">
+                <select title="Tür" class="ex-type bg-transparent border-none p-0 text-[9px] font-black uppercase text-gray-500 outline-none focus:ring-0 cursor-pointer">
+                    <option value="reps" ${data && data.type === 'reps' ? 'selected' : ''}>TKR</option>
+                    <option value="secs" ${data && data.type === 'secs' ? 'selected' : ''}>SN</option>
+                </select>
             </div>
-            <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
-                <i data-lucide="x" class="w-3 h-3"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-black/20 border border-white/5" title="Vücut Ağırlığı (Ağırlık Girişi Kapanır)">
+                    <input type="checkbox" class="ex-is-bw w-3 h-3 rounded bg-transparent border-white/20 text-calith-orange focus:ring-0 cursor-pointer" ${data && data.isBW ? 'checked' : ''}>
+                    <span class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">BW</span>
+                </div>
+                <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
+                    <i data-lucide="x" class="w-3 h-3"></i>
+                </button>
+            </div>
         </div>
     `;
 
@@ -1504,9 +1513,8 @@ function editProgram(id) {
         const data = JSON.parse(displayContent);
         const days = Array.isArray(data) ? data : (data.days || []);
 
-        days.forEach((day, index) => {
-            const i = index + 1;
-            if (i > 5) return;
+        days.forEach((day) => {
+            const i = addProgramDayBlock();
             document.getElementById(`prog-day-${i}-name`).value = day.name || '';
             document.getElementById(`prog-day-${i}-badge`).value = day.badge || '';
             if (document.getElementById(`prog-day-${i}-type`)) {
@@ -1570,17 +1578,63 @@ async function deleteProgram(id) {
     showToast(deletedFromDb ? 'Veritabanından silindi' : 'Listeden kaldırıldı');
 }
 
+let programDayCounter = 0;
+
+function addProgramDayBlock() {
+    const container = document.getElementById('prog-days-container');
+    if (!container) return;
+    
+    programDayCounter++;
+    const index = programDayCounter;
+    
+    const displayNum = String(index).padStart(2, '0');
+    
+    const block = document.createElement('div');
+    block.className = 'prog-day-block bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4 relative group';
+    block.dataset.dayIndex = index;
+    
+    block.innerHTML = `
+        <button type="button" onclick="this.closest('.prog-day-block').remove()" class="absolute -top-3 -right-3 w-8 h-8 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-500 z-10" title="Günü Sil">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-calith-orange/10 flex items-center justify-center shrink-0">
+                    <span class="text-xs font-black text-calith-orange">${displayNum}</span>
+                </div>
+                <input type="text" id="prog-day-${index}-name" placeholder="GÜN ADI (ÖRN: GÖĞÜS & TRICEPS)" class="bg-transparent border-none p-0 text-xs font-bold outline-none focus:ring-0 text-white placeholder-gray-600 w-full sm:w-48">
+            </div>
+            <div class="flex items-center gap-2">
+                <select id="prog-day-${index}-type" class="bg-white/5 border border-white/10 px-2 py-1.5 rounded-lg text-[8px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-20 text-center uppercase tracking-widest cursor-pointer" title="Gün Tipi">
+                    <option value="none">Normal</option>
+                    <option value="heavy">Ağır (H)</option>
+                    <option value="medium">Orta (M)</option>
+                    <option value="light">Hafif (L)</option>
+                </select>
+                <input type="text" id="prog-day-${index}-badge" placeholder="ROZET" class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-bold outline-none focus:border-calith-orange text-gray-400 w-full sm:w-24 text-center uppercase tracking-widest">
+            </div>
+        </div>
+        <div id="prog-day-${index}-exercises-list" class="space-y-2"></div>
+        <button type="button" onclick="addExerciseRow(${index})" class="w-full py-3 rounded-xl border border-dashed border-white/10 text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:border-calith-orange/50 hover:text-calith-orange transition-all flex items-center justify-center gap-2">
+            <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
+        </button>
+    `;
+    
+    container.appendChild(block);
+    if (window.lucide) lucide.createIcons();
+    return index;
+}
+
 function resetProgramForm() {
     document.getElementById('prog-edit-id').value = '';
     document.getElementById('prog-title').value = '';
     document.getElementById('prog-cover').value = '';
     document.getElementById('prog-video').value = '';
-    for (let i = 1; i <= 5; i++) {
-        document.getElementById(`prog-day-${i}-name`).value = '';
-        document.getElementById(`prog-day-${i}-badge`).value = '';
-        const list = document.getElementById(`prog-day-${i}-exercises-list`);
-        if (list) list.innerHTML = '';
-    }
+    
+    const container = document.getElementById('prog-days-container');
+    if (container) container.innerHTML = '';
+    programDayCounter = 0;
+    
     document.getElementById('prog-notes').value = '';
     document.getElementById('prog-media-size').value = 'medium';
 }
