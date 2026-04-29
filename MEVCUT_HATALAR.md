@@ -5,8 +5,9 @@ Bu liste sadece aktif, teknik ve henüz çözülmemiş bugları içerir. Planlan
 ---
 
 ### 🚨 AKTİF HATALAR
-1. [ ] **Mobil Hız Optimizasyonu:** Tarayıcı içi Tailwind CDN kullanımı nedeniyle ilk yükleme yavaş. (Ertelendi - Faz 3 sonrası bakılacak).
-2. [ ] **İkon Flicker:** Bazı alt sayfalarda Lucide ikonları JS yüklenene kadar 0.1 saniye "zıplama" yapabiliyor. (SVG geçişi devam ediyor).
+1. [ ] **[KRİTİK] Workout Mod - Künye Rozetleri Gözükmüyor:** Antrenman overlay/workout modu aktifken "Calith Künye" rozetleri render edilmiyor / görünmüyor. Muhtemel sebep: overlay açılırken künye container'ının `display:none` kalması veya `z-index`/`visibility` çakışması. → **Yarın incelenecek.**
+2. [ ] **Mobil Hız Optimizasyonu:** Tarayıcı içi Tailwind CDN kullanımı nedeniyle ilk yükleme yavaş. (Ertelendi - Faz 3 sonrası bakılacak).
+3. [ ] **İkon Flicker:** Bazı alt sayfalarda Lucide ikonları JS yüklenene kadar 0.1 saniye "zıplama" yapabiliyor. (SVG geçişi devam ediyor).
 
 ---
 ### 🧪 TEST EDİLECEK (Geri Bildirim Bekleyenler)

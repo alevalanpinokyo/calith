@@ -216,7 +216,7 @@ function checkActiveWorkout() {
                 const banner = document.createElement('div');
                 banner.id = 'workout-recovery-banner';
                 // Glassmorphism tasarımlı, mobilde alttan, desktopta sağ alttan çıkan banner
-                banner.className = 'fixed bottom-24 left-4 right-4 md:left-auto md:right-8 md:bottom-8 md:w-96 z-[9000] bg-black/80 backdrop-blur-2xl border border-calith-orange/30 p-5 rounded-3xl shadow-2xl shadow-calith-orange/10 translate-y-[150%] transition-transform duration-500 flex flex-col gap-3';
+                banner.className = 'fixed bottom-40 left-4 right-4 md:left-auto md:right-8 md:bottom-8 md:w-96 z-[10000] bg-black/90 backdrop-blur-2xl border border-calith-orange/40 p-5 rounded-[2rem] shadow-[0_20px_50px_rgba(255,107,0,0.2)] translate-y-[150%] transition-transform duration-500 flex flex-col gap-3';
                 
                 banner.innerHTML = `
                     <div class="flex items-center gap-3">
@@ -2023,9 +2023,19 @@ function showProgramDetail(id, skipHistory = false) {
                                         const badge = String(day.badge || '').trim();
                                         
                                         let hmlHtml = '';
-                                        if (type === 'heavy') hmlHtml = `<span class="px-2.5 py-1 rounded-md border text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500 border-red-500/20 w-fit">HEAVY (H)</span>`;
-                                        else if (type === 'medium') hmlHtml = `<span class="px-2.5 py-1 rounded-md border text-[9px] font-black uppercase tracking-widest bg-calith-orange/10 text-calith-orange border-calith-orange/20 w-fit">MEDIUM (M)</span>`;
-                                        else if (type === 'light') hmlHtml = `<span class="px-2.5 py-1 rounded-md border text-[9px] font-black uppercase tracking-widest bg-calith-accent/10 text-calith-accent border-calith-accent/20 w-fit">LIGHT (L)</span>`;
+                                        if (type === 'heavy' || type === 'h') {
+                                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-red-500/5 w-fit mb-1">
+                                                <i data-lucide="flame" class="w-3 h-3"></i> HEAVY (H)
+                                            </div>`;
+                                        } else if (type === 'medium' || type === 'm') {
+                                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-calith-orange/20 bg-calith-orange/10 text-calith-orange text-[9px] font-black uppercase tracking-widest shadow-lg shadow-calith-orange/5 w-fit mb-1">
+                                                <i data-lucide="zap" class="w-3 h-3"></i> MEDIUM (M)
+                                            </div>`;
+                                        } else if (type === 'light' || type === 'l') {
+                                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-green-500/20 bg-green-500/10 text-green-500 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-green-500/5 w-fit mb-1">
+                                                <i data-lucide="leaf" class="w-3 h-3"></i> LIGHT (L)
+                                            </div>`;
+                                        }
                                         
                                         let badgeHtml = '';
                                         if (badge) {
@@ -5057,10 +5067,13 @@ function isProgramAdded(programId) {
 }
 
 function ensureWorkoutOverlay() {
-    let overlayEl = document.getElementById('workout-mode');
-    if (!overlayEl || !document.getElementById('workout-recommendation-box')) {
-        if (overlayEl) overlayEl.remove(); // Eskisini temizle ki yeni kodlar (akıllı kutular) gelsin
-        const overlayHTML = `
+    const overlayId = 'workout-mode';
+    let overlayEl = document.getElementById(overlayId);
+    
+    // Her zaman temizle ki en güncel tasarım (HTML) yüklensin
+    if (overlayEl) overlayEl.remove();
+
+    const overlayHTML = `
         <section id="workout-mode" class="fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black">
             <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-80">
                 <div class="absolute -top-[20%] -left-[20%] w-[80%] h-[80%] bg-calith-orange/[0.12] blur-[120px] rounded-full animate-pulse"></div>
@@ -5076,13 +5089,10 @@ function ensureWorkoutOverlay() {
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <h2 id="workout-program-title" class="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate">PROGRAM ADI</h2>
-                                <span id="workout-day-type-badge" class="hidden text-[7px] font-black px-1.5 py-0.5 rounded bg-calith-orange text-black uppercase shrink-0"></span>
-                            </div>
+                            <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">PROGRAM ADI</h2>
                             <div class="flex items-center gap-2">
                                 <div class="w-1.5 h-1.5 rounded-full bg-calith-orange animate-pulse"></div>
-                                <p id="workout-timer" class="text-base font-mono font-bold text-white tracking-tighter">00:00:00</p>
+                                <p id="workout-timer" class="text-lg font-mono font-bold text-white tracking-tighter">00:00:00</p>
                             </div>
                         </div>
                     </div>
@@ -5091,34 +5101,47 @@ function ensureWorkoutOverlay() {
                     </div>
                 </div>
             </div>
-            <div class="max-w-xl mx-auto px-6 py-4 sm:py-6 relative z-10">
-                <div id="workout-exercise-card" class="relative group mb-6">
+
+            <!-- Merkezi İçerik Alanı (Hizalama Fix) -->
+            <div class="max-w-xl mx-auto px-6 py-8 pb-20 relative z-10">
+                <!-- Merkezi HML ve Program Künyesi (Göz Hizası) -->
+                <div id="workout-combined-badge" class="hidden flex-col items-center gap-3 mb-6 w-full animate-in fade-in slide-in-from-top-4 duration-700">
+                    <div id="workout-day-type-badge" class="flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl backdrop-blur-md">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span id="workout-day-type-text">NORMAL</span>
+                    </div>
+                    <div id="workout-program-badge" class="hidden px-4 py-1.5 rounded-xl border border-white/5 bg-white/[0.02] text-[8px] font-bold text-gray-500 uppercase tracking-widest">
+                        PROGRAM KÜNYESİ
+                    </div>
+                </div>
+
+                <div id="workout-exercise-card" class="relative group mb-4">
                         <div class="relative z-10 flex flex-col items-center text-center w-full">
-                            <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-2 block w-full text-center">ŞU ANKİ EGZERSİZ</span>
-                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-tight text-white w-full text-center line-clamp-2 px-4">YÜKLENİYOR...</h3>
+                            <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-1 block w-full text-center">ŞU ANKİ EGZERSİZ</span>
+                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-4xl font-black mb-2 tracking-tighter uppercase leading-tight text-white w-full text-center line-clamp-2 px-4">YÜKLENİYOR...</h3>
                             
-                            <div class="flex flex-col items-center gap-4 w-full">
+                            <div class="flex flex-col items-center gap-3 w-full">
                                 <!-- HEDEF ROZETİ VE SONA AT -->
-                                <div class="flex flex-col items-center gap-6 w-full">
-                                    <div id="workout-exercise-target" class="inline-flex items-center justify-center px-5 py-2.5 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+                                <div class="flex flex-col items-center gap-3 w-full">
+                                    <div id="workout-exercise-target" class="inline-flex items-center justify-center px-4 py-2 bg-white/5 rounded-xl border border-white/10 shadow-inner">
                                         <!-- Dinamik olarak dolacak: SET | TEKRAR + BW/ICON -->
                                     </div>
                                     
-                                    <div class="pt-2">
-                                        <button onclick="moveExerciseToEnd()" class="flex items-center justify-center gap-2 px-7 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-xl text-xs font-black text-calith-orange hover:bg-calith-orange hover:text-black transition-all uppercase tracking-widest active:scale-95 group shadow-lg shadow-calith-orange/5 mx-auto">
-                                            <i data-lucide="list-end" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
+                                    <div class="pt-1">
+                                        <button onclick="moveExerciseToEnd()" class="flex items-center justify-center gap-2 px-5 py-2 bg-calith-orange/10 border border-calith-orange/20 rounded-lg text-[10px] font-black text-calith-orange hover:bg-calith-orange hover:text-black transition-all uppercase tracking-widest active:scale-95 group shadow-md mx-auto">
+                                            <i data-lucide="list-end" class="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform"></i>
                                             SONA AT
                                         </button>
                                     </div>
                                 </div>
 
-                                <!-- VIDEO BUTONU (ALTA ALINDI VE ŞEKİL YAPILDI) -->
-                                <div id="workout-video-container" class="flex flex-col items-center">
-                                    <button id="workout-video-btn" class="hidden px-6 py-3 bg-gradient-to-r from-calith-orange to-[#ff4500] rounded-2xl flex items-center gap-3 shadow-[0_10px_30px_rgba(255,107,0,0.3)] hover:shadow-[0_15px_40px_rgba(255,107,0,0.5)] hover:scale-105 active:scale-95 transition-all group/vbtn border border-white/20">
-                                        <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                                            <i data-lucide="play" class="w-3 h-3 text-white fill-white"></i>
+                                <!-- VIDEO BUTONU -->
+                                <div id="workout-video-container" class="flex flex-col items-center mt-1">
+                                    <button id="workout-video-btn" class="hidden px-4 py-2 bg-gradient-to-r from-calith-orange to-[#ff4500] rounded-xl flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all group/vbtn border border-white/20">
+                                        <div class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                                            <i data-lucide="play" class="w-2.5 h-2.5 text-white fill-white"></i>
                                         </div>
-                                        <span class="text-[10px] font-black text-white uppercase tracking-[0.15em] drop-shadow-md">Hareketi İzle</span>
+                                        <span class="text-[9px] font-black text-white uppercase tracking-[0.15em] drop-shadow-md">Hareketi İzle</span>
                                     </button>
                                 </div>
                             </div>
@@ -5133,8 +5156,8 @@ function ensureWorkoutOverlay() {
                         <button id="btn-skip-rest" onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DİNLENMEYİ ATLA</button>
                     </div>
                 </div>
-                <!-- Inputs Grid Moved Up -->
-                <div id="workout-recommendation-box" class="hidden -mb-2 px-6 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-2">
+                
+                <div id="workout-recommendation-box" class="hidden mb-4 px-6 py-3 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-2">
                     <div class="flex items-center gap-3">
                         <i data-lucide="sparkles" class="w-4 h-4 text-calith-orange"></i>
                         <span id="workout-recommendation-text" class="text-[10px] font-black text-white uppercase tracking-widest">ÖNERİLEN: -- KG</span>
@@ -5142,27 +5165,27 @@ function ensureWorkoutOverlay() {
                     <span id="workout-recommendation-reason" class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">REKORA GÖRE</span>
                 </div>
 
-                <div id="workout-inputs-grid" class="grid grid-cols-2 gap-4">
+                <div id="workout-inputs-grid" class="grid grid-cols-2 gap-3 mt-4">
                     <div id="workout-weight-container" class="relative group">
-                        <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[8px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
-                        <input type="number" id="workout-input-weight" value="0" min="0" step="0.5" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-4 text-2xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                        <label for="workout-input-weight" class="absolute -top-2 left-4 px-1.5 bg-[#050505] text-[7px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
+                        <input type="number" id="workout-input-weight" value="0" min="0" step="0.5" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                     </div>
                     <div id="workout-reps-container" class="relative group">
-                        <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[8px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
-                        <input type="number" id="workout-input-reps" value="10" min="0" step="1" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-4 text-2xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
+                        <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-2 left-4 px-1.5 bg-[#050505] text-[7px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
+                        <input type="number" id="workout-input-reps" value="10" min="0" step="1" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2 pt-2 mb-6">
-                    <button id="btn-complete-set" onclick="completeSet()" class="w-full bg-calith-orange text-white py-4 rounded-2xl font-black text-sm uppercase tracking-[0.3em] shadow-[0_15px_40px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
+                <div class="flex flex-col gap-2 pt-2 mb-4">
+                    <button id="btn-complete-set" onclick="completeSet()" class="w-full bg-calith-orange text-white py-3 rounded-2xl font-black text-sm uppercase tracking-[0.3em] shadow-[0_10px_30px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group">
                         <span>SETİ TAMAMLA</span>
                         <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                     </button>
-                    <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full bg-white/5 text-gray-500 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] border border-white/5 hover:bg-white/10 hover:text-white transition-all">SIRADAKİ HAREKET</button>
+                    <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full bg-white/5 text-gray-500 py-3 rounded-2xl font-black text-[9px] uppercase tracking-[0.3em] border border-white/5 hover:bg-white/10 hover:text-white transition-all">SIRADAKİ HAREKET</button>
                 </div>
 
                 <!-- Set History Moved to Bottom -->
-                <div class="mb-6 pb-20 border-t border-white/5 pt-8">
+                <div class="mb-4 pb-10 border-t border-white/5 pt-6">
                     <button id="btn-exercise-timer" class="hidden w-full mb-6 py-4 bg-calith-orange/10 border border-calith-orange/30 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.3em] hover:bg-calith-orange hover:text-black transition-all group">
                         <i data-lucide="timer" class="w-5 h-5 animate-pulse"></i>
                         <span>SÜRE BAŞLAT</span>
@@ -5181,9 +5204,10 @@ function ensureWorkoutOverlay() {
                     </div>
                 </div>
             </div>
-        </section>`;
-        document.body.insertAdjacentHTML('beforeend', overlayHTML);
-    }
+        </div>
+    </section>`;
+    document.body.insertAdjacentHTML('beforeend', overlayHTML);
+    if (window.lucide) lucide.createIcons();
 }
 
 async function startWorkoutMode(programId, dayIndex = 0) {
@@ -5254,6 +5278,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
         program: p,
         dayName: day.name || 'GÜN 1',
         dayType: day.type || 'none',
+        dayBadge: day.badge || "",
         startTime: Date.now(),
         exercises: exercises,
         currExerciseIdx: 0,
@@ -5389,7 +5414,8 @@ function updateWorkoutUI() {
 
     // Video Linkini Kütüphaneden Çek
     let videoUrl = null;
-    const libraryEx = exerciseLibrary.find(e => e.name.trim().toLowerCase() === ex.name.trim().toLowerCase());
+    const exName = ex.name ? ex.name.trim().toLowerCase() : '';
+    const libraryEx = exerciseLibrary.find(e => (e.name ? e.name.trim().toLowerCase() : '') === exName);
     if (libraryEx && libraryEx.video_url) {
         videoUrl = libraryEx.video_url;
     }
@@ -5415,20 +5441,103 @@ function updateWorkoutUI() {
         recText: document.getElementById('workout-recommendation-text')
     };
 
-    // Gün Tipi Rozetini Güncelle
+    // Merkezi HML ve Program Künyesi (Göz Hizası)
+    const combinedCont = document.getElementById('workout-combined-badge');
+    const progBadge = document.getElementById('workout-program-badge');
+    
     if (els.dayBadge) {
-        const type = workoutSession.dayType || 'none';
-        if (type !== 'none') {
-            els.dayBadge.classList.remove('hidden');
-            let label = 'NORMAL';
-            let color = 'bg-gray-500';
-            if (type === 'heavy') { label = 'HEAVY (AĞIR)'; color = 'bg-red-500'; }
-            else if (type === 'medium') { label = 'MEDIUM (ORTA)'; color = 'bg-calith-orange'; }
-            else if (type === 'light') { label = 'LIGHT (HAFİF)'; color = 'bg-green-500'; }
-            els.dayBadge.textContent = label;
-            els.dayBadge.className = `text-[7px] font-black px-1.5 py-0.5 rounded ${color} text-white uppercase tracking-tighter`;
+        // Veriyi hem session'dan hem de orijinal program verisinden (fallback) kovala
+        let type = String(workoutSession.dayType || 'none').toLowerCase();
+        
+        // KRİTİK FALLBACK: Eğer session'da badge yoksa, program verisinden gün ismine veya index'e bakarak bulmaya çalış
+        let badgeText = workoutSession.dayBadge || '';
+        if (!badgeText && workoutSession.program && workoutSession.program.content) {
+            try {
+                const pData = JSON.parse(workoutSession.program.content);
+                const days = Array.isArray(pData) ? pData : (pData.days || []);
+                let currentDay = days.find(d => d.name === workoutSession.dayName);
+                
+                // Eğer isimden bulamadıysa ve isim "GÜN X" formatındaysa, index üzerinden bul
+                if (!currentDay && workoutSession.dayName && workoutSession.dayName.toUpperCase().startsWith('GÜN ')) {
+                    const dIdx = parseInt(workoutSession.dayName.toUpperCase().replace('GÜN ', '')) - 1;
+                    if (!isNaN(dIdx) && dIdx >= 0 && dIdx < days.length) {
+                        currentDay = days[dIdx];
+                    }
+                }
+                
+                if (currentDay) {
+                    if (currentDay.badge) {
+                        badgeText = currentDay.badge;
+                        workoutSession.dayBadge = badgeText; // Bir daha aramasın
+                    }
+                    // Eğer type da none ise (veya hatalıysa), onu da buradan kurtaralım
+                    if (type === 'none' && currentDay.type) {
+                        workoutSession.dayType = currentDay.type; // Session'a geri yaz
+                        type = String(currentDay.type).toLowerCase();
+                    }
+                }
+            } catch(e) {
+                console.error("[Calith] Künye fallback hatası:", e);
+            }
+        }
+        
+        const typeText = document.getElementById('workout-day-type-text');
+        const dayIcon = els.dayBadge.querySelector('i');
+        
+        if (type !== 'none' || badgeText) {
+            if (combinedCont) {
+                combinedCont.classList.remove('hidden');
+                combinedCont.style.display = 'flex';
+            }
+            
+            // 1. HML Rozeti
+            if (type !== 'none') {
+                els.dayBadge.style.display = 'flex';
+                let label = 'NORMAL';
+                let style = 'border-white/10 bg-white/5 text-gray-400';
+                let icon = 'zap';
+
+                if (type === 'heavy' || type === 'h') { 
+                    label = 'HEAVY (AĞIR)'; 
+                    style = 'border-red-500/30 bg-red-500/10 text-red-500 shadow-red-500/10'; 
+                    icon = 'flame';
+                }
+                else if (type === 'medium' || type === 'm') { 
+                    label = 'MEDIUM (ORTA)'; 
+                    style = 'border-calith-orange/30 bg-calith-orange/10 text-calith-orange shadow-calith-orange/10'; 
+                    icon = 'zap';
+                }
+                else if (type === 'light' || type === 'l') { 
+                    label = 'LIGHT (HAFİF)'; 
+                    style = 'border-green-500/30 bg-green-500/10 text-green-500 shadow-green-500/10'; 
+                    icon = 'leaf';
+                }
+
+                if (typeText) typeText.textContent = label;
+                els.dayBadge.className = `flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl backdrop-blur-md transition-all duration-700 ${style}`;
+                
+                if (dayIcon && window.lucide) {
+                    dayIcon.setAttribute('data-lucide', icon);
+                    lucide.createIcons();
+                }
+            } else {
+                els.dayBadge.style.display = 'none';
+            }
+
+            // 2. Program Künyesi
+            if (progBadge) {
+                if (badgeText) {
+                    progBadge.classList.remove('hidden');
+                    progBadge.textContent = badgeText.startsWith('-') ? badgeText.toUpperCase() : `- ${badgeText.toUpperCase()}`;
+                } else {
+                    progBadge.classList.add('hidden');
+                }
+            }
         } else {
-            els.dayBadge.classList.add('hidden');
+            if (combinedCont) {
+                combinedCont.classList.add('hidden');
+                combinedCont.style.display = 'none';
+            }
         }
     }
 
@@ -5833,7 +5942,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
 
     console.log(`[Calith Debug] SET: ${workoutSession.currSet}, HEDEF: ${targetSets}, TARGET_RAW: "${ex.target}", TARGET_SETS_RAW: ${ex.targetSets}`);
 
-    if (workoutSession.currSet === targetSets) {
+    if (workoutSession.currSet >= targetSets) {
         console.log('[Calith Debug] Hedef Tamam → showNextExerciseModal');
         showNextExerciseModal();
         // Fallback Alert (Modal açılmazsa diye garanti)
@@ -6357,108 +6466,12 @@ function initSharedUI() {
         document.body.appendChild(video);
     }
 
-    // 5. WORKOUT MODE (Antrenman Overlay)
-    if (!document.getElementById('workout-mode')) {
-        const workout = document.createElement('section');
-        workout.id = 'workout-mode';
-        workout.className = 'fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black';
-        workout.innerHTML = `
-            <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-50">
-                <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-calith-orange/5 blur-[80px] rounded-full"></div>
-                <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-calith-accent/5 blur-[80px] rounded-full"></div>
-            </div>
-            <div class="fixed top-0 left-0 right-0 h-1 bg-white/5 z-[1020]">
-                <div id="workout-progress-bar" class="h-full bg-gradient-to-r from-calith-orange via-white to-calith-accent transition-all duration-700 w-0"></div>
-            </div>
-            <div class="sticky top-0 z-[1010] px-6 py-8 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5">
-                <div class="max-w-xl mx-auto flex items-center justify-between">
-                    <div class="flex items-center gap-5">
-                        <button onclick="confirmExitWorkout()" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-red-500/20 hover:text-red-500 transition-all border border-white/10 group">
-                            <i data-lucide="x" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                        </button>
-                        <div>
-                            <h2 id="workout-program-title" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">PROGRAM ADI</h2>
-                            <div class="flex items-center gap-3">
-                                <div class="w-2 h-2 rounded-full bg-calith-orange animate-pulse"></div>
-                                <p id="workout-timer" class="text-lg font-mono font-bold text-white tracking-tighter">00:00:00</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span id="workout-move-info" class="text-[10px] font-black text-calith-orange uppercase tracking-widest bg-calith-orange/10 px-4 py-2 rounded-full border border-calith-orange/20">1 / 5 HAREKET</span>
-                    </div>
-                </div>
-            </div>
-            <div class="max-w-xl mx-auto px-6 py-10 relative z-10">
-                <div id="workout-exercise-card" class="relative group mb-12">
-                    <button onclick="moveExerciseToEnd()" class="absolute top-8 right-8 z-30 w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center justify-center text-gray-400 hover:text-calith-orange hover:bg-calith-orange/10 transition-all group/btn active:scale-95 shadow-2xl" title="Hareketi Sona Bırak">
-                        <i data-lucide="chevrons-down" class="w-5 h-5 mb-0.5"></i>
-                        <span class="text-[7px] font-black uppercase tracking-tighter opacity-0 group-hover/btn:opacity-100 transition-opacity">SONA AT</span>
-                    </button>
-                    <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/20 to-transparent blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                    <div class="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 text-center backdrop-blur-sm overflow-hidden">
-                        <div class="absolute -right-4 -top-4 w-32 h-32 bg-white/[0.02] rounded-full flex items-center justify-center rotate-12">
-                            <i data-lucide="dumbbell" class="w-20 h-20 text-white/[0.03]"></i>
-                        </div>
-                        <div class="relative z-10">
-                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">ŞU ANKİ EGZERSİZ</span>
-                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-5xl font-black mb-4 tracking-tighter uppercase leading-none text-white">YÜKLENİYOR...</h3>
-                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10">
-                                <i data-lucide="target" class="w-3.5 h-3.5 text-calith-orange"></i>
-                                <p id="workout-exercise-target" class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">HEDEF: -</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="workout-rest-timer-box" class="hidden mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden">
-                    <div class="absolute inset-0 bg-calith-accent/5 animate-pulse"></div>
-                    <div class="relative z-10">
-                        <p class="text-[10px] font-black text-calith-accent uppercase tracking-[0.3em] mb-3">DINLENME SÜRESI</p>
-                        <div id="workout-rest-clock" class="text-6xl font-mono font-black text-white tracking-tighter mb-4">00:45</div>
-                        <button onclick="skipRest()" class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all border border-white/5">DINLENMEYI ATLA</button>
-                    </div>
-                </div>
-                <button id="btn-exercise-timer" class="hidden w-full mb-8 py-5 bg-calith-orange/10 border border-calith-orange/30 rounded-3xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.3em] hover:bg-calith-orange hover:text-black transition-all group">
-                    <i data-lucide="timer" class="w-5 h-5 animate-pulse"></i>
-                    <span>SÜRE BAŞLAT</span>
-                </button>
-                <div class="mb-12">
-                    <div class="flex items-center justify-between mb-6 px-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-1.5 h-4 bg-calith-orange rounded-full"></span>
-                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">SET GEÇMİŞİ</h4>
-                        </div>
-                        <span id="workout-set-info" class="text-[10px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-lg">SET 1 / -</span>
-                    </div>
-                    <div id="workout-sets-list" class="grid grid-cols-1 gap-3">
-                        <div class="py-12 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                            <p class="text-xs text-gray-600 font-bold uppercase tracking-widest">Henüz set girilmedi</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-8 pb-20">
-                    <div id="workout-inputs-grid" class="grid grid-cols-2 gap-6">
-                        <div id="workout-weight-container" class="relative group">
-                            <label for="workout-input-weight" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
-                            <input type="number" id="workout-input-weight" value="0" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all">
-                        </div>
-                        <div id="workout-reps-container" class="relative group">
-                            <label id="workout-label-reps" for="workout-input-reps" class="absolute -top-3 left-6 px-2 bg-[#050505] text-[9px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">TEKRAR</label>
-                            <input type="number" id="workout-input-reps" value="10" class="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-6 text-3xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all">
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button id="btn-next-exercise" onclick="showConfirmModal('Bu hareketi atlamak istediğine emin misin kanka?', () => nextExercise())" class="w-full sm:flex-1 bg-white/5 text-gray-400 py-6 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] border border-white/10 hover:bg-white/10 hover:text-white transition-all order-2 sm:order-1">SIRADAKİ HAREKET</button>
-                        <button id="btn-complete-set" onclick="completeSet()" class="w-full sm:flex-[2] bg-calith-orange text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 order-1 sm:order-2 group">
-                            <span>SETİ TAMAMLA</span>
-                            <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(workout);
-    }
+    // 5. WORKOUT MODE (Antrenman Overlay) 
+    // Not: Bu kısım artık ensureWorkoutOverlay() tarafından dinamik yönetiliyor.
+
+
+
+
 
     // 6. PRINT AREA (PDF Export için)
     if (!document.getElementById('print-area')) {
