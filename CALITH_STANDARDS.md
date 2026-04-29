@@ -40,12 +40,14 @@ Gereksiz kod karmaşasını ve kontrolsüz push'ları önlemek için şu iletiş
 - **Büyük Ölçekli Değişiklikler:** Yapılacak düzenleme yaklaşık **200 satır ve üzerini** kapsıyorsa veya projenin genel yapısını etkiliyorsa; AI önce yapacağı değişikliği detaylıca anlatmalı, planı sunmalı ve kullanıcıdan **ONAY** aldıktan sonra işe başlamalıdır.
 - **Push Sıklığı:** Her küçük değişiklik için ayrı ayrı push atmak yerine, mantıksal bir bütünlük oluştuğunda toplu push tercih edilmelidir.
 
-## 9. DEMİR KURAL: YOL HARİTASI VE SÜREÇ TAKİBİ
-Projenin tüm gelişim süreci, öneriler ve tamamlanan işler merkezi bir dökümanda izlenmelidir.
+## 9. DOKÜMANTASYON VE İŞ AKIŞI KURALLARI
+Projenin sürekliliğini sağlamak ve her ajanın (AI veya İnsan) nerede kaldığını bilmesi için aşağıdaki dosya düzeni SIKI SIKIYA takip edilmelidir:
 
-- **Kural:** Her yeni özellik, öneri veya hata düzeltmesi `yol-haritam-profile.txt` dosyasına işlenmelidir.
-- **Format:** Görevler tarihli, durum bilgili (Test Edildi / Test Edilecek / Edilmedi) ve checkbox (`[ ]`, `[x]`) formatında olmalıdır.
-- **Süreklilik:** "Nerede kalmıştık?" sorusunun tek ve kesin cevabı bu dosyadır. Geliştirici her push öncesi bu dosyayı güncellemekle yükümlüdür.
+- **`yol-haritam-profile.txt` (STRATEJİ):** Projenin büyük resmi, fazları ve gelecek planlarıdır. Büyük bir özellik planlandığında veya faz bittiğinde burası güncellenir. "Nereye gidiyoruz?" sorusunun cevabıdır.
+- **`CALITH_STANDARDS.md` (ANAYASA):** Şu an okuduğun dökümandır. Projenin değişmez kurallarını, kodlama standartlarını ve bu iş akış düzenini içerir. "Nasıl iş yapıyoruz?" sorusunun cevabıdır.
+- **`DEVIR_TESLIM.md` (GÜNLÜK RAPOR - EN KRİTİK):** Her oturumun sonunda güncellenmelidir. Yapılan geliştirmeler, biten işler ve yarım kalan (bir sonraki oturumda yapılması gereken) görevler buraya yazılır. Senden sonraki ajan işe buradan başlar.
+- **`SMART_ENGINE_ALGORITMASI.md` (BEYİN):** Antrenman motorunun tüm matematiksel ve mantıksal kurallarını tutar. Geliştirilmeye açık olduğu için ayrıdır. Algoritmada bir değişim olduğunda buraya işlenir.
+- **`MEVCUT_HATALAR.md` (BUG TRACKER):** Sadece aktif teknik bugları içerir. Bir bug çözüldüğünde buradan silinip `DEVIR_TESLIM.md`'ye "Tamamlandı" olarak işlenmelidir.
 
 ## 10. DÜRÜSTLÜK VE ŞEFFAFLIK KURALI
 AI (Antigravity), geliştirdiği özelliklerde ve yaptığı testlerde %100 dürüst olmakla yükümlüdür.
