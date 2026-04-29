@@ -3747,7 +3747,7 @@ function renderProfileSection() {
 
     mount.innerHTML = `
         <!-- Profil Header Card -->
-        <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden group border border-white/10 shadow-2xl">
+        <div class="glass-card rounded-3xl p-4 sm:p-8 mb-8 relative overflow-hidden group border border-white/10 shadow-2xl">
             <div class="absolute inset-0 bg-gradient-to-r from-calith-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
             
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between w-full gap-6 pb-8 border-b border-white/5">
@@ -3790,60 +3790,60 @@ function renderProfileSection() {
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mt-8 relative z-10">
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                            <i data-lucide="scale" class="w-3.5 h-3.5 text-orange-500"></i>
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mt-8 relative z-10 w-full max-w-none">
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="scale" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500"></i>
                         </div>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Güncel Kilo</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">GÜNCEL KİLO</span>
                     </div>
-                    <div id="profile-weight" class="text-lg font-display font-bold">-- KG</div>
+                    <div id="profile-weight" class="text-lg sm:text-xl md:text-2xl font-display font-bold">-- KG</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                            <i data-lucide="ruler" class="w-3.5 h-3.5 text-blue-500"></i>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="ruler" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500"></i>
                         </div>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Boy (CM)</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">BOY (CM)</span>
                     </div>
-                    <div id="profile-height" class="text-lg font-display font-bold">-- CM</div>
+                    <div id="profile-height" class="text-lg sm:text-xl md:text-2xl font-display font-bold">-- CM</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                            <i data-lucide="target" class="w-3.5 h-3.5 text-purple-500"></i>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="target" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-500"></i>
                         </div>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Ana Hedef</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">ANA HEDEF</span>
                     </div>
-                    <div id="profile-goal" class="text-sm font-display font-bold leading-tight">--</div>
+                    <div id="profile-goal" class="text-sm sm:text-base md:text-lg font-display font-bold leading-tight truncate">--</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 rounded-lg bg-calith-accent/10 flex items-center justify-center">
-                            <i data-lucide="medal" class="w-3.5 h-3.5 text-calith-accent"></i>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-calith-accent/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="medal" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-calith-accent"></i>
                         </div>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Deneyim</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">DENEYİM</span>
                     </div>
-                    <div id="profile-level" class="text-lg font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
+                    <div id="profile-level" class="text-lg sm:text-xl md:text-2xl font-display font-bold text-calith-accent uppercase">BAŞLANGIÇ</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 rounded-lg bg-green-500/10 flex items-center justify-center">
-                            <i data-lucide="clock" class="w-3.5 h-3.5 text-green-500"></i>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="clock" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500"></i>
                         </div>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Yaş</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">YAŞ</span>
                     </div>
-                    <div id="profile-age" class="text-lg font-display font-bold">--</div>
+                    <div id="profile-age" class="text-lg sm:text-xl md:text-2xl font-display font-bold">--</div>
                 </div>
-                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-colors group/stat">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 rounded-lg bg-pink-500/10 flex items-center justify-center">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-pink-500"></i>
+                <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-white/[0.06] transition-colors group/stat w-full">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-pink-500/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-pink-500"></i>
                         </div>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Geçmiş</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none">GEÇMİŞ</span>
                     </div>
-                    <div id="profile-experience" class="text-lg font-display font-bold">-- Yıl</div>
+                    <div id="profile-experience" class="text-lg sm:text-xl md:text-2xl font-display font-bold">-- YIL</div>
                 </div>
             </div>
         </div>

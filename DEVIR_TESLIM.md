@@ -16,6 +16,9 @@ Bugün Calith projesinde admin paneli odaklı çalışarak, sistemi çok daha es
 ### ✅ Çözülen Kritik Sorun: Profil Çökmesi ve İkonların Kaybolması
 Lucide kütüphanesinin hatalı kaldırılmasından kaynaklanan syntax error (`profile.html` çökmesi) ve genel ikon kaybolma sorunları, kütüphanenin tekrar sisteme dahil edilmesiyle çözüldü (`restore_lucide.py`). İkonlar ve profil verileri artık sorunsuz yükleniyor. 📱🛡️
 
+### ⏳ Beklemede (Akşam Bakılacak): Mobil Profil Kart Düzeni
+768px (md) çözünürlüğünde kartların yayılma ve sütun dengesi tam istenen seviyeye gelmedi. Mobildeki iyileştirmeler (v1) efsane oldu ancak ara çözünürlükler için akşam detaylı grid/padding ayarı yapılacak. 🌙📐
+
 ### 2. Veritabanı ve Admin Yetkileri
 - **Veritabanı Anayasası:** `SUPABASE_TABLES.md` dosyası oluşturuldu; tüm tablo şemaları ve kısıtlamalar buraya işlendi. 📜
 - **Admin RPC Paketi:** `admin_delete_user`, `admin_ban_user` ve `admin_set_user_role` fonksiyonları Supabase tarafında kuruldu. Kullanıcı silme işlemindeki CASCADE hataları çözüldü.
