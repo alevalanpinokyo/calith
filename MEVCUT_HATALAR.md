@@ -189,7 +189,12 @@ SQL: `create policy "delete own" on workout_logs for delete using (auth.uid() = 
 
 ## 🐞 UI/UX İYİLEŞTİRMELERİ VE KÜÇÜK HATALAR (Sonraki Aşamalarda Çözülecek)
 
-1. [ ] **Süreli Hareketlerde (SN) KG Hatası:** Örneğin 9 saniyelik Plank yapıldığında, Set Tamamlandı (Geçmiş) kutusunda "9 sn" yerine yanlışlıkla "9 kg" gibi ağırlık birimi yazması.
+1. [x] **TAMAMLANDI: Süreli Hareketlerde (SN) KG Hatası:** Örneğin 9 saniyelik Plank yapıldığında, Set Tamamlandı (Geçmiş) kutusunda "9 sn" yerine yanlışlıkla "9 kg" gibi ağırlık birimi yazması.
+2. [ ] **BEKLETİLİYOR: Mobil Hız Optimizasyonu:** Sayfanın mobilde çok geç yüklenmesi. (Neden: Tarayıcı içi Tailwind CDN kullanımı ve senkron dış bağlantılar). İleri bir tarihe ertelendi.
+3. [ ] **TEST EDİLECEK (Beklemede): Gerçek Dışı PR Kontrolü (Anti-Cheat / Anatomik Limit):** Kullanıcıların vücut ağırlıklarına ve hareketin mekaniğine (örn: Curl vs Squat) kıyasla imkansız ağırlıklar (örn: 500kg Curl) girmesinin engellenmesi.
+4. [x] **TAMAMLANDI: App Bar (Navigasyon) Senkronizasyonu:** Sayfalar arası Navbar kaymaları, Profilim linkinin eksik olması ve aktif sayfa (Örn: Anasayfa) yerine Koçluk sekmesinin turuncu kalması sorunu.
+5. [x] **TAMAMLANDI: App Bar Tasarım Revizyonu:** Navbar'ın arka plana boğulması (kontrast eksikliği) ve yazı fontlarının küçük kalması.
+6. [ ] **TEST EDİLECEK (Beklemede): İkon Flicker (Gecikme) Sorunu:** Navigasyon barındaki ikonların JS yüklenene kadar görünmemesi/sıçraması ve Profilim butonuna Shadow efekti eklenmesi.
 
 ---
 

@@ -48,7 +48,9 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [ ] **Social Card Generator:** Antrenman sonu "Growth Report" görseli oluşturma. [EDİLMEDİ]
 
 ### 🚀 FAZ 3.0: USER EMPOWERMENT (GELECEK)
-- [ ] **Custom Program Builder:** Kullanıcıların kendi antrenman programlarını (Kütüphaneyi kullanarak) sıfırdan oluşturabilmesi.
+- [ ] **Grafikler:** Echart.js ile kişisel gelişim grafikleri.
+- [ ] **Anti-Cheat Sistemi:** Anatomik BW limitleri ve anormal ağırlık sıçrama engellemesi.
+- [ ] **Program Builder:** Kullanıcıların kütüphaneden seçerek özel antrenman oluşturması.
 - [ ] **Program Paylaşımı:** Kullanıcıların kendi yazdığı programları arkadaşlarıyla veya toplulukla paylaşabilmesi.
 - [ ] **Kişisel İstatistik Paneli:** Program bazlı gelişim grafiklerinin kullanıcıya özel sunulması.
 
@@ -69,6 +71,7 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
   - [x] Ana Sayfa Kartları alt filtre butonlarının kaydırmalı yapılması. [TEST EDİLDİ]
   - [x] Duyuru Panosu YouTube Iframe Kırpılma / Uyumsuzluk Hataları. [TAMAM ✅]
 - [x] **Admin Paneli Program Yönetimi:** Program yönetimi sekmesinin mobil responsive tasarımı kontrol edildi. [TAMAM ✅]
+- [x] **Dinamik Program Günleri:** Admin panelinde sabit 5 gün sınırının kaldırılarak esnek/dinamik gün ekleme (ve silme) altyapısının kurulması. [TAMAM ✅]
 
 ---
 

@@ -10,7 +10,7 @@
     <meta name="color-scheme" content="dark">
     <title>CALITH | Skills & Programlar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,55 +18,84 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calith: {
+                            orange: '#FF6B35',
+                            dark: '#0A0A0A',
+                            gray: '#1A1A1A',
+                            light: '#2A2A2A',
+                            accent: '#00D9FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="font-sans antialiased bg-calith-dark text-white">
     <div class="grain"></div>
 
-    <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <a href="index.html" class="flex items-center gap-2 cursor-pointer" id="logo-container" title="Ana Sayfaya Git">
-                    <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
-                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+    <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-[#0A0A0A]/85 shadow-2xl shadow-black/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="grid grid-cols-[auto_1fr_auto] items-center h-20 gap-4">
+            <!-- Logo (Sol Kolon) -->
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer shrink-0" id="logo-container" title="Ana Sayfaya Git">
+                <div class="shrink-0 w-11 h-11 bg-gradient-to-br from-calith-orange to-calith-accent rounded-xl flex items-center justify-center shadow-lg shadow-calith-orange/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white"><path d="m14.5 17.5-1-1"/><path d="m10.5 13.5-1-1"/><path d="m14 14-4-4"/><path d="m6 10-1-1"/><path d="m9.5 6.5-1-1"/><path d="m14 19-3-3-4 4-2-2 4-4-3-3"/><path d="m10 5 3 3 4-4 2 2-4 4 3 3"/></svg>
+                </div>
+                <span class="font-display text-2xl font-black tracking-wider text-white">CALITH</span>
+            </a>
+
+            <!-- Desktop Menu (Orta Kolon - Her zaman tam merkez) -->
+            <div class="hidden lg:flex items-center justify-center gap-8">
+                <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ANA SAYFA</a>
+                <a href="skills.html" class="text-calith-orange font-bold text-base whitespace-nowrap transition-all">PROGRAMLAR</a>
+                <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">EKİPMAN</a>
+                <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ÖĞREN</a>
+                <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">HAKKIMIZDA</a>
+                <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap uppercase tracking-widest transition-all drop-shadow-[0_0_8px_rgba(255,107,53,0.3)]">KOÇLUK</a>
+            </div>
+            <!-- Mobilde orta kolon boş kalır -->
+            <div class="lg:hidden"></div>
+
+            <!-- Actions (Sağ Kolon - Her zaman sağda) -->
+            <div class="flex items-center gap-3 justify-end">
+                <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base hidden lg:flex items-center gap-2 transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> <span class="tracking-wider whitespace-nowrap">PROFİLİM</span>
                 </a>
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="index.html" class="text-white font-medium text-sm">ANA SAYFA</a>
-                    <a href="skills.html" class="text-white font-medium text-sm">PROGRAMLAR</a>
-                    <a href="shop.html" class="text-white font-medium text-sm">EKİPMAN</a>
-                    <a href="blog.html" class="text-white font-medium text-sm">ÖĞREN</a>
-                    <a href="about.html" class="text-white font-medium text-sm">HAKKIMIZDA</a>
-                    <a href="premium.html"
-                        class="text-calith-orange font-bold text-sm tracking-widest hover:text-white transition-colors uppercase">KOÇLUK</a>
-                </div>
-                <div class="flex items-center gap-4">
-                    <a href="javascript:void(0)" onclick="showProfile()"
-                        class="hidden md:flex text-white font-medium text-sm items-center gap-2 mr-4 hover:text-calith-orange transition-colors">
-                        <i data-lucide="user-circle" class="w-4 h-4"></i> PROFİLİM
-                    </a>
-                    <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()" aria-label="Menü">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-                </div>
+                
+                <button class="lg:hidden p-2 text-white hover:text-calith-orange transition-colors" onclick="toggleMobileMenu()" aria-label="Menü">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 text-white"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                </button>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-calith-dark">
-            <div class="px-4 py-4 space-y-3">
-                <a href="index.html" class="block text-gray-400 hover:text-white py-2">ANA SAYFA</a>
-                <a href="skills.html" class="block text-white py-2">PROGRAMLAR</a>
-                <a href="shop.html" class="block text-gray-400 hover:text-white py-2">EKİPMAN</a>
-                <a href="blog.html" class="block text-gray-400 hover:text-white py-2">ÖĞREN</a>
-                <a href="about.html" class="block text-gray-400 hover:text-white py-2">HAKKIMIZDA</a>
-                <a href="premium.html"
-                    class="block text-calith-orange font-bold py-2 uppercase tracking-widest">KOÇLUK</a>
-                <button onclick="showAuthModal()"
-                    class="w-full text-left py-2 font-bold text-white border-t border-white/10 mt-2 pt-4">GİRİŞ YAP /
-                    ÜYE OL</button>
-            </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-white/10 bg-[#050505] shadow-2xl">
+        <div class="px-5 py-6 space-y-4">
+            <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ANA SAYFA</a>
+            <a href="skills.html" class="text-calith-orange font-bold text-base block py-2 transition-colors">PROGRAMLAR</a>
+            <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">EKİPMAN</a>
+            <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ÖĞREN</a>
+            <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">HAKKIMIZDA</a>
+            <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
+            <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base block py-3 transition-colors flex items-center gap-3 border-t border-white/10 mt-4 pt-4 font-bold text-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> PROFİLİM</a>
+            <button onclick="showAuthModal()" class="w-full text-left py-4 font-black text-white border-t border-white/10 mt-2 text-lg tracking-wider">GİRİŞ YAP / ÜYE OL</button>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <section id="programs" class="min-h-screen pt-32 pb-20 fade-in">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -84,14 +113,14 @@
                     </div>
                     <div
                         class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-6 text-calith-accent ring-1 ring-white/10 group-hover:scale-110 transition-transform">
-                        <i data-lucide="trending-up" class="w-7 h-7"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
                     </div>
                     <h3 class="font-display text-2xl font-bold mb-3">BAŞLANGIÇ</h3>
                     <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">Temel vücut ağırlığı egzersizleri, form
                         teknikleri ve ilk barfiks/şınavın için gereken tüm adımlar.</p>
                     <button onclick="showProgramLevel('baslangic', 'Başlangıç')"
                         class="w-full bg-white/5 hover:bg-calith-accent hover:text-black text-white font-bold py-4 rounded-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı
-                        İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                        İncele <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
                 </div>
 
                 <!-- Orta Seviye -->
@@ -104,14 +133,14 @@
                         class="absolute top-6 right-6 bg-calith-orange text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-widest">ÖNERİLEN</span>
                     <div
                         class="w-14 h-14 bg-gradient-to-br from-calith-orange to-red-500 rounded-2xl flex items-center justify-center mb-6 text-white shadow-xl group-hover:scale-110 transition-transform">
-                        <i data-lucide="flame" class="w-7 h-7"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
                     </div>
                     <h3 class="font-display text-2xl font-bold mb-3">ORTA SEVİYE</h3>
                     <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">Muscle-up hazırlığı, L-sit, handstand
                         temelleri ve daha karmaşık rutinlerle hacim ve güç kazanımı.</p>
                     <button onclick="showProgramLevel('orta', 'Orta Seviye')"
                         class="w-full btn-primary py-4 rounded-xl font-bold transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı
-                        İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                        İncele <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
                 </div>
 
                 <!-- İleri Seviye -->
@@ -122,14 +151,14 @@
                     </div>
                     <div
                         class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-6 text-red-500 ring-1 ring-white/10 group-hover:scale-110 transition-transform">
-                        <i data-lucide="zap" class="w-7 h-7"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                     </div>
                     <h3 class="font-display text-2xl font-bold mb-3">İLERİ SEVİYE</h3>
                     <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">Planche, Front Lever, tek kol barfiks
                         aşamaları ve yer çekimine meydan okuyan elit seviye antrenmanlar.</p>
                     <button onclick="showProgramLevel('ileri', 'İleri Seviye')"
                         class="w-full bg-white/5 hover:bg-red-500 hover:text-white text-white font-bold py-4 rounded-xl transition-all uppercase tracking-wider text-sm flex justify-center items-center gap-2">Programı
-                        İncele <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                        İncele <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
                 </div>
             </div>
         </div>
@@ -142,7 +171,7 @@
                 <div>
                     <button onclick="backToLevels()"
                         class="mb-4 text-calith-orange hover:text-white flex items-center gap-2 group font-semibold text-sm">
-                        <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                         SEVİYELERE DÖN
                     </button>
                     <h2 id="program-list-title"
@@ -158,7 +187,7 @@
         <div class="max-w-4xl mx-auto px-4">
             <button onclick="backToProgramList()"
                 class="mb-10 text-gray-400 hover:text-white flex items-center gap-2 group font-semibold text-sm">
-                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> LİSTEYE
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> LİSTEYE
                 DÖN
             </button>
             <div id="post-content" class="bg-calith-gray/30 border border-white/5 p-8 md:p-12 rounded-[2.5rem]"></div>
@@ -179,7 +208,7 @@
 
 
 
-    <script src="js/app.js?v=202604290857"></script>
-    <script>lucide.createIcons();</script>
+    <script src="js/app.js?v=202604291209"></script>
+    <script></script>
 </body>
 </html>

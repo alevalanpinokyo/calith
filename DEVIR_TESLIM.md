@@ -1,32 +1,32 @@
-# 📊 CALITH - GÜNLÜK DEVİR TESLİM RAPORU (27 Nisan 2026)
+# 📊 CALITH - GÜNLÜK DEVİR TESLİM RAPORU (29 Nisan 2026)
 
-Bugün Calith projesinde sistemin "omurgasını" sağlamlaştıran çok kritik güncellemeler ve hata düzeltmeleri yaptık. İşte bugünün özeti ve yarının rotası:
+Bugün Calith projesinde admin paneli odaklı çalışarak, sistemi çok daha esnek ve mobil uyumlu hale getirdik.
 
 ---
 
-### ✅ Neler Tamamlandı? (27 Nisan 2026 Final)
+### ✅ Neler Tamamlandı? (29 Nisan 2026)
 
-### 1. Antrenman Geçmiş Yönetimi (YENİ)
-- **Set Düzenleme:** Geçmiş raporlardaki setlerin ağırlık ve tekrarı artık düzenlenebiliyor. ✏️
-- **Set Silme (Akıllı):** Yanlış girilen setler silinebiliyor. Eğer bir hareketin tüm setleri silinirse, hareket de otomatik olarak listeden kaldırılıyor. 🗑️🧹
-- **Scope Fix:** Fonksiyonlar `window` nesnesine bağlanarak her yerden erişilebilir hale getirildi.
+### 🛠 Yapılan Güncellemeler (29 Nisan 2026)
+1. **Navigasyon Grid Sistemi:** Navigasyon barı `flex`'ten `grid grid-cols-[auto_1fr_auto]` yapısına geçirildi. Logo sol, menü orta, aksiyonlar sağ kolon olarak sabitlendi. KOÇLUK/PROFİLİM yapışma sorunu çözüldü.
+2. **Inline SVG Geçişi:** Lucide kütüphanesi tamamen kaldırıldı (`remove_lucide.py`), tüm ikonlar inline SVG yapıldı.
+3. **Sayfa Algılama:** `patch_nav.py` ile aktif sayfa otomatik algılanıp turuncu renk ataması yapılıyor.
+4. **Buton Mantığı:** "Hemen Başla" butonu sadece anasayfada görünecek şekilde güncellendi.
+5. **Versiyonlama:** Cache sorunları için `v=202604291144` versiyonuna geçildi.
 
-### 2. Auth & Navbar Senkronizasyonu
-- **Logout Fix:** Çıkış yapıldığında anında yönlendirme ve navbar güncelleme sağlandı.
-- **Flicker Prevention:** Sayfa açılışında butonların yanlış görünmesi engellendi (Fade-in eklendi).
-- **Link Çakışması:** Giriş yapmamış kullanıcının profil linkine tıklama hatası giderildi.
-
-### 3. UI/UX ve Mobil Koruma
-- **Feedback Renkleri:** Hafif (Mavi), İdeal (Yeşil), Ağır (Kırmızı) buton renkleri geri getirildi. 🎨
-- **Mobil Overflow:** Agresif `overflow-x: hidden` ve `touch-action` kurallarıyla mobil kaymalar önlendi. 📱🛡️
+### ❌ Bekleyen Kritik Sorun: Logo Kaybolması
+Logo (dumbbell) ve bazen kullanıcı ikonu sayfa yüklendikten 1 saniye sonra kayboluyor. Lucide silindi ancak muhtemelen `styles.css` veya `app.js` içinde `svg` etiketlerini hedef alan genel bir kural (opacity: 0 veya display: none) bu soruna yol açıyor. 📱🛡️
 
 ### 2. Veritabanı ve Admin Yetkileri
 - **Veritabanı Anayasası:** `SUPABASE_TABLES.md` dosyası oluşturuldu; tüm tablo şemaları ve kısıtlamalar buraya işlendi. 📜
 - **Admin RPC Paketi:** `admin_delete_user`, `admin_ban_user` ve `admin_set_user_role` fonksiyonları Supabase tarafında kuruldu. Kullanıcı silme işlemindeki CASCADE hataları çözüldü.
 
 ### 3. Antrenman Raporu & Geçmiş Yönetimi
-- **Set Düzenleme:** Geçmiş antrenman detaylarında her set için "Kalem" ikonu eklendi; ağırlık ve tekrar artık düzenlenebiliyor. ✏️
-- **Set Silme (Çöp Kutusu):** Yanlış girilen setleri silmek için kırmızı çöp kutusu ikonu eklendi. (Deep Parse mantığıyla güçlendirildi). 🗑️⚡
+- **Set Düzenleme:** Geçmiş antrenman detaylarında her set için*   **Tamamlandı:** Süreli hareketlerdeki (SN/KG) gösterim hatası düzeltildi.
+*   **Tamamlandı:** Navigasyon (App Bar) revizyonu. Grid yapısına geçildi, 3 kolonlu düzen sağlandı.
+*   **Tamamlandı:** Active State otomatik algılama sistemi kuruldu.
+*   **Tamamlandı:** "Hemen Başla" butonu sadece index.html ile sınırlandırıldı.
+*   **Devam Ediyor:** Logo Flicker/Kaybolma Sorunu. Lucide kaldırılmasına rağmen inline SVG bazı durumlarda render sonrası kayboluyor (CSS çakışması muhtemel).
+*   **Bekletiliyor (Beklemede):** Mobil Hız Optimizasyonu (CSS ve scriptlerin asenkron yüklenmesi).e mantığıyla güçlendirildi). 🗑️⚡
 - **Akıllı Öneri (Smart Rec):** Öneri motoru artık o anki `dayType` (Ağır/Orta/Hafif) bilgisine göre geçmiş antrenmanları filtreliyor.
 
 ---
