@@ -13,8 +13,8 @@ Bugün Calith projesinde admin paneli odaklı çalışarak, sistemi çok daha es
 4. **Buton Mantığı:** "Hemen Başla" butonu sadece anasayfada görünecek şekilde güncellendi.
 5. **Versiyonlama:** Cache sorunları için `v=202604291144` versiyonuna geçildi.
 
-### ❌ Bekleyen Kritik Sorun: Logo Kaybolması
-Logo (dumbbell) ve bazen kullanıcı ikonu sayfa yüklendikten 1 saniye sonra kayboluyor. Lucide silindi ancak muhtemelen `styles.css` veya `app.js` içinde `svg` etiketlerini hedef alan genel bir kural (opacity: 0 veya display: none) bu soruna yol açıyor. 📱🛡️
+### ✅ Çözülen Kritik Sorun: Profil Çökmesi ve İkonların Kaybolması
+Lucide kütüphanesinin hatalı kaldırılmasından kaynaklanan syntax error (`profile.html` çökmesi) ve genel ikon kaybolma sorunları, kütüphanenin tekrar sisteme dahil edilmesiyle çözüldü (`restore_lucide.py`). İkonlar ve profil verileri artık sorunsuz yükleniyor. 📱🛡️
 
 ### 2. Veritabanı ve Admin Yetkileri
 - **Veritabanı Anayasası:** `SUPABASE_TABLES.md` dosyası oluşturuldu; tüm tablo şemaları ve kısıtlamalar buraya işlendi. 📜
@@ -25,7 +25,7 @@ Logo (dumbbell) ve bazen kullanıcı ikonu sayfa yüklendikten 1 saniye sonra ka
 *   **Tamamlandı:** Navigasyon (App Bar) revizyonu. Grid yapısına geçildi, 3 kolonlu düzen sağlandı.
 *   **Tamamlandı:** Active State otomatik algılama sistemi kuruldu.
 *   **Tamamlandı:** "Hemen Başla" butonu sadece index.html ile sınırlandırıldı.
-*   **Devam Ediyor:** Logo Flicker/Kaybolma Sorunu. Lucide kaldırılmasına rağmen inline SVG bazı durumlarda render sonrası kayboluyor (CSS çakışması muhtemel).
+*   **Tamamlandı:** Logo Flicker/Kaybolma Sorunu ve Profil çökmesi. Lucide geri yüklendi ve syntax hatası giderildi.
 *   **Bekletiliyor (Beklemede):** Mobil Hız Optimizasyonu (CSS ve scriptlerin asenkron yüklenmesi).e mantığıyla güçlendirildi). 🗑️⚡
 - **Akıllı Öneri (Smart Rec):** Öneri motoru artık o anki `dayType` (Ağır/Orta/Hafif) bilgisine göre geçmiş antrenmanları filtreliyor.
 
@@ -44,8 +44,8 @@ Logo (dumbbell) ve bazen kullanıcı ikonu sayfa yüklendikten 1 saniye sonra ka
 ---
 
 ## 📦 Versiyon Bilgisi
-- **Güncel Versiyon:** `v=202604272339`
-- **Tarih:** 27.04.2026
+- **Güncel Versiyon:** `v=202604291209`
+- **Tarih:** 29.04.2026
 
 ---
 > **Calith Engineering Team**
