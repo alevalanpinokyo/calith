@@ -25,7 +25,7 @@ Lucide kütüphanesinin hatalı kaldırılmasından kaynaklanan syntax error (`p
 *   **Tamamlandı:** Navigasyon (App Bar) revizyonu. Grid yapısına geçildi, 3 kolonlu düzen sağlandı.
 *   **Tamamlandı:** Active State otomatik algılama sistemi kuruldu.
 *   **Tamamlandı:** "Hemen Başla" butonu sadece index.html ile sınırlandırıldı.
-*   **Tamamlandı:** Logo Flicker/Kaybolma Sorunu ve Profil çökmesi. Lucide geri yüklendi ve syntax hatası giderildi.
+*   **Tamamlandı:** Logo Flicker/Kaybolma Sorunu, Profil çökmesi ve Mobil Menü Çift "PROFİLİM" hatası. Lucide geri yüklendi, `updateAuthUI` fonksiyonu SVG koruyacak şekilde güncellendi.
 *   **Bekletiliyor (Beklemede):** Mobil Hız Optimizasyonu (CSS ve scriptlerin asenkron yüklenmesi).e mantığıyla güçlendirildi). 🗑️⚡
 - **Akıllı Öneri (Smart Rec):** Öneri motoru artık o anki `dayType` (Ağır/Orta/Hafif) bilgisine göre geçmiş antrenmanları filtreliyor.
 

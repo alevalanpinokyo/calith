@@ -3290,39 +3290,43 @@ function updateAuthUI() {
     });
 
     authElements.forEach(el => {
-        const isMobile = el.closest('#mobile-menu') || el.classList.contains('md:hidden') || el.classList.contains('mobile-nav-item');
-        
-        // Mevcut ikon varsa sakla
-        const icon = el.querySelector('i');
+        // Mevcut ikon varsa sakla (Lucide 'i' veya inline 'svg')
+        const icon = el.querySelector('i, svg');
         const iconHtml = icon ? icon.outerHTML : '';
+
+        // İçerideki özel span varsa onu bul, yoksa genel HTML'i değiştireceğiz
+        const authSpan = el.querySelector('.auth-text');
 
         if (currentUser) {
             // GİRİŞ YAPILMIŞSA -> PROFİLİM
             el.setAttribute('href', 'profile.html'); // Linki aktifleştir
-            if (isMobile) {
-                if (el.tagName === 'BUTTON' || el.classList.contains('mobile-nav-item')) {
-                    el.textContent = 'PROFİLİM';
-                    el.classList.add('text-calith-accent');
-                }
-                el.setAttribute('onclick', "showProfile()");
+            el.setAttribute('onclick', "showProfile()");
+            el.classList.add('text-calith-accent');
+            
+            if (authSpan) {
+                authSpan.textContent = 'PROFİLİM';
             } else {
-                el.innerHTML = iconHtml + ' PROFİLİM';
-                el.setAttribute('onclick', "showProfile()");
-                el.classList.add('text-calith-accent');
+                // Sadece buton ise ve ikonu yoksa direkt textContent
+                if (el.tagName === 'BUTTON' && !icon) {
+                    el.textContent = 'PROFİLİM';
+                } else {
+                    el.innerHTML = iconHtml + ' <span class="auth-text">PROFİLİM</span>';
+                }
             }
         } else {
             // ÇIKIŞ YAPILMIŞSA -> GİRİŞ YAP
-            el.setAttribute('href', 'javascript:void(0)'); // Linki DEAKTİF ET (Çakışmayı önler)
-            if (isMobile) {
-                if (el.tagName === 'BUTTON' || el.classList.contains('mobile-nav-item')) {
-                    el.textContent = 'GİRİŞ YAP';
-                    el.classList.remove('text-calith-accent');
-                }
-                el.setAttribute('onclick', 'showAuthModal()');
+            el.setAttribute('href', 'javascript:void(0)'); // Linki DEAKTİF ET
+            el.setAttribute('onclick', "showAuthModal()");
+            el.classList.remove('text-calith-accent');
+            
+            if (authSpan) {
+                authSpan.textContent = 'GİRİŞ YAP';
             } else {
-                el.innerHTML = iconHtml + ' GİRİŞ YAP';
-                el.setAttribute('onclick', "showAuthModal()");
-                el.classList.remove('text-calith-accent');
+                if (el.tagName === 'BUTTON' && !icon) {
+                    el.textContent = 'GİRİŞ YAP / ÜYE OL';
+                } else {
+                    el.innerHTML = iconHtml + ' <span class="auth-text">GİRİŞ YAP</span>';
+                }
             }
         }
     });
