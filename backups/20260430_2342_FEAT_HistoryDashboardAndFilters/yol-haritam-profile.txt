@@ -31,14 +31,17 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [TAMAMLANDI] Antrenman Detay Görünümü (Geçmişe tıklayınca setleri görme)
 - [TAMAMLANDI] Antrenman Özeti Kopyala/Paylaş butonu
 
-### ✅ FAZ 3: ANALİTİK VE RAPORLAMA (TAMAMLANDI)
-- [x] (2026-04-30) **History Performance Dashboard:** Antrenman sayısı, Form Kalitesi (%) ve Aktif Program takibi. [TEST EDİLDİ]
-- [x] (2026-04-30) **Aylık Filtreleme & Gruplandırma:** 100+ kaydın ay bazlı süzülmesi ve Dashboard entegrasyonu. [TEST EDİLDİ]
-- [x] (2026-04-30) **Bulk Copy (Toplu Rapor):** Tüm ayın verisini profesyonel metin formatında dışarı aktarma. [TEST EDİLDİ]
-- [x] (2026-04-30) **Verim Odaklı UI:** Kilo yerine "Set ve Tekrar Kalitesi" odaklı yeni kart tasarımı. [TEST EDİLDİ]
-- [ ] (2024-04-25) **Gelişmiş Parametreler:**
-    * [ ] Gelişmiş Grafik Paneli (Chart.js / Echart.js entegrasyonu).
-    * [ ] Program bazlı performans artış analizi.
+### FAZ 3: ANALİTİK VE RAPORLAMA (Sıradaki Adım)
+- [BEKLEMEDE] Geçmiş Sekmesi Filtreleme (Haftalık / Aylık / Tüm Zamanlar)
+- [BEKLEMEDE] Genel İstatistik Kartları Tasarımı:
+    * Bu ay toplam kaç gün spor yapıldı?
+    * Ortalama antrenman süresi analizi.
+    * Başarı oranı ve Pas geçilen hareket istatistiği.
+- [BEKLEMEDE] Gelişmiş Parametreler:
+    * Hacim (Volume) Gelişimi Takibi.
+    * Sertlik Dağılımı (RPE Analizi).
+    * Kişisel Rekor (PR) Sayacı.
+- [BEKLEMEDE]: Kilo ve güç artışını gösteren çizgisel grafikler (Chart.js).
 
 ## 🚀 FAZ 4: GÖRSELLEŞTİRME VE SOSYAL PAYLAŞIM
 - [ ] **PR Kartları:** Yeni bir rekor kırıldığında indirilebilir şık bir "New Record" görseli oluşturma. [EDİLMEDİ]
