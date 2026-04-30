@@ -4441,6 +4441,10 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
                     <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">TEKRAR / SANİYE</label>
                     <input id="edit-set-reps" type="number" inputmode="numeric" value="${set.reps}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono font-bold text-lg focus:border-calith-orange focus:outline-none transition-colors" style="touch-action: manipulation;">
                 </div>
+                <div>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">DİNLENME (SANİYE)</label>
+                    <input id="edit-set-rest" type="number" inputmode="numeric" value="${set.restTime || 0}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono font-bold text-lg focus:border-calith-orange focus:outline-none transition-colors" style="touch-action: manipulation;">
+                </div>
             </div>
             <div class="flex gap-3">
                 <button id="edit-set-cancel" type="button" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 font-bold text-sm uppercase tracking-wider hover:bg-white/10 transition-all" style="touch-action: manipulation;">İPTAL</button>
@@ -4465,9 +4469,11 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
         e.stopPropagation();
         const newWeight = parseFloat(document.getElementById('edit-set-weight').value) || 0;
         const newReps = parseInt(document.getElementById('edit-set-reps').value) || 0;
+        const newRest = parseInt(document.getElementById('edit-set-rest').value) || 0;
 
         set.weight = newWeight;
         set.reps = newReps;
+        set.restTime = newRest;
 
         const sb = getSupabase();
         if (!sb) return;
@@ -4479,7 +4485,7 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
         if (error) {
             showToast('Hata: ' + error.message);
         } else {
-            showToast('Set güncellendi! 🔥');
+            showToast('Set başarıyla güncellendi! 🔥');
             log.workout_data = data;
             showWorkoutLogDetail(logId);
             updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps);
@@ -5350,13 +5356,29 @@ async function startWorkoutMode(programId, dayIndex = 0) {
 
     // Kalibrasyon Kontrolü
     const firstEx = workoutSession.exercises[0];
-    getSmartRecommendation(firstEx.name).then(rec => {
-        if (!rec) {
-            setTimeout(() => {
-                showCalibrationModal();
-            }, 800);
+    const sb = getSupabase();
+    
+    if (sb && currentUser) {
+        // Bu programın bu gününü daha önce yaptı mı?
+        const { data: pastLogs } = await sb.from('workout_logs')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .eq('program_title', p.title)
+            .eq('day_name', day.name)
+            .limit(1);
+
+        if (pastLogs && pastLogs.length > 0) {
+            console.log('[Calith] Bu gün daha önce tamamlanmış, Test Sürüşü bypass edildi.');
+        } else {
+            // Hiç yapmamışsa ilk egzersiz için öneri var mı bak (Rekor tablosu)
+            const rec = await getSmartRecommendation(firstEx.name);
+            if (!rec) {
+                setTimeout(() => {
+                    showCalibrationModal();
+                }, 800);
+            }
         }
-    });
+    }
 
     showToast('Antrenman Başladı! Başarılar kanka.');
     if (window.lucide) lucide.createIcons();
