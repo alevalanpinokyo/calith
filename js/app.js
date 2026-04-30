@@ -4335,6 +4335,12 @@ function renderWorkoutLogs(logs) {
     const container = document.getElementById('user-programs-list');
     if (!container) return;
 
+    // RENDER KİLİDİ: Modal açıkken listeyi yeniden render etme (Race Condition Fix)
+    if (document.getElementById('log-detail-modal')) {
+        console.log('[Calith] renderWorkoutLogs ATLATILDI: Detay modalı açık.');
+        return;
+    }
+
     // Sekme kontrolü - Eğer kullanıcı çoktan başka sekmeye geçtiyse render etme
     const activeTab = document.querySelector('.profile-tab.active');
     if (activeTab && activeTab.id !== 'btn-tab-history') return;
@@ -4411,7 +4417,6 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
-    // Veriyi derin kopyala (JSON mimarisi)
     let rawData = log.workout_data;
     if (typeof rawData === 'string') {
         try { rawData = JSON.parse(rawData); } catch(e) { console.error(e); }
@@ -4419,80 +4424,115 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     const data = JSON.parse(JSON.stringify(rawData));
     const set = data.exercises[exerciseIdx].sets[setIdx];
 
-    const newWeight = prompt(`Yeni Ağırlık (kg) - Mevcut: ${set.weight}`, set.weight);
-    if (newWeight === null) return;
-    
-    const newReps = prompt(`Yeni Tekrar/Saniye - Mevcut: ${set.reps}`, set.reps);
-    if (newReps === null) return;
+    // Varsa eski edit modalını sil
+    const oldEdit = document.getElementById('set-edit-modal');
+    if (oldEdit) oldEdit.remove();
 
-    // Veriyi güncelle
-    set.weight = parseFloat(newWeight) || 0;
-    set.reps = parseInt(newReps) || 0;
+    const editHtml = `
+    <div id="set-edit-modal" class="fixed inset-0 z-[20000] flex items-center justify-center p-4" style="background: rgba(0,0,0,0.95); backdrop-filter: blur(30px);">
+        <div class="w-full max-w-sm bg-[#111] border border-white/10 rounded-3xl p-6 space-y-5" style="touch-action: manipulation;">
+            <h3 class="text-white font-black uppercase tracking-tight text-center text-sm">SET DÜZENLE</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">AĞIRLIK (KG)</label>
+                    <input id="edit-set-weight" type="number" inputmode="decimal" step="0.5" value="${set.weight}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono font-bold text-lg focus:border-calith-orange focus:outline-none transition-colors" style="touch-action: manipulation;">
+                </div>
+                <div>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">TEKRAR / SANİYE</label>
+                    <input id="edit-set-reps" type="number" inputmode="numeric" value="${set.reps}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono font-bold text-lg focus:border-calith-orange focus:outline-none transition-colors" style="touch-action: manipulation;">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button id="edit-set-cancel" type="button" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 font-bold text-sm uppercase tracking-wider hover:bg-white/10 transition-all" style="touch-action: manipulation;">İPTAL</button>
+                <button id="edit-set-save" type="button" class="flex-1 py-3 rounded-xl bg-calith-orange text-white font-bold text-sm uppercase tracking-wider hover:bg-calith-orange/80 transition-all" style="touch-action: manipulation;">KAYDET</button>
+            </div>
+        </div>
+    </div>`;
 
-    const sb = getSupabase();
-    if (!sb) return;
+    document.body.insertAdjacentHTML('beforeend', editHtml);
 
-    const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
+    // Input'a focus ver
+    setTimeout(() => { document.getElementById('edit-set-weight')?.focus(); }, 100);
 
-    if (error) {
-        showToast('Hata: ' + error.message);
-    } else {
-        showToast('Set güncellendi! 🔥');
-        log.workout_data = data;
-        showWorkoutLogDetail(logId);
-        updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps);
-    }
+    // İptal butonu
+    document.getElementById('edit-set-cancel').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('set-edit-modal')?.remove();
+    });
+
+    // Kaydet butonu
+    document.getElementById('edit-set-save').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const newWeight = parseFloat(document.getElementById('edit-set-weight').value) || 0;
+        const newReps = parseInt(document.getElementById('edit-set-reps').value) || 0;
+
+        set.weight = newWeight;
+        set.reps = newReps;
+
+        const sb = getSupabase();
+        if (!sb) return;
+
+        const { error } = await sb.from('workout_logs').update({ workout_data: data }).eq('id', logId);
+
+        document.getElementById('set-edit-modal')?.remove();
+
+        if (error) {
+            showToast('Hata: ' + error.message);
+        } else {
+            showToast('Set güncellendi! 🔥');
+            log.workout_data = data;
+            showWorkoutLogDetail(logId);
+            updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps);
+        }
+    });
 }
 
 window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
-    // 1. Logu cache'den bul
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return showToast('Henüz bu antrenman için geçmiş verin yok kanka. İlk rekoru şimdi kıralım! 🦾');
 
-    // 2. Onay al
-    if (!confirm("Bu seti silmek istediğine emin misin kanka?")) return;
+    // showConfirmModal kullan (native confirm() yerine)
+    showConfirmModal("Bu seti silmek istediğine emin misin kanka?", async () => {
+        console.log('[Calith] Silme Öncesi Veri:', JSON.parse(JSON.stringify(log.workout_data)));
 
-    console.log('[Calith] Silme Öncesi Veri:', JSON.parse(JSON.stringify(log.workout_data)));
-
-    // 3. Veriyi kopyala ve seti uçur
-    const newData = JSON.parse(JSON.stringify(log.workout_data));
-    const exercise = newData.exercises[exerciseIdx];
-    
-    if (exercise && exercise.sets) {
-        console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set siliniyor...`);
-        exercise.sets.splice(setIdx, 1); // Satırı çıkar
+        const newData = JSON.parse(JSON.stringify(log.workout_data));
+        const exercise = newData.exercises[exerciseIdx];
         
-        // EĞER HAREKETTE HİÇ SET KALMADIYSA HAREKETİ DE SİL
-        if (exercise.sets.length === 0) {
-            console.log(`[Calith] ${exercise.name} hareketinde set kalmadığı için hareket siliniyor...`);
-            newData.exercises.splice(exerciseIdx, 1);
+        if (exercise && exercise.sets) {
+            console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set siliniyor...`);
+            exercise.sets.splice(setIdx, 1);
+            
+            if (exercise.sets.length === 0) {
+                console.log(`[Calith] ${exercise.name} hareketinde set kalmadığı için hareket siliniyor...`);
+                newData.exercises.splice(exerciseIdx, 1);
+            }
         }
-    }
 
-    // 4. Veritabanına "Yeni" objeyi gönder
-    const sb = getSupabase();
-    const { error } = await sb.from('workout_logs')
-        .update({ workout_data: newData })
-        .eq('id', logId);
+        const sb = getSupabase();
+        const { error } = await sb.from('workout_logs')
+            .update({ workout_data: newData })
+            .eq('id', logId);
 
-    if (error) {
-        console.error('[Calith] Silme Hatası:', error);
-        showToast('Silinemedi: ' + error.message);
-    } else {
-        console.log('[Calith] Silme Sonrası Veri:', newData);
-        showToast('Set uçuruldu! 🗑️');
-        
-        // 5. Cache'i ve UI'ı anında güncelle
-        log.workout_data = newData;
-        showWorkoutLogDetail(logId);
-    }
+        if (error) {
+            console.error('[Calith] Silme Hatası:', error);
+            showToast('Silinemedi: ' + error.message);
+        } else {
+            console.log('[Calith] Silme Sonrası Veri:', newData);
+            showToast('Set uçuruldu! 🗑️');
+            log.workout_data = newData;
+            showWorkoutLogDetail(logId);
+        }
+    });
 }
 
 function showWorkoutLogDetail(logId) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
-    const data = log.workout_data;
+    let data = log.workout_data;
+    if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch(e) { console.error('[Calith] workout_data parse hatası:', e); return; }
+    }
     const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
     // Varsa eski modalı sil
@@ -4542,24 +4582,32 @@ function showWorkoutLogDetail(logId) {
                                 const feelColors = { light: 'text-blue-400 bg-blue-500/10', ideal: 'text-green-400 bg-green-500/10', heavy: 'text-red-400 bg-red-500/10' };
                                 const feelLabel = { light: 'HAFİF', ideal: 'İDEAL', heavy: 'AĞIR' };
                                 return `
-                                <div class="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl group/set">
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si+1}. SET</span>
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-xs font-mono font-bold text-white">${(!isTimed && !isBW) ? set.weight + 'kg x ' : ''}${set.reps}${isTimed ? 'sn' : ''}</span>
+                                    <div class="flex flex-col gap-1 p-3 bg-white/[0.03] border border-white/5 rounded-xl group/set">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si+1}. SET</span>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs font-mono font-bold text-white">${(!isTimed && !isBW) ? set.weight + 'kg x ' : ''}${set.reps}${isTimed ? 'sn' : ''}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${set.isClean ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}">${set.isClean ? 'TEMİZ' : 'KİRLİ'}</span>
+                                                <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${feelColors[set.feel] || 'text-gray-500 bg-white/5'}">${feelLabel[set.feel] || 'NORMAL'}</span>
+                                                <button type="button" data-log-id="${log.id}" data-ex-idx="${idx}" data-set-idx="${si}" class="btn-edit-log relative z-[10001] w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-gray-400 hover:bg-calith-orange hover:text-white transition-all ml-4" title="Düzenle">
+                                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                                </button>
+                                                <button type="button" data-log-id="${log.id}" data-ex-idx="${idx}" data-set-idx="${si}" class="btn-delete-log relative z-[10001] w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
+                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
                                         </div>
+                                        ${set.restTime ? `
+                                        <div class="flex items-center gap-1.5 mt-1 border-t border-white/5 pt-2">
+                                            <i data-lucide="timer" class="w-2.5 h-2.5 text-gray-700"></i>
+                                            <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest">DİNLENME: ${Math.floor(set.restTime / 60).toString().padStart(2,'0')}:${(set.restTime % 60).toString().padStart(2,'0')}</span>
+                                        </div>
+                                        ` : ''}
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${set.isClean ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}">${set.isClean ? 'TEMİZ' : 'KİRLİ'}</span>
-                                        <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase ${feelColors[set.feel] || 'text-gray-500 bg-white/5'}">${feelLabel[set.feel] || 'NORMAL'}</span>
-                                        <button onclick="editWorkoutSet('${log.id}', ${idx}, ${si})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-gray-400 hover:bg-calith-orange hover:text-white transition-all ml-4" title="Düzenle">
-                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                        </button>
-                                        <button onclick="deleteWorkoutSet('${log.id}', ${idx}, ${si})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all ml-1" title="Seti Sil">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                </div>
                                 `;
                             }).join('')}
                         </div>
@@ -4576,6 +4624,7 @@ function showWorkoutLogDetail(logId) {
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHtml);
+
     setTimeout(() => {
         if (window.lucide) lucide.createIcons();
     }, 50);
@@ -4620,7 +4669,9 @@ function copyWorkoutToClipboard(logId) {
                 const repsStr = `${set.reps}${isTimed ? 'sn' : ''}`;
                 const cleanStr = set.isClean ? 'Temiz' : 'Kirli';
                 const feelStr = feelLabel[set.feel] || 'Normal';
-                text += `   - ${si + 1}. Set: ${weightStr}${repsStr} (${cleanStr} - ${feelStr})\n`;
+                const restStr = set.restTime ? ` [Dinlenme: ${Math.floor(set.restTime / 60).toString().padStart(2,'0')}:${(set.restTime % 60).toString().padStart(2,'0')}]` : '';
+                
+                text += `   - ${si + 1}. Set: ${weightStr}${repsStr} (${cleanStr} - ${feelStr})${restStr}\n`;
             });
         }
         text += `\n`;
@@ -6031,16 +6082,16 @@ function startRestTimer() {
     // Dinlenme kutusuna scroll
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    let timePassed = 0;
+    workoutSession.currentRestSeconds = 0;
     clock.textContent = '00:00';
 
     restInterval = setInterval(() => {
-        timePassed++;
-        const mins = Math.floor(timePassed / 60);
-        const secs = timePassed % 60;
+        workoutSession.currentRestSeconds++;
+        const mins = Math.floor(workoutSession.currentRestSeconds / 60);
+        const secs = workoutSession.currentRestSeconds % 60;
         clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         
-        if (timePassed > 600) clock.classList.add('text-red-500');
+        if (workoutSession.currentRestSeconds > 600) clock.classList.add('text-red-500');
     }, 1000);
 }
 
@@ -6190,6 +6241,16 @@ function skipRest() {
     clearInterval(exerciseTimerInterval);
     clearInterval(countdownInterval);
     document.getElementById('workout-rest-timer-box').classList.add('hidden');
+
+    // Dinlenme süresini kaydet
+    if (workoutSession.active) {
+        const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
+        if (ex && ex.sets.length > 0) {
+            const lastSet = ex.sets[ex.sets.length - 1];
+            lastSet.restTime = workoutSession.currentRestSeconds || 0;
+            console.log(`[Calith] Dinlenme Kaydedildi: ${lastSet.restTime}sn (Set ${ex.sets.length})`);
+        }
+    }
 
     // Buton ve inputları tekrar aktif et
     const completeBtn = document.getElementById('btn-complete-set');
@@ -6503,6 +6564,38 @@ function initSharedUI() {
 
     // Lucide ikonlarını yenile (Yeni eklenen elementler için)
     if (window.lucide) lucide.createIcons();
+
+    // GLOBAL EVENT DELEGATION: Log Detay Modalındaki Edit/Delete butonları
+    // Tek bir listener, DOM ne kadar değişirse değişsin her zaman çalışır.
+    if (!window._logDetailDelegationActive) {
+        window._logDetailDelegationActive = true;
+        document.addEventListener('click', function(e) {
+            const editBtn = e.target.closest('.btn-edit-log');
+            if (editBtn) {
+                e.stopPropagation();
+                e.preventDefault();
+                const logId = editBtn.getAttribute('data-log-id');
+                const exIdx = parseInt(editBtn.getAttribute('data-ex-idx'));
+                const setIdx = parseInt(editBtn.getAttribute('data-set-idx'));
+                console.log('[Calith] GLOBAL Edit tıklandı:', logId, exIdx, setIdx);
+                window.editWorkoutSet(logId, exIdx, setIdx);
+                return;
+            }
+
+            const deleteBtn = e.target.closest('.btn-delete-log');
+            if (deleteBtn) {
+                e.stopPropagation();
+                e.preventDefault();
+                const logId = deleteBtn.getAttribute('data-log-id');
+                const exIdx = parseInt(deleteBtn.getAttribute('data-ex-idx'));
+                const setIdx = parseInt(deleteBtn.getAttribute('data-set-idx'));
+                console.log('[Calith] GLOBAL Delete tıklandı:', logId, exIdx, setIdx);
+                window.deleteWorkoutSet(logId, exIdx, setIdx);
+                return;
+            }
+        }, true); // 'true' = Capture phase (en üstten yakalar)
+        console.log('[Calith] Global Event Delegation aktif.');
+    }
 }
 
 /**
@@ -6515,7 +6608,7 @@ function showConfirmModal(message, onConfirm) {
     if (old) old.remove();
 
     const modalHtml = `
-    <div id="confirm-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 transition-opacity duration-300" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
+    <div id="confirm-modal" class="fixed inset-0 z-[20000] flex items-center justify-center p-4 transition-opacity duration-300" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
         <div class="relative w-full max-w-sm bg-[#0A0A0A] border border-white/10 rounded-[3rem] p-8 shadow-2xl text-center transition-all duration-300 transform scale-100 opacity-100">
             <div class="w-20 h-20 bg-[#FF6B35]/10 rounded-3xl flex items-center justify-center mb-6 mx-auto border border-[#FF6B35]/20">
                 <i data-lucide="help-circle" class="w-10 h-10 text-[#FF6B35]"></i>
