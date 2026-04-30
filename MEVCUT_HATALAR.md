@@ -4,10 +4,12 @@ Bu liste sadece aktif, teknik ve henüz çözülmemiş bugları içerir. Planlan
 
 ---
 
-### ✅ SON ÇÖZÜLEN HATALAR (30 Nisan 2026 - Oturum #2)
-1. [x] **Geçmiş Detay Butonları:** Düzenle/Sil butonlarına mobilde tıklanamama sorunu çözüldü (Global Event Delegation + Custom Modals).
-2. [x] **Race Condition:** Modal açıkken arka plan render'ı modalı uçurma sorunu çözüldü (Render Kilidi).
-3. [x] **Z-Index Çakışması:** `.grain` katmanının `z-9999` ile tıklamaları engellemesi düzeltildi (`z-50`).
+### ✅ SON ÇÖZÜLEN HATALAR (30 Nisan 2026 - Oturum #3)
+1. [x] **Smart Engine Test Sürüşü Bug'ı:** Geçmişte tamamlanan program/günlere tıklandığında gereksiz yere Kalibrasyon Ekranı açılması engellendi (`workout_logs` geçmişi sorgulanarak bypass eklendi).
+2. [x] **DUP (Ağır-Orta-Hafif) Matematik Entegrasyonu (Faz 3):** Smart Engine'e gerçek progressive overload matematiği eklendi. Heavy için 1RM %85, Medium %75, Light %65 oranları tanımlandı (Tümü 0.5 kg katlarına yuvarlanır).
+3. [x] **Geçmiş Detay Butonları:** Düzenle/Sil butonlarına mobilde tıklanamama sorunu çözüldü (Global Event Delegation + Custom Modals).
+4. [x] **Race Condition:** Modal açıkken arka plan render'ı modalı uçurma sorunu çözüldü (Render Kilidi).
+5. [x] **Z-Index Çakışması:** `.grain` katmanının `z-9999` ile tıklamaları engellemesi düzeltildi (`z-50`).
 
 ---
 

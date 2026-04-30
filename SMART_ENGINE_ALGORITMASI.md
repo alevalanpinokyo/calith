@@ -18,11 +18,10 @@ Algoritma, kullanıcının antrenman sırasındaki **"Form Durumu" (Temiz/Kirli)
 Kullanıcı hedefe tam olarak ulaşamamış, seti yarım bırakmış veya formu bozarak tamamlamışsa kapasite aşımı (overreaching) tespit edilir.
 
 **Senaryo A (Ağırlıklı Hareket):**
-- Sistem, o anki yapılan ağırlık ve tekrara göre tahmini bir 1RM (1 Tekrar Maksimumu) hesaplar.
-- **Formül (Epley):** `Tahmini 1RM = Ağırlık * (1 + (Yapılan Tekrar / 30))`
-- Yeni hedeflenen tekrar sayısına göre bu 1RM üzerinden güvenli bir ağırlık belirlenir.
-- **Formül:** `Yeni Ağırlık = Tahmini 1RM / (1 + (Hedef Tekrar / 30))`
-- *İstisna:* Eğer kullanıcı hedef tekrara ULAŞTIYSA ama yine de "Ağır Geldi" dediyse (Yani RPE 10 ise, tükenişe gittiyse), formül sonucunu bir de **%5 oranında düşürürüz** (`x 0.95`). (Dinlenmesi ve toparlanması için yumuşatma).
+- Sistem, hedef tekrardan ne kadar sapıldığına (kaç tekrar kaçırıldığına) bakarak ağırlığı dinamik bir yüzdeyle düşürür. (Düşük kilolarda 1RM formülü çok az kilo düşürdüğü için iptal edilip doğrudan yüzde sistemine geçilmiştir).
+- **Yarı Yarıya Patladıysa:** Yapılan tekrar, hedefin yarısında veya altındaysa (örn: 10 hedeflerken 5 yapmak) -> Ağırlık **%20 düşürülür**. (Agresif ceza).
+- **Yaklaştı Ama Tıkandıysa:** Hedefin yarısı geçildi ama ulaşılamadıysa (örn: 10 hedeflerken 8 yapmak) -> Ağırlık **%10 düşürülür**.
+- **İstisna (Hedef Tuttu ama RPE 10):** Eğer kullanıcı hedef tekrara ULAŞTIYSA ama yine de "Ağır Geldi" dediyse (tükeniş), dinlenmesi için ağırlık sadece **%5 düşürülür**.
 
 **Senaryo B (Vücut Ağırlığı / BW):**
 - Ağırlık düşülemeyeceği için doğrudan **Hedef Tekrar Kısılır.**
@@ -78,3 +77,14 @@ Her egzersizin bir kategorisi vardır ve bu kategoriye göre "Vücut Ağırlığ
 Kullanıcı anatomik sınırın altında bir değer girse bile (Örn: 75kg birinin 100kg Squat girmesi serbesttir), eğer **bir önceki rekoru 20kg ise** sistem aniden 100kg girilmesini engeller.
 - Formül: `Yeni Ağırlık <= Önceki Rekor * 1.5` (veya belirli bir güvenli artış limiti).
 - Bu sayede hem yanlış yazımlar (10 yerine 100 yazma) hem de trollük engellenir.
+
+---
+
+## 5. FAZ 3: DUP (Daily Undulating Periodization) SİSTEMİ
+Kullanıcının girdiği hareketin künyesinde "Heavy", "Medium" veya "Light" etiketleri bulunuyorsa, sistem doğrudan geçmiş 1RM (Maksimum Güç) verisini kullanır ve aşağıdaki yüzdelere göre çalışma ağırlığı önerir:
+
+- **Heavy (Ağır) Gün:** 1RM'nin **%85'i**
+- **Medium (Orta) Gün:** 1RM'nin **%75'i**
+- **Light (Hafif) Gün:** 1RM'nin **%65'i**
+
+Tüm hesaplamalar plaka takılabilmesi için otomatik olarak **0.5 kg** katlarına yuvarlanır. Bu sayede kullanıcı Heavy gününde rekor kırdığında, bir sonraki Medium gününde sistem ona aynı ağır kiloyu vermek yerine doğru progressive overload yüzdesini sunar.

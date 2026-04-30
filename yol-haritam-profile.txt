@@ -65,7 +65,8 @@ Kullanıcıların kendi programlarını (Ağırlık, BW, MAX, Süreli hibrit yap
 - [x] **Omni-Box:** Program yazarken önerilerin gelmesi ve BW/Video bilgisini çekmesi. [TAMAM ✅]
 - [x] **DUP Gün Tipleri:** Admin panelinde H/M/L seçiminin kaydedilmesi ve düzenleme modunda geri gelmesi. [TAMAM ✅]
 - [x] **Antrenman UI:** Üstteki Gün Tipi rozetinin (Ağır/Orta/Hafif) doğru renk ve metinle görünmesi. [TAMAM ✅]
-- [ ] **Smart Recommendation:** RPE sonrası ağırlık önerisinin "Savaşçı Payı" mantığıyla (ideal formda artırmama vb.) çalışması. **[GERÇEK ANTRENMANDA TEST EDİLECEK 🏋️‍♂️]**
+- [x] (2026-04-30) **Unified Rest & Feedback UI:** Dinlenme ve geri bildirim ekranlarının tek bir premium arayüzde birleştirilmesi. [TAMAM ✅]
+- [ ] (2026-04-30) **Smart Engine Brain:** RPE ve Form verilerine göre ağırlık/tekrar önerisi hesaplama mantığının entegrasyonu. [GÜNCEL SÜREÇ]
 - [x] **Admin Paneli Mobil UI:** Sekme kaydırma, responsive gridler ve sabit genişliklerin temizlenmesi. [TEST EDİLDİ]
   - [x] Duyuru Panosu kutu taşmalarının giderilmesi. [TEST EDİLDİ]
   - [x] Ana Sayfa Kartları alt filtre butonlarının kaydırmalı yapılması. [TEST EDİLDİ]
