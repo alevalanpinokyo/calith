@@ -4881,6 +4881,7 @@ function showWorkoutLogDetail(logId) {
                             <div class="flex items-center gap-3">
                                 <span class="text-calith-orange font-mono font-black text-xs">0${idx+1}</span>
                                 <h4 class="text-white font-black uppercase tracking-tight text-sm">${ex.name}</h4>
+                                ${ex.note ? `<p class="text-[8px] font-bold text-calith-accent uppercase tracking-[0.2em] opacity-60 mt-0.5">${ex.note}</p>` : ''}
                             </div>
                             <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest">${ex.target}</span>
                         </div>
@@ -6764,6 +6765,7 @@ async function finishWorkout() {
                 return {
                     name: ex.name,
                     target: ex.target,
+                    note: ex.note || '',
                     sets: finalSets
                 };
             })
