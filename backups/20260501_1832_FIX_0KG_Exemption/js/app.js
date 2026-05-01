@@ -6292,9 +6292,8 @@ function completeSet() {
     const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
     const targetStr = String(ex?.target || "").toLowerCase();
     const isBW = !!ex?.isBW || targetStr.includes('bw');
-    const isTimed = ex?.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
 
-    if (!isBW && !isTimed && weight <= 0) {
+    if (!isBW && weight <= 0) {
         return showToast('Kanka ağırlıklı hareket yapıyorsun, 0 KG giremezsin! 🏋️‍♂️');
     }
 
