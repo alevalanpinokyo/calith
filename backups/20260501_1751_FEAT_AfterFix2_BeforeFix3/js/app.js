@@ -16,19 +16,10 @@ let wakeLock = null;
 async function requestWakeLock() {
     if (!('wakeLock' in navigator)) return;
     try {
-        // Eğer zaten bir kilit varsa ve aktifse yeni talep etme
-        if (wakeLock && !wakeLock.released) return;
-
         wakeLock = await navigator.wakeLock.request('screen');
-        
-        // Kilit serbest kaldığında (browser tarafından veya manuel) null'a çek
-        wakeLock.addEventListener('release', () => {
-            console.log('[Calith] Screen Wake Lock serbest bırakıldı.');
-        });
-
-        console.log('[Calith] Screen Wake Lock aktif! 🛡️');
+        console.log('[Calith] Screen Wake Lock aktif. Ekran kapanmayacak! 🛡️');
     } catch (err) {
-        console.warn(`[Calith] Wake Lock Hatası: ${err.message}`);
+        console.error(`[Calith] Wake Lock Hatası: ${err.message}`);
     }
 }
 
@@ -36,13 +27,14 @@ function releaseWakeLock() {
     if (wakeLock !== null) {
         wakeLock.release().then(() => {
             wakeLock = null;
+            console.log('[Calith] Screen Wake Lock serbest bırakıldı.');
         });
     }
 }
 
-// Görünürlük değiştiğinde (veya sekme aktifleşince) Wake Lock'u tazele
+// Görünürlük değiştiğinde Wake Lock'u tazele
 document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible' && typeof workoutSession !== 'undefined' && workoutSession?.active) {
+    if (wakeLock !== null && document.visibilityState === 'visible' && typeof workoutSession !== 'undefined' && workoutSession?.active) {
         await requestWakeLock();
     }
 });

@@ -16,19 +16,10 @@ let wakeLock = null;
 async function requestWakeLock() {
     if (!('wakeLock' in navigator)) return;
     try {
-        // Eğer zaten bir kilit varsa ve aktifse yeni talep etme
-        if (wakeLock && !wakeLock.released) return;
-
         wakeLock = await navigator.wakeLock.request('screen');
-        
-        // Kilit serbest kaldığında (browser tarafından veya manuel) null'a çek
-        wakeLock.addEventListener('release', () => {
-            console.log('[Calith] Screen Wake Lock serbest bırakıldı.');
-        });
-
-        console.log('[Calith] Screen Wake Lock aktif! 🛡️');
+        console.log('[Calith] Screen Wake Lock aktif. Ekran kapanmayacak! 🛡️');
     } catch (err) {
-        console.warn(`[Calith] Wake Lock Hatası: ${err.message}`);
+        console.error(`[Calith] Wake Lock Hatası: ${err.message}`);
     }
 }
 
@@ -36,13 +27,14 @@ function releaseWakeLock() {
     if (wakeLock !== null) {
         wakeLock.release().then(() => {
             wakeLock = null;
+            console.log('[Calith] Screen Wake Lock serbest bırakıldı.');
         });
     }
 }
 
-// Görünürlük değiştiğinde (veya sekme aktifleşince) Wake Lock'u tazele
+// Görünürlük değiştiğinde Wake Lock'u tazele
 document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible' && typeof workoutSession !== 'undefined' && workoutSession?.active) {
+    if (wakeLock !== null && document.visibilityState === 'visible' && typeof workoutSession !== 'undefined' && workoutSession?.active) {
         await requestWakeLock();
     }
 });
@@ -6284,20 +6276,10 @@ function clearSkippedFlag() {
 }
 
 function completeSet() {
-    if (!workoutSession) return;
     const weight = parseFloat(document.getElementById('workout-input-weight').value) || 0;
     const reps = parseInt(document.getElementById('workout-input-reps').value) || 0;
 
     if (reps === 0) return showToast('Lütfen tekrar sayısını girin.');
-
-    // 0 KG Koruması (Ağırlıklı hareketler için)
-    const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
-    const targetStr = String(ex?.target || "").toLowerCase();
-    const isBW = !!ex?.isBW || targetStr.includes('bw');
-
-    if (!isBW && weight <= 0) {
-        return showToast('Kanka ağırlıklı hareket yapıyorsun, 0 KG giremezsin! 🏋️‍♂️');
-    }
 
     // Geri Bildirim Modalını Aç
     showSetFeedbackModal(weight, reps);
@@ -7232,11 +7214,6 @@ function showSetFeedbackModal(weight, reps) {
     const modalHtml = `
         <div id="set-feedback-modal" class="fixed inset-0 z-[1200] flex items-center justify-center px-6" style="background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);">
             <div class="relative bg-calith-dark w-full max-w-sm rounded-[3rem] p-8 text-center border border-white/10 shadow-2xl animate-in zoom-in duration-300">
-                <!-- Kapatma Butonu (X) -->
-                <button onclick="document.getElementById('set-feedback-modal').remove()" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:bg-white/10 hover:text-white transition-all">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-
                 <div class="mb-8">
                     <h4 class="text-[10px] font-black text-calith-orange uppercase tracking-[0.3em] mb-2">SET TAMAMLANDI</h4>
                     <p class="text-2xl font-black text-white italic uppercase tracking-tighter">${displayValue}</p>

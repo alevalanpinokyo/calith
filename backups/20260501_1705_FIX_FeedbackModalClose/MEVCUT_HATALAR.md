@@ -17,9 +17,9 @@ Bu liste sadece aktif, teknik ve henüz çözülmemiş bugları içerir. Planlan
 
 | Sıra | Hata Tanımı | Seviye | Durum |
 |:---:|:---|:---:|:---:|
-| 1 | **Geri Bildirim Kapatma:** Geri bildirim modalına "X" (Vazgeç) butonu eklenmesi. | Kolay | ✅ TAMAMLANDI |
-| 2 | **0 KG Koruması:** Ağırlıklı hareketlerde 0 kg girilince uyarı verilmesi. | Kolay | 🧪 Test Bekliyor |
-| 3 | **Wake Lock Onarımı:** Chrome Mobilde ekranın kararması sorununun çözülmesi. | Orta | 🧪 Test Bekliyor |
+| 1 | **Geri Bildirim Kapatma:** Geri bildirim modalına "X" (Vazgeç) butonu eklenmesi. | Kolay | ⏳ Bekliyor |
+| 2 | **0 KG Koruması:** Ağırlıklı hareketlerde 0 kg girilince uyarı verilmesi. | Kolay | ⏳ Bekliyor |
+| 3 | **Wake Lock Onarımı:** Chrome Mobilde ekranın kararması sorununun çözülmesi. | Orta | ⏳ Bekliyor |
 | 4 | **Atlanan Hareket Kaydı:** Atlanan hareketlerin silinmeyip boş log olarak işlenmesi. | Orta/Zor | ⏳ Bekliyor |
 | 5 | **PR Kirliliği & Hareket Notları:** Admin panele not alanı, antrenmana accordion eklenmesi. | Zor | ⏳ Bekliyor |
 

@@ -6,20 +6,32 @@
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CALITH | Blog</title>
+    <title>CALITH | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=202605011751">
+    <link rel="stylesheet" href="styles.css?v=202605011645">
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { calith: { orange: '#FF6B35', dark: '#0A0A0A', gray: '#1A1A1A', accent: '#00D9FF' } },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] }
+                    colors: {
+                        calith: {
+                            orange: '#FF6B35',
+                            dark: '#0A0A0A',
+                            gray: '#1A1A1A',
+                            light: '#2A2A2A',
+                            accent: '#00D9FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
                 }
             }
         }
@@ -27,7 +39,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="font-sans antialiased bg-calith-dark text-white">
-
 <div class="grain"></div>
 
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-[#0A0A0A]/85 shadow-2xl shadow-black/50">
@@ -46,9 +57,9 @@
                 <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ANA SAYFA</a>
                 <a href="skills.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">PROGRAMLAR</a>
                 <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">EKİPMAN</a>
-                <a href="blog.html" class="text-calith-orange font-bold text-base whitespace-nowrap transition-all">ÖĞREN</a>
+                <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ÖĞREN</a>
                 <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">HAKKIMIZDA</a>
-                <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap uppercase tracking-widest transition-all drop-shadow-[0_0_8px_rgba(255,107,53,0.3)]">KOÇLUK</a>
+                <a href="premium.html" class="text-calith-orange font-bold text-base whitespace-nowrap uppercase tracking-widest transition-all drop-shadow-[0_0_8px_rgba(255,107,53,0.3)]">KOÇLUK</a>
             </div>
             <!-- Mobilde orta kolon boş kalır -->
             <div class="lg:hidden"></div>
@@ -71,44 +82,38 @@
             <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ANA SAYFA</a>
             <a href="skills.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">PROGRAMLAR</a>
             <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">EKİPMAN</a>
-            <a href="blog.html" class="text-calith-orange font-bold text-base block py-2 transition-colors">ÖĞREN</a>
+            <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ÖĞREN</a>
             <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">HAKKIMIZDA</a>
-            <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
+            <a href="premium.html" class="text-calith-orange font-bold text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
             <!-- Profil linki header'a taşındı -->
         </div>
     </div>
 </nav>
 
-<section id="blog" class="min-h-screen pt-32 pb-20 fade-in">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 tracking-tight">KONDİSYON <span class="gradient-text">& BİLGİ</span></h1>
-            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Calisthenics dünyasından en güncel teknikler, beslenme tüyoları ve makaleler.</p>
+<section class="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center text-center px-4">
+    <h1 class="font-display text-5xl md:text-8xl font-bold mb-6">CALITH <span class="gradient-text">PREMIUM</span></h1>
+    <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-12">Kişiye özel koçluk, profesyonel antrenman programları ve beslenme takibi.</p>
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl w-full">
+        <div class="product-card p-10 rounded-3xl border-calith-orange/20">
+            <h3 class="font-display text-2xl font-bold mb-4">AYLIK PLAN</h3>
+            <p class="text-4xl font-bold mb-8">299₺ <span class="text-sm font-normal text-gray-500">/ay</span></p>
+            <button class="w-full btn-primary py-4 rounded-xl font-bold">KATIL</button>
         </div>
-        <div id="blog-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div class="product-card p-10 rounded-3xl border-calith-accent/20">
+            <h3 class="font-display text-2xl font-bold mb-4">YILLIK PLAN</h3>
+            <p class="text-4xl font-bold mb-8">199₺ <span class="text-sm font-normal text-gray-500">/ay</span></p>
+            <button class="w-full bg-calith-accent text-black py-4 rounded-xl font-bold">KATIL</button>
+        </div>
     </div>
 </section>
 
-<section id="blog-detail" class="hidden min-h-screen pt-32 pb-20 fade-in">
-    <div class="max-w-4xl mx-auto px-4">
-        <button onclick="showSection('blog')" class="mb-10 text-gray-400 hover:text-white flex items-center gap-2 group">
-            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Geri Dön
-        </button>
-        <div id="post-content" class="bg-calith-gray/30 border border-white/5 p-8 md:p-12 rounded-3xl"></div>
-    </div>
-</section>
-
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8 text-center text-gray-500 text-sm">
+    <p>© 2025 CALITH. Tüm hakları saklıdır.</p>
 </footer>
 
 
 
-    <script src="js/app.js?v=202605011751"></script>
-    <script>
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    </script>
+    <script src="js/app.js?v=202605011645"></script>
+    <script></script>
 </body>
 </html>
