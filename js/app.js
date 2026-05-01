@@ -7082,8 +7082,12 @@ function closeConfirmModal() {
 function calculate1RM(weight, reps) {
     if (reps <= 0) return 0;
     if (reps === 1) return weight;
+    
+    // Güvenlik Sınırı: 12 tekrardan sonrası formülü saptırdığı için 12'de sabitliyoruz
+    const effectiveReps = Math.min(reps, 12);
+    
     // Brzycki Formülü: weight * (36 / (37 - reps))
-    return Math.round((weight * (36 / (37 - reps))) * 10) / 10;
+    return Math.round((weight * (36 / (37 - effectiveReps))) * 10) / 10;
 }
 
 async function updateExerciseBest(exerciseName, weight, reps) {
@@ -7150,6 +7154,22 @@ async function loadPersonalRecords(userId) {
     }
 }
 
+async function deletePersonalRecord(recordId) {
+    if (!confirm("Bu rekoru silmek istediğine emin misin kanka?")) return;
+
+    const sb = getSupabase();
+    if (!sb || !currentUser) return;
+
+    const { error } = await sb.from('user_exercise_stats').delete().eq('id', recordId);
+
+    if (error) {
+        showToast('Rekor silinemedi: ' + error.message);
+    } else {
+        showToast('Rekor silindi.');
+        loadPersonalRecords(currentUser.id); // Listeyi yenile
+    }
+}
+
 function renderPersonalRecords(records) {
     const activeTab = document.querySelector('.profile-tab.active');
     if (activeTab && activeTab.id !== 'btn-tab-prs') return;
@@ -7186,8 +7206,13 @@ function renderPersonalRecords(records) {
                 const unit = isTimed ? 'SN' : 'TEKRAR';
                 
                 return `
-                <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="glass-card relative rounded-2xl p-5 sm:p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
+                    <!-- Silme Butonu -->
+                    <button onclick="deletePersonalRecord('${r.id}')" class="absolute top-4 right-4 w-8 h-8 rounded-lg bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 z-10" title="Rekoru Sil">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+
+                    <div class="flex justify-between items-start mb-4 pr-6">
                         <div class="flex-1 pr-4">
                             <h4 class="text-white font-black uppercase tracking-tight mb-1 group-hover:text-calith-orange transition-colors text-sm sm:text-base truncate" title="${r.exercise_name}">${r.exercise_name}</h4>
                             <p class="text-[9px] sm:text-[10px] text-gray-500 uppercase font-bold tracking-widest">
