@@ -6728,6 +6728,7 @@ function toggleWorkoutNote() {
 
 function closeWorkoutMode() {
     workoutSession.active = false;
+    isSavingWorkout = false; // Kilidi aç
     clearWorkoutState();
     clearInterval(workoutInterval);
     clearInterval(restInterval);
@@ -6743,7 +6744,12 @@ function closeWorkoutMode() {
     }
 }
 
+let isSavingWorkout = false;
 async function finishWorkout() {
+    if (isSavingWorkout || !workoutSession.active) return;
+    isSavingWorkout = true;
+    workoutSession.active = false; // Mükerrer tetiklemeyi anında engelle
+
     // Ekran kilidini serbest bırak
     releaseWakeLock();
     showToast('Antrenman Tamamlandı! Veriler senkronize ediliyor...');
