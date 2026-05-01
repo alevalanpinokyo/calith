@@ -4458,13 +4458,8 @@ function renderWorkoutLogs(logs, isFilterOnly = false) {
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center gap-2 shrink-0">
-                                        <button onclick="event.stopPropagation(); deleteWorkoutLog('${log.id}')" class="w-10 h-10 rounded-xl bg-red-500/5 flex items-center justify-center text-red-500/40 hover:bg-red-500 hover:text-white transition-all border border-red-500/10" title="Antrenmanı Sil">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                        <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-calith-orange/10 transition-colors">
-                                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600 group-hover:text-calith-orange transition-colors"></i>
-                                        </div>
+                                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-calith-orange/10 transition-colors shrink-0">
+                                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600 group-hover:text-calith-orange transition-colors"></i>
                                     </div>
                                 </div>
                             </div>
@@ -4871,9 +4866,6 @@ function showWorkoutLogDetail(logId) {
                 <div class="flex items-center gap-2">
                     <button onclick="copyWorkoutToClipboard('${log.id}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-calith-orange" title="Özeti Kopyala">
                         <i data-lucide="copy" class="w-4 h-4"></i>
-                    </button>
-                    <button onclick="deleteWorkoutLog('${log.id}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 hover:bg-red-500 transition-all text-red-500 hover:text-white border border-red-500/20" title="Antrenmanı Sil">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                     <button onclick="document.getElementById('log-detail-modal').remove()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-white">
                         <i data-lucide="x" class="w-5 h-5"></i>

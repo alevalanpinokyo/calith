@@ -6,32 +6,20 @@
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
-    <title>Profilim | CALITH</title>
+    <title>CALITH | Blog</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=202605012003">
+    <link rel="stylesheet" href="styles.css?v=202605011954">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        calith: {
-                            orange: '#FF6B35',
-                            dark: '#0A0A0A',
-                            gray: '#1A1A1A',
-                            light: '#2A2A2A',
-                            accent: '#00D9FF'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Oswald', 'sans-serif']
-                    }
+                    colors: { calith: { orange: '#FF6B35', dark: '#0A0A0A', gray: '#1A1A1A', accent: '#00D9FF' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] }
                 }
             }
         }
@@ -39,9 +27,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="font-sans antialiased bg-calith-dark text-white">
+
 <div class="grain"></div>
 
-<!-- Navigation -->
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-[#0A0A0A]/85 shadow-2xl shadow-black/50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div class="grid grid-cols-[auto_1fr_auto] items-center h-20 gap-4">
@@ -58,7 +46,7 @@
                 <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ANA SAYFA</a>
                 <a href="skills.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">PROGRAMLAR</a>
                 <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">EKİPMAN</a>
-                <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ÖĞREN</a>
+                <a href="blog.html" class="text-calith-orange font-bold text-base whitespace-nowrap transition-all">ÖĞREN</a>
                 <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">HAKKIMIZDA</a>
                 <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap uppercase tracking-widest transition-all drop-shadow-[0_0_8px_rgba(255,107,53,0.3)]">KOÇLUK</a>
             </div>
@@ -67,7 +55,7 @@
 
             <!-- Actions (Sağ Kolon - Her zaman sağda) -->
             <div class="flex items-center gap-3 justify-end">
-                <a href="profile.html" class="text-calith-orange font-bold text-base flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 lg:bg-transparent lg:border-none transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
+                <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 lg:bg-transparent lg:border-none transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> <span class="auth-text tracking-wider whitespace-nowrap text-[10px] lg:text-base">PROFİLİM</span>
                 </a>
                 <button class="lg:hidden p-2 text-white hover:text-calith-orange transition-colors" onclick="toggleMobileMenu()" aria-label="Menü">
@@ -83,7 +71,7 @@
             <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ANA SAYFA</a>
             <a href="skills.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">PROGRAMLAR</a>
             <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">EKİPMAN</a>
-            <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ÖĞREN</a>
+            <a href="blog.html" class="text-calith-orange font-bold text-base block py-2 transition-colors">ÖĞREN</a>
             <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">HAKKIMIZDA</a>
             <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
             <!-- Profil linki header'a taşındı -->
@@ -91,44 +79,36 @@
     </div>
 </nav>
 
-<!-- Profile Content -->
-<main class="min-h-screen pt-32 pb-20">
-    <div class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8">
-        <div id="profile-mount">
-            <!-- renderProfileSection() buraya inject edecek -->
-            <div class="py-24 text-center animate-pulse">
-                <p class="text-gray-600 font-bold uppercase tracking-widest text-xs">Profil yükleniyor...</p>
-            </div>
+<section id="blog" class="min-h-screen pt-32 pb-20 fade-in">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 tracking-tight">KONDİSYON <span class="gradient-text">& BİLGİ</span></h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Calisthenics dünyasından en güncel teknikler, beslenme tüyoları ve makaleler.</p>
         </div>
+        <div id="blog-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </div>
-</main>
+</section>
 
-    <script src="js/app.js?v=202605012003"></script>
+<section id="blog-detail" class="hidden min-h-screen pt-32 pb-20 fade-in">
+    <div class="max-w-4xl mx-auto px-4">
+        <button onclick="showSection('blog')" class="mb-10 text-gray-400 hover:text-white flex items-center gap-2 group">
+            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Geri Dön
+        </button>
+        <div id="post-content" class="bg-calith-gray/30 border border-white/5 p-8 md:p-12 rounded-3xl"></div>
+    </div>
+</section>
+
+</footer>
+
+
+
+    <script src="js/app.js?v=202605011954"></script>
     <script>
         
-        document.addEventListener('DOMContentLoaded', async () => {
-            const sb = getSupabase();
-            if (!sb) return;
-
-            // İlk olarak kullanıcıyı kontrol et
-            const { data: { user } } = await sb.auth.getUser();
-            if (!user) { 
-                window.location.href = 'index.html'; 
-                return; 
-            }
-
-            // Temel arayüzü bas
-            if (typeof renderProfileSection === 'function') renderProfileSection();
-
-            // Tüm verileri PARALEL yükle (Hız optimizasyonu)
-            await Promise.all([
-                loadProfileData(user),
-                loadPosts()
-            ]);
-
-            // Her şey hazır olunca varsayılan sekmeyi aç
-            if (typeof switchProfileTab === 'function') switchProfileTab('ready');
-        });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
