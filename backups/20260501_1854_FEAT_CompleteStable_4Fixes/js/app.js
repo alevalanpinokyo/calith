@@ -1209,10 +1209,9 @@ async function saveProgram() {
                     const reps = row.querySelector('.ex-reps').value.trim();
                     const type = row.querySelector('.ex-type').value;
                     const isBW = row.querySelector('.ex-is-bw').checked;
-                    const note = row.querySelector('.ex-note').value.trim();
 
                     if (name) {
-                        exercises.push({ name, sets, reps, type, isBW, note });
+                        exercises.push({ name, sets, reps, type, isBW });
                     }
                 });
             }
@@ -1299,13 +1298,6 @@ function addExerciseRow(dayNum, data = null) {
             <button type="button" onclick="this.closest('.exercise-row').remove()" class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all" title="Hareketi Sil">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
-        </div>
-
-        <!-- Not Satırı: Hareket Notu -->
-        <div class="w-full pt-2 border-t border-white/5">
-            <input type="text" placeholder="HAREKET NOTU / YÜK (ÖRN: 20KG BAĞLA)" 
-                class="ex-note w-full bg-transparent border-none p-0 text-[10px] font-bold uppercase tracking-widest text-calith-accent placeholder-white/5 outline-none focus:ring-0 focus:placeholder-white/20 transition-all"
-                value="${data && data.note ? data.note : ''}">
         </div>
     `;
 
@@ -5471,27 +5463,7 @@ function ensureWorkoutOverlay() {
 
                     <div class="relative z-10 flex flex-col items-center text-center w-full">
                         <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-1 block w-full text-center">ŞU ANKİ EGZERSİZ</span>
-                        <div class="flex items-center justify-center gap-3 w-full mb-2">
-                            <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-3xl font-black tracking-tighter uppercase leading-tight text-white line-clamp-2 break-words">YÜKLENİYOR...</h3>
-                            <div id="workout-note-btn-container" class="hidden shrink-0">
-                                <button onclick="toggleWorkoutNote()" class="w-8 h-8 rounded-lg bg-calith-accent/10 border border-calith-accent/20 flex items-center justify-center text-calith-accent hover:bg-calith-accent hover:text-black transition-all active:scale-90">
-                                    <i data-lucide="info" class="w-4 h-4 transition-transform duration-300"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- HAREKET NOTU ACCORDION -->
-                        <div id="workout-note-accordion" class="w-full overflow-hidden transition-all duration-500 max-h-0 opacity-0 mb-4 px-2">
-                            <div class="bg-calith-accent/10 border border-calith-accent/20 rounded-2xl p-4 text-left relative overflow-hidden">
-                                <div class="absolute top-0 right-0 p-2 opacity-10">
-                                    <i data-lucide="quote-right" class="w-8 h-8 text-calith-accent"></i>
-                                </div>
-                                <h4 class="text-[8px] font-black text-calith-accent uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                                    <span class="w-1 h-1 rounded-full bg-calith-accent animate-pulse"></span> KOÇUN NOTU
-                                </h4>
-                                <p id="workout-note-text" class="text-[10px] font-bold text-white leading-relaxed uppercase tracking-widest"></p>
-                            </div>
-                        </div>
+                        <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-3xl font-black mb-2 tracking-tighter uppercase leading-tight text-white w-full text-center line-clamp-3 px-2 break-words">YÜKLENİYOR...</h3>
                         
                         <div class="flex flex-col items-center gap-3 w-full">
                             <div class="flex flex-col items-center gap-3 w-full">
@@ -5987,33 +5959,7 @@ function updateWorkoutUI() {
     window.currentWeightFeel = 'ideal';
 
     // Metin Güncellemeleri
-    if (els.name) {
-        els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
-        
-        // --- HAREKET NOTU / ACCORDION SİSTEMİ ---
-        const noteBtnCont = document.getElementById('workout-note-btn-container');
-        const noteAccordion = document.getElementById('workout-note-accordion');
-        const noteText = document.getElementById('workout-note-text');
-
-        if (ex.note && ex.note.trim() !== '') {
-            if (noteBtnCont) noteBtnCont.classList.remove('hidden');
-            if (noteText) noteText.textContent = ex.note.toUpperCase();
-            
-            // Eğer yeni bir harekete geçildiyse notu kapat (temizlik)
-            if (noteAccordion) {
-                noteAccordion.style.maxHeight = "0px";
-                noteAccordion.classList.remove('expanded');
-                const icon = noteBtnCont.querySelector('i');
-                if (icon) icon.style.transform = "rotate(0deg)";
-            }
-        } else {
-            if (noteBtnCont) noteBtnCont.classList.add('hidden');
-            if (noteAccordion) {
-                noteAccordion.style.maxHeight = "0px";
-                noteAccordion.classList.remove('expanded');
-            }
-        }
-    }
+    if (els.name) els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
     if (els.target) {
         const unit = isTimed ? 'SN' : (isMax ? 'MAX' : 'TEKRAR');
         const typeIcon = isBW ? '<span class="ml-2 px-2 py-0.5 bg-calith-orange text-black text-[10px] font-black rounded-md uppercase tracking-tighter shrink-0">BW</span>' : '<i data-lucide="weight" class="ml-2 w-4 h-4 text-gray-500 shrink-0"></i>';
@@ -6693,27 +6639,6 @@ function confirmExitWorkout() {
         releaseWakeLock(); // Ekran kilidini serbest bırak
         closeWorkoutMode();
     });
-}
-
-function toggleWorkoutNote() {
-    const accordion = document.getElementById('workout-note-accordion');
-    const btn = document.getElementById('workout-note-btn-container');
-    if (!accordion || !btn) return;
-
-    const icon = btn.querySelector('i');
-    const isExpanded = accordion.classList.contains('expanded');
-
-    if (isExpanded) {
-        accordion.style.maxHeight = "0px";
-        accordion.style.opacity = "0";
-        accordion.classList.remove('expanded');
-        if (icon) icon.style.transform = "rotate(0deg)";
-    } else {
-        accordion.style.maxHeight = "200px"; // Tahmini içerik boyutu
-        accordion.style.opacity = "1";
-        accordion.classList.add('expanded');
-        if (icon) icon.style.transform = "rotate(180deg)";
-    }
 }
 
 function closeWorkoutMode() {
