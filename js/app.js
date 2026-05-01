@@ -6554,7 +6554,6 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
                     doneBtn.onclick = () => {
                         const repsInput = document.getElementById('workout-input-reps');
                         if (repsInput) repsInput.value = duration;
-                        doneBtn.remove();
                         completeSet();
                     };
                     box.querySelector('.relative.z-10') ? box.querySelector('.relative.z-10').appendChild(doneBtn) : box.appendChild(doneBtn);
