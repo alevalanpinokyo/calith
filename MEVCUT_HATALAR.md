@@ -4,31 +4,27 @@ Bu liste sadece aktif, teknik ve henüz çözülmemiş bugları içerir. Planlan
 
 ---
 
-### ✅ SON ÇÖZÜLEN HATALAR (30 Nisan 2026 - Oturum #3)
-1. [x] **Smart Engine Test Sürüşü Bug'ı:** Geçmişte tamamlanan program/günlere tıklandığında gereksiz yere Kalibrasyon Ekranı açılması engellendi (`workout_logs` geçmişi sorgulanarak bypass eklendi).
-2. [x] **DUP (Ağır-Orta-Hafif) Matematik Entegrasyonu (Faz 3):** Smart Engine'e gerçek progressive overload matematiği eklendi. Heavy için 1RM %85, Medium %75, Light %65 oranları tanımlandı (Tümü 0.5 kg katlarına yuvarlanır).
-3. [x] **Geçmiş Detay Butonları:** Düzenle/Sil butonlarına mobilde tıklanamama sorunu çözüldü (Global Event Delegation + Custom Modals).
-4. [x] **Race Condition:** Modal açıkken arka plan render'ı modalı uçurma sorunu çözüldü (Render Kilidi).
-5. [x] **Z-Index Çakışması:** `.grain` katmanının `z-9999` ile tıklamaları engellemesi düzeltildi (`z-50`).
+### ✅ SON ÇÖZÜLEN HATALAR (1 Mayıs 2026 - Oturum #4)
+1. [x] **Mükerrer Kayıt Onarımı:** Antrenman biterken butona art arda basıldığında çift kayıt atma sorunu `isSavingWorkout` kilidi ile çözüldü.
+2. [x] **1RM Rep-Cap (Güvenlik):** 12+ tekrar girildiğinde 1RM formülünün anatomik olmayan seviyelere fırlaması engellendi (Max 12 rep cap).
+3. [x] **Reset Butonu Güvenliği:** "Verileri Sıfırla" butonunun antrenman geçmişini (Raporları) silmesi engellendi, sadece PR'ları temizleyecek şekilde kısıtlandı.
+4. [x] **PR Kirliliği & Tekli Silme:** Rekorlar tablosuna tekli silme (X) butonu eklendi, test verilerinin ayıklanması sağlandı.
+5. [x] **Geri Bildirim Kapatma:** Geri bildirim modalına "X" (Vazgeç) butonu eklendi.
+6. [x] **0 KG Koruması:** Ağırlıklı hareketlerde 0 kg girilince uyarı sistemi aktif edildi.
+7. [x] **Wake Lock Onarımı:** Chrome Mobilde ekranın kararması sorunu `screen.keepAwake` (veya legacy fallback) ile çözüldü.
+8. [x] **Atlanan Hareket Kaydı:** Atlanan hareketlerin `skipped: true` olarak işlenmesi ve raporlarda görünmesi sağlandı.
 
 ---
 
-### 🚨 AKTİF HATALAR (Planlanan Bug Fix Operasyonu)
-
-| Sıra | Hata Tanımı | Seviye | Durum |
-|:---:|:---|:---:|:---:|
-| 1 | **Geri Bildirim Kapatma:** Geri bildirim modalına "X" (Vazgeç) butonu eklenmesi. | Kolay | ✅ TAMAMLANDI |
-| 2 | **0 KG Koruması:** Ağırlıklı hareketlerde 0 kg girilince uyarı verilmesi. | Kolay | ✅ TAMAMLANDI |
-| 3 | **Wake Lock Onarımı:** Chrome Mobilde ekranın kararması sorununun çözülmesi. | Orta | ✅ TAMAMLANDI |
-| 4 | **Atlanan Hareket Kaydı:** Atlanan hareketlerin silinmeyip boş log olarak işlenmesi. | Orta/Zor | ✅ TAMAMLANDI |
-| 5 | **PR Kirliliği & Hareket Notları:** Admin panele not alanı, antrenmana accordion eklenmesi. | Zor | ✅ TAMAMLANDI |
+### 🚨 AKTİF HATALAR (Bug Fix Operasyonu)
+*Şu an bilinen aktif bir teknik hata bulunmamaktadır. Tertemiziz kanka!* 🚀
 
 ---
 
 ### 🧪 TEST EDİLECEK (Geri Bildirim Bekleyenler)
-1. [ ] **Anti-Cheat Parametreleri:** 550KG barajı ve BW x 4.5 oranı gerçek kullanımda doğru tepki veriyor mu?
-2. [ ] **Custom Edit Modal:** Yeni set düzenleme modalı mobilde her durumda çalışıyor mu?
-3. [ ] **Dinlenme Süresi Takibi:** `restTime` verisi yeni kayıtlarda doğru görünüyor mu?
+1. [ ] **Anti-Cheat Parametreleri:** BW x 2.5 (Üst) ve BW x 4.0 (Alt) oranları gerçek kullanımda doğru tepki veriyor mu?
+2. [ ] **Custom Edit Modal:** Yeni set düzenleme modalı mobilde her durumda stabil mi?
+3. [ ] **PR Birimleri:** Yeni SN, TK, KG birimleri tüm kartlarda doğru görünüyor mu?
 
 ---
 *Not: Bir hata çözüldüğünde bu listeden silinip `DEVIR_TESLIM.md` dökümanına "Tamamlandı" olarak işlenmelidir.*
