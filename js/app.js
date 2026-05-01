@@ -7204,6 +7204,8 @@ function renderPersonalRecords(records) {
                 const isTimed = nameLower.includes('plank') || nameLower.includes('hold') || nameLower.includes('sit') || nameLower.includes('stand') || nameLower.includes('stay');
                 const isBW = r.one_rm <= 0;
                 const unit = isTimed ? 'SN' : 'TEKRAR';
+                const displayUnit = isTimed ? 'SN' : (isBW ? 'TK' : 'KG');
+                const label = isTimed ? 'EN İYİ SÜRE' : (isBW ? 'MAKS. TEKRAR' : 'TAHMİNİ 1RM');
                 
                 return `
                 <div class="glass-card relative rounded-2xl p-5 sm:p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
@@ -7220,8 +7222,11 @@ function renderPersonalRecords(records) {
                             </p>
                         </div>
                         <div class="text-right shrink-0">
-                            <div class="text-xl sm:text-2xl font-black text-calith-orange font-mono leading-none mb-1">${isBW ? r.reps : r.one_rm}</div>
-                            <div class="text-[8px] sm:text-[9px] text-gray-500 font-bold uppercase tracking-widest">${isBW ? 'MAKS. SKOR' : 'TAHMİNİ 1RM'}</div>
+                            <div class="text-xl sm:text-2xl font-black text-calith-orange font-mono leading-none mb-1 flex items-baseline justify-end gap-1">
+                                <span>${isBW ? r.reps : r.one_rm}</span>
+                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">${displayUnit}</span>
+                            </div>
+                            <div class="text-[8px] sm:text-[9px] text-gray-500 font-bold uppercase tracking-widest">${label}</div>
                         </div>
                     </div>
                     <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
