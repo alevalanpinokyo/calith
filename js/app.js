@@ -1882,7 +1882,7 @@ function showProgramLevel(level, titleStr, skipHistory = false) {
     window.scrollTo(0, 0);
 }
 
-function showProgramDetail(id, skipHistory = false) {
+async function showProgramDetail(id, skipHistory = false) {
     if (!skipHistory) {
         const url = new URL(window.location.href);
         url.searchParams.set('p', id);
