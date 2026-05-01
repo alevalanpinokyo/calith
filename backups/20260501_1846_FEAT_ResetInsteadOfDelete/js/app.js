@@ -4792,22 +4792,20 @@ window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     if (!log) return showToast('Henüz bu antrenman için geçmiş verin yok kanka. İlk rekoru şimdi kıralım! 🦾');
 
     // showConfirmModal kullan (native confirm() yerine)
-    showConfirmModal("Bu seti sıfırlamak istediğine emin misin kanka?", async () => {
-        console.log('[Calith] Sıfırlama Öncesi Veri:', JSON.parse(JSON.stringify(log.workout_data)));
+    showConfirmModal("Bu seti silmek istediğine emin misin kanka?", async () => {
+        console.log('[Calith] Silme Öncesi Veri:', JSON.parse(JSON.stringify(log.workout_data)));
 
         const newData = JSON.parse(JSON.stringify(log.workout_data));
         const exercise = newData.exercises[exerciseIdx];
         
-        if (exercise && exercise.sets && exercise.sets[setIdx]) {
-            console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set sıfırlanıyor...`);
-            // Seti silmiyoruz, değerlerini 0 yapıyoruz
-            exercise.sets[setIdx] = { 
-                weight: 0, 
-                reps: 0, 
-                isClean: true, 
-                feel: 'light', 
-                skipped: true 
-            };
+        if (exercise && exercise.sets) {
+            console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set siliniyor...`);
+            exercise.sets.splice(setIdx, 1);
+            
+            if (exercise.sets.length === 0) {
+                console.log(`[Calith] ${exercise.name} hareketinde set kalmadığı için hareket siliniyor...`);
+                newData.exercises.splice(exerciseIdx, 1);
+            }
         }
 
         const sb = getSupabase();
