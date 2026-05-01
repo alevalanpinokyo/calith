@@ -6667,27 +6667,11 @@ async function finishWorkout() {
         day_name: workoutSession.dayName,
         duration: document.getElementById('workout-timer').textContent,
         workout_data: {
-            exercises: workoutSession.exercises.map(ex => {
-                let finalSets = [...ex.sets];
-                const targetSets = parseInt(ex.targetSets) || 0;
-                
-                // Hata #4: Eksik setleri placeholder (0) ile doldur
-                while (finalSets.length < targetSets) {
-                    finalSets.push({ 
-                        weight: 0, 
-                        reps: 0, 
-                        isClean: true, 
-                        feel: 'light', 
-                        skipped: true // Atlandığını işaretle
-                    });
-                }
-
-                return {
-                    name: ex.name,
-                    target: ex.target,
-                    sets: finalSets
-                };
-            })
+            exercises: workoutSession.exercises.map(ex => ({
+                name: ex.name,
+                target: ex.target,
+                sets: ex.sets
+            }))
         }
     };
 
