@@ -5620,6 +5620,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
                 type: ex.type || 'reps',
                 isBW: !!ex.isBW,
                 isMax: isMax,
+                note: ex.note || '',
                 sets: []
             };
         }
