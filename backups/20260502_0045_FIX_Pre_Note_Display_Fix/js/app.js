@@ -2033,13 +2033,6 @@ async function showProgramDetail(id, skipHistory = false) {
                                     <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">${type === 'secs' ? 'SN' : 'TEKRAR'}</span>
                                 </div>
                             </div>
-                            <!-- Not Satırı -->
-                            ${ex.note ? `
-                            <div class="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/5">
-                                <i data-lucide="info" class="w-3 h-3 text-gray-500"></i>
-                                <span class="text-[10px] font-bold text-gray-400 italic">${ex.note}</span>
-                            </div>
-                            ` : ''}
                         </div>
                         `;
                     }).join('');
