@@ -7186,6 +7186,12 @@ async function loadPersonalRecords(userId) {
         .eq('user_id', userId)
         .order('one_rm', { ascending: false });
 
+    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ŞART)
+    if (typeof exerciseLibrary !== 'undefined' && exerciseLibrary.length === 0) {
+        const { data: libData } = await sb.from('exercises').select('*');
+        if (libData) exerciseLibrary = libData;
+    }
+
     if (!error && data) {
         renderPersonalRecords(data);
     }

@@ -48,6 +48,7 @@ Kullanıcıların kendi oluşturduğu özel programlar.
 Kişisel rekorlar ve 1RM takibi.
 - `user_id` (uuid, FK -> auth.users)
 - `exercise_name` (text, Unique with user_id)
+- `exercise_id` (uuid, FK -> public.exercises) -- Yeni eklenen ID senkronizasyon kolonu
 - `weight` (double precision), `reps` (bigint), `one_rm` (double precision)
 
 ### 7. public.user_programs
