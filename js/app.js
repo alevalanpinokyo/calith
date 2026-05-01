@@ -7195,7 +7195,7 @@ function renderPersonalRecords(records) {
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-white font-bold uppercase tracking-tight">Kişisel Rekorların</h3>
             <button onclick="resetExerciseStats()" class="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all">
-                ⚠️ TEST: VERİLERİ SIFIRLA
+                ⚠️ TÜM REKORLARI SIFIRLA
             </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -7342,20 +7342,17 @@ function showCalibrationModal() {
 }
 
 async function resetExerciseStats() {
-    if (!confirm("DİKKAT: Tüm hareket rekorların silinecek. Emin misin kanka?")) return;
+    if (!confirm("DİKKAT: Tüm hareket rekorların (PR) silinecek. Antrenman geçmişine (Raporlara) dokunulmaz. Emin misin kanka?")) return;
     
     const sb = getSupabase();
     if (!sb || !currentUser) return;
 
-    showToast("Veriler sıfırlanıyor...");
+    showToast("Rekorlar sıfırlanıyor...");
     
-    // 1. Rekorları Sil
+    // Sadece Rekorları Sil (Geçmişe dokunmuyoruz!)
     await sb.from('user_exercise_stats').delete().eq('user_id', currentUser.id);
     
-    // 2. Antrenman Geçmişini Sil
-    await sb.from('workout_logs').delete().eq('user_id', currentUser.id);
-
-    showToast("Tüm geçmiş ve rekorlar silindi!");
+    showToast("Tüm rekorlar sıfırlandı! Geçmişin güvende.");
     switchProfileTab('prs'); // Tabı yenile
 }
 
