@@ -1918,6 +1918,15 @@ function showProgramDetail(id, skipHistory = false) {
         return;
     }
 
+    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ŞART)
+    if (typeof exerciseLibrary !== 'undefined' && exerciseLibrary.length === 0) {
+        const sb = getSupabase();
+        if (sb) {
+            const { data: libData } = await sb.from('exercises').select('*');
+            if (libData) exerciseLibrary = libData;
+        }
+    }
+
     const contentDiv = document.getElementById('post-content');
     if (!contentDiv) return;
 
