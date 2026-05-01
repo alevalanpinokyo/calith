@@ -1212,8 +1212,7 @@ async function saveProgram() {
                     const note = row.querySelector('.ex-note').value.trim();
 
                     if (name) {
-                        const exercise_id = row.querySelector('.ex-id') ? row.querySelector('.ex-id').value : '';
-                        exercises.push({ exercise_id, name, sets, reps, type, isBW, note });
+                        exercises.push({ name, sets, reps, type, isBW, note });
                     }
                 });
             }
@@ -1262,13 +1261,6 @@ function addExerciseRow(dayNum, data = null) {
     const list = document.getElementById(`prog-day-${dayNum}-exercises-list`);
     if (!list) return;
 
-    // ID ile kütüphane eşleşmesi ara (TOPLU GÜNCELLEME İÇİN)
-    let liveName = data ? data.name : '';
-    if (data && data.exercise_id && exerciseLibrary.length > 0) {
-        const libEx = exerciseLibrary.find(ex => String(ex.id) === String(data.exercise_id));
-        if (libEx) liveName = libEx.name;
-    }
-
     const rowId = Date.now() + Math.random();
     const row = document.createElement('div');
     row.className = 'exercise-row flex flex-col gap-3 bg-white/[0.03] p-4 rounded-2xl border border-white/5 group transition-all hover:bg-white/[0.06] hover:border-calith-orange/30';
@@ -1277,13 +1269,12 @@ function addExerciseRow(dayNum, data = null) {
 
     row.innerHTML = `
         <div class="w-full relative">
-            <input type="hidden" class="ex-id" value="${data ? (data.exercise_id || '') : ''}">
             <textarea placeholder="Hareket Adı" rows="1"
                 class="ex-name w-full bg-transparent border-none p-0 text-sm md:text-base font-bold outline-none focus:ring-0 text-white placeholder-white/20 resize-none overflow-hidden leading-snug" 
                 oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; showExerciseSuggestions(this)"
                 onblur="setTimeout(() => hideExerciseSuggestions(this), 200)"
                 autocomplete="off"
-                style="height: auto; min-height: 24px; display: block;">${liveName}</textarea>
+                style="height: auto; min-height: 24px; display: block;">${data ? data.name : ''}</textarea>
             <div class="ex-suggestions hidden absolute z-[100] left-0 right-0 top-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl"></div>
         </div>
 
@@ -1549,8 +1540,6 @@ function selectExerciseSuggestion(suggestionEl, exerciseId) {
 
     // Değerleri bas
     input.value = ex.name;
-    const idInput = row.querySelector('.ex-id');
-    if (idInput) idInput.value = ex.id;
     if (isBwCheckbox) isBwCheckbox.checked = ex.is_bw;
 
     // Önerileri kapat
@@ -1983,12 +1972,7 @@ function showProgramDetail(id, skipHistory = false) {
                         let name, sets, reps, type;
 
                         if (typeof ex === 'object') {
-                            // ID ile kütüphane eşleşmesi ara
-                            let liveData = null;
-                            if (ex.exercise_id && exerciseLibrary.length > 0) {
-                                liveData = exerciseLibrary.find(libEx => String(libEx.id) === String(ex.exercise_id));
-                            }
-                            name = liveData ? liveData.name : ex.name;
+                            name = ex.name;
                             sets = ex.sets;
                             reps = ex.reps;
                             type = ex.type || 'reps';
@@ -5636,18 +5620,9 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     const day = days[dayIndex];
     const exercises = (day.exercises || []).map(ex => {
         if (typeof ex === 'object') {
-            // ID ile kütüphane eşleşmesi ara (TOPLU GÜNCELLEME İÇİN KRİTİK)
-            let liveData = null;
-            if (ex.exercise_id) {
-                liveData = exerciseLibrary.find(libEx => String(libEx.id) === String(ex.exercise_id));
-            }
-
-            const displayName = liveData ? liveData.name : ex.name;
             const isMax = String(ex.reps || "").toUpperCase().includes('MAX');
-            
             return {
-                exercise_id: ex.exercise_id || null,
-                name: displayName,
+                name: ex.name,
                 target: `${ex.sets} x ${ex.reps}${ex.type === 'secs' ? 'sn' : ''}`,
                 targetSets: parseInt(ex.sets) || 1,
                 targetReps: isMax ? 999 : (parseInt(ex.reps) || 10),
