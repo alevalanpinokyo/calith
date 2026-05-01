@@ -4820,8 +4820,7 @@ window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
             showToast('Set başarıyla güncellendi! 🔥');
             log.workout_data = data;
             showWorkoutLogDetail(logId);
-            const exId = data.exercises[exerciseIdx].exercise_id || null;
-            updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps, exId);
+            updateExerciseBest(data.exercises[exerciseIdx].name, set.weight, set.reps);
         }
     });
 }
@@ -6413,8 +6412,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     // FAZ 1: Rekor Kontrolü ve PR Güncelleme
     const isBW = ex.isBW || targetStr.includes('bw') || weight <= 0;
     if (reps > 0 && isClean && (weight > 0 || isBW)) {
-        const exId = ex.exercise_id || null;
-        updateExerciseBest(ex.name, weight, reps, exId);
+        updateExerciseBest(ex.name, weight, reps);
     }
 
     // Saniye Bazlı Hareket Kontrolü
@@ -7126,7 +7124,7 @@ function calculate1RM(weight, reps) {
     return Math.round((weight * (36 / (37 - effectiveReps))) * 10) / 10;
 }
 
-async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null) {
+async function updateExerciseBest(exerciseName, weight, reps) {
     if (!currentUser) return;
     
     const ex = workoutSession?.exercises?.find(e => e.name === exerciseName);
@@ -7157,7 +7155,7 @@ async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null)
 
             if (isNewRecord) {
                 await sb.from('user_exercise_stats').update({
-                    weight, reps, one_rm: oneRM, exercise_id: exerciseId, updated_at: new Date().toISOString()
+                    weight, reps, one_rm: oneRM, updated_at: new Date().toISOString()
                 }).eq('id', existing.id);
                 
                 const recordMsg = isBW ? `${reps} ${ex?.type === 'secs' ? 'SANİYE' : 'TEKRAR'}` : `${oneRM}KG 1RM`;
@@ -7167,7 +7165,6 @@ async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null)
             await sb.from('user_exercise_stats').insert([{
                 user_id: currentUser.id,
                 exercise_name: exerciseName,
-                exercise_id: exerciseId,
                 weight, reps, one_rm: oneRM
             }]);
             showToast(`📈 İlk rekorun kaydedildi: ${exerciseName}`);
@@ -7237,14 +7234,7 @@ function renderPersonalRecords(records) {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             ${records.map(r => {
-                // ID ile kütüphane eşleşmesi ara (TOPLU İSİM GÜNCELLEME İÇİN)
-                let liveName = r.exercise_name;
-                if (r.exercise_id && exerciseLibrary.length > 0) {
-                    const libEx = exerciseLibrary.find(ex => String(ex.id) === String(r.exercise_id));
-                    if (libEx) liveName = libEx.name;
-                }
-
-                const nameLower = liveName.toLowerCase();
+                const nameLower = r.exercise_name.toLowerCase();
                 const isTimed = nameLower.includes('plank') || nameLower.includes('hold') || nameLower.includes('sit') || nameLower.includes('stand') || nameLower.includes('stay');
                 const isBW = r.one_rm <= 0;
                 const unit = isTimed ? 'SN' : 'TEKRAR';
