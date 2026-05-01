@@ -7139,11 +7139,21 @@ async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null)
     if (!sb) return;
 
     try {
-        const { data: existing } = await sb.from('user_exercise_stats')
+        // HİBRİT EŞLEŞME: Önce ID ile ara, yoksa İsimle ara (Eski kayıtları ID'ye göç ettirmek için)
+        let { data: existing } = await sb.from('user_exercise_stats')
             .select('*')
             .eq('user_id', currentUser.id)
-            .eq('exercise_name', exerciseName)
+            .eq('exercise_id', exerciseId)
             .maybeSingle();
+
+        if (!existing && exerciseName) {
+            const { data: byName } = await sb.from('user_exercise_stats')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .eq('exercise_name', exerciseName)
+                .maybeSingle();
+            existing = byName;
+        }
 
         if (existing) {
             let isNewRecord = false;
@@ -7181,16 +7191,16 @@ async function loadPersonalRecords(userId) {
     const sb = getSupabase();
     if (!sb) return;
 
+    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ŞART)
+    if (typeof exerciseLibrary !== 'undefined' && exerciseLibrary.length === 0) {
+        const { data: libData } = await getSupabase().from('exercises').select('*');
+        if (libData) exerciseLibrary = libData;
+    }
+
     const { data, error } = await sb.from('user_exercise_stats')
         .select('*')
         .eq('user_id', userId)
         .order('one_rm', { ascending: false });
-
-    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ŞART)
-    if (typeof exerciseLibrary !== 'undefined' && exerciseLibrary.length === 0) {
-        const { data: libData } = await sb.from('exercises').select('*');
-        if (libData) exerciseLibrary = libData;
-    }
 
     if (!error && data) {
         renderPersonalRecords(data);
@@ -7234,6 +7244,22 @@ function renderPersonalRecords(records) {
         return;
     }
 
+    // TEKİLLEŞTİRME: Aynı ID'ye sahip birden fazla rekor varsa sadece en iyisini göster
+    const uniqueRecordsMap = new Map();
+    records.forEach(r => {
+        const key = r.exercise_id || r.exercise_name;
+        const existing = uniqueRecordsMap.get(key);
+        if (!existing) {
+            uniqueRecordsMap.set(key, r);
+        } else {
+            // Hangisi daha iyi? (Weighted ise 1RM, BW ise Reps)
+            const isBW = r.one_rm <= 0;
+            const better = isBW ? (r.reps > existing.reps) : (r.one_rm > existing.one_rm);
+            if (better) uniqueRecordsMap.set(key, r);
+        }
+    });
+    const uniqueRecords = Array.from(uniqueRecordsMap.values());
+
     container.innerHTML = `
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-white font-bold uppercase tracking-tight">Kişisel Rekorların</h3>
@@ -7242,7 +7268,7 @@ function renderPersonalRecords(records) {
             </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            ${records.map(r => {
+            ${uniqueRecords.map(r => {
                 // ID ile kütüphane eşleşmesi ara (TOPLU İSİM GÜNCELLEME İÇİN)
                 let liveName = r.exercise_name;
                 if (r.exercise_id && exerciseLibrary.length > 0) {
