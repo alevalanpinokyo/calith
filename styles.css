@@ -25,7 +25,10 @@ body {
     display: none;
 }
 .no-scrollbar {
-    scrollbar-width: none;  /* Standard for Firefox and modern Chrome */
+    /* Standard for modern browsers */
+    @supports (scrollbar-width: none) {
+        scrollbar-width: none;
+    }
 }
 
 /* Autofill ve Form Elemanları Karanlık Tema */
