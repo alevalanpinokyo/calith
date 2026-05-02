@@ -1761,16 +1761,7 @@ function backToLevels(skipHistory = false) {
 }
 
 function toggleDayAccordion(index) {
-    const indices = [];
-
-    // Kullanıcı Gruplandırması:
-    // Üst Grup: Gün 1, 2, 3 (index 0, 1, 2)
-    // Alt Grup: Gün 4, 5 (index 3, 4)
-    if (index <= 2) {
-        indices.push(0, 1, 2);
-    } else {
-        indices.push(3, 4);
-    }
+    const indices = [index]; // Her gün bağımsız açılır/kapanır (Esnek Yapı)
 
     if (indices.length === 0) return;
 
@@ -2055,12 +2046,17 @@ async function showProgramDetail(id, skipHistory = false) {
                 }
 
                 return `
-                <div class="program-day-card expanded-parent bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active relative" id="day-card-${i}">
+                <div class="program-day-card  bg-calith-gray/40 border border-white/5 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-calith-orange/5 transition-all group reveal active relative" id="day-card-${i}">
                     <div class="p-6 cursor-pointer flex items-center justify-between select-none" onclick="toggleDayAccordion(${i})">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/10">
-                                <span class="text-sm font-black text-calith-orange">0${i + 1}</span>
-                            </div>
+                            <button onclick="event.stopPropagation(); startWorkoutMode('${p.id}', ${i})" 
+                                    class="w-10 h-10 rounded-2xl day-number-badge flex items-center justify-center border border-calith-orange/20 bg-calith-orange/10 lg:bg-calith-orange/5 hover:bg-calith-orange group/play transition-all shadow-lg active:scale-95 z-30"
+                                    title="Antrenmanı Başlat">
+                                <!-- Mobilde gizli, Masaüstünde görünür (Hoverda gizlenir) -->
+                                <span class="text-sm font-black text-calith-orange hidden lg:block lg:group-hover/play:hidden">0${i + 1}</span>
+                                <!-- Mobilde görünür, Masaüstünde gizli (Hoverda görünür) -->
+                                <i data-lucide="play" class="w-5 h-5 text-calith-orange lg:text-black block lg:hidden lg:group-hover/play:block fill-current"></i>
+                            </button>
                             <div class="flex flex-col min-w-0">
                                 <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors leading-tight">${day.name || 'GÜN ' + (i + 1)}</h4>
                                 <div class="flex flex-col gap-2 mt-2">
@@ -2097,7 +2093,7 @@ async function showProgramDetail(id, skipHistory = false) {
                             <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
                         </div>
                     </div>
-                    <div class="accordion-content expanded" id="day-content-${i}">
+                    <div class="accordion-content " id="day-content-${i}">
                         <div class="accordion-inner px-6 pb-6">
                             <div class="h-px bg-gradient-to-r from-white/10 to-transparent mb-6"></div>
                             ${dayContentHtml}
@@ -2107,7 +2103,7 @@ async function showProgramDetail(id, skipHistory = false) {
             };
 
             programHtml = `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                     ${days.map((day, i) => renderCard(day, i)).join('')}
                 </div>
             `;
@@ -5062,7 +5058,7 @@ function fallbackCopyTextToClipboard(text) {
 
 // Program Card Toggle (Her kart bağımsız açılır/kapanır)
 function toggleScheduleGroup(index) {
-    const indices = index <= 2 ? [0, 1, 2] : [3, 4];
+    const indices = [index]; // Her gün bağımsız açılır/kapanır
 
     // Grubun durumunu kontrol etmek için sayfada var olan ilk elemanı baz alalım
     let firstCard = document.getElementById(`home-day-card-${indices[0]}`);

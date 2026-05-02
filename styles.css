@@ -548,7 +548,7 @@ body {
 }
 
 .accordion-content.expanded {
-    max-height: none !important; /* İçerik ne kadar uzunsa o kadar uzasın, kesilmesin */
+    max-height: 5000px !important; /* İçerik ne kadar uzunsa o kadar uzasın, kesilmesin */
     opacity: 1;
 }
 
