@@ -1,5 +1,43 @@
 const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
+// --- MERKEZİ UI & İMZA SİSTEMİ ---
+window.calithConfig = {
+    developerName: "alevalanpinokyo", // Burayı istediğin zaman değiştirebilirsin kanka (örn: "Adın Soyadın")
+    year: new Date().getFullYear()
+};
+
+function renderFooterSignature() {
+    const signatureHtml = `
+        <p class="text-[10px] text-gray-600 font-medium tracking-widest uppercase flex items-center justify-center gap-1.5 opacity-80 mt-1">
+            Built with <i data-lucide="heart" class="w-3 h-3 text-calith-orange fill-calith-orange animate-pulse"></i> by <span class="text-gray-400 font-bold tracking-normal">${window.calithConfig.developerName}</span>
+        </p>
+    `;
+
+    // 1. İmzayı statik footer'lara enjekte et (Eğer varsa ve henüz eklenmemişse)
+    const footers = document.querySelectorAll('footer');
+    footers.forEach(footer => {
+        // Eğer footer içinde zaten bir imza alanı yoksa ekle
+        if (!footer.querySelector('.footer-signature-container')) {
+            const container = footer.querySelector('.flex-col.items-center') || footer;
+            const sigDiv = document.createElement('div');
+            sigDiv.className = 'footer-signature-container w-full flex justify-center mt-2';
+            sigDiv.innerHTML = signatureHtml;
+            container.appendChild(sigDiv);
+        }
+    });
+
+    // 2. Özel mount noktalarına enjekte et (Örn: links.html)
+    const mounts = document.querySelectorAll('#footer-signature-mount');
+    mounts.forEach(mount => {
+        mount.innerHTML = signatureHtml;
+    });
+
+    if (window.lucide) lucide.createIcons();
+}
+
+// Sayfa yüklendiğinde imzayı bas
+document.addEventListener('DOMContentLoaded', renderFooterSignature);
+
 let supabaseClient = null;
 function getSupabase() {
     if (supabaseClient) return supabaseClient;
