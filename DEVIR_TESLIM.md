@@ -1,33 +1,33 @@
-# 📝 Oturum Özeti: Play Badge Entegrasyonu & UI UX Final (v20260502_1721)
+# 📝 Oturum Özeti: Marka İmzası & PDF Safari Optimizasyonu (v20260503_0030)
 
-Bu oturumda, Calith platformundaki "Program Gün Kartları" için en yenilikçi ve temiz UI çözümü olan **Play Badge** entegrasyonu başarıyla tamamlanmıştır.
+Bu oturumda, Calith platformunun marka kimliği güçlendirilmiş ve PDF dışa aktarma sistemi Safari mobil tarayıcısı için en kararlı hale getirilmiştir.
 
 ---
 
 ### 🚀 Tamamlanan İşlemler
-1.  **Play Badge Entegrasyonu (Opsiyon 1):**
-    *   Sol taraftaki "01 / 02" gün numarası badge'leri fonksiyonel birer butona dönüştürüldü.
-    *   **Normal Görünüm:** Gün numarası (01, 02 vb.) görünür.
-    *   **Hover Görünüm:** Numara gizlenir, yerine **Play** ikonu gelir ve badge turuncu renkle dolar.
-    *   **Fonksiyon:** Tıklandığında `startWorkoutMode` tetiklenir, `event.stopPropagation()` ile kartın açılması engellenerek direkt aksiyon sağlanır.
-2.  **Kod Temizliği & Güvenlik:**
-    *   Önceki denemelerdeki tüm kod kirliliği ve mükerrer yapılar temizlendi.
-    *   Python tabanlı `integrate_play_badge.py` scripti ile `app.js` dosyasına hatasız müdahale edildi.
-3.  **Version Sync:**
-    *   `update_version.py` ile tüm HTML dosyaları `v=202605021721` olarak senkronize edildi.
+1.  **Merkezi Marka İmzası Sistemi (Dynamic Signature):**
+    *   `js/app.js` içerisine merkezi bir imza yönetim sistemi (`window.calithConfig`) eklendi.
+    *   Tüm sayfaların (`index`, `blog`, `shop`, `premium`, `profile`, `skills`, `about`, `links`) altına **"Built with ❤️ by alevalanpinokyo"** imzası dinamik olarak enjekte edildi.
+    *   **CV Hazırlığı:** İmzayı CV'ye eklemek için sadece `app.js` içindeki `developerName` değişkenini değiştirmek yeterli hale getirildi.
+2.  **PDF Export Safari Optimizasyonu:**
+    *   Safari mobil print motorundaki "preslenmiş/dar sütun" hatası, Grid sisteminden **Flexbox** mimarisine geçilerek kökten çözüldü.
+    *   **Genişlik Maksimizasyonu:** Dış boşluklar (padding) ve sütun arası mesafeler (gap) azaltılarak kutuların sayfa genişliğini tam kaplaması sağlandı.
+    *   **Typo & Truncation Fix:** "ÇARŞAMBA" ve "PAZARTESİ" gibi uzun gün isimlerinin kesilmesi (`ÇARŞAMI` gibi görünmesi); font küçültme ve negatif `letter-spacing` ile düzeltildi.
+3.  **CSS & IDE Temizliği:**
+    *   `styles.css` içindeki eskimiş (`deprecated`) özellikler temizlendi ve IDE uyarıları (`scrollbar-width`) `@supports` blokları ile susturularak kod kalitesi artırıldı.
 
 ---
 
 ### 📋 Teknik Detaylar
-*   **Bağımsız Akordiyonlar:** Gün kartları hala bağımsız (independent) çalışmaya devam ediyor; kartın herhangi bir yerine tıklamak akordiyonu açar/kapatır.
-*   **Hızlı Aksiyon:** Sadece sol taraftaki rakama tıklamak antrenmanı başlatır. Bu sayede kullanıcıya iki farklı interaksiyon alanı sunulmuş oldu.
-*   **Mobil Uyumluluk:** Parmak dostu boyutlar ve net görsel geri bildirimler (hover/active states) korundu.
+*   **PDF Mimari:** `display: flex; flex-direction: row;` yapısı Safari'de sütun genişliklerinin eşit dağılmasını garanti eder.
+*   **Signature Mount:** `links.html` gibi footer'ı olmayan sayfalarda özel `#footer-signature-mount` alanı kullanıldı.
+*   **Versiyonlama:** Tüm dosyalar `v=202605030025` olarak senkronize edildi.
 
 ---
 
 ### ⚠️ Mevcut Durum
-*   **Durum:** %100 kararlı ve en güncel UI yapısı devrede.
-*   **Yol Haritası:** Kullanıcı bu yeni "slick" interaksiyonu test ettikten sonra yeni özelliklere veya algoritma geliştirmelerine geçilebilir.
+*   **Durum:** PDF sistemi tüm tarayıcılarda (Chrome, Safari, iOS) kusursuz ve marka imzalı çalışıyor.
+*   **Yol Haritası:** Kullanıcı verileri ve antrenman motoru üzerindeki anatomik limit kontrollerine odaklanılabilir.
 
 > **Calith Engineering Team**
-> "Tasarımı kalabalıklaştırmadan fonksiyon eklemek gerçek mühendisliktir. Play Badge ile Calith artık daha akıllı, daha hızlı ve çok daha şık."
+> "Kodun her satırına imzamızı, PDF'in her hücresine mühendisliğimizi işledik. Calith artık hem daha kurumsal hem de teknik olarak kusursuz."
