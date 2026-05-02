@@ -3780,34 +3780,33 @@ function exportProgramPDF() {
 function renderPDF(printContent, data, notes = '') {
     showToast('PDF Çizelgesi Hazırlanıyor...');
 
-    // İçerik yoğunluğuna göre dinamik ölçeklendirme (Sıkıştırma Mantığı)
     const totalItems = data.reduce((sum, day) => sum + day.items.length, 0);
     const isLong = data.length > 3 || totalItems > 24;
 
-    const colCount = data.length <= 2 ? data.length : 3;
-    const fontSize = isLong ? '9px' : '11px';
-    const titleSize = isLong ? '11px' : '13px';
-    const padding = isLong ? '10px' : '14px';
-    const lineHeight = isLong ? '1.3' : '1.6';
-    const gap = isLong ? '8px' : '12px';
+    const fontSize = isLong ? '9px' : '10.5px';
+    const titleSize = isLong ? '10px' : '12px';
+    const padding = isLong ? '8px' : '12px';
+    const lineHeight = isLong ? '1.2' : '1.5';
+    const gap = isLong ? '6px' : '10px';
 
     let html = `
-    <div style="width:100%;font-family:'Inter',Arial,sans-serif;color:#000;padding:20px;box-sizing:border-box;">
-        <div style="text-align:center;border-bottom:3px solid #000;padding-bottom:12px;margin-bottom:20px;">
-            <h1 style="font-size:22px;text-transform:uppercase;margin:0;letter-spacing:2px;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
-            <p style="margin:4px 0 0;font-weight:700;color:#555;font-size:12px;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
+    <div style="width:100%; max-width:100%; font-family:'Inter',Arial,sans-serif; color:#000; padding:10px; box-sizing:border-box; background:#fff; margin:0 auto;">
+        <div style="text-align:center; border-bottom:2.5px solid #000; padding-bottom:8px; margin-bottom:15px;">
+            <h1 style="font-size:18px; text-transform:uppercase; margin:0; letter-spacing:1.5px; font-weight:900;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
+            <p style="margin:2px 0 0; font-weight:700; color:#444; font-size:10px; opacity:0.8;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(${colCount}, minmax(0, 1fr));gap:${gap};">
+        
+        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:stretch; gap:${gap}; width:100%; margin:0 auto; box-sizing:border-box;">
     `;
 
     html += data.map((card, i) => `
-        <div style="border:2px solid #000;border-radius:10px;padding:${padding};background:#f9f9f9;break-inside:avoid;display:flex;flex-direction:column;min-width:0;">
-            <div style="background:#000;color:#fff;padding:6px 8px;border-radius:6px;text-align:center;margin-bottom:8px;">
-                <h3 style="margin:0;font-size:${titleSize};text-transform:uppercase;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${card.title || ('GÜN ' + (i + 1))}</h3>
+        <div style="flex: 1; border:1.5px solid #000; border-radius:8px; padding:${padding}; background:#fff; display:flex; flex-direction:column; min-width:0; box-sizing:border-box;">
+            <div style="background:#000; color:#fff; padding:5px 4px; border-radius:4px; text-align:center; margin-bottom:6px;">
+                <h3 style="margin:0; font-size:${titleSize}; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; overflow:hidden; text-overflow:clip;">${card.title || ('GÜN ' + (i + 1))}</h3>
             </div>
-            ${card.badge ? `<p style="font-size:8px;font-weight:700;text-align:center;color:#777;margin-bottom:8px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${card.badge}</p>` : ''}
-            <ul style="list-style:none;padding:0;margin:0;font-size:${fontSize};line-height:${lineHeight};word-break:break-word;">
-                ${card.items.map(item => `<li style="padding:3px 0;border-bottom:1px dashed #ddd;">• ${item}</li>`).join('')}
+            ${card.badge ? `<p style="font-size:7.5px; font-weight:800; text-align:center; color:#666; margin-bottom:6px; text-transform:uppercase; border-bottom:1px solid #eee; padding-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${card.badge}</p>` : ''}
+            <ul style="list-style:none; padding:0; margin:0; font-size:${fontSize}; line-height:${lineHeight}; word-break:break-word;">
+                ${card.items.map(item => `<li style="padding:2.5px 0; border-bottom:1px dashed #eee;">• ${item}</li>`).join('')}
             </ul>
         </div>
     `).join('');
@@ -3815,19 +3814,21 @@ function renderPDF(printContent, data, notes = '') {
     html += `
         </div>
         ${notes ? `
-        <div style="margin-top:15px;padding:12px;background:#f8f8f8;border-radius:10px;border-left:4px solid #000;break-inside:avoid;">
-            <p style="margin:0 0 6px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#000;">PROGRAM NOTLARI:</p>
-            <p style="margin:0;font-size:${fontSize};line-height:1.4;color:#444;white-space:pre-wrap;">${notes}</p>
+        <div style="margin-top:12px; padding:10px; background:#fcfcfc; border-radius:8px; border:1px solid #eee; border-left:4px solid #000;">
+            <p style="margin:0 0 4px; font-size:8.5px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:#000;">PROGRAM NOTLARI:</p>
+            <p style="margin:0; font-size:${fontSize}; line-height:1.3; color:#333; white-space:pre-wrap;">${notes}</p>
         </div>
         ` : ''}
-        <div style="margin-top:20px;border-top:1px solid #ddd;padding-top:8px;text-align:center;font-size:8px;color:#aaa;">
+        <div style="margin-top:15px; border-top:1px solid #eee; padding-top:6px; text-align:center; font-size:7.5px; color:#999; font-style:italic;">
             * Her antrenman öncesi 5-10 dk ısınma yapın. Form rehberi için calith.com/blog adresini ziyaret edin.
         </div>
     </div>`;
 
     printContent.innerHTML = html;
-    // iOS/Safari için render süresini uzatıyoruz
-    setTimeout(() => { window.print(); }, 1000);
+    
+    setTimeout(() => { 
+        window.print(); 
+    }, 800);
 }
 
 
