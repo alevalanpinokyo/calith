@@ -17,7 +17,7 @@ Bu liste sadece aktif, teknik ve henüz çözülmemiş bugları içerir. Planlan
 ---
 
 ### 🚨 AKTİF HATALAR (Bug Fix Operasyonu)
-*Şu an bilinen aktif bir teknik hata bulunmamaktadır. Tertemiziz kanka!* 🚀
+1. [ ] **Sayfa Taşma Sorunu:** Genel UI üzerinde (muhtemelen mobilde) bir "taşma" (overflow) sorunu rapor edildi. Yarınki oturumda ilk buraya bakılacak. 🕵️‍♂️🔍
 
 ---
 

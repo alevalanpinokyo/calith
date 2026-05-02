@@ -16,18 +16,23 @@ Bu oturumda, Calith platformunun marka kimliği güçlendirilmiş ve PDF dışa 
 3.  **CSS & IDE Temizliği:**
     *   `styles.css` içindeki eskimiş (`deprecated`) özellikler temizlendi ve IDE uyarıları (`scrollbar-width`) `@supports` blokları ile susturularak kod kalitesi artırıldı.
 
+4.  **PDF Set/Rep Bilgisi Onarımı:**
+    *   Egzersizlerin yeni kutucuklu (SET/TEKRAR) yapısı PDF motoruna entegre edildi.
+    *   Artık PDF çıktılarında her hareketin yanında "10 SET x 15 TEKRAR" gibi detaylar tam olarak görünüyor.
+
 ---
 
 ### 📋 Teknik Detaylar
 *   **PDF Mimari:** `display: flex; flex-direction: row;` yapısı Safari'de sütun genişliklerinin eşit dağılmasını garanti eder.
 *   **Signature Mount:** `links.html` gibi footer'ı olmayan sayfalarda özel `#footer-signature-mount` alanı kullanıldı.
-*   **Versiyonlama:** Tüm dosyalar `v=202605030025` olarak senkronize edildi.
+*   **Versiyonlama:** Tüm dosyalar `v=202605030031` olarak senkronize edildi.
 
 ---
 
-### ⚠️ Mevcut Durum
-*   **Durum:** PDF sistemi tüm tarayıcılarda (Chrome, Safari, iOS) kusursuz ve marka imzalı çalışıyor.
-*   **Yol Haritası:** Kullanıcı verileri ve antrenman motoru üzerindeki anatomik limit kontrollerine odaklanılabilir.
+### ⚠️ Mevcut Durum & Yarınki Plan
+*   **Durum:** PDF sistemi ve Marka İmzası %100 kararlı.
+*   **🚨 ÖNEMLİ:** Kullanıcı tarafından rapor edilen **"Sayfa Taşması (Overflow)"** sorunu yarınki oturumda ilk öncelik olarak incelenecek.
+*   **Yol Haritası:** Taşma sorunu çözüldükten sonra Smart Engine anatomik limit testlerine geçilecek.
 
 > **Calith Engineering Team**
-> "Kodun her satırına imzamızı, PDF'in her hücresine mühendisliğimizi işledik. Calith artık hem daha kurumsal hem de teknik olarak kusursuz."
+> "Marka imzasını attık, PDF'leri kusursuzlaştırdık. Yarın o sayfayı da hizaya getireceğiz. İyi istirahatler kanka!"
