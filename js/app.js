@@ -3785,18 +3785,18 @@ function renderPDF(printContent, data, notes = '') {
 
     const fontSize = isLong ? '9px' : '10.5px';
     const titleSize = isLong ? '9.5px' : '11px';
-    const padding = isLong ? '6px' : '10px';
-    const lineHeight = isLong ? '1.2' : '1.5';
-    const gap = isLong ? '5px' : '8px';
+    const padding = isLong ? '5px' : '8px';
+    const lineHeight = isLong ? '1.2' : '1.4';
+    const gap = isLong ? '4px' : '6px';
 
     let html = `
-    <div style="width:100%; max-width:100%; font-family:'Inter',Arial,sans-serif; color:#000; padding:10px; box-sizing:border-box; background:#fff; margin:0 auto;">
-        <div style="text-align:center; border-bottom:2.5px solid #000; padding-bottom:8px; margin-bottom:15px;">
+    <div style="width:100%; max-width:100%; font-family:'Inter',Arial,sans-serif; color:#000; padding:2px; box-sizing:border-box; background:#fff; margin:0;">
+        <div style="text-align:center; border-bottom:2.5px solid #000; padding-bottom:6px; margin-bottom:12px; width:100%;">
             <h1 style="font-size:18px; text-transform:uppercase; margin:0; letter-spacing:1px; font-weight:900;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
             <p style="margin:2px 0 0; font-weight:700; color:#444; font-size:10px; opacity:0.8;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
         
-        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:stretch; gap:${gap}; width:100%; margin:0 auto; box-sizing:border-box;">
+        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:stretch; gap:${gap}; width:100% !important; margin:0; box-sizing:border-box;">
     `;
 
     html += data.map((card, i) => `
