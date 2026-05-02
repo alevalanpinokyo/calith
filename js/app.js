@@ -3759,16 +3759,16 @@ function renderPDF(printContent, data, notes = '') {
             <h1 style="font-size:22px;text-transform:uppercase;margin:0;letter-spacing:2px;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
             <p style="margin:4px 0 0;font-weight:700;color:#555;font-size:12px;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(${colCount},1fr);gap:${gap};">
+        <div style="display:grid;grid-template-columns:repeat(${colCount}, minmax(0, 1fr));gap:${gap};">
     `;
 
     html += data.map((card, i) => `
-        <div style="border:2px solid #000;border-radius:10px;padding:${padding};background:#f9f9f9;break-inside:avoid;display:flex;flex-direction:column;">
+        <div style="border:2px solid #000;border-radius:10px;padding:${padding};background:#f9f9f9;break-inside:avoid;display:flex;flex-direction:column;min-width:0;">
             <div style="background:#000;color:#fff;padding:6px 8px;border-radius:6px;text-align:center;margin-bottom:8px;">
-                <h3 style="margin:0;font-size:${titleSize};text-transform:uppercase;letter-spacing:1px;">${card.title || ('GÜN ' + (i + 1))}</h3>
+                <h3 style="margin:0;font-size:${titleSize};text-transform:uppercase;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${card.title || ('GÜN ' + (i + 1))}</h3>
             </div>
-            ${card.badge ? `<p style="font-size:8px;font-weight:700;text-align:center;color:#777;margin-bottom:8px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;">${card.badge}</p>` : ''}
-            <ul style="list-style:none;padding:0;margin:0;font-size:${fontSize};line-height:${lineHeight};">
+            ${card.badge ? `<p style="font-size:8px;font-weight:700;text-align:center;color:#777;margin-bottom:8px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${card.badge}</p>` : ''}
+            <ul style="list-style:none;padding:0;margin:0;font-size:${fontSize};line-height:${lineHeight};word-break:break-word;">
                 ${card.items.map(item => `<li style="padding:3px 0;border-bottom:1px dashed #ddd;">• ${item}</li>`).join('')}
             </ul>
         </div>
