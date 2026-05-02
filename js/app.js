@@ -3784,15 +3784,15 @@ function renderPDF(printContent, data, notes = '') {
     const isLong = data.length > 3 || totalItems > 24;
 
     const fontSize = isLong ? '9px' : '10.5px';
-    const titleSize = isLong ? '10px' : '12px';
-    const padding = isLong ? '8px' : '12px';
+    const titleSize = isLong ? '9.5px' : '11px';
+    const padding = isLong ? '6px' : '10px';
     const lineHeight = isLong ? '1.2' : '1.5';
-    const gap = isLong ? '6px' : '10px';
+    const gap = isLong ? '5px' : '8px';
 
     let html = `
     <div style="width:100%; max-width:100%; font-family:'Inter',Arial,sans-serif; color:#000; padding:10px; box-sizing:border-box; background:#fff; margin:0 auto;">
         <div style="text-align:center; border-bottom:2.5px solid #000; padding-bottom:8px; margin-bottom:15px;">
-            <h1 style="font-size:18px; text-transform:uppercase; margin:0; letter-spacing:1.5px; font-weight:900;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
+            <h1 style="font-size:18px; text-transform:uppercase; margin:0; letter-spacing:1px; font-weight:900;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
             <p style="margin:2px 0 0; font-weight:700; color:#444; font-size:10px; opacity:0.8;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
         
@@ -3801,8 +3801,8 @@ function renderPDF(printContent, data, notes = '') {
 
     html += data.map((card, i) => `
         <div style="flex: 1; border:1.5px solid #000; border-radius:8px; padding:${padding}; background:#fff; display:flex; flex-direction:column; min-width:0; box-sizing:border-box;">
-            <div style="background:#000; color:#fff; padding:5px 4px; border-radius:4px; text-align:center; margin-bottom:6px;">
-                <h3 style="margin:0; font-size:${titleSize}; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; overflow:hidden; text-overflow:clip;">${card.title || ('GÜN ' + (i + 1))}</h3>
+            <div style="background:#000; color:#fff; padding:5px 2px; border-radius:4px; text-align:center; margin-bottom:6px; min-height:20px; display:flex; items-center; justify-center;">
+                <h3 style="margin:0; font-size:${titleSize}; text-transform:uppercase; letter-spacing:-0.4px; white-space:nowrap; overflow:hidden; font-weight:800;">${card.title || ('GÜN ' + (i + 1))}</h3>
             </div>
             ${card.badge ? `<p style="font-size:7.5px; font-weight:800; text-align:center; color:#666; margin-bottom:6px; text-transform:uppercase; border-bottom:1px solid #eee; padding-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${card.badge}</p>` : ''}
             <ul style="list-style:none; padding:0; margin:0; font-size:${fontSize}; line-height:${lineHeight}; word-break:break-word;">
