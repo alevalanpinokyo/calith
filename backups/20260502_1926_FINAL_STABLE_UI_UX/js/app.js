@@ -3654,24 +3654,9 @@ function exportProgramPDF() {
     if (dayCards.length > 0) {
         data = dayCards.map(card => {
             const h4 = card.querySelector('h4');
-            // Yeni badge seçicisi (span truncate veya borderlı badge)
-            const badge = card.querySelector('.truncate') || card.querySelector('span[class*="border"]');
-            
-            // Yeni madde seçicisi: Her bir antrenman div'ini bul
-            const exerciseRows = Array.from(card.querySelectorAll('.flex.flex-col.p-4.rounded-2xl'));
-            const items = exerciseRows.map(ex => {
-                const nameSpan = ex.querySelector('.flex-1');
-                const setArea = ex.querySelector('.mt-1');
-                if (nameSpan && setArea) {
-                    // Set ve tekrar bilgilerini temizle ve birleştir
-                    const setText = setArea.innerText.trim().replace(/\s+/g, ' ');
-                    return `${nameSpan.innerText.trim()} (${setText})`;
-                } else if (nameSpan) {
-                    return nameSpan.innerText.trim();
-                }
-                return null;
-            }).filter(Boolean);
-
+            const badge = card.querySelector('p');
+            const items = Array.from(card.querySelectorAll('ul li span'))
+                .map(s => s.innerText.trim()).filter(Boolean);
             return {
                 title: h4 ? h4.innerText.trim() : '',
                 badge: badge ? badge.innerText.trim() : '',
@@ -3695,9 +3680,8 @@ function exportProgramPDF() {
         if (cards.length > 0) {
             data = cards.map(card => {
                 const h4 = card.querySelector('h4');
-                const badge = card.querySelector('.rounded-full') || card.querySelector('span[class*="border"]');
-                // Anasayfa kartları için liste maddelerini çek
-                const items = Array.from(card.querySelectorAll('li span:last-child, .flex-1'))
+                const badge = card.querySelector('.rounded-full');
+                const items = Array.from(card.querySelectorAll('ul li span:last-child'))
                     .map(s => s.innerText.trim()).filter(Boolean);
                 return {
                     title: h4 ? h4.innerText.trim() : '',
@@ -3742,34 +3726,25 @@ function exportProgramPDF() {
 function renderPDF(printContent, data, notes = '') {
     showToast('PDF Çizelgesi Hazırlanıyor...');
 
-    // İçerik yoğunluğuna göre dinamik ölçeklendirme (Sıkıştırma Mantığı)
-    const totalItems = data.reduce((sum, day) => sum + day.items.length, 0);
-    const isLong = data.length > 3 || totalItems > 24;
-
     const colCount = data.length <= 2 ? data.length : 3;
-    const fontSize = isLong ? '9px' : '11px';
-    const titleSize = isLong ? '11px' : '13px';
-    const padding = isLong ? '10px' : '14px';
-    const lineHeight = isLong ? '1.3' : '1.6';
-    const gap = isLong ? '8px' : '12px';
 
     let html = `
     <div style="width:100%;font-family:'Inter',Arial,sans-serif;color:#000;padding:20px;box-sizing:border-box;">
-        <div style="text-align:center;border-bottom:3px solid #000;padding-bottom:12px;margin-bottom:20px;">
-            <h1 style="font-size:22px;text-transform:uppercase;margin:0;letter-spacing:2px;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
-            <p style="margin:4px 0 0;font-weight:700;color:#555;font-size:12px;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
+        <div style="text-align:center;border-bottom:3px solid #000;padding-bottom:16px;margin-bottom:24px;">
+            <h1 style="font-size:24px;text-transform:uppercase;margin:0;letter-spacing:2px;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
+            <p style="margin:6px 0 0;font-weight:700;color:#555;font-size:13px;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(${colCount},1fr);gap:${gap};">
+        <div style="display:grid;grid-template-columns:repeat(${colCount},1fr);gap:12px;">
     `;
 
     html += data.map((card, i) => `
-        <div style="border:2px solid #000;border-radius:10px;padding:${padding};background:#f9f9f9;break-inside:avoid;display:flex;flex-direction:column;">
-            <div style="background:#000;color:#fff;padding:6px 8px;border-radius:6px;text-align:center;margin-bottom:8px;">
-                <h3 style="margin:0;font-size:${titleSize};text-transform:uppercase;letter-spacing:1px;">${card.title || ('GÜN ' + (i + 1))}</h3>
+        <div style="border:2px solid #000;border-radius:10px;padding:14px;background:#f9f9f9;break-inside:avoid;">
+            <div style="background:#000;color:#fff;padding:8px 10px;border-radius:6px;text-align:center;margin-bottom:10px;">
+                <h3 style="margin:0;font-size:13px;text-transform:uppercase;letter-spacing:1px;">${card.title || ('GÜN ' + (i + 1))}</h3>
             </div>
-            ${card.badge ? `<p style="font-size:8px;font-weight:700;text-align:center;color:#777;margin-bottom:8px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;">${card.badge}</p>` : ''}
-            <ul style="list-style:none;padding:0;margin:0;font-size:${fontSize};line-height:${lineHeight};">
-                ${card.items.map(item => `<li style="padding:3px 0;border-bottom:1px dashed #ddd;">• ${item}</li>`).join('')}
+            ${card.badge ? `<p style="font-size:9px;font-weight:700;text-align:center;color:#777;margin-bottom:12px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:6px;">${card.badge}</p>` : ''}
+            <ul style="list-style:none;padding:0;margin:0;font-size:11px;line-height:1.6;">
+                ${card.items.map(item => `<li style="padding:4px 0;border-bottom:1px dashed #ddd;">• ${item}</li>`).join('')}
             </ul>
         </div>
     `).join('');
@@ -3777,12 +3752,12 @@ function renderPDF(printContent, data, notes = '') {
     html += `
         </div>
         ${notes ? `
-        <div style="margin-top:15px;padding:12px;background:#f8f8f8;border-radius:10px;border-left:4px solid #000;break-inside:avoid;">
-            <p style="margin:0 0 6px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#000;">PROGRAM NOTLARI:</p>
-            <p style="margin:0;font-size:${fontSize};line-height:1.4;color:#444;white-space:pre-wrap;">${notes}</p>
+        <div style="margin-top:20px;padding:15px;background:#f8f8f8;border-radius:10px;border-left:4px solid #000;break-inside:avoid;">
+            <p style="margin:0 0 8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#000;">PROGRAM NOTLARI:</p>
+            <p style="margin:0;font-size:10px;line-height:1.5;color:#444;white-space:pre-wrap;">${notes}</p>
         </div>
         ` : ''}
-        <div style="margin-top:20px;border-top:1px solid #ddd;padding-top:8px;text-align:center;font-size:8px;color:#aaa;">
+        <div style="margin-top:30px;border-top:1px solid #ddd;padding-top:10px;text-align:center;font-size:9px;color:#aaa;">
             * Her antrenman öncesi 5-10 dk ısınma yapın. Form rehberi için calith.com/blog adresini ziyaret edin.
         </div>
     </div>`;
