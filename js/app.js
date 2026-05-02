@@ -3699,11 +3699,13 @@ function exportProgramPDF() {
             const exerciseRows = Array.from(card.querySelectorAll('.flex.flex-col.p-4.rounded-2xl'));
             const items = exerciseRows.map(ex => {
                 const nameSpan = ex.querySelector('.flex-1');
-                const setArea = ex.querySelector('.mt-1');
-                if (nameSpan && setArea) {
-                    // Set ve tekrar bilgilerini temizle ve birleştir
-                    const setText = setArea.innerText.trim().replace(/\s+/g, ' ');
-                    return `${nameSpan.innerText.trim()} (${setText})`;
+                // Yeni yapıdaki SET ve TEKRAR kutucuklarını bul
+                const boxes = Array.from(ex.querySelectorAll('div[class*="bg-black/40"]'));
+                
+                if (nameSpan && boxes.length >= 2) {
+                    const setText = boxes[0].innerText.trim().replace(/\s+/g, ' '); // "5 SET"
+                    const repText = boxes[1].innerText.trim().replace(/\s+/g, ' '); // "12 TEKRAR"
+                    return `${nameSpan.innerText.trim()} (${setText} x ${repText})`;
                 } else if (nameSpan) {
                     return nameSpan.innerText.trim();
                 }
