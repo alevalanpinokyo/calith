@@ -1600,7 +1600,7 @@ async function showExerciseSuggestions(input) {
     const container = input.nextElementSibling;
     const query = input.value.toLowerCase().trim();
 
-    if (query.length < 1) {
+    if (query.length < 2) {
         container.classList.add('hidden');
         return;
     }
@@ -1613,7 +1613,28 @@ async function showExerciseSuggestions(input) {
         exerciseLibrary = data || [];
     }
 
-    const matches = exerciseLibrary.filter(ex => ex.name.toLowerCase().includes(query)).slice(0, 5);
+    // Filtrele ve Akıllı Sırala
+    let matches = exerciseLibrary.filter(ex => ex.name.toLowerCase().includes(query));
+    
+    matches.sort((a, b) => {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+        
+        // 1. Öncelik: Tam Eşleşme
+        if (aName === query) return -1;
+        if (bName === query) return 1;
+        
+        // 2. Öncelik: Aranan kelimeyle başlayanlar
+        const aStarts = aName.startsWith(query);
+        const bStarts = bName.startsWith(query);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        
+        // 3. Öncelik: İsim uzunluğu
+        return aName.length - bName.length;
+    });
+
+    matches = matches.slice(0, 8);
 
     if (matches.length === 0) {
         container.classList.add('hidden');
