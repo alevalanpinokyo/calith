@@ -3798,12 +3798,12 @@ function renderPDF(printContent, data, notes = '') {
             <p style="margin:2px 0 0; font-weight:700; color:#444; font-size:10px; opacity:0.8;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
         
-        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:stretch; gap:${gap}; width:100% !important; margin:0; box-sizing:border-box;">
+        <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:flex-start; align-items:stretch; gap:${gap}; width:100% !important; margin:0; box-sizing:border-box;">
     `;
 
     html += data.map((card, i) => `
-        <div style="flex: 1; border:1.5px solid #000; border-radius:8px; padding:${padding}; background:#fff; display:flex; flex-direction:column; min-width:0; box-sizing:border-box;">
-            <div style="background:#000; color:#fff; padding:5px 2px; border-radius:4px; text-align:center; margin-bottom:6px; min-height:20px; display:flex; items-center; justify-center;">
+        <div style="flex: 0 0 calc(33.333% - ${gap}); border:1.5px solid #000; border-radius:8px; padding:${padding}; background:#fff; display:flex; flex-direction:column; min-width:0; box-sizing:border-box; margin-bottom:${gap}; break-inside:avoid;">
+            <div style="background:#000; color:#fff; padding:5px 2px; border-radius:4px; text-align:center; margin-bottom:6px; min-height:20px; display:flex; align-items:center; justify-content:center;">
                 <h3 style="margin:0; font-size:${titleSize}; text-transform:uppercase; letter-spacing:-0.4px; white-space:nowrap; overflow:hidden; font-weight:800;">${card.title || ('GÜN ' + (i + 1))}</h3>
             </div>
             ${card.badge ? `<p style="font-size:7.5px; font-weight:800; text-align:center; color:#666; margin-bottom:6px; text-transform:uppercase; border-bottom:1px solid #eee; padding-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${card.badge}</p>` : ''}
@@ -3816,12 +3816,12 @@ function renderPDF(printContent, data, notes = '') {
     html += `
         </div>
         ${notes ? `
-        <div style="margin-top:12px; padding:10px; background:#fcfcfc; border-radius:8px; border:1px solid #eee; border-left:4px solid #000;">
+        <div style="margin-top:12px; padding:10px; background:#fcfcfc; border-radius:8px; border:1px solid #eee; border-left:4px solid #000; width:100%; box-sizing:border-box; break-inside:avoid;">
             <p style="margin:0 0 4px; font-size:8.5px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:#000;">PROGRAM NOTLARI:</p>
             <p style="margin:0; font-size:${fontSize}; line-height:1.3; color:#333; white-space:pre-wrap;">${notes}</p>
         </div>
         ` : ''}
-        <div style="margin-top:15px; border-top:1px solid #eee; padding-top:6px; text-align:center; font-size:7.5px; color:#999; font-style:italic;">
+        <div style="margin-top:15px; border-top:1px solid #eee; padding-top:6px; text-align:center; font-size:7.5px; color:#999; font-style:italic; width:100%;">
             * Her antrenman öncesi 5-10 dk ısınma yapın. Form rehberi için calith.com/blog adresini ziyaret edin.
         </div>
     </div>`;
