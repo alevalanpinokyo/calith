@@ -1295,7 +1295,10 @@ async function proceedToCheckout() {
 
     if (error) {
         console.error('Sipariş hatası:', error);
-        showToast('Sipariş oluşturulamadı kanka!', 'error');
+        // Hatanın detayını ekrana basıyoruz ki tam görelim
+        const errorMsg = error.message || 'Bilinmeyen hata';
+        const errorDetail = error.details || '';
+        showToast(`HATA: ${errorMsg} ${errorDetail}`, 'error');
     } else {
         showToast('Sipariş başarıyla tamamlandı! 🔥');
         
