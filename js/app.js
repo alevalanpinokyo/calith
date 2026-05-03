@@ -2778,7 +2778,7 @@ async function saveHomecard() {
 
         // Otomatik TL (₺) işareti ekleme
         if (cost && !cost.includes('₺') && !cost.toLowerCase().includes('tl')) {
-            cost = cost + '₺';
+            cost = cost + ' ₺';
         }
 
         desc = `İhtiyacın: ${needs}\nMaliyet: ${cost}${reason ? `\nNeden: ${reason}` : ''}`;
@@ -2837,14 +2837,14 @@ async function importHomecardDefaults() {
         { id: 'lvl_3', section: 'levels', icon: '🔥', title: 'GÜÇLENİYORUM', desc_text: '20+ şınav yapabiliyorum.\nHareketler: Tek kol şınav, Muscle-up denemeleri, Front lever', link_text: 'İncele', link_url: 'skills.html?level=ileri' },
 
         // SCHEDULE
-        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: '\u2713 Duvar şınavı: 3 set\n\u2713 Koltuk dips\'i: 3 set\n\u2713 Superman: 3 set', link_text: 'Hareketleri İzle \u2192', link_url: 'blog.html' },
-        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: '\u2713 Air squat: 3 set\n\u2713 Lunges: 3 set\n\u2713 Calf raises: 3 set', link_text: 'Hareketleri İzle \u2192', link_url: 'blog.html' },
-        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: '\u2713 Duvar şınavı: 3 set\n\u2713 Glute bridge: 3 set\n\u2713 Plank: 3 set', link_text: 'Hareketleri İzle \u2192', link_url: 'blog.html' },
+        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: '\u2713 Duvar şınavı: 3 set\n\u2713 Koltuk dips\'i: 3 set\n\u2713 Superman: 3 set', link_text: 'Hareketleri İzle', link_url: 'blog.html' },
+        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: '\u2713 Air squat: 3 set\n\u2713 Lunges: 3 set\n\u2713 Calf raises: 3 set', link_text: 'Hareketleri İzle', link_url: 'blog.html' },
+        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: '\u2713 Duvar şınavı: 3 set\n\u2713 Glute bridge: 3 set\n\u2713 Plank: 3 set', link_text: 'Hareketleri İzle', link_url: 'blog.html' },
 
         // EQUIPMENT (AŞAMALAR)
-        { id: 'eq_1', section: 'equipment', badge: '🟢 Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\nMaliyet: 0₺', link_text: 'Programı İndir \u2192', link_url: 'skills.html' },
-        { id: 'eq_2', section: 'equipment', badge: '🟡 Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\nMaliyet: ~400-600₺\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele \u2192', link_url: 'shop.html' },
-        { id: 'eq_3', section: 'equipment', badge: '🔴 Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\nMaliyet: ~1.200-1.800₺\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele \u2192', link_url: 'shop.html' }
+        { id: 'eq_1', section: 'equipment', badge: '🟢 Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\nMaliyet: 0₺', link_text: 'Programı İndir', link_url: 'skills.html' },
+        { id: 'eq_2', section: 'equipment', badge: '🟡 Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\nMaliyet: ~400-600₺\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele', link_url: 'shop.html' },
+        { id: 'eq_3', section: 'equipment', badge: '🔴 Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\nMaliyet: ~1.200-1.800₺\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele', link_url: 'shop.html' }
     ];
 
     const { error } = await sb.from('homecards').upsert(defaults);
