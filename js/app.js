@@ -166,10 +166,6 @@ async function loadProducts() {
     renderAdminProducts();
 }
 
-    renderShop();
-    renderAdminProducts();
-}
-
 async function importDefaults() {
     const sb = getSupabase();
     if (!sb) return alert('Supabase hazır değil.');
