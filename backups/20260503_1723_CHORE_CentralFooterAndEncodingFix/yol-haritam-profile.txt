@@ -1,0 +1,50 @@
+# CALITH: AKILLI GELİŞİM VE ANTRENMAN ASİSTANI (YOL HARİTASI)
+
+Bu döküman, Calith'in bir içerik sitesinden "Yapay Zeka Destekli Dijital Koç"a dönüşüm planını içerir.
+
+---
+
+## ✅ FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU (TAMAMLANDI)
+- [x] (2024-04-25) Exercise Stats Tablosu & 1RM Hesaplama. [TEST EDİLDİ]
+- [x] (2024-04-25) Profilde "Rekorlarım (PR)" Sekmesi. [TEST EDİLDİ]
+
+## ✅ FAZ 2: ID-LINKED ARCHITECTURE (ID DEVRİMİ - TAMAMLANDI)
+*Veritabanı ve uygulama mantığı "İsim" tabanlı yapıdan "Dinamik ID" referanslı yapıya taşındı.*
+- [x] (2026-05-02) **Program ID Entegrasyonu:** Hareketlerin kütüphane ile ID üzerinden mühürlenmesi. [TAMAM ✅]
+- [x] (2026-05-02) **PR (Kişisel Rekor) Senkronizasyonu:** Rekorların kütüphane güncellemelerini (isim/video) canlı takip etmesi. [TAMAM ✅]
+- [x] (2026-05-02) **Hybrid Matching & Deduplication:** Mükerrer rekor kartlarının UI tarafında birleştirilmesi ve eski verilerin ID'ye otomatik göçü. [TAMAM ✅]
+
+## 🔄 FAZ 3: AKILLI ÖNERİ VE KURAL MOTORU (GÜNCEL SÜREÇ)
+Sistem artık sadece yüzde hesaplamayacak, profesyonel antrenman kurallarını (DUP vb.) uygulayacak.
+
+- [x] (2024-04-25) **Smart Suggestion UI:** Ağırlık giriş alanında "💡 ÖNERİLEN: X KG" etiketi. [TEST EDİLDİ]
+- [x] (2024-04-25) **Interaktif Geri Bildirim:** Set sonu Form (Temiz/Kirli) ve RPE (Hafif/İdeal/Ağır) modalı. [TEST EDİLDİ]
+- [ ] (2026-05-02) **Smart Engine Brain:** PR ID'leri üzerinden kullanıcının gelişimine göre dinamik ağırlık/tekrar önerisi. [GÜNCEL SÜREÇ]
+- [ ] (2024-04-25) **Otomatik Karar Mekanizması:** CNS Yorgunluğu / Deload kontrolü. [BEKLİYOR]
+
+## 📊 FAZ 4: ANALİTİK VE GÖRSELLEŞTİRME (ÖNCELİK)
+ID altyapısı sayesinde artık verileri görselleştirebiliriz.
+- [ ] **Gelişim Grafikleri (Chart.js):** Her hareketin ID bazlı gelişim grafiğinin (Line Chart) kullanıcıya sunulması. [KRİTİK ÖNCELİK 🚀]
+- [ ] **Program Verimlilik Raporu:** Hangi programın hangi hareketlerde ne kadar artış sağladığının analizi.
+- [ ] **PR Kart Oluşturucu:** Yeni rekor kırıldığında indirilebilir "Trophy Card" üretimi.
+
+## 🛠️ FAZ 5: CUSTOM BUILDER & ADMIN TOOLS
+- [ ] **Program Builder:** Kullanıcıların kütüphaneden sürükle-bırak ile kendi programını yazması. [BEKLİYOR]
+- [ ] **Admin Maintenance Tools:** Veritabanındaki ID'siz mükerrer kayıtları temizleme ve optimize etme araçları. [PLANLANDI 🧹]
+
+---
+
+### 🚨 KRİTİK TEST / TAMAMLANANLAR LİSTESİ
+- [x] (2026-05-02) **Note Display Fix:** Program detayda görünmeyen notların "Calith Mavisi" (#00D9FF) ile eklenmesi. [TAMAM ✅]
+- [x] (2026-05-02) **PR Deduplication:** Aynı hareketin farklı isimlerle (Pull-up, Pull-up!) birden fazla kart oluşturmasının engellenmesi. [TAMAM ✅]
+- [x] (2026-04-30) **Unified Rest & Feedback UI:** Dinlenme ve geri bildirim ekranlarının premium birleşimi. [TAMAM ✅]
+- [x] (2026-04-30) **Monthly Performance Dashboard:** Ay bazlı antrenman analizi. [TAMAM ✅]
+
+- [x] (2026-05-02) **Accordion Animation Fix:** Program gün kartlarındaki jerky animasyonun `max-height` düzenlemesi ile pürüzsüz hale getirilmesi. [TAMAM ✅]
+---
+
+### GÜNCEL DURUM VE NOTLAR:
+- **(2026-05-02):** BÜYÜK GÜNCELLEME: Calith tamamen ID bazlı mimariye geçti. Veri bütünlüğü ve kütüphane senkronizasyonu kusursuz hale getirildi.
+- **(2026-05-02):** ÇÖZÜLDÜ: Program önizleme (detail) ekranındaki eksik notlar eklendi ve tasarımı modernize edildi.
+- **(2026-04-30):** ÇÖZÜLDÜ: Antrenman özeti paylaşma ve geçmiş set düzenleme özellikleri eklendi.
+- **(2026-04-26):** ÇÖZÜLDÜ: Vücut ağırlığı (BW) egzersizleri PR sistemine başarıyla dahil edildi.

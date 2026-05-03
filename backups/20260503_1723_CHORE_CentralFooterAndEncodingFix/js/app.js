@@ -1,12 +1,12 @@
-﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 // --- MERKEZİ UI & İMZA SİSTEMİ ---
 window.calithConfig = {
-    developerName: "alevalanpinokyo",
+    developerName: "alevalanpinokyo", 
     year: new Date().getFullYear(),
     socialLinks: {
         instagram: "https://instagram.com/calith",
-        youtube: "https://www.youtube.com/@Calith.official",
+        youtube: "https://youtube.com/calith",
         tiktok: "https://tiktok.com/@calith",
         twitter: "https://twitter.com/calith",
         supportEmail: "destek@calith.com"
@@ -74,16 +74,16 @@ function renderFooter() {
                 
                 <div class="flex items-center gap-4">
                     <a href="${links.instagram}" target="_blank" class="footer-social-btn" title="Instagram">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
                     </a>
                     <a href="${links.youtube}" target="_blank" class="footer-social-btn" title="YouTube">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 2-2h15a2 2 0 0 1 2 2 24.12 24.12 0 0 1 0 10 2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2z"></path><path d="m10 15 5-3-5-3z"></path></svg>
+                        <i data-lucide="youtube" class="w-5 h-5"></i>
                     </a>
                     <a href="${links.tiktok}" target="_blank" class="footer-social-btn" title="TikTok">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
                     </a>
                     <a href="${links.twitter}" target="_blank" class="footer-social-btn" title="X (Twitter)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path></svg>
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
@@ -115,7 +115,7 @@ async function requestWakeLock() {
         if (wakeLock && !wakeLock.released) return;
 
         wakeLock = await navigator.wakeLock.request('screen');
-
+        
         wakeLock.addEventListener('release', () => {
             console.log('[Calith] Screen Wake Lock serbest bırakıldı.');
         });
@@ -319,7 +319,7 @@ function checkActiveWorkout() {
                 banner.id = 'workout-recovery-banner';
                 // Glassmorphism tasarımlı, mobilde alttan, desktopta sağ alttan çıkan banner
                 banner.className = 'fixed bottom-40 left-4 right-4 md:left-auto md:right-8 md:bottom-8 md:w-96 z-[10000] bg-black/90 backdrop-blur-2xl border border-calith-orange/40 p-5 rounded-[2rem] shadow-[0_20px_50px_rgba(255,107,0,0.2)] translate-y-[150%] transition-transform duration-500 flex flex-col gap-3';
-
+                
                 banner.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-calith-orange/20 flex items-center justify-center animate-pulse border border-calith-orange/50 shrink-0">
@@ -359,13 +359,13 @@ function restoreWorkoutState() {
                 workoutSession = parsed;
                 ensureWorkoutOverlay(); // Eksik DOM elemanlarını yaratır
                 showSection('workout-mode');
-
+                
                 const overlayEl = document.getElementById('workout-mode');
                 if (overlayEl) overlayEl.classList.remove('hidden');
-
+                
                 const titleEl = document.getElementById('workout-program-title');
                 if (titleEl && workoutSession.program) titleEl.textContent = workoutSession.program.title.toUpperCase();
-
+                
                 const restBox = document.getElementById('workout-rest-timer-box');
                 if (restBox) restBox.classList.add('hidden');
 
@@ -1408,14 +1408,14 @@ function addExerciseRow(dayNum, data = null) {
 
         <!-- Not Satırı: Hareket Notu -->
         <div class="w-full pt-2 border-t border-white/5">
-            <input type="text" placeholder="HAREKET NOTU / YÜK (ÖRN: 20KG BAĞLA)" 
+            <input type="text" placeholder="HAREKET NOTU / YÜK (ÖRN: 20KG BAÄLA)" 
                 class="ex-note w-full bg-transparent border-none p-0 text-[10px] font-bold uppercase tracking-widest text-calith-accent placeholder-white/5 outline-none focus:ring-0 focus:placeholder-white/20 transition-all"
                 value="${data && data.note ? data.note : ''}">
         </div>
     `;
 
     list.appendChild(row);
-
+    
     // Eski verilerin (yüklenen programlar) otomatik genişlemesini sağla
     const textarea = row.querySelector('textarea');
     if (textarea) {
@@ -1427,11 +1427,11 @@ function addExerciseRow(dayNum, data = null) {
 
         // Yazarken çalışsın
         textarea.addEventListener('input', () => adjustHeight(textarea));
-
+        
         // İlk yüklendiğinde çalışsın
         setTimeout(() => adjustHeight(textarea), 10);
     }
-
+    
     if (window.lucide) lucide.createIcons();
 }
 
@@ -1595,11 +1595,11 @@ function resetExerciseForm() {
     document.querySelector('#section-exercises h3').innerHTML = 'EGZERSİZ <span class="text-calith-orange">EKLE</span>';
 }
 
-// --- AKILLI ÖNERİ (OMNI-BOX) MANTIĞI ---
+// --- AKILLI ÖNERİ (OMNI-BOX) MANTIÄI ---
 async function showExerciseSuggestions(input) {
     const container = input.nextElementSibling;
     const query = input.value.toLowerCase().trim();
-
+    
     if (query.length < 1) {
         container.classList.add('hidden');
         return;
@@ -1630,7 +1630,7 @@ async function showExerciseSuggestions(input) {
             ${ex.is_bw ? '<span class="text-[8px] font-black text-calith-orange/50 uppercase tracking-tighter">BW</span>' : ''}
         </div>
     `).join('');
-
+    
     container.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
 }
@@ -1651,7 +1651,7 @@ function selectExerciseSuggestion(suggestionEl, exerciseId) {
 
     // Önerileri kapat
     row.querySelector('.ex-suggestions').classList.add('hidden');
-
+    
     showToast(`${ex.name} kütüphaneden bağlandı.`, 'success');
 }
 
@@ -1753,16 +1753,16 @@ let programDayCounter = 0;
 function addProgramDayBlock() {
     const container = document.getElementById('prog-days-container');
     if (!container) return;
-
+    
     programDayCounter++;
     const index = programDayCounter;
-
+    
     const displayNum = String(index).padStart(2, '0');
-
+    
     const block = document.createElement('div');
     block.className = 'prog-day-block bg-black/20 p-5 rounded-[2rem] border border-white/5 space-y-4 relative group';
     block.dataset.dayIndex = index;
-
+    
     block.innerHTML = `
         <button type="button" onclick="this.closest('.prog-day-block').remove()" class="absolute -top-3 -right-3 w-8 h-8 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-500 z-10" title="Günü Sil">
             <i data-lucide="x" class="w-4 h-4"></i>
@@ -1799,7 +1799,7 @@ function addProgramDayBlock() {
             <i data-lucide="plus" class="w-3 h-3"></i> EGZERSİZ EKLE
         </button>
     `;
-
+    
     container.appendChild(block);
     if (window.lucide) lucide.createIcons();
     return index;
@@ -1810,11 +1810,11 @@ function resetProgramForm() {
     document.getElementById('prog-title').value = '';
     document.getElementById('prog-cover').value = '';
     document.getElementById('prog-video').value = '';
-
+    
     const container = document.getElementById('prog-days-container');
     if (container) container.innerHTML = '';
     programDayCounter = 0;
-
+    
     document.getElementById('prog-notes').value = '';
     document.getElementById('prog-media-size').value = 'medium';
 }
@@ -1924,7 +1924,7 @@ function showProgramLevel(level, titleStr, skipHistory = false) {
             <!-- Arka Plan Büyük Numara (Dekoratif) -->
             <div class="absolute -left-4 -bottom-4 text-[8rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i + 1}</div>
             
-            <!-- Program Görseli (Küçük ve Şık) -->
+            <!-- Program Görseli (Küçük ve Åık) -->
             <div class="w-full lg:w-40 aspect-video lg:aspect-square rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500 shadow-2xl">
                 <img src="${p.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
             </div>
@@ -2005,7 +2005,7 @@ async function showProgramDetail(id, skipHistory = false) {
         return;
     }
 
-    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ŞART)
+    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ÅART)
     if (typeof exerciseLibrary !== 'undefined' && exerciseLibrary.length === 0) {
         const sb = getSupabase();
         if (sb) {
@@ -2136,7 +2136,7 @@ async function showProgramDetail(id, skipHistory = false) {
                             ${exercisesHtml}
                         </div>
                         <button onclick="startWorkoutMode('${p.id}', ${i})" class="mt-6 w-full py-4 bg-calith-orange/10 border border-calith-orange/20 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.2em] hover:bg-calith-orange hover:text-black transition-all group/btn">
-                            <i data-lucide="play" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> BU GÜNÜ BAŞLAT
+                            <i data-lucide="play" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> BU GÜNÜ BAÅLAT
                         </button>
                     `;
                 }
@@ -2157,31 +2157,31 @@ async function showProgramDetail(id, skipHistory = false) {
                                 <h4 class="font-display text-lg font-bold tracking-tight text-white group-hover:text-calith-orange transition-colors leading-tight">${day.name || 'GÜN ' + (i + 1)}</h4>
                                 <div class="flex flex-col gap-2 mt-2">
                                     ${(() => {
-                        const type = String(day.type || 'none').toLowerCase();
-                        const badge = String(day.badge || '').trim();
-
-                        let hmlHtml = '';
-                        if (type === 'heavy' || type === 'h') {
-                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-red-500/5 w-fit mb-1">
+                                        const type = String(day.type || 'none').toLowerCase();
+                                        const badge = String(day.badge || '').trim();
+                                        
+                                        let hmlHtml = '';
+                                        if (type === 'heavy' || type === 'h') {
+                                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-red-500/5 w-fit mb-1">
                                                 <i data-lucide="flame" class="w-3 h-3"></i> HEAVY (H)
                                             </div>`;
-                        } else if (type === 'medium' || type === 'm') {
-                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-calith-orange/20 bg-calith-orange/10 text-calith-orange text-[9px] font-black uppercase tracking-widest shadow-lg shadow-calith-orange/5 w-fit mb-1">
+                                        } else if (type === 'medium' || type === 'm') {
+                                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-calith-orange/20 bg-calith-orange/10 text-calith-orange text-[9px] font-black uppercase tracking-widest shadow-lg shadow-calith-orange/5 w-fit mb-1">
                                                 <i data-lucide="zap" class="w-3 h-3"></i> MEDIUM (M)
                                             </div>`;
-                        } else if (type === 'light' || type === 'l') {
-                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-green-500/20 bg-green-500/10 text-green-500 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-green-500/5 w-fit mb-1">
+                                        } else if (type === 'light' || type === 'l') {
+                                            hmlHtml = `<div class="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-green-500/20 bg-green-500/10 text-green-500 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-green-500/5 w-fit mb-1">
                                                 <i data-lucide="leaf" class="w-3 h-3"></i> LIGHT (L)
                                             </div>`;
-                        }
-
-                        let badgeHtml = '';
-                        if (badge) {
-                            badgeHtml = `<span class="px-2.5 py-1 rounded-md border text-xs font-bold uppercase tracking-widest bg-white/5 text-gray-300 border-white/10 w-fit max-w-[240px] truncate">${badge.toUpperCase()}</span>`;
-                        }
-
-                        return hmlHtml + badgeHtml;
-                    })()}
+                                        }
+                                        
+                                        let badgeHtml = '';
+                                        if (badge) {
+                                            badgeHtml = `<span class="px-2.5 py-1 rounded-md border text-xs font-bold uppercase tracking-widest bg-white/5 text-gray-300 border-white/10 w-fit max-w-[240px] truncate">${badge.toUpperCase()}</span>`;
+                                        }
+                                        
+                                        return hmlHtml + badgeHtml;
+                                    })()}
                                 </div>
                             </div>
                         </div>
@@ -2238,7 +2238,7 @@ async function showProgramDetail(id, skipHistory = false) {
             <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 reveal active">
                 <button onclick="startWorkoutMode('${p.id}')" class="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transform hover:scale-[1.05] transition-all shadow-2xl shadow-white/10 active:scale-95">
                     <i data-lucide="play" class="w-5 h-5"></i>
-                    <span>1. GÜNDEN BAŞLA</span>
+                    <span>1. GÜNDEN BAÅLA</span>
                 </button>
                 ${isProgramAdded(p.id) ? `
                     <button onclick="removeFromMyPrograms('${p.id}')" class="w-full sm:w-auto bg-calith-orange/10 border border-calith-orange/20 px-10 py-5 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] text-calith-orange flex items-center justify-center gap-3 hover:bg-calith-orange hover:text-black transition-all group">
@@ -2261,9 +2261,9 @@ async function showProgramDetail(id, skipHistory = false) {
 }
 // ====== DUYURU YÖNETİMİ (ANNOUNCEMENTS) ======
 let defaultAnnouncements = [
-    { id: '1', title: 'Pazar Günü Soru-Cevap', desc: 'Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.', label: 'ğŸ”´ YAKLAŞAN ETKİNLİK', icon: 'video', color: 'calith-orange', link: 'premium.html' },
+    { id: '1', title: 'Pazar Günü Soru-Cevap', desc: 'Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.', label: 'ğŸ”´ YAKLAÅAN ETKİNLİK', icon: 'video', color: 'calith-orange', link: 'premium.html' },
     { id: '2', title: 'Sıfırdan İlk Barfiks', desc: 'Asla çekemem diyenler için hazırladığımız özel eğitim serisi yayında.', label: 'YENİ İÇERİK EKLENDİ', icon: 'flame', color: 'calith-accent', link: 'blog.html' },
-    { id: '3', title: '100 Şınav Challenge', desc: 'Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!', label: 'ğŸ† HAFTANIN GÖREVİ', icon: 'target', color: 'green-500', link: 'premium.html' }
+    { id: '3', title: '100 Åınav Challenge', desc: 'Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!', label: 'ğŸ† HAFTANIN GÖREVİ', icon: 'target', color: 'green-500', link: 'premium.html' }
 ];
 
 let announcements = [];
@@ -2317,7 +2317,7 @@ function renderAnnouncementsSlider() {
         const onClickAction = `handleAnnouncementClick(${index})`;
 
         const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
-
+        
         // Kullanıcı linki "Hedef Link" veya "Video URL" kutularından birine yapıştırmış olabilir.
         const potentialYtString = (ann.link || '') + ' ' + (ann.image || '');
         const ytMatch = potentialYtString.match(ytRegex);
@@ -2325,7 +2325,7 @@ function renderAnnouncementsSlider() {
         const isYoutube = !!ytId;
 
         let imageUrl = ann.image;
-
+        
         // Eğer iframe HTML kodu paste edilmişse, sadece resim çekmek için url'i temizle
         if (imageUrl && imageUrl.includes('<iframe')) {
             const srcMatch = imageUrl.match(/src=["'](.*?)["']/i);
@@ -2384,13 +2384,13 @@ function renderAnnouncementsSlider() {
  * Duyuru tıklama olayını yönetir.
  * HTML içinde tırnak işareti hatalarını önlemek için merkezi bir fonksiyon.
  */
-window.handleAnnouncementClick = function (index) {
+window.handleAnnouncementClick = function(index) {
     const ann = announcements[index];
     if (!ann) return;
 
     const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
     const potentialLink = ann.link || ann.image || '';
-
+    
     // Video kontrolü (link veya imaj kutusunda olabilir)
     const isYoutube = ytRegex.test(potentialLink);
     const isVideo = isYoutube || potentialLink.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i);
@@ -2431,7 +2431,7 @@ function openVideoModal(videoSource) {
             const videoId = ytMatch[1];
             const isShorts = videoSource.includes('/shorts/');
             const aspectClass = isShorts ? 'aspect-[9/16] h-[85vh] max-w-full' : 'aspect-video w-full max-w-5xl';
-
+            
             container.innerHTML = `
                 <div class="w-full h-full bg-black flex items-center justify-center overflow-hidden rounded-xl">
                     <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1" 
@@ -2523,11 +2523,11 @@ function renderAdminAnnouncements() {
         if (processedImage) {
             const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?/\s]{11})/i;
             const ytMatch = processedImage.match(ytRegex);
-
+            
             if (ytMatch) {
                 const videoId = ytMatch[1];
                 const isShorts = processedImage.includes('/shorts/');
-
+                
                 if (isShorts) {
                     mediaHtml = `
                     <div class="w-full max-w-[220px] mx-auto bg-black/30 rounded-xl overflow-hidden border border-white/5 mt-2 relative" style="padding-bottom: 177.77%;">
@@ -2824,7 +2824,7 @@ async function importHomecardDefaults() {
 
     const defaults = [
         // HERO
-        { id: 'hero_1', section: 'hero', title: 'Kendi Vücudunla Çalış.<br><span class="gradient-text">Sınırlarını</span> Zorla.', desc_text: 'Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Şimdi başla, tamamen ücretsiz.' },
+        { id: 'hero_1', section: 'hero', title: 'Kendi Vücudunla Çalış.<br><span class="gradient-text">Sınırlarını</span> Zorla.', desc_text: 'Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Åimdi başla, tamamen ücretsiz.' },
 
         // BENEFITS
         { id: 'ben_1', section: 'benefits', icon: 'ğŸ’ª', title: 'Kas İnşa', desc_text: 'Ağırlık salonu gerektirmez. Vücut ağırlığın yeterli.' },
@@ -2838,11 +2838,11 @@ async function importHomecardDefaults() {
 
         // SCHEDULE
         { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: 'âœ“ Duvar şınavı: 3 set\\nâœ“ Koltuk dips\'i: 3 set\\nâœ“ Superman: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
-        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: 'âœ“ Air squat: 3 set\\nâœ“ Lunges: 3 set\\nâœ“ Calf raises: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
+        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARÅAMBA', desc_text: 'âœ“ Air squat: 3 set\\nâœ“ Lunges: 3 set\\nâœ“ Calf raises: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
         { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: 'âœ“ Duvar şınavı: 3 set\\nâœ“ Glute bridge: 3 set\\nâœ“ Plank: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
 
-        // EQUIPMENT (AŞAMALAR)
-        { id: 'eq_1', section: 'equipment', badge: 'ğŸŸ¢ Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\\nMaliyet: 0â‚º', link_text: 'Programı İndir â†’', link_url: 'skills.html' },
+        // EQUIPMENT (AÅAMALAR)
+        { id: 'eq_1', section: 'equipment', badge: 'ğŸŸ¢ Aşama 1', title: 'ÅU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\\nMaliyet: 0â‚º', link_text: 'Programı İndir â†’', link_url: 'skills.html' },
         { id: 'eq_2', section: 'equipment', badge: 'ğŸŸ¡ Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\\nMaliyet: ~400-600â‚º\\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele â†’', link_url: 'shop.html' },
         { id: 'eq_3', section: 'equipment', badge: 'ğŸ”´ Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\\nMaliyet: ~1.200-1.800â‚º\\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele â†’', link_url: 'shop.html' }
     ];
@@ -2972,11 +2972,11 @@ async function deleteHomecard(id) {
 let currentHomecardFilter = 'hero';
 
 const hcSectionLabels = {
-    'hero': 'AİT OLDUĞU BÖLÜM: ANA BAŞLIK',
-    'benefits': 'AİT OLDUĞU BÖLÜM: KAZANÇLAR (SANA NE KAZANDIRIR)',
-    'levels': 'AİT OLDUĞU BÖLÜM: 3 SEVİYE',
-    'schedule': 'AİT OLDUĞU BÖLÜM: HAFTALIK PROGRAM',
-    'equipment': 'AİT OLDUĞU BÖLÜM: EKİPMAN YOL HARİTASI'
+    'hero': 'AİT OLDUÄU BÖLÜM: ANA BAÅLIK',
+    'benefits': 'AİT OLDUÄU BÖLÜM: KAZANÇLAR (SANA NE KAZANDIRIR)',
+    'levels': 'AİT OLDUÄU BÖLÜM: 3 SEVİYE',
+    'schedule': 'AİT OLDUÄU BÖLÜM: HAFTALIK PROGRAM',
+    'equipment': 'AİT OLDUÄU BÖLÜM: EKİPMAN YOL HARİTASI'
 };
 
 function filterAdminHomecards(section, skipReset = false) {
@@ -3288,7 +3288,7 @@ function renderFrontendHomecards() {
                 <div class="product-card backdrop-blur-3xl bg-white/5 border ${borderClass} rounded-[2.5rem] p-10 ${hoverClass} transition-all duration-500 relative flex flex-col h-full group hover:-translate-y-2">
                     <div class="self-start w-max inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-${badgeColor}/30 text-${badgeColor} text-[10px] font-black uppercase tracking-widest mb-8 bg-${badgeColor}/10 backdrop-blur-md">
                         <span class="w-1.5 h-1.5 rounded-full bg-${badgeColor} animate-pulse shrink-0"></span>
-                        ${eq.badge ? eq.badge.replace(/[^a-zA-Z0-9İıĞğÜüŞşÖöÇç ]/g, '').trim() : ('AŞAMA ' + (i + 1))}
+                        ${eq.badge ? eq.badge.replace(/[^a-zA-Z0-9İıÄğÜüÅşÖöÇç ]/g, '').trim() : ('AÅAMA ' + (i + 1))}
                     </div>
                     <h3 class="font-display text-3xl font-bold mb-8 uppercase tracking-tight group-hover:text-white transition-colors leading-tight">${eq.title}</h3>
                     <div class="flex-1">
@@ -3378,7 +3378,7 @@ async function submitRegister() {
     const level = levelRadio ? levelRadio.value : 'baslangic';
 
     if (!name || !email || !pass) return showToast('Lütfen tüm bilgileri girin!');
-    if (pass.length < 6) return alert('Şifre en az 6 karakter olmalı');
+    if (pass.length < 6) return alert('Åifre en az 6 karakter olmalı');
 
     const sb = getSupabase();
     if (!sb) return;
@@ -3423,13 +3423,13 @@ async function submitRegister() {
 async function handleLogout() {
     const sb = getSupabase();
     if (sb) await sb.auth.signOut();
-
+    
     // Tüm state'i temizle
     currentUser = null;
     isAdminMode = false;
-
+    
     showToast('Çıkış yapıldı');
-
+    
     // Navbar'ı anında güncelle
     updateAuthUI();
 
@@ -3499,11 +3499,11 @@ function updateAuthUI() {
     // 1. Önce bilinen tüm auth butonlarını seç
     let authElements = Array.from(document.querySelectorAll('.nav-auth-btn, [onclick*="showAuthModal"], [onclick*="showProfile"], [onclick*="handleLogout"], .profile-link, [href="profile.html"]'));
 
-    // 2. İçinde 'PROFİLİM' veya 'GİRİŞ YAP' geçen TÜM link ve butonları da ekle (Her ihtimale karşı)
+    // 2. İçinde 'PROFİLİM' veya 'GİRİÅ YAP' geçen TÜM link ve butonları da ekle (Her ihtimale karşı)
     const allLinksAndButtons = document.querySelectorAll('nav a, nav button');
     allLinksAndButtons.forEach(el => {
         const txt = el.textContent.toUpperCase();
-        if (txt.includes('PROFİLİM') || txt.includes('GİRİŞ YAP') || txt.includes('ÜYE OL')) {
+        if (txt.includes('PROFİLİM') || txt.includes('GİRİÅ YAP') || txt.includes('ÜYE OL')) {
             if (!authElements.includes(el)) authElements.push(el);
         }
     });
@@ -3517,11 +3517,11 @@ function updateAuthUI() {
         const authSpan = el.querySelector('.auth-text');
 
         if (currentUser) {
-            // GİRİŞ YAPILMIŞSA -> PROFİLİM
+            // GİRİÅ YAPILMIÅSA -> PROFİLİM
             el.setAttribute('href', 'profile.html'); // Linki aktifleştir
             el.setAttribute('onclick', "showProfile()");
             el.classList.add('text-calith-accent');
-
+            
             if (authSpan) {
                 authSpan.textContent = 'PROFİLİM';
             } else {
@@ -3533,25 +3533,25 @@ function updateAuthUI() {
                 }
             }
         } else {
-            // ÇIKIŞ YAPILMIŞSA -> GİRİŞ YAP
+            // ÇIKIÅ YAPILMIÅSA -> GİRİÅ YAP
             el.setAttribute('href', 'javascript:void(0)'); // Linki DEAKTİF ET
             el.setAttribute('onclick', "showAuthModal()");
             el.classList.remove('text-calith-accent');
-
+            
             if (authSpan) {
-                authSpan.textContent = 'GİRİŞ YAP';
+                authSpan.textContent = 'GİRİÅ YAP';
             } else {
                 if (el.tagName === 'BUTTON' && !icon) {
-                    el.textContent = 'GİRİŞ YAP / ÜYE OL';
+                    el.textContent = 'GİRİÅ YAP / ÜYE OL';
                 } else {
-                    el.innerHTML = iconHtml + ' <span class="auth-text">GİRİŞ YAP</span>';
+                    el.innerHTML = iconHtml + ' <span class="auth-text">GİRİÅ YAP</span>';
                 }
             }
         }
     });
 
     if (window.lucide) lucide.createIcons();
-
+    
     // Flicker önleme: UI hazır olduğunda göster
     document.body.classList.add('auth-ui-ready');
 }
@@ -3566,7 +3566,7 @@ async function submitLeadForm() {
     if (!email.includes('@') || !email.includes('.')) return showToast('Lütfen geçerli bir e-posta girin.');
 
     const btn = document.getElementById('btn-lead-submit');
-    const oldHtml = btn ? btn.innerHTML : 'Şimdi İndir';
+    const oldHtml = btn ? btn.innerHTML : 'Åimdi İndir';
     if (btn) btn.innerHTML = 'Kaydediliyor... <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
 
     const sb = getSupabase();
@@ -3752,14 +3752,14 @@ function exportProgramPDF() {
             const h4 = card.querySelector('h4');
             // Yeni badge seçicisi (span truncate veya borderlı badge)
             const badge = card.querySelector('.truncate') || card.querySelector('span[class*="border"]');
-
+            
             // Yeni madde seçicisi: Her bir antrenman div'ini bul
             const exerciseRows = Array.from(card.querySelectorAll('.flex.flex-col.p-4.rounded-2xl'));
             const items = exerciseRows.map(ex => {
                 const nameSpan = ex.querySelector('.flex-1');
                 // Yeni yapıdaki SET ve TEKRAR kutucuklarını bul
                 const boxes = Array.from(ex.querySelectorAll('div[class*="bg-black/40"]'));
-
+                
                 if (nameSpan && boxes.length >= 2) {
                     const setText = boxes[0].innerText.trim().replace(/\s+/g, ' '); // "5 SET"
                     const repText = boxes[1].innerText.trim().replace(/\s+/g, ' '); // "12 TEKRAR"
@@ -3812,7 +3812,7 @@ function exportProgramPDF() {
             {
                 title: 'GÜN 1 â€” ÜST VÜCUT',
                 badge: 'Pazartesi / Çarşamba',
-                items: ['Isınma: 5 dk yürüyüş', '3x10 Şınav', '3x8 Pike Push-up', '3x10 Dips (sandalye)', '3x12 Diamond Push-up', '2x10 Triceps Germe']
+                items: ['Isınma: 5 dk yürüyüş', '3x10 Åınav', '3x8 Pike Push-up', '3x10 Dips (sandalye)', '3x12 Diamond Push-up', '2x10 Triceps Germe']
             },
             {
                 title: 'GÜN 2 â€” ALT VÜCUT',
@@ -3885,9 +3885,9 @@ function renderPDF(printContent, data, notes = '') {
     </div>`;
 
     printContent.innerHTML = html;
-
-    setTimeout(() => {
-        window.print();
+    
+    setTimeout(() => { 
+        window.print(); 
     }, 800);
 }
 
@@ -3951,12 +3951,12 @@ async function removeFromMyPrograms(programId) {
         showToast('Hata: ' + error.message);
     } else {
         showToast('Program kütüphanenizden çıkarıldı.');
-
+        
         // Local listeyi güncelle
         myProgramIds = myProgramIds.filter(id => String(id) !== String(programId));
-
+        
         // Legacy localStorage temizliği
-        localStorage.removeItem('calith_my_programs');
+        localStorage.removeItem('calith_my_programs'); 
 
         // UI Güncelle - Daha güvenli kontrol
         const detailSec = document.getElementById('blog-detail');
@@ -4093,23 +4093,23 @@ function renderProfileSection() {
                     </div>
                     <div id="profile-level" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold uppercase italic opacity-80 group-hover/stat:opacity-100 transition-all">YÜKLENİYOR...</div>
                 </div>
-                <!-- YAŞ -->
+                <!-- YAÅ -->
                 <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-green-500/5 hover:border-green-500/30 transition-all duration-500 group/stat w-full flex flex-col items-center text-center shadow-lg hover:shadow-green-500/5">
                     <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0 group-hover/stat:scale-110 transition-transform">
                             <i data-lucide="clock" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500"></i>
                         </div>
-                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none group-hover/stat:text-gray-300 transition-colors">YAŞ</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none group-hover/stat:text-gray-300 transition-colors">YAÅ</span>
                     </div>
                     <div id="profile-age" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold group-hover/stat:text-white transition-colors">--</div>
                 </div>
-                <!-- GEÇMİŞ -->
+                <!-- GEÇMİÅ -->
                 <div class="bg-white/[0.03] border border-white/5 rounded-2xl p-3 sm:p-4 hover:bg-pink-500/5 hover:border-pink-500/30 transition-all duration-500 group/stat w-full flex flex-col items-center text-center shadow-lg hover:shadow-pink-500/5">
                     <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
                         <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-pink-500/10 flex items-center justify-center shrink-0 group-hover/stat:scale-110 transition-transform">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-pink-500"></i>
                         </div>
-                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none group-hover/stat:text-gray-300 transition-colors">GEÇMİŞ</span>
+                        <span class="text-[10px] sm:text-xs font-black text-gray-500 uppercase tracking-widest leading-none group-hover/stat:text-gray-300 transition-colors">GEÇMİÅ</span>
                     </div>
                     <div id="profile-experience" class="text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold group-hover/stat:text-white transition-colors">-- YIL</div>
                 </div>
@@ -4146,17 +4146,17 @@ function renderProfileSection() {
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">YAŞ</label>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">YAÅ</label>
                     <input type="number" id="edit-age" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="25">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">SPOR GEÇMİŞİ (YIL)</label>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">SPOR GEÇMİÅİ (YIL)</label>
                     <input type="number" id="edit-since" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all" placeholder="3">
                 </div>
                 <div>
                     <label class="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 ml-2">DENEYİM SEVİYESİ</label>
                     <select id="edit-level" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-calith-orange transition-all appearance-none">
-                        <option value="BAŞLANGIÇ" class="bg-calith-dark">BAŞLANGIÇ</option>
+                        <option value="BAÅLANGIÇ" class="bg-calith-dark">BAÅLANGIÇ</option>
                         <option value="ORTA" class="bg-calith-dark">ORTA SEVİYE</option>
                         <option value="İLERİ" class="bg-calith-dark">İLERİ SEVİYE</option>
                         <option value="PROFESYONEL" class="bg-calith-dark">PROFESYONEL</option>
@@ -4242,7 +4242,7 @@ function switchProfileTab(tabId) {
 
     const dashContainer = document.getElementById('history-dashboard-container');
     const filtersContainer = document.getElementById('history-filters-container');
-
+    
     if (dashContainer) dashContainer.classList.toggle('hidden', tabId !== 'history');
     if (filtersContainer) filtersContainer.classList.toggle('hidden', tabId !== 'history');
 
@@ -4253,7 +4253,7 @@ function switchProfileTab(tabId) {
         });
         const myPrograms = posts.filter(p => myProgramIds.includes(String(p.id)));
         console.log('Filtered Programs:', myPrograms);
-
+        
         if (myProgramIds.length > 0 && myPrograms.length === 0) {
             console.warn('UYARI: Kullanıcının program IDs var ama posts tablosunda karşılığı yok!', myProgramIds);
         }
@@ -4348,12 +4348,12 @@ async function loadProfileData(user) {
 
         const levelEl = document.getElementById('profile-level');
         if (levelEl) {
-            const level = (data.fitness_level || 'BAŞLANGIÇ').toUpperCase();
+            const level = (data.fitness_level || 'BAÅLANGIÇ').toUpperCase();
             levelEl.textContent = level;
-
+            
             // Dinamik Renk Ataması
             levelEl.className = "text-lg sm:text-xl md:text-lg xl:text-2xl font-display font-bold uppercase transition-colors duration-500";
-            if (level.includes('BAŞLANGIÇ')) levelEl.classList.add('text-gray-400');
+            if (level.includes('BAÅLANGIÇ')) levelEl.classList.add('text-gray-400');
             else if (level.includes('ORTA')) levelEl.classList.add('text-blue-400');
             else if (level.includes('İLERİ')) levelEl.classList.add('text-purple-400');
             else if (level.includes('PROFESYONEL')) levelEl.classList.add('text-calith-orange');
@@ -4374,7 +4374,7 @@ async function loadProfileData(user) {
         if (editHeight) editHeight.value = data.height || '';
         if (editAge) editAge.value = data.age || '';
         if (editSince) editSince.value = data.since || '';
-        if (editLevel) editLevel.value = data.fitness_level || 'BAŞLANGIÇ';
+        if (editLevel) editLevel.value = data.fitness_level || 'BAÅLANGIÇ';
         if (editGoal) editGoal.value = data.goal || 'Kas Kazanmak';
     }
 
@@ -4459,7 +4459,7 @@ async function loadUserPrograms(userId) {
 function renderUserPrograms(programs) {
     const activeTab = document.querySelector('.profile-tab.active');
     const container = document.getElementById('user-programs-list');
-
+    
     if (!activeTab || activeTab.id !== 'btn-tab-ready') {
         console.warn('RenderUserPrograms: Beklenen sekme (ready) aktif değil, iptal edildi.');
         return;
@@ -4482,7 +4482,7 @@ function renderUserPrograms(programs) {
 
     container.innerHTML = programs.map((p, i) => `
         <div onclick="showProgramDetail('${p.id}')" class="group cursor-pointer relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-calith-orange/30 rounded-[1.5rem] sm:rounded-[2rem] p-4 transition-all duration-500 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 overflow-hidden">
-            <div class="absolute -left-4 -bottom-4 text-[4rem] sm:text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i + 1}</div>
+            <div class="absolute -left-4 -bottom-4 text-[4rem] sm:text-[6rem] font-black text-white/[0.02] pointer-events-none group-hover:text-calith-orange/[0.03] transition-colors duration-700 select-none">0${i+1}</div>
             
             <div class="w-full sm:w-24 lg:w-32 aspect-video sm:aspect-square rounded-xl sm:rounded-2xl overflow-hidden shrink-0 border border-white/10 group-hover:border-calith-orange/30 transition-all duration-500">
                 <img src="${p.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110">
@@ -4586,7 +4586,7 @@ function renderWorkoutLogs(logs, isFilterOnly = false) {
     });
 
     let html = '';
-
+    
     Object.keys(grouped).forEach(month => {
         html += `
             <div class="mt-8 first:mt-0">
@@ -4597,12 +4597,12 @@ function renderWorkoutLogs(logs, isFilterOnly = false) {
                 </div>
                 <div class="grid gap-4">
                     ${grouped[month].map(log => {
-            const date = new Date(log.created_at);
-            const day = date.toLocaleDateString('tr-TR', { day: '2-digit' });
-            const monthShort = date.toLocaleDateString('tr-TR', { month: 'short' }).toUpperCase();
-            const time = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-
-            return `
+                        const date = new Date(log.created_at);
+                        const day = date.toLocaleDateString('tr-TR', { day: '2-digit' });
+                        const monthShort = date.toLocaleDateString('tr-TR', { month: 'short' }).toUpperCase();
+                        const time = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                        
+                        return `
                             <div class="group relative bg-white/5 border border-white/5 rounded-2xl p-4 hover:bg-white/[0.08] hover:border-calith-orange/30 transition-all cursor-pointer overflow-hidden" onclick="showWorkoutLogDetail('${log.id}')">
                                 <div class="flex items-center gap-3">
                                     <!-- Date Box -->
@@ -4646,7 +4646,7 @@ function renderWorkoutLogs(logs, isFilterOnly = false) {
                                 </div>
                             </div>
                         `;
-        }).join('')}
+                    }).join('')}
                 </div>
             </div>
         `;
@@ -4664,7 +4664,7 @@ function getWorkoutEfficiencyBrief(log) {
 
         let totalSets = 0;
         let cleanSets = 0;
-
+        
         data.exercises.forEach(ex => {
             if (ex.sets) {
                 ex.sets.forEach(set => {
@@ -4678,8 +4678,8 @@ function getWorkoutEfficiencyBrief(log) {
         const efficiency = Math.round((cleanSets / totalSets) * 100);
         return `${totalSets} SET â€¢ %${efficiency}`;
 
-    } catch (e) {
-        console.error('Efficiency calculation error:', e);
+    } catch(e) { 
+        console.error('Efficiency calculation error:', e); 
         return '-';
     }
 }
@@ -4709,7 +4709,7 @@ function renderHistoryDashboard(logs) {
                     }
                 });
             }
-        } catch (e) { }
+        } catch(e) {}
     });
 
     const successRate = totalSets > 0 ? Math.round((cleanSets / totalSets) * 100) : 0;
@@ -4808,17 +4808,17 @@ async function copyBulkReport() {
     if (!logs || logs.length === 0) return showToast('Kopyalanacak veri yok kanka!');
 
     const activeFilter = document.querySelector('.history-filter-btn.active')?.textContent || 'GENEL';
-
+    
     let text = `ğŸ”¥ CALITH PERFORMANS RAPORU - ${activeFilter}\n`;
     text += `========================================\n\n`;
 
     logs.forEach(log => {
         const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
         const time = new Date(log.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-
+        
         text += `ğŸ“… ${date} â€¢ ${time} (${log.program_title || 'Özel'})\n`;
         text += `â±ï¸ Süre: ${log.duration || '00:00'} | Tekrar: ${calculateWorkoutTotalReps(log)}\n`;
-
+        
         try {
             let data = log.workout_data;
             if (typeof data === 'string') data = JSON.parse(data);
@@ -4829,13 +4829,13 @@ async function copyBulkReport() {
                         ex.sets.forEach((set, si) => {
                             const weightStr = set.weight > 0 ? `${set.weight}kg x ` : '';
                             const cleanStr = set.isClean ? 'Temiz' : 'Kirli';
-                            const restStr = set.restTime ? ` [Dinlenme: ${Math.floor(set.restTime / 60).toString().padStart(2, '0')}:${(set.restTime % 60).toString().padStart(2, '0')}]` : '';
+                            const restStr = set.restTime ? ` [Dinlenme: ${Math.floor(set.restTime / 60).toString().padStart(2,'0')}:${(set.restTime % 60).toString().padStart(2,'0')}]` : '';
                             text += `      - ${si + 1}. Set: ${weightStr}${set.reps} (${cleanStr})${restStr}\n`;
                         });
                     }
                 });
             }
-        } catch (e) { }
+        } catch(e) {}
         text += `----------------------------------------\n\n`;
     });
 
@@ -4861,7 +4861,7 @@ function calculateWorkoutTotalReps(log) {
             if (ex.sets) ex.sets.forEach(set => { total += (parseInt(set.reps) || 0); });
         });
         return total;
-    } catch (e) { return 0; }
+    } catch(e) { return 0; }
 }
 
 function calculateWorkoutVolume(log) {
@@ -4874,7 +4874,7 @@ function calculateWorkoutVolume(log) {
             if (ex.sets) ex.sets.forEach(set => { total += (parseFloat(set.weight) || 0) * (parseInt(set.reps) || 0); });
         });
         return Math.round(total);
-    } catch (e) { return 0; }
+    } catch(e) { return 0; }
 }
 
 async function deleteWorkoutLog(logId) {
@@ -4897,13 +4897,13 @@ async function deleteWorkoutLog(logId) {
     });
 }
 
-window.editWorkoutSet = async function (logId, exerciseIdx, setIdx) {
+window.editWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return;
 
     let rawData = log.workout_data;
     if (typeof rawData === 'string') {
-        try { rawData = JSON.parse(rawData); } catch (e) { console.error(e); }
+        try { rawData = JSON.parse(rawData); } catch(e) { console.error(e); }
     }
     const data = JSON.parse(JSON.stringify(rawData));
     const set = data.exercises[exerciseIdx].sets[setIdx];
@@ -4918,7 +4918,7 @@ window.editWorkoutSet = async function (logId, exerciseIdx, setIdx) {
             <h3 class="text-white font-black uppercase tracking-tight text-center text-sm">SET DÜZENLE</h3>
             <div class="space-y-3">
                 <div>
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">AĞIRLIK (KG)</label>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">AÄIRLIK (KG)</label>
                     <input id="edit-set-weight" type="number" inputmode="decimal" step="0.5" value="${set.weight}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono font-bold text-lg focus:border-calith-orange focus:outline-none transition-colors" style="touch-action: manipulation;">
                 </div>
                 <div>
@@ -4978,7 +4978,7 @@ window.editWorkoutSet = async function (logId, exerciseIdx, setIdx) {
     });
 }
 
-window.deleteWorkoutSet = async function (logId, exerciseIdx, setIdx) {
+window.deleteWorkoutSet = async function(logId, exerciseIdx, setIdx) {
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
     if (!log) return showToast('Henüz bu antrenman için geçmiş verin yok kanka. İlk rekoru şimdi kıralım! ğŸ¦¾');
 
@@ -4988,16 +4988,16 @@ window.deleteWorkoutSet = async function (logId, exerciseIdx, setIdx) {
 
         const newData = JSON.parse(JSON.stringify(log.workout_data));
         const exercise = newData.exercises[exerciseIdx];
-
+        
         if (exercise && exercise.sets && exercise.sets[setIdx]) {
             console.log(`[Calith] ${exercise.name} içinden ${setIdx}. set sıfırlanıyor...`);
             // Seti silmiyoruz, değerlerini 0 yapıyoruz
-            exercise.sets[setIdx] = {
-                weight: 0,
-                reps: 0,
-                isClean: true,
-                feel: 'light',
-                skipped: true
+            exercise.sets[setIdx] = { 
+                weight: 0, 
+                reps: 0, 
+                isClean: true, 
+                feel: 'light', 
+                skipped: true 
             };
         }
 
@@ -5024,7 +5024,7 @@ function showWorkoutLogDetail(logId) {
 
     let data = log.workout_data;
     if (typeof data === 'string') {
-        try { data = JSON.parse(data); } catch (e) { console.error('[Calith] workout_data parse hatası:', e); return; }
+        try { data = JSON.parse(data); } catch(e) { console.error('[Calith] workout_data parse hatası:', e); return; }
     }
     const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -5065,7 +5065,7 @@ function showWorkoutLogDetail(logId) {
                     <div class="space-y-4">
                         <div class="flex items-center justify-between px-2">
                             <div class="flex items-center gap-3">
-                                <span class="text-calith-orange font-mono font-black text-xs">0${idx + 1}</span>
+                                <span class="text-calith-orange font-mono font-black text-xs">0${idx+1}</span>
                                 <h4 class="text-white font-black uppercase tracking-tight text-sm">${ex.name}</h4>
                                 ${ex.note ? `<p class="text-[8px] font-bold text-calith-accent uppercase tracking-[0.2em] opacity-60 mt-0.5">${ex.note}</p>` : ''}
                             </div>
@@ -5073,16 +5073,16 @@ function showWorkoutLogDetail(logId) {
                         </div>
                         <div class="grid grid-cols-1 gap-2">
                             ${ex.sets.map((set, si) => {
-        const targetStr = String(ex.target || "").toLowerCase();
-        const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
-        const isBW = targetStr.includes('bw') || set.weight <= 0;
-        const feelColors = { light: 'text-blue-400 bg-blue-500/10', ideal: 'text-green-400 bg-green-500/10', heavy: 'text-red-400 bg-red-500/10' };
-        const feelLabel = { light: 'HAFİF', ideal: 'İDEAL', heavy: 'AĞIR' };
-        return `
+                                const targetStr = String(ex.target || "").toLowerCase();
+                                const isTimed = ex.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
+                                const isBW = targetStr.includes('bw') || set.weight <= 0;
+                                const feelColors = { light: 'text-blue-400 bg-blue-500/10', ideal: 'text-green-400 bg-green-500/10', heavy: 'text-red-400 bg-red-500/10' };
+                                const feelLabel = { light: 'HAFİF', ideal: 'İDEAL', heavy: 'AÄIR' };
+                                return `
                                     <div class="flex flex-col gap-1 p-3 bg-white/[0.03] border border-white/5 rounded-xl group/set">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-3">
-                                                <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si + 1}. SET</span>
+                                                <span class="text-[9px] font-black text-gray-600 uppercase w-8">${si+1}. SET</span>
                                                 <div class="flex items-center gap-2">
                                                     <span class="text-xs font-mono font-bold text-white">${(!isTimed && !isBW) ? set.weight + 'kg x ' : ''}${set.reps}${isTimed ? 'sn' : ''}</span>
                                                 </div>
@@ -5101,12 +5101,12 @@ function showWorkoutLogDetail(logId) {
                                         ${set.restTime ? `
                                         <div class="flex items-center gap-1.5 mt-1 border-t border-white/5 pt-2">
                                             <i data-lucide="timer" class="w-2.5 h-2.5 text-gray-700"></i>
-                                            <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest">DİNLENME: ${Math.floor(set.restTime / 60).toString().padStart(2, '0')}:${(set.restTime % 60).toString().padStart(2, '0')}</span>
+                                            <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest">DİNLENME: ${Math.floor(set.restTime / 60).toString().padStart(2,'0')}:${(set.restTime % 60).toString().padStart(2,'0')}</span>
                                         </div>
                                         ` : ''}
                                     </div>
                                 `;
-    }).join('')}
+                            }).join('')}
                         </div>
                     </div>
                 `).join('')}
@@ -5130,7 +5130,7 @@ function showWorkoutLogDetail(logId) {
 function copyWorkoutToClipboard(logId) {
     console.log('[Calith] Kopyalama başlatıldı, ID:', logId);
     const log = window.currentWorkoutLogs?.find(l => String(l.id) === String(logId));
-
+    
     if (!log) {
         console.error('[Calith] Log bulunamadı!');
         return showToast('Bir şeyler eksik gibi kanka, veriyi bulamadım. Yenilemeyi dener misin? âš¡');
@@ -5138,7 +5138,7 @@ function copyWorkoutToClipboard(logId) {
 
     let data = log.workout_data;
     if (typeof data === 'string') {
-        try { data = JSON.parse(data); } catch (e) { console.error('Parse hatası:', e); }
+        try { data = JSON.parse(data); } catch(e) { console.error('Parse hatası:', e); }
     }
 
     if (!data || !data.exercises) {
@@ -5147,7 +5147,7 @@ function copyWorkoutToClipboard(logId) {
     }
 
     const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
-
+    
     let text = `ğŸ”¥ CALITH ANTRENMAN ÖZETİ - ${date}\n`;
     text += `----------------------------------------\n`;
     text += `ğŸ“Š Program: ${log.program_title || 'Özel'}\n`;
@@ -5166,8 +5166,8 @@ function copyWorkoutToClipboard(logId) {
                 const repsStr = `${set.reps}${isTimed ? 'sn' : ''}`;
                 const cleanStr = set.isClean ? 'Temiz' : 'Kirli';
                 const feelStr = feelLabel[set.feel] || 'Normal';
-                const restStr = set.restTime ? ` [Dinlenme: ${Math.floor(set.restTime / 60).toString().padStart(2, '0')}:${(set.restTime % 60).toString().padStart(2, '0')}]` : '';
-
+                const restStr = set.restTime ? ` [Dinlenme: ${Math.floor(set.restTime / 60).toString().padStart(2,'0')}:${(set.restTime % 60).toString().padStart(2,'0')}]` : '';
+                
                 text += `   - ${si + 1}. Set: ${weightStr}${repsStr} (${cleanStr} - ${feelStr})${restStr}\n`;
             });
         }
@@ -5398,10 +5398,10 @@ async function renderAdminUsers() {
 
     list.innerHTML = data.map(u => {
         const joinDate = u.profile_created_at ? new Date(u.profile_created_at).toLocaleDateString('tr-TR') : '-';
-        const roleBadge = u.role === 'admin'
+        const roleBadge = u.role === 'admin' 
             ? '<span class="bg-red-500/20 text-red-500 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">ADMİN</span>'
             : (u.role === 'premium' ? '<span class="bg-calith-orange/20 text-calith-orange px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">PREMİUM</span>' : '<span class="bg-white/10 text-gray-400 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">KULLANICI</span>');
-
+        
         let banBadge = '';
         if (u.banned_until) {
             const banDate = new Date(u.banned_until);
@@ -5410,7 +5410,7 @@ async function renderAdminUsers() {
                 banBadge = `<div class="mt-2 inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2 py-1 rounded text-[10px] font-bold tracking-widest border border-red-500/20"><i data-lucide="alert-triangle" class="w-3 h-3"></i> BANLI (${daysLeft} GÜN) ${u.ban_reason ? ' Sebep: ' + u.ban_reason : ''}</div>`;
             }
         }
-
+        
         return `
             <tr class="hover:bg-white/5 transition-colors">
                 <td class="p-4">
@@ -5438,14 +5438,14 @@ async function renderAdminUsers() {
             </tr>
         `;
     }).join('');
-
+    
     if (window.lucide) lucide.createIcons();
 }
 
 async function adminChangeRole(userId, currentRole) {
     const newRole = prompt(`Mevcut Rol: ${currentRole}\nYeni rolü yazın (admin, premium, user):`, currentRole);
     if (!newRole || newRole === currentRole) return;
-
+    
     if (!['admin', 'premium', 'user'].includes(newRole)) {
         alert("Sadece 'admin', 'premium' veya 'user' yazabilirsiniz.");
         return;
@@ -5484,7 +5484,7 @@ async function adminBanUser(userId) {
 
 async function adminDeleteUser(userId) {
     if (!confirm("DİKKAT: Bu kullanıcıyı ve tüm verilerini (profil, vb.) kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz!")) return;
-
+    
     const sb = getSupabase();
     const { error } = await sb.rpc('admin_delete_user', { target_user_id: userId });
     if (error) {
@@ -5613,8 +5613,8 @@ function isProgramAdded(programId) {
 function ensureWorkoutOverlay() {
     const overlayId = 'workout-mode';
     let overlayEl = document.getElementById(overlayId);
-
-    if (overlayEl) return;
+    
+    if (overlayEl) return; 
 
     const overlayHTML = `
         <section id="workout-mode" class="fixed inset-0 z-[1000] bg-[#050505] hidden overflow-y-auto selection:bg-calith-orange selection:text-black">
@@ -5657,7 +5657,7 @@ function ensureWorkoutOverlay() {
                     </div>
 
                     <div class="relative z-10 flex flex-col items-center text-center w-full">
-                        <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-1 block w-full text-center">ŞU ANKİ EGZERSİZ</span>
+                        <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-1 block w-full text-center">ÅU ANKİ EGZERSİZ</span>
                         <div class="flex items-center justify-center gap-3 w-full mb-2">
                             <h3 id="workout-exercise-name" class="font-display text-3xl sm:text-3xl font-black tracking-tighter uppercase leading-tight text-white line-clamp-2 break-words">YÜKLENİYOR...</h3>
                             <div id="workout-note-btn-container" class="hidden shrink-0">
@@ -5723,7 +5723,7 @@ function ensureWorkoutOverlay() {
 
                 <div id="workout-inputs-grid" class="grid grid-cols-2 gap-3 mt-4">
                     <div id="workout-weight-container" class="relative group">
-                        <label for="workout-input-weight" class="absolute -top-2 left-4 px-1.5 bg-[#050505] text-[7px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AĞIRLIK (KG)</label>
+                        <label for="workout-input-weight" class="absolute -top-2 left-4 px-1.5 bg-[#050505] text-[7px] font-black text-gray-500 uppercase tracking-widest z-10 group-focus-within:text-calith-orange transition-colors">AÄIRLIK (KG)</label>
                         <input type="number" id="workout-input-weight" value="0" min="0" step="0.5" onwheel="this.blur()" class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-xl font-mono font-bold text-center text-white focus:outline-none focus:border-calith-orange focus:bg-calith-orange/5 transition-all appearance-none">
                     </div>
                     <div id="workout-reps-container" class="relative group">
@@ -5735,7 +5735,7 @@ function ensureWorkoutOverlay() {
                 <div class="flex flex-col gap-2 pt-2 mb-4">
                     <button id="btn-exercise-timer" class="hidden w-full py-4 bg-calith-orange/10 border border-calith-orange/30 rounded-2xl flex items-center justify-center gap-3 text-calith-orange text-[10px] font-black uppercase tracking-[0.3em] hover:bg-calith-orange hover:text-black transition-all group">
                         <i data-lucide="timer" class="w-5 h-5 animate-pulse"></i>
-                        <span>HAREKETE BAŞLA</span>
+                        <span>HAREKETE BAÅLA</span>
                     </button>
                     <button id="btn-complete-set" onclick="completeSet()" class="w-full bg-calith-orange text-white py-3 rounded-2xl font-black text-sm uppercase tracking-[0.3em] shadow-[0_10px_30px_rgba(255,107,0,0.2)] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group">
                         <span>SETİ TAMAMLA</span>
@@ -5749,7 +5749,7 @@ function ensureWorkoutOverlay() {
                     <div class="flex items-center justify-between mb-4 px-2">
                         <div class="flex items-center gap-2">
                             <span class="w-1.5 h-4 bg-calith-orange rounded-full"></span>
-                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">SET GEÇMİŞİ</h4>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">SET GEÇMİÅİ</h4>
                         </div>
                         <span id="workout-set-info" class="text-[10px] font-black text-calith-orange uppercase tracking-[0.2em] bg-calith-orange/10 px-3 py-1 rounded-lg">SET 1</span>
                     </div>
@@ -5806,7 +5806,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
 
             const displayName = liveData ? liveData.name : ex.name;
             const isMax = String(ex.reps || "").toUpperCase().includes('MAX');
-
+            
             return {
                 exercise_id: ex.exercise_id || null,
                 name: displayName,
@@ -5867,7 +5867,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     if (restBox) restBox.classList.add('hidden');
 
     updateWorkoutUI();
-
+    
     // Zamanlayıcıyı kesin olarak başlat
     if (!workoutSession.startTime) workoutSession.startTime = Date.now();
     startWorkoutClock();
@@ -5878,7 +5878,7 @@ async function startWorkoutMode(programId, dayIndex = 0) {
     // Kalibrasyon Kontrolü
     const firstEx = workoutSession.exercises[0];
     const sb = getSupabase();
-
+    
     if (sb && currentUser) {
         // Bu programın bu gününü daha önce yaptı mı?
         const { data: pastLogs } = await sb.from('workout_logs')
@@ -5949,10 +5949,10 @@ function closeNextModal() {
 
 function moveExerciseToEnd() {
     if (!workoutSession || !workoutSession.exercises || workoutSession.exercises.length <= 1) return;
-
+    
     const currentIndex = workoutSession.currExerciseIdx;
     const isLast = currentIndex === workoutSession.exercises.length - 1;
-
+    
     if (isLast) {
         showToast("Zaten son harekettesin kanka! ğŸ”¥");
         return;
@@ -5963,12 +5963,12 @@ function moveExerciseToEnd() {
         const exerciseToMove = workoutSession.exercises.splice(currentIndex, 1)[0];
         exerciseToMove.skippedToEnd = true;
         workoutSession.exercises.push(exerciseToMove);
-
+        
         // Not: currExerciseIdx'i değiştirmemize gerek yok çünkü 
         // şu anki index'e bir sonraki hareket kaymış oldu.
         // Ancak set sayısını ve listeyi sıfırlamamız lazım.
         workoutSession.currSet = 1;
-
+        
         // Set listesini temizle (Sanki bu harekete hiç başlamamışız gibi)
         const setsList = document.getElementById('workout-sets-list');
         if (setsList) {
@@ -5978,9 +5978,9 @@ function moveExerciseToEnd() {
                 </div>
             `;
         }
-
+        
         showToast(`${exerciseToMove.name.toUpperCase()} sona bırakıldı!`);
-
+        
         // UI Güncelle
         updateWorkoutUI();
     });
@@ -6027,7 +6027,7 @@ function updateWorkoutUI() {
     // Merkezi HML ve Program Künyesi (Göz Hizası)
     const combinedCont = document.getElementById('workout-combined-badge');
     const progBadge = document.getElementById('workout-program-badge');
-
+    
     if (els.dayBadge) {
         // Veriyi hem session'dan hem de orijinal program verisinden (fallback) kovala
         // KRİTİK FALLBACK: Eğer session'da badge yoksa, önce session'dan, sonra global posts'tan bulmaya çalış
@@ -6038,7 +6038,7 @@ function updateWorkoutUI() {
             try {
                 // 1. Session'daki program verisinden dene
                 let targetProg = workoutSession.program;
-
+                
                 // 2. Eğer session'da veri eksikse, global posts dizisinden taze veriyi çek
                 if ((!targetProg || !targetProg.content) && typeof posts !== 'undefined') {
                     const globalMatch = posts.find(p => String(p.id) === String(workoutSession.programId || (workoutSession.program ? workoutSession.program.id : '')));
@@ -6048,15 +6048,15 @@ function updateWorkoutUI() {
                 if (targetProg && targetProg.content) {
                     let pData = targetProg.content;
                     if (typeof pData === 'string') pData = JSON.parse(pData);
-
+                    
                     const days = Array.isArray(pData) ? pData : (pData.days || []);
                     let currentDay = days.find(d => d.name === workoutSession.dayName);
-
+                    
                     if (!currentDay && workoutSession.dayName && workoutSession.dayName.toUpperCase().startsWith('GÜN ')) {
                         const dIdx = parseInt(workoutSession.dayName.toUpperCase().replace('GÜN ', '')) - 1;
                         if (!isNaN(dIdx) && dIdx >= 0 && dIdx < days.length) currentDay = days[dIdx];
                     }
-
+                    
                     if (currentDay) {
                         if (!badgeText && currentDay.badge) {
                             badgeText = currentDay.badge;
@@ -6070,14 +6070,14 @@ function updateWorkoutUI() {
                         saveWorkoutState();
                     }
                 }
-            } catch (e) {
+            } catch(e) {
                 console.error("[Calith] Künye süper-fallback hatası:", e);
             }
         }
-
+        
         const typeText = document.getElementById('workout-day-type-text');
         const dayIcon = els.dayBadge.querySelector('i');
-
+        
         if (type !== 'none' || badgeText) {
             if (combinedCont) {
                 combinedCont.classList.remove('hidden');
@@ -6085,7 +6085,7 @@ function updateWorkoutUI() {
                 combinedCont.style.visibility = 'visible';
                 combinedCont.style.opacity = '1';
             }
-
+            
             // 1. HML Rozeti
             if (type !== 'none') {
                 els.dayBadge.style.display = 'flex';
@@ -6093,17 +6093,17 @@ function updateWorkoutUI() {
                 let style = 'border-white/10 bg-white/5 text-gray-400';
                 let icon = 'zap';
 
-                if (type === 'heavy' || type === 'h') {
-                    label = 'HEAVY (AĞIR)';
-                    style = 'border-red-500/20 bg-red-500/10 text-red-400 shadow-red-500/5';
+                if (type === 'heavy' || type === 'h') { 
+                    label = 'HEAVY (AÄIR)'; 
+                    style = 'border-red-500/20 bg-red-500/10 text-red-400 shadow-red-500/5'; 
                 }
-                else if (type === 'medium' || type === 'm') {
-                    label = 'MEDIUM (ORTA)';
-                    style = 'border-calith-orange/20 bg-calith-orange/10 text-calith-orange shadow-calith-orange/5';
+                else if (type === 'medium' || type === 'm') { 
+                    label = 'MEDIUM (ORTA)'; 
+                    style = 'border-calith-orange/20 bg-calith-orange/10 text-calith-orange shadow-calith-orange/5'; 
                 }
-                else if (type === 'light' || type === 'l') {
-                    label = 'LIGHT (HAFİF)';
-                    style = 'border-blue-500/20 bg-blue-500/10 text-blue-400 shadow-blue-500/5';
+                else if (type === 'light' || type === 'l') { 
+                    label = 'LIGHT (HAFİF)'; 
+                    style = 'border-blue-500/20 bg-blue-500/10 text-blue-400 shadow-blue-500/5'; 
                 }
                 else {
                     label = (type && type !== 'none') ? type.toUpperCase() : '';
@@ -6112,7 +6112,7 @@ function updateWorkoutUI() {
 
                 if (typeText) typeText.textContent = label;
                 els.dayBadge.className = `flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[9px] font-black uppercase tracking-widest shadow-sm backdrop-blur-md transition-all duration-700 ${style}`;
-
+                
                 // İkonları kaldırıyoruz (Zarif ikiz tasarımı)
                 if (dayIcon) dayIcon.remove();
             } else {
@@ -6152,16 +6152,16 @@ function updateWorkoutUI() {
         if (rec && els.recBox && els.recText) {
             const recUnit = isTimed ? 'SANİYE' : (isBW ? 'TEKRAR' : 'KG');
             els.recText.textContent = `ÖNERİLEN: ${rec} ${recUnit}`;
-
+            
             const reasonEl = document.getElementById('workout-recommendation-reason');
             if (reasonEl) {
                 if (ex.sets.length > 0) {
                     const lastSet = ex.sets[ex.sets.length - 1];
                     if (lastSet.isClean) {
-                        reasonEl.textContent = "GELİŞİM İÇİN ARTIR";
+                        reasonEl.textContent = "GELİÅİM İÇİN ARTIR";
                         reasonEl.className = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
                     } else {
-                        reasonEl.textContent = "FORM İÇİN DÜŞÜR";
+                        reasonEl.textContent = "FORM İÇİN DÜÅÜR";
                         reasonEl.className = "text-[8px] font-black text-red-500 uppercase tracking-tighter";
                     }
                 } else {
@@ -6186,7 +6186,7 @@ function updateWorkoutUI() {
     // Metin Güncellemeleri
     if (els.name) {
         els.name.textContent = (ex.name || 'İSİMSİZ HAREKET').toUpperCase();
-
+        
         // --- HAREKET NOTU / ACCORDION SİSTEMİ ---
         const noteBtnCont = document.getElementById('workout-note-btn-container');
         const noteAccordion = document.getElementById('workout-note-accordion');
@@ -6195,7 +6195,7 @@ function updateWorkoutUI() {
         if (ex.note && ex.note.trim() !== '') {
             if (noteBtnCont) noteBtnCont.classList.remove('hidden');
             if (noteText) noteText.textContent = ex.note.toUpperCase();
-
+            
             // Eğer yeni bir harekete geçildiyse notu kapat (temizlik)
             if (noteAccordion) {
                 noteAccordion.style.maxHeight = "0px";
@@ -6214,7 +6214,7 @@ function updateWorkoutUI() {
     if (els.target) {
         const unit = isTimed ? 'SN' : (isMax ? 'MAX' : 'TEKRAR');
         const typeIcon = isBW ? '<span class="ml-2 px-2 py-0.5 bg-calith-orange text-black text-[10px] font-black rounded-md uppercase tracking-tighter shrink-0">BW</span>' : '<i data-lucide="weight" class="ml-2 w-4 h-4 text-gray-500 shrink-0"></i>';
-
+        
         const iconHtml = isBW ? `<div class="ml-3 pl-3 border-l border-white/10 shrink-0"><span class="text-[9px] font-black text-calith-orange bg-calith-orange/10 px-2 py-0.5 rounded-md border border-calith-orange/20 uppercase tracking-tighter">BW</span></div>` : `<div class="ml-3 pl-3 border-l border-white/10 shrink-0"><i data-lucide="dumbbell" class="w-3.5 h-3.5 text-gray-500"></i></div>`;
 
         els.target.innerHTML = `
@@ -6239,7 +6239,7 @@ function updateWorkoutUI() {
 
     // Değerleri Hazırla
     if (els.weight) els.weight.value = 0;
-
+    
     let tReps = 10;
     if (isMax) {
         tReps = 0;
@@ -6247,7 +6247,7 @@ function updateWorkoutUI() {
         const repsMatch = targetStr.match(/x\s*(\d+)/) || targetStr.match(/(\d+)/);
         if (repsMatch) tReps = parseInt(repsMatch[1]);
     }
-
+    
     if (els.reps) {
         els.reps.value = isMax ? "" : tReps;
         els.reps.placeholder = isMax ? "MAX" : "";
@@ -6262,7 +6262,7 @@ function updateWorkoutUI() {
     if (isTimed) {
         if (els.timerBtn) {
             els.timerBtn.classList.remove('hidden');
-            els.timerBtn.querySelector('span').textContent = isMax ? `SAYACI BAŞLAT (MAKSİMUM)` : `HAREKETE BAŞLA (${tReps}sn)`;
+            els.timerBtn.querySelector('span').textContent = isMax ? `SAYACI BAÅLAT (MAKSİMUM)` : `HAREKETE BAÅLA (${tReps}sn)`;
             els.timerBtn.onclick = () => startExerciseTimer(tReps, isMax);
         }
         if (els.repsLabel) els.repsLabel.textContent = 'SÜRE (SN)';
@@ -6341,41 +6341,41 @@ function updateDynamicRecommendation() {
     if (match) targetReps = parseInt(match[1]);
 
     // RIR (Reps in Reserve - Cepte kalan tekrar) belirleme ve Yeni Ağırlık/Tekrar Hesaplama
-    let rir = 0;
+    let rir = 0; 
     let reasonText = "HEDEFTE KAL";
     let reasonClass = "text-[8px] font-bold text-calith-accent uppercase tracking-tighter";
-
+    
     let newWeight = weight;
     let newReps = targetReps;
     const isBW = ex.isBW || targetStr.includes('bw');
 
     // 1. Form Bozuk veya Ağır Geldiyse (Kapasite aşımı - Ağırlık düşürülmeli)
     if (!lastSet.isClean || lastSet.feel === 'heavy') {
-        rir = 0;
-        reasonText = !lastSet.isClean ? "FORM BOZUK - DÜŞÜRÜLDÜ" : "AĞIR GELDİ - DÜŞÜRÜLDÜ";
+        rir = 0; 
+        reasonText = !lastSet.isClean ? "FORM BOZUK - DÜÅÜRÜLDÜ" : "AÄIR GELDİ - DÜÅÜRÜLDÜ";
         reasonClass = !lastSet.isClean ? "text-[8px] font-black text-red-500 uppercase tracking-tighter" : "text-[8px] font-black text-orange-500 uppercase tracking-tighter";
-
+        
         if (!isBW) {
             // Yapabildiği tekrara göre 1RM hesapla
             const estimated1RM = weight * (1 + reps / 30);
             // Hedeflenen tekrar için uygun ağırlığı bul (Epley)
             newWeight = estimated1RM / (1 + targetReps / 30);
-
+            
             // Kullanıcı zaten hedefe ulaştıysa ama "Ağır" dediyse (RPE 10), formülü %5 düşürerek yumuşat
-            if (reps >= targetReps) newWeight *= 0.95;
+            if (reps >= targetReps) newWeight *= 0.95; 
 
             newWeight = Math.round(newWeight * 2) / 2; // 0.5 katlarına yuvarla
             if (newWeight < 0) newWeight = 0;
         } else {
             // Vücut ağırlığında ağırlık düşemeyeceğimiz için hedef tekrarı kısıyoruz
-            newReps = Math.max(1, reps - 2);
+            newReps = Math.max(1, reps - 2); 
         }
-    }
+    } 
     // 2. İdeal (Hedefte kal - Ağırlığı koru)
     else if (lastSet.feel === 'ideal') {
         reasonText = "İDEAL - HEDEFTE KAL";
         reasonClass = "text-[8px] font-bold text-calith-accent uppercase tracking-tighter";
-
+        
         // Savaşçı Payı: Eğer hedefe çok yakınsan (1-2 tekrar farkı) kilo düşürme!
         const repDiff = targetReps - reps;
         const tolerance = targetReps <= 5 ? 1 : 2; // Düşük tekrarlarda 1, yüksekte 2 tekrar tolerans
@@ -6387,7 +6387,7 @@ function updateDynamicRecommendation() {
             } else {
                 const estimated1RM = weight * (1 + reps / 30);
                 newWeight = Math.round((estimated1RM / (1 + targetReps / 30)) * 2) / 2;
-                reasonText = "HEDEFE ULAŞMAK İÇİN DÜŞÜRÜLDÜ";
+                reasonText = "HEDEFE ULAÅMAK İÇİN DÜÅÜRÜLDÜ";
             }
         } else if (reps < targetReps && isBW) {
             newReps = (repDiff <= tolerance) ? targetReps : reps;
@@ -6398,11 +6398,11 @@ function updateDynamicRecommendation() {
     else if (lastSet.feel === 'light') {
         reasonText = "HAFİF GELDİ - ARTIRILDI";
         reasonClass = "text-[8px] font-black text-green-500 uppercase tracking-tighter";
-
+        
         if (!isBW) {
             // Hedefi yakaladıysa %5 artır
             if (reps >= targetReps) {
-                newWeight = Math.round((weight * 1.05) * 2) / 2;
+                newWeight = Math.round((weight * 1.05) * 2) / 2; 
             } else {
                 // Hedefi yakalayamadı ama hafif diyorsa çok mantıklı değil, ağırlığı koruyup hedef tekrarı zorlasın
                 newWeight = weight;
@@ -6575,7 +6575,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
         workoutModeEl.setAttribute('data-exercise-type', 'secs');
     }
 
-    // Hedef set kontrolü (AŞIRI ZIRHLI VERSİYON)
+    // Hedef set kontrolü (AÅIRI ZIRHLI VERSİYON)
     let targetSets = parseInt(ex.targetSets);
     if (isNaN(targetSets) || targetSets <= 0) {
         const match = String(ex.target).match(/(\d+)\s*[xX-]/);
@@ -6611,7 +6611,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     // Dinamik Öneri Güncellemesi
     updateDynamicRecommendation();
 
-    // Dinlenme Başlat (updateWorkoutUI ÇAĞIRMIYORUZ - startRestTimer ile çakışıyor)
+    // Dinlenme Başlat (updateWorkoutUI ÇAÄIRMIYORUZ - startRestTimer ile çakışıyor)
     startRestTimer();
 }
 
@@ -6630,7 +6630,7 @@ function startRestTimer() {
     }
 
     const label = box.querySelector('p');
-
+    
     // Rest UI (Accent/Blue)
     box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-calith-accent/20 to-transparent border border-calith-accent/30 text-center relative overflow-hidden";
     if (label) {
@@ -6671,7 +6671,7 @@ function startRestTimer() {
         const mins = Math.floor(workoutSession.currentRestSeconds / 60);
         const secs = workoutSession.currentRestSeconds % 60;
         clock.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-
+        
         if (workoutSession.currentRestSeconds > 600) clock.classList.add('text-red-500');
     }, 1000);
 }
@@ -6680,13 +6680,13 @@ function startExerciseTimer(duration, isMax = false) {
     clearInterval(restInterval);
     clearInterval(exerciseTimerInterval);
     clearInterval(countdownInterval);
-
+    
     const clock = document.getElementById('workout-rest-clock');
     const box = document.getElementById('workout-rest-timer-box');
     const label = box.querySelector('p');
     const timerBtn = document.getElementById('btn-exercise-timer');
 
-    // HAREKETE BAŞLA butonunu gizle (sayım başlıyor)
+    // HAREKETE BAÅLA butonunu gizle (sayım başlıyor)
     if (timerBtn) timerBtn.classList.add('hidden');
 
     // Kutuyu hazırla - 3-2-1 modu
@@ -6712,7 +6712,7 @@ function startExerciseTimer(duration, isMax = false) {
             if (navigator.vibrate) navigator.vibrate(100);
         } else {
             clearInterval(countdownInterval);
-            clock.textContent = 'BAŞLA!';
+            clock.textContent = 'BAÅLA!';
             if (navigator.vibrate) navigator.vibrate([100, 50, 300]);
 
             // 0.8sn sonra asıl sayımı başlat
@@ -6738,17 +6738,17 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
         skipBtn.classList.remove('hidden');
         // İLK 1 SANİYE PASİF YAP (Kilitlenmeyi önlemek için)
         skipBtn.classList.add('pointer-events-none', 'opacity-30');
-
+        
         skipBtn.onclick = () => {
             const finalVal = isMax ? elapsed : duration - timeLeft;
             if (finalVal <= 0) return; // 0 saniyede bitirmeyi engelle
-
+            
             clearInterval(exerciseTimerInterval);
-
+            
             // Seti kaydet
             const repsInput = document.getElementById('workout-input-reps');
             if (repsInput) repsInput.value = Math.max(0, finalVal);
-
+            
             completeSet();
         };
     }
@@ -6758,7 +6758,7 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
     const formatTime = (t) => {
         const m = Math.floor(t / 60);
         const s = t % 60;
-        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     };
     clock.textContent = formatTime(isMax ? 0 : timeLeft);
 
@@ -6847,7 +6847,7 @@ function skipRest() {
     document.querySelectorAll('#workout-input-weight, #workout-input-reps')
         .forEach(el => { el.disabled = false; el.classList.remove('opacity-30'); });
 
-    // Dinlenme bitince HAREKETE BAŞLA butonunu tekrar göster (saniye bazlıysa)
+    // Dinlenme bitince HAREKETE BAÅLA butonunu tekrar göster (saniye bazlıysa)
     if (workoutSession && workoutSession.active) {
         const ex = workoutSession.exercises[workoutSession.currExerciseIdx];
         if (ex) {
@@ -6920,10 +6920,10 @@ function closeWorkoutMode() {
     clearWorkoutState();
     clearInterval(workoutInterval);
     clearInterval(restInterval);
-
+    
     const overlay = document.getElementById('workout-mode');
     if (overlay) overlay.classList.add('hidden');
-
+    
     // UI'ı temizle ve ana sayfaya dön
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
         showSection('landing');
@@ -6952,14 +6952,14 @@ async function finishWorkout() {
             exercises: workoutSession.exercises.map(ex => {
                 let finalSets = [...ex.sets];
                 const targetSets = parseInt(ex.targetSets) || 0;
-
+                
                 // Hata #4: Eksik setleri placeholder (0) ile doldur
                 while (finalSets.length < targetSets) {
-                    finalSets.push({
-                        weight: 0,
-                        reps: 0,
-                        isClean: true,
-                        feel: 'light',
+                    finalSets.push({ 
+                        weight: 0, 
+                        reps: 0, 
+                        isClean: true, 
+                        feel: 'light', 
                         skipped: true // Atlandığını işaretle
                     });
                 }
@@ -7070,7 +7070,7 @@ function initSharedUI() {
                 </div>
                 <div id="login-form-view" class="space-y-4">
                     <input type="email" id="auth-login-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
-                    <input type="password" id="auth-login-pass" placeholder="Şifreniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <input type="password" id="auth-login-pass" placeholder="Åifreniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
                     <button onclick="submitLogin()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 mt-4 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
                         <span id="btn-login-txt">Giriş Yap</span>
                     </button>
@@ -7081,7 +7081,7 @@ function initSharedUI() {
                 <div id="register-form-view" class="space-y-4 hidden">
                     <input type="text" id="auth-reg-name" placeholder="Ad Soyad" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
                     <input type="email" id="auth-reg-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
-                    <input type="password" id="auth-reg-pass" placeholder="Şifreniz (En az 6 karakter)" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
+                    <input type="password" id="auth-reg-pass" placeholder="Åifreniz (En az 6 karakter)" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
                     <div class="mt-4 pt-4 border-t border-white/5">
                         <label class="block text-xs text-gray-400 uppercase tracking-widest mb-2 font-bold">Spor Geçmişin ve Seviyen</label>
                         <div class="grid grid-cols-3 gap-2">
@@ -7138,7 +7138,7 @@ function initSharedUI() {
                 <div class="space-y-4">
                     <input type="email" id="lead-email" placeholder="E-Posta Adresiniz" class="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-xl focus:border-calith-orange outline-none transition-colors">
                     <button onclick="submitLeadForm()" class="w-full bg-calith-orange text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-calith-orange/20 uppercase tracking-widest text-sm flex justify-center items-center gap-2">
-                        Şimdi İndir
+                        Åimdi İndir
                     </button>
                 </div>
             </div>
@@ -7196,7 +7196,7 @@ function initSharedUI() {
     // Tek bir listener, DOM ne kadar değişirse değişsin her zaman çalışır.
     if (!window._logDetailDelegationActive) {
         window._logDetailDelegationActive = true;
-        document.addEventListener('click', function (e) {
+        document.addEventListener('click', function(e) {
             const editBtn = e.target.closest('.btn-edit-log');
             if (editBtn) {
                 e.stopPropagation();
@@ -7230,13 +7230,13 @@ function initSharedUI() {
  * @param {Object} options { title, message, confirmText, cancelText, type, onConfirm }
  */
 function showCalithConfirm(options = {}) {
-    const {
-        title = "Emin misin kanka?",
-        message = "Bu işlem geri alınamaz.",
-        confirmText = "EVET, DEVAM ET",
-        cancelText = "İPTAL",
+    const { 
+        title = "Emin misin kanka?", 
+        message = "Bu işlem geri alınamaz.", 
+        confirmText = "EVET, DEVAM ET", 
+        cancelText = "İPTAL", 
         type = "warning", // warning, danger, info
-        onConfirm = () => { }
+        onConfirm = () => {} 
     } = options;
 
     const modalId = 'calith-confirm-modal';
@@ -7297,11 +7297,11 @@ function showCalithConfirm(options = {}) {
     };
 
     noBtn.onclick = closeModal;
-    modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+    modal.onclick = (e) => { if(e.target === modal) closeModal(); };
 }
 
 /**
- * Şık Onay Modalı (Confirm)
+ * Åık Onay Modalı (Confirm)
  * Tarayıcının standart confirm() kutusu yerine geçer.
  */
 function showConfirmModal(message, onConfirm) {
@@ -7326,7 +7326,7 @@ function showConfirmModal(message, onConfirm) {
     `;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     if (window.lucide) lucide.createIcons();
-
+    
     document.getElementById('btn-confirm-action').onclick = () => {
         onConfirm();
         closeConfirmModal();
@@ -7347,28 +7347,28 @@ function closeConfirmModal() {
 function calculate1RM(weight, reps) {
     if (reps <= 0) return 0;
     if (reps === 1) return weight;
-
+    
     // Güvenlik Sınırı: 12 tekrardan sonrası formülü saptırdığı için 12'de sabitliyoruz
     const effectiveReps = Math.min(reps, 12);
-
+    
     // Brzycki Formülü: weight * (36 / (37 - reps))
     return Math.round((weight * (36 / (37 - effectiveReps))) * 10) / 10;
 }
 
 async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null) {
     if (!currentUser) return;
-
+    
     const ex = workoutSession?.exercises?.find(e => e.name === exerciseName);
     const targetStr = String(ex?.target || "").toLowerCase();
     const isBW = ex?.isBW || weight <= 0 || targetStr.includes('bw');
-
+    
     // PR Mantığı: BW ise sadece reps (tekrar/saniye) önemlidir, değilse 1RM hesaplanır
     const oneRM = isBW ? 0 : calculate1RM(weight, reps);
     const sb = getSupabase();
     if (!sb) return;
 
     try {
-        // HİBRİT EŞLEŞME: Önce ID ile ara, yoksa İsimle ara (Eski kayıtları ID'ye göç ettirmek için)
+        // HİBRİT EÅLEÅME: Önce ID ile ara, yoksa İsimle ara (Eski kayıtları ID'ye göç ettirmek için)
         let { data: existing } = await sb.from('user_exercise_stats')
             .select('*')
             .eq('user_id', currentUser.id)
@@ -7398,7 +7398,7 @@ async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null)
                 await sb.from('user_exercise_stats').update({
                     weight, reps, one_rm: oneRM, exercise_id: exerciseId, updated_at: new Date().toISOString()
                 }).eq('id', existing.id);
-
+                
                 const recordMsg = isBW ? `${reps} ${ex?.type === 'secs' ? 'SANİYE' : 'TEKRAR'}` : `${oneRM}KG 1RM`;
                 showToast(`ğŸ”¥ YENİ REKOR! ${exerciseName.toUpperCase()}: ${recordMsg}`);
             }
@@ -7420,7 +7420,7 @@ async function loadPersonalRecords(userId) {
     const sb = getSupabase();
     if (!sb) return;
 
-    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ŞART)
+    // Kütüphaneyi kontrol et ve yükle (GÜNCEL İSİMLER İÇİN ÅART)
     if (typeof exerciseLibrary !== 'undefined' && exerciseLibrary.length === 0) {
         const { data: libData } = await getSupabase().from('exercises').select('*');
         if (libData) exerciseLibrary = libData;
@@ -7486,7 +7486,7 @@ function renderPersonalRecords(records) {
         return;
     }
 
-    // TEKİLLEŞTİRME: Aynı ID'ye sahip birden fazla rekor varsa sadece en iyisini göster
+    // TEKİLLEÅTİRME: Aynı ID'ye sahip birden fazla rekor varsa sadece en iyisini göster
     const uniqueRecordsMap = new Map();
     records.forEach(r => {
         const key = r.exercise_id || r.exercise_name;
@@ -7511,21 +7511,21 @@ function renderPersonalRecords(records) {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             ${uniqueRecords.map(r => {
-        // ID ile kütüphane eşleşmesi ara (TOPLU İSİM GÜNCELLEME İÇİN)
-        let liveName = r.exercise_name;
-        if (r.exercise_id && exerciseLibrary.length > 0) {
-            const libEx = exerciseLibrary.find(ex => String(ex.id) === String(r.exercise_id));
-            if (libEx) liveName = libEx.name;
-        }
+                // ID ile kütüphane eşleşmesi ara (TOPLU İSİM GÜNCELLEME İÇİN)
+                let liveName = r.exercise_name;
+                if (r.exercise_id && exerciseLibrary.length > 0) {
+                    const libEx = exerciseLibrary.find(ex => String(ex.id) === String(r.exercise_id));
+                    if (libEx) liveName = libEx.name;
+                }
 
-        const nameLower = liveName.toLowerCase();
-        const isTimed = nameLower.includes('plank') || nameLower.includes('hold') || nameLower.includes('sit') || nameLower.includes('stand') || nameLower.includes('stay');
-        const isBW = r.one_rm <= 0;
-        const unit = isTimed ? 'SN' : 'TEKRAR';
-        const displayUnit = isTimed ? 'SN' : (isBW ? 'TK' : 'KG');
-        const label = isTimed ? 'EN İYİ SÜRE' : (isBW ? 'MAKS. TEKRAR' : 'TAHMİNİ 1RM');
-
-        return `
+                const nameLower = liveName.toLowerCase();
+                const isTimed = nameLower.includes('plank') || nameLower.includes('hold') || nameLower.includes('sit') || nameLower.includes('stand') || nameLower.includes('stay');
+                const isBW = r.one_rm <= 0;
+                const unit = isTimed ? 'SN' : 'TEKRAR';
+                const displayUnit = isTimed ? 'SN' : (isBW ? 'TK' : 'KG');
+                const label = isTimed ? 'EN İYİ SÜRE' : (isBW ? 'MAKS. TEKRAR' : 'TAHMİNİ 1RM');
+                
+                return `
                 <div class="glass-card relative rounded-2xl p-5 sm:p-6 border border-white/5 hover:border-calith-orange/30 transition-all group">
                     <!-- Silme Butonu -->
                     <button onclick="deletePersonalRecord('${r.id}')" class="absolute top-4 right-4 w-8 h-8 rounded-lg bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 z-10" title="Rekoru Sil">
@@ -7575,7 +7575,7 @@ async function getSmartRecommendation(exerciseName) {
     if (!sb) return null;
 
     const nameLower = exerciseName.toLowerCase();
-
+    
     // 1. Önce Rekor Tablosuna Bak
     const { data: record } = await sb.from('user_exercise_stats')
         .select('*')
@@ -7595,7 +7595,7 @@ async function getSmartRecommendation(exerciseName) {
 
     if (rule) {
         // Eğer kural varsa, son başarılı antrenmana göre hesapla (Bu kısım Faz 3'te daha da derinleşecek)
-        return record.weight; // Şimdilik son rekor kilonu öner
+        return record.weight; // Åimdilik son rekor kilonu öner
     }
 
     // 3. Genel Hedef Bazlı Öneri (%1RM)
@@ -7650,7 +7650,7 @@ function showCalibrationModal() {
                 </div>
 
                 <button onclick="document.getElementById('calibration-modal').remove()" class="w-full bg-calith-orange text-white font-black py-6 rounded-2xl transition-all shadow-[0_20px_40px_rgba(255,107,0,0.2)] active:scale-95 uppercase tracking-widest text-sm">
-                    ANLADIM, BAŞLAYALIM!
+                    ANLADIM, BAÅLAYALIM!
                 </button>
             </div>
         </div>
@@ -7677,10 +7677,10 @@ async function resetExerciseStats() {
             if (!currentUser) return showToast('Oturum hatası, lütfen tekrar giriş yap kanka.');
 
             showToast("Rekorlar sıfırlanıyor...");
-
+            
             // Sadece Rekorları Sil (Geçmişe dokunmuyoruz!)
             await sb.from('user_exercise_stats').delete().eq('user_id', currentUser.id);
-
+            
             showToast("Tüm rekorlar sıfırlandı! Geçmişin güvende.");
             switchProfileTab('prs'); // Tabı yenile
         }
@@ -7692,7 +7692,7 @@ function showSetFeedbackModal(weight, reps) {
     const targetStr = String(ex?.target || "").toLowerCase();
     const isTimed = ex?.type === 'secs' || targetStr.includes('sn') || targetStr.includes('sec');
     const isBW = ex?.isBW || targetStr.includes('bw');
-
+    
     const unitLabel = isTimed ? 'SN' : 'TEKRAR';
     const displayValue = isTimed ? `${reps} ${unitLabel}` : (isBW ? `${reps} ${unitLabel}` : `${weight}KG x ${reps} ${unitLabel}`);
 
@@ -7726,7 +7726,7 @@ function showSetFeedbackModal(weight, reps) {
 
                 <!-- Ağırlık Hissi (RPE) -->
                 <div class="mb-10">
-                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-4">AĞIRLIK NASIL HİSSETTİRDİ?</p>
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-4">AÄIRLIK NASIL HİSSETTİRDİ?</p>
                     <div class="grid grid-cols-3 gap-3">
                         <button id="fb-feel-light" onclick="selectFeedback('feel', 'light')" class="py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-calith-orange/10 transition-all">
                             <i data-lucide="feather" class="w-5 h-5"></i>
@@ -7738,7 +7738,7 @@ function showSetFeedbackModal(weight, reps) {
                         </button>
                         <button id="fb-feel-heavy" onclick="selectFeedback('feel', 'heavy')" class="py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-red-500/10 transition-all">
                             <i data-lucide="flame" class="w-5 h-5"></i>
-                            <span class="text-[8px] font-black uppercase">AĞIR</span>
+                            <span class="text-[8px] font-black uppercase">AÄIR</span>
                         </button>
                     </div>
                 </div>
@@ -7749,7 +7749,7 @@ function showSetFeedbackModal(weight, reps) {
             </div>
         </div>
     `;
-
+    
     window.currentFeedback = { isClean: null, feel: null };
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     if (window.lucide) lucide.createIcons();
@@ -7780,7 +7780,7 @@ function selectFeedback(type, value) {
                 if (key === 'heavy') colorClass = 'border-red-500 bg-red-500/10 text-red-500';
                 else if (key === 'ideal') colorClass = 'border-green-500 bg-green-500/10 text-green-500';
                 else if (key === 'light') colorClass = 'border-blue-500 bg-blue-500/10 text-blue-500';
-
+                
                 buttons[key].className = `py-4 rounded-2xl border-2 ${colorClass} flex flex-col items-center gap-2 shadow-xl transition-all`;
             } else {
                 buttons[key].className = "py-4 rounded-2xl border border-white/10 text-gray-500 flex flex-col items-center gap-2 hover:bg-white/5 transition-all";
@@ -7800,7 +7800,7 @@ function selectFeedback(type, value) {
 
 function submitSetFeedback(weight, reps) {
     console.log('[Calith] submitSetFeedback çağrıldı:', weight, reps, window.currentFeedback);
-
+    
     // Modal'ı HER DURUMDA kapat (crash olsa bile)
     const modal = document.getElementById('set-feedback-modal');
     if (modal) modal.remove();
@@ -7813,7 +7813,7 @@ function submitSetFeedback(weight, reps) {
         const feedback = window.currentFeedback || { isClean: true, feel: 'ideal' };
         const { isClean, feel } = feedback;
         processSetWithFeedback(weight, reps, isClean, feel);
-    } catch (e) {
+    } catch(e) {
         console.error('[Calith] submitSetFeedback HATA:', e);
         processSetWithFeedback(weight, reps, true, 'ideal');
     }
