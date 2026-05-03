@@ -5790,16 +5790,16 @@ async function renderAdminOrders() {
     list.innerHTML = data.map(o => `
         <tr class="hover:bg-white/5 transition-colors">
             <td class="p-4">
-                <p class="font-bold text-white text-xs">${o.full_name || 'Misafir'}</p>
-                <p class="text-[9px] text-gray-500">${o.email || '-'}</p>
+                <p class="font-bold text-white text-xs">${o.buyer_name || 'Misafir'}</p>
+                <p class="text-[9px] text-gray-500">${o.buyer_email || '-'}</p>
             </td>
             <td class="p-4">
-                ${o.referral_code ? `<span class="bg-calith-orange/10 text-calith-orange px-2 py-1 rounded text-[10px] font-black italic tracking-widest">${o.referral_code}</span>` : '<span class="text-gray-700 text-[10px] font-bold">-</span>'}
+                ${o.used_code ? `<span class="bg-calith-orange/10 text-calith-orange px-2 py-1 rounded text-[10px] font-black italic tracking-widest">${o.used_code}</span>` : '<span class="text-gray-700 text-[10px] font-bold">-</span>'}
             </td>
-            <td class="p-4 font-black text-white italic text-sm">${o.total_amount}₺</td>
-            <td class="p-4 text-[10px] text-gray-500 font-bold uppercase">${new Date(o.created_at).toLocaleDateString('tr-TR')}</td>
+            <td class="p-4 font-black text-white italic text-sm">${o.order_total}₺</td>
+            <td class="p-4 text-[10px] text-gray-500 font-bold uppercase">${new Date(o.order_date).toLocaleDateString('tr-TR')}</td>
             <td class="p-4 text-right">
-                <span class="text-[9px] font-black text-green-500 uppercase tracking-widest border border-green-500/20 px-2 py-1 rounded bg-green-500/5">${o.status?.toUpperCase() || 'TAMAMLANDI'}</span>
+                <span class="text-[9px] font-black text-green-500 uppercase tracking-widest border border-green-500/20 px-2 py-1 rounded bg-green-500/5">${o.order_status?.toUpperCase() || 'TAMAMLANDI'}</span>
             </td>
         </tr>
     `).join('');
