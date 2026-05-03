@@ -1139,6 +1139,134 @@ function checkout() {
     alert(`Ödeme: ${total}₺\n\nDemo versiyon.`);
 }
 
+let currentDiscount = null; 
+
+function renderCartPage() {
+    const list = document.getElementById('cart-page-list');
+    const empty = document.getElementById('cart-empty-state');
+    if (!list || !empty) return;
+
+    if (cart.length === 0) {
+        list.classList.add('hidden');
+        empty.classList.remove('hidden');
+        updateCartPageTotals();
+        return;
+    }
+
+    list.classList.remove('hidden');
+    empty.classList.add('hidden');
+
+    list.innerHTML = cart.map(item => `
+        <div class="bg-calith-gray/30 rounded-3xl p-6 border border-white/5 flex flex-col md:flex-row gap-6 items-center group hover:border-calith-orange/30 transition-all">
+            <div class="w-32 h-32 bg-calith-dark rounded-2xl overflow-hidden shrink-0 border border-white/5">
+                <img src="${item.image}" class="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500">
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <p class="text-[10px] text-calith-orange font-bold uppercase tracking-widest mb-1">${item.category}</p>
+                <h3 class="font-display text-xl font-bold mb-4 uppercase tracking-tight">${item.name}</h3>
+                <div class="flex items-center justify-center md:justify-start gap-4">
+                    <div class="flex items-center bg-black/40 border border-white/10 rounded-xl overflow-hidden">
+                        <button onclick="updateCartPageQty('${item.id}', -1)" class="w-10 h-10 flex items-center justify-center hover:bg-white/5 text-gray-400 transition-all">-</button>
+                        <span class="w-10 h-10 flex items-center justify-center font-mono font-bold text-sm">${item.qty}</span>
+                        <button onclick="updateCartPageQty('${item.id}', 1)" class="w-10 h-10 flex items-center justify-center hover:bg-white/5 text-gray-400 transition-all">+</button>
+                    </div>
+                    <button onclick="removeFromCartPage('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-white/5 text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="text-center md:text-right shrink-0">
+                <p class="text-2xl font-black text-white italic tracking-tighter">${(item.price * item.qty).toLocaleString()}₺</p>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">${item.price}₺ / ADET</p>
+            </div>
+        </div>
+    `).join('');
+
+    updateCartPageTotals();
+    if (window.lucide) lucide.createIcons();
+}
+
+function updateCartPageQty(id, delta) {
+    const item = cart.find(i => String(i.id) === String(id));
+    if (item) {
+        item.qty += delta;
+        if (item.qty < 1) return removeFromCartPage(id);
+        saveCart();
+        renderCartPage();
+        updateCartUI(); 
+    }
+}
+
+function removeFromCartPage(id) {
+    cart = cart.filter(i => String(i.id) !== String(id));
+    saveCart();
+    renderCartPage();
+    updateCartUI();
+    showToast("Ürün sepetten çıkarıldı.");
+}
+
+function updateCartPageTotals() {
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const totalEl = document.getElementById('cart-total');
+    const discRow = document.getElementById('cart-discount-row');
+    const discCode = document.getElementById('applied-code');
+    const discAmt = document.getElementById('cart-discount-amount');
+
+    if (!subtotalEl || !totalEl) return;
+
+    const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    let total = subtotal;
+
+    subtotalEl.textContent = subtotal.toLocaleString() + '₺';
+
+    if (currentDiscount) {
+        const discount = subtotal * currentDiscount.rate;
+        total = subtotal - discount;
+        discRow.classList.remove('hidden');
+        discCode.textContent = currentDiscount.code;
+        discAmt.textContent = '-' + Math.round(discount).toLocaleString() + '₺';
+    } else {
+        discRow.classList.add('hidden');
+    }
+
+    totalEl.textContent = Math.round(total).toLocaleString() + '₺';
+}
+
+function applyDiscountCode() {
+    const input = document.getElementById('discount-code');
+    const code = input.value.trim().toUpperCase();
+    const msg = document.getElementById('discount-msg');
+    
+    if (!code) return;
+
+    // SIMDILIK STATIK KONTROL (Ileride DB'den cekilecek)
+    const validCodes = {
+        'ASRIN10': 0.10, 
+        'CALITH15': 0.15,
+        'ELITE20': 0.20
+    };
+
+    if (validCodes[code]) {
+        currentDiscount = { code: code, rate: validCodes[code] };
+        msg.textContent = `TEBRİKLER! %${validCodes[code]*100} İNDİRİM UYGULANDI. 🔥`;
+        msg.className = "mt-2 text-[10px] font-bold text-green-500 uppercase tracking-widest";
+        msg.classList.remove('hidden');
+        updateCartPageTotals();
+        showToast(`'${code}' kodu uygulandı!`);
+    } else {
+        currentDiscount = null;
+        msg.textContent = "GEÇERSİZ VEYA HATALI KOD KANKA. ❌";
+        msg.className = "mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest";
+        msg.classList.remove('hidden');
+        updateCartPageTotals();
+    }
+}
+
+function proceedToCheckout() {
+    if (cart.length === 0) return showToast("Sepetin boş kanka!");
+    showToast("Sipariş sistemi hazırlanıyor...");
+}
+
 function showToast(msg) {
     const toast = document.getElementById('toast'), msgEl = document.getElementById('toast-msg');
     if (toast && msgEl) {
