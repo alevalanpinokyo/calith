@@ -1241,7 +1241,6 @@ function applyDiscountCode() {
 
     // SIMDILIK STATIK KONTROL (Ileride DB'den cekilecek)
     const validCodes = {
-        'ASRIN10': 0.10, 
         'CALITH15': 0.15,
         'ELITE20': 0.20
     };
