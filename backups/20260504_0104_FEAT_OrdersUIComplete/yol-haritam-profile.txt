@@ -41,19 +41,7 @@ ID altyapısı sayesinde artık verileri görselleştirebiliriz.
 
 ---
 
-## 🔄 FAZ 12: E-TİCARET GÜVENLİĞİ VE PARTNER SİSTEMİ (YARIN BAŞLIYOR)
-Sipariş güvenliği, havale entegrasyonu ve moderatörler için satış takip ekranı.
-
-- [ ] **Havale/EFT Ödeme Sistemi:** Sipariş no üreten ve veritabanıyla konuşan havale ekranı. [YARIN 🏦✍️]
-- [ ] **Partner Dashboard:** Moderatörlerin profil sayfasında kendi satışlarını görmesi. [YARIN 🕵️‍♂️]
-- [ ] **Mail Bildirimleri:** Kod kullanıldığında koda sahip kişiye mail gitmesi. [YARIN 📧]
-- [ ] **Spam Koruması:** Ardı ardına sipariş oluşumunu engelleyen hız sınırı. [YARIN 🛡️]
-
----
-
 ### 🚨 KRİTİK TEST / TAMAMLANANLAR LİSTESİ
-- [x] (2026-05-04) **Full Checkout & Orders:** Gerçek veritabanı kayıtlı sipariş akışı. [TAMAM ✅]
-- [x] (2026-05-04) **Advanced Admin Orders:** Saat, Sipariş No ve Ödeme Türü desteği. [TAMAM ✅]
 - [x] (2026-05-03) **Affiliate System:** Veritabanı tabanlı indirim kodu ve satış takip mimarisi. [TAMAM ✅]
 - [x] (2026-05-03) **Admin UI Fix:** Erişilebilirlik hataları ve inline CSS temizliği. [TAMAM ✅]
 - [x] (2026-05-03) **Admin Ürün Yönetimi Fix:** Eksik butonlar, taşma hataları ve gerçek silme mantığı onarıldı. [TAMAM ✅]
