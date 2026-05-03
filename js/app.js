@@ -483,8 +483,8 @@ function renderShop(filter = 'all') {
                 <h3 class="font-display text-lg font-bold mb-3 group-hover:text-white transition-colors">${p.name}</h3>
                 <div class="flex items-center justify-between">
                     <div class="flex items-baseline gap-2">
-                        <span class="font-bold text-xl">${p.price}â‚º</span>
-                        ${p.oldPrice ? `<span class="text-xs text-gray-500 line-through">${p.oldPrice}â‚º</span>` : ''}
+                        <span class="font-bold text-xl">${p.price}₺</span>
+                        ${p.oldPrice ? `<span class="text-xs text-gray-500 line-through">${p.oldPrice}₺</span>` : ''}
                     </div>
                     <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-10 h-10 bg-calith-orange/10 text-calith-orange rounded-full flex items-center justify-center hover:bg-calith-orange hover:text-white transition-all transform hover:rotate-90">
                         <i data-lucide="plus" class="w-5 h-5"></i>
@@ -519,8 +519,8 @@ function showProductDetail(id) {
 
     document.getElementById('pd-category').textContent = currentPd.category;
     document.getElementById('pd-name').textContent = currentPd.name;
-    document.getElementById('pd-price').textContent = currentPd.price + 'â‚º';
-    document.getElementById('pd-old-price').textContent = currentPd.oldPrice ? currentPd.oldPrice + 'â‚º' : '';
+    document.getElementById('pd-price').textContent = currentPd.price + '₺';
+    document.getElementById('pd-old-price').textContent = currentPd.oldPrice ? currentPd.oldPrice + '₺' : '';
     document.getElementById('pd-desc').textContent = currentPd.desc;
     pdQty = 1; document.getElementById('pd-qty').textContent = '1';
     showSection('product-detail');
@@ -1102,11 +1102,11 @@ function updateCartUI() {
     if (mobileBadge) { mobileBadge.textContent = count; mobileBadge.classList.toggle('hidden', count === 0); }
     const drawerCount = document.getElementById('cart-count-drawer'), subtotal = document.getElementById('cart-subtotal'), totalEl = document.getElementById('cart-total'), shipping = document.getElementById('cart-shipping');
     if (drawerCount) drawerCount.textContent = `(${count})`;
-    if (subtotal) subtotal.textContent = total + 'â‚º';
-    if (totalEl) totalEl.textContent = total + 'â‚º';
+    if (subtotal) subtotal.textContent = total + '₺';
+    if (totalEl) totalEl.textContent = total + '₺';
     if (shipping) {
         if (total >= 500) { shipping.textContent = 'Bedava'; shipping.className = 'font-medium text-green-600'; }
-        else { shipping.textContent = '49â‚º'; shipping.className = 'font-medium'; }
+        else { shipping.textContent = '49₺'; shipping.className = 'font-medium'; }
     }
     const container = document.getElementById('cart-items');
     if (container) {
@@ -1120,7 +1120,7 @@ function updateCartUI() {
                     </div>
                     <div class="flex-1">
                         <h4 class="font-bold text-sm mb-1 line-clamp-1">${item.name}</h4>
-                        <p class="text-calith-orange font-bold text-sm mb-3">${item.price}â‚º</p>
+                        <p class="text-calith-orange font-bold text-sm mb-3">${item.price}₺</p>
                         <div class="flex items-center gap-3">
                             <div class="flex items-center border border-white/10 rounded-lg overflow-hidden h-8">
                                 <button onclick="updateCartQty(${item.id}, -1)" class="px-3 hover:bg-white/5 transition-colors text-gray-400">-</button>
@@ -1132,7 +1132,7 @@ function updateCartUI() {
                             </button>
                         </div>
                     </div>
-                    <div class="font-display font-bold text-lg">${item.price * item.qty}â‚º</div>
+                    <div class="font-display font-bold text-lg">${item.price * item.qty}₺</div>
                 </div>
             `).join('');
         }
@@ -1170,7 +1170,7 @@ function toggleCart() {
 function checkout() {
     if (cart.length === 0) return;
     const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-    alert(`Ödeme: ${total}â‚º\n\nDemo versiyon.`);
+    alert(`Ödeme: ${total}₺\n\nDemo versiyon.`);
 }
 
 function showToast(msg) {
@@ -2776,9 +2776,9 @@ async function saveHomecard() {
         let cost = document.getElementById('hc-eq-cost').value.trim();
         const reason = document.getElementById('hc-eq-reason').value.trim();
 
-        // Otomatik TL (â‚º) işareti ekleme
-        if (cost && !cost.includes('â‚º') && !cost.toLowerCase().includes('tl')) {
-            cost = cost + 'â‚º';
+        // Otomatik TL (₺) işareti ekleme
+        if (cost && !cost.includes('₺') && !cost.toLowerCase().includes('tl')) {
+            cost = cost + '₺';
         }
 
         desc = `İhtiyacın: ${needs}\nMaliyet: ${cost}${reason ? `\nNeden: ${reason}` : ''}`;
