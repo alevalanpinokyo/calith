@@ -2777,8 +2777,8 @@ async function saveHomecard() {
         const reason = document.getElementById('hc-eq-reason').value.trim();
 
         // Otomatik TL (₺) işareti ekleme
-        if (cost && !cost.includes('₺') && !cost.toLowerCase().includes('tl')) {
-            cost = cost + ' ₺';
+        if (cost && !cost.includes('\u20BA') && !cost.toLowerCase().includes('tl')) {
+            cost = cost + ' \u20BA';
         }
 
         desc = `İhtiyacın: ${needs}\nMaliyet: ${cost}${reason ? `\nNeden: ${reason}` : ''}`;
