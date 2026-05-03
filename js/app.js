@@ -1597,10 +1597,10 @@ function resetExerciseForm() {
 
 // --- AKILLI ÖNERİ (OMNI-BOX) MANTIĞI ---
 async function showExerciseSuggestions(input) {
-    const term = input.value.trim().toLowerCase();
     const container = input.nextElementSibling;
-    
-    if (term.length < 2) {
+    const query = input.value.toLowerCase().trim();
+
+    if (query.length < 1) {
         container.classList.add('hidden');
         return;
     }
@@ -1613,49 +1613,22 @@ async function showExerciseSuggestions(input) {
         exerciseLibrary = data || [];
     }
 
-    let matches = exerciseLibrary.filter(ex => ex.name.toLowerCase().includes(term));
-    
-    // Akilli Siralama Algoritmasi (Smart Sorting)
-    matches.sort((a, b) => {
-        const aName = a.name.toLowerCase();
-        const bName = b.name.toLowerCase();
-        
-        // 1. Oncelik: Birebir Eslesme (Exact Match)
-        if (aName === term) return -1;
-        if (bName === term) return 1;
-        
-        // 2. Oncelik: Aranan kelimeyle baslayanlar (Starts With)
-        const aStarts = aName.startsWith(term);
-        const bStarts = bName.startsWith(term);
-        if (aStarts && !bStarts) return -1;
-        if (!aStarts && bStarts) return 1;
-        
-        // 3. Oncelik: Isim uzunlugu (Kisa olanlar genelde temel harekettir)
-        return aName.length - bName.length;
-    });
-
-    matches = matches.slice(0, 10);
+    const matches = exerciseLibrary.filter(ex => ex.name.toLowerCase().includes(query)).slice(0, 5);
 
     if (matches.length === 0) {
         container.classList.add('hidden');
         return;
     }
 
-    // Zorluk Rozetleri (Badges) Mapping
-    const diffMap = {
-        'beginner': { label: '🌱 Başlangıç', color: 'text-green-400' },
-        'intermediate': { label: '🔥 Orta', color: 'text-yellow-400' },
-        'advanced': { label: '⚡ Zor', color: 'text-red-400' },
-        'elite': { label: '👑 Elit', color: 'text-purple-400' }
-    };
-
-    container.innerHTML = matches.map(ex => {
-        const diff = diffMap[ex.difficulty] || { label: '⚪ ' + (ex.difficulty || 'Belirsiz'), color: 'text-gray-400' };
-        
-        return `
-        <div class="px-4 py-3 hover:bg-calith-orange/10 cursor-pointer border-b border-white/5 last:border-none flex items-center justify-between group transition-colors"
+    container.innerHTML = matches.map(ex => `
+        <div class="px-4 py-3 hover:bg-calith-orange/10 cursor-pointer border-b border-white/5 last:border-none flex items-center justify-between group"
              onclick="selectExerciseSuggestion(this, '${ex.id}')">
             <div class="flex items-center gap-3">
+                <i data-lucide="${ex.category === 'pull' ? 'arrow-up-circle' : 'dumbbell'}" class="w-3 h-3 text-calith-orange"></i>
+                <span class="text-[11px] font-bold text-gray-300 group-hover:text-white">${ex.name}</span>
+            </div>
+            ${ex.is_bw ? '<span class="text-[8px] font-black text-calith-orange/50 uppercase tracking-tighter">BW</span>' : ''}
+        </div>
     `).join('');
 
     container.classList.remove('hidden');
