@@ -90,6 +90,48 @@ BEGIN
     END IF;
 END;
 $$;
+
+-- SİPARİŞLERİ, ALICI BİLGİLERİNİ VE KULLANILAN KODLARI GETİREN ADMIN FONKSİYONU
+CREATE OR REPLACE FUNCTION get_admin_orders()
+RETURNS TABLE (
+    id uuid,
+    user_id uuid,
+    referral_code_id uuid,
+    total_amount numeric,
+    items jsonb,
+    status text,
+    created_at timestamptz,
+    full_name text,
+    email text,
+    referral_code text
+) 
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    IF (SELECT role FROM public.user_roles WHERE user_id = auth.uid()) = 'admin' THEN
+        RETURN QUERY
+        SELECT 
+            o.id,
+            o.user_id,
+            o.referral_code_id,
+            o.total_amount,
+            o.items,
+            o.status,
+            o.created_at,
+            p.full_name::text,
+            u.email::text,
+            rc.code::text
+        FROM public.orders o
+        LEFT JOIN public.profiles p ON o.user_id = p.id
+        LEFT JOIN auth.users u ON p.id = u.id
+        LEFT JOIN public.referral_codes rc ON o.referral_code_id = rc.id
+        ORDER BY o.created_at DESC;
+    ELSE
+        RAISE EXCEPTION 'Yetkisiz erişim!';
+    END IF;
+END;
+$$;
 ```
 
 
