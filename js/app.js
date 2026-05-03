@@ -7049,6 +7049,82 @@ function initSharedUI() {
         `;
         document.body.appendChild(auth);
     }
+}
+
+/**
+ * Calith Premium Onay Modalı (Custom Popup)
+ * @param {Object} options { title, message, confirmText, cancelText, type, onConfirm }
+ */
+function showCalithConfirm(options = {}) {
+    const { 
+        title = "Emin misin kanka?", 
+        message = "Bu işlem geri alınamaz.", 
+        confirmText = "EVET, DEVAM ET", 
+        cancelText = "İPTAL", 
+        type = "warning", // warning, danger, info
+        onConfirm = () => {} 
+    } = options;
+
+    const modalId = 'calith-confirm-modal';
+    const old = document.getElementById(modalId);
+    if (old) old.remove();
+
+    const typeColors = {
+        warning: "from-calith-orange to-orange-600",
+        danger: "from-red-500 to-red-700",
+        info: "from-blue-500 to-blue-700"
+    };
+
+    const modalHtml = `
+        <div id="${modalId}" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);">
+            <div class="relative w-full max-w-sm bg-[#0A0A0A] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl animate-in zoom-in duration-300">
+                <!-- Icon Area -->
+                <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/5">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${typeColors[type] || typeColors.warning} flex items-center justify-center shadow-lg">
+                        <i data-lucide="${type === 'danger' ? 'trash-2' : 'alert-triangle'}" class="w-5 h-5 text-white"></i>
+                    </div>
+                </div>
+
+                <!-- Text Area -->
+                <div class="text-center mb-8">
+                    <h3 class="font-display text-2xl font-black text-white uppercase tracking-tight mb-2">${title}</h3>
+                    <p class="text-gray-400 text-sm font-medium leading-relaxed">${message}</p>
+                </div>
+
+                <!-- Buttons Area -->
+                <div class="flex flex-col gap-3">
+                    <button id="confirm-modal-yes" class="w-full py-4 bg-gradient-to-r ${typeColors[type] || typeColors[type] || typeColors.warning} text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
+                        ${confirmText}
+                    </button>
+                    <button id="confirm-modal-no" class="w-full py-4 bg-white/5 border border-white/10 text-gray-400 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-white/10 transition-all">
+                        ${cancelText}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide) lucide.createIcons();
+
+    // Event Listeners
+    const modal = document.getElementById(modalId);
+    const yesBtn = document.getElementById('confirm-modal-yes');
+    const noBtn = document.getElementById('confirm-modal-no');
+
+    const closeModal = () => {
+        modal.classList.add('animate-out', 'fade-out', 'zoom-out');
+        setTimeout(() => modal.remove(), 200);
+    };
+
+    yesBtn.onclick = () => {
+        closeModal();
+        onConfirm();
+    };
+
+    noBtn.onclick = closeModal;
+    modal.onclick = (e) => { if(e.target === modal) closeModal(); };
+}
 
     // 3. LEAD MODAL (Rehber İndir)
     if (!document.getElementById('lead-modal')) {
@@ -7293,26 +7369,32 @@ async function loadPersonalRecords(userId) {
 }
 
 async function deletePersonalRecord(recordId) {
-    if (!confirm("Bu rekoru silmek istediğine emin misin kanka?")) return;
+    showCalithConfirm({
+        title: "REKORU SİL",
+        message: "Bu rekoru silmek istediğine emin misin kanka? Bu işlem geri alınamaz.",
+        confirmText: "SİL",
+        type: "danger",
+        onConfirm: async () => {
+            const sb = getSupabase();
+            if (!sb) return;
 
-    const sb = getSupabase();
-    if (!sb) return;
+            // currentUser boşsa (refresh vb. durumlar) oturumu tazele
+            if (!currentUser) {
+                const { data: { user } } = await sb.auth.getUser();
+                if (user) currentUser = user;
+            }
+            if (!currentUser) return showToast('Oturum hatası, lütfen tekrar giriş yap kanka.');
 
-    // currentUser boşsa (refresh vb. durumlar) oturumu tazele
-    if (!currentUser) {
-        const { data: { user } } = await sb.auth.getUser();
-        if (user) currentUser = user;
-    }
-    if (!currentUser) return showToast('Oturum hatası, lütfen tekrar giriş yap kanka.');
+            const { error } = await sb.from('user_exercise_stats').delete().eq('id', recordId);
 
-    const { error } = await sb.from('user_exercise_stats').delete().eq('id', recordId);
-
-    if (error) {
-        showToast('Rekor silinemedi: ' + error.message);
-    } else {
-        showToast('Rekor silindi.');
-        loadPersonalRecords(currentUser.id); // Listeyi yenile
-    }
+            if (error) {
+                showToast('Rekor silinemedi: ' + error.message);
+            } else {
+                showToast('Rekor silindi.');
+                loadPersonalRecords(currentUser.id); // Listeyi yenile
+            }
+        }
+    });
 }
 
 function renderPersonalRecords(records) {
@@ -7510,25 +7592,31 @@ function showCalibrationModal() {
 }
 
 async function resetExerciseStats() {
-    if (!confirm("DİKKAT: Tüm hareket rekorların (PR) silinecek. Antrenman geçmişine (Raporlara) dokunulmaz. Emin misin kanka?")) return;
-    
-    const sb = getSupabase();
-    if (!sb) return;
+    showCalithConfirm({
+        title: "TÜM REKORLARI SIFIRLA",
+        message: "DİKKAT: Tüm hareket rekorların (PR) silinecek. Antrenman geçmişine (Raporlara) dokunulmaz. Emin misin kanka?",
+        confirmText: "EVET, SIFIRLA",
+        type: "danger",
+        onConfirm: async () => {
+            const sb = getSupabase();
+            if (!sb) return;
 
-    // currentUser boşsa (refresh vb. durumlar) oturumu tazele
-    if (!currentUser) {
-        const { data: { user } } = await sb.auth.getUser();
-        if (user) currentUser = user;
-    }
-    if (!currentUser) return showToast('Oturum hatası, lütfen tekrar giriş yap kanka.');
+            // currentUser boşsa (refresh vb. durumlar) oturumu tazele
+            if (!currentUser) {
+                const { data: { user } } = await sb.auth.getUser();
+                if (user) currentUser = user;
+            }
+            if (!currentUser) return showToast('Oturum hatası, lütfen tekrar giriş yap kanka.');
 
-    showToast("Rekorlar sıfırlanıyor...");
-    
-    // Sadece Rekorları Sil (Geçmişe dokunmuyoruz!)
-    await sb.from('user_exercise_stats').delete().eq('user_id', currentUser.id);
-    
-    showToast("Tüm rekorlar sıfırlandı! Geçmişin güvende.");
-    switchProfileTab('prs'); // Tabı yenile
+            showToast("Rekorlar sıfırlanıyor...");
+            
+            // Sadece Rekorları Sil (Geçmişe dokunmuyoruz!)
+            await sb.from('user_exercise_stats').delete().eq('user_id', currentUser.id);
+            
+            showToast("Tüm rekorlar sıfırlandı! Geçmişin güvende.");
+            switchProfileTab('prs'); // Tabı yenile
+        }
+    });
 }
 
 function showSetFeedbackModal(weight, reps) {
