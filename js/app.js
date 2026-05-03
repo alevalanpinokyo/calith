@@ -5,9 +5,9 @@ window.calithConfig = {
     developerName: "alevalanpinokyo",
     year: new Date().getFullYear(),
     socialLinks: {
-        instagram: "https://instagram.com/calith",
+        instagram: "https://www.instagram.com/calith.official",
         youtube: "https://www.youtube.com/@Calith.official",
-        tiktok: "https://tiktok.com/@calith",
+        tiktok: "https://www.tiktok.com/@calith.official",
         twitter: "https://twitter.com/calith",
         supportEmail: "destek@calith.com"
     }
