@@ -115,3 +115,25 @@ Sistem üzerinden yapılan satışların kaydı.
 - `status` (text, default: 'completed')
 - `created_at` (timestamptz)
 
+---
+
+## 🛠️ Veritabanı Fonksiyonları (RPC)
+Bu fonksiyonlar güvenlik duvarlarını aşmak ve karmaşık sorguları basitleştirmek için kullanılır.
+
+### 1. get_admin_users
+Tüm kullanıcı listesini e-postaları ile birlikte getirir (Admin Only).
+- **Return:** Table (id, full_name, email, role, ...)
+
+### 2. get_admin_referral_codes
+Tüm referans kodlarını ve sahiplerinin gerçek e-postalarını getirir (Admin Only).
+- **Return:** Table (id, owner_id, code, discount_rate, full_name, email, ...)
+
+### 3. admin_set_user_role
+Kullanıcı rolünü günceller.
+- **Params:** `target_user_id`, `new_role`
+
+### 4. admin_ban_user
+Kullanıcıyı uzaklaştırır.
+- **Params:** `target_user_id`, `ban_duration_days`, `reason`
+
+
