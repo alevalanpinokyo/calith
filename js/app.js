@@ -327,7 +327,7 @@ function checkActiveWorkout() {
                         </div>
                         <div class="overflow-hidden">
                             <h4 class="text-white font-black text-sm uppercase tracking-wider truncate">Yarım Kalan Antrenman</h4>
-                            <p class="text-xs text-gray-400 font-mono truncate">${progName} â€¢ ${dayName}</p>
+                            <p class="text-xs text-gray-400 font-mono truncate">${progName} • ${dayName}</p>
                         </div>
                     </div>
                     <div class="flex gap-2 mt-2">
@@ -864,7 +864,7 @@ function renderAdminProducts() {
                 <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
                 <div>
                     <h4 class="font-bold text-sm">${p.name}</h4>
-                    <p class="text-xs text-gray-500">${p.price} TL ${p.category ? `â€¢ ${p.category}` : ''}</p>
+                    <p class="text-xs text-gray-500">${p.price} TL ${p.category ? `• ${p.category}` : ''}</p>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -988,7 +988,7 @@ function renderAdminPosts() {
         <div class="bg-calith-dark/50 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:border-calith-orange/30 transition-all">
             <div class="flex-1">
                 <h4 class="font-bold text-sm line-clamb-1">${p.title}</h4>
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest">${p.category} â€¢ ${p.date || ''}</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">${p.category} • ${p.date || ''}</p>
             </div>
             <div class="flex gap-2">
                 <button onclick="editPost('${p.id}')" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-calith-orange rounded-xl transition-all group/btn">
@@ -3256,7 +3256,7 @@ function renderFrontendHomecards() {
                 const infoLines = [];
 
                 lines.forEach(line => {
-                    const cleanLine = line.trim().replace(/^[-*â€¢â— ]+/, '');
+                    const cleanLine = line.trim().replace(/^[-*•â— ]+/, '');
                     if (!cleanLine) return;
 
                     const parts = cleanLine.split(':');
@@ -3853,7 +3853,7 @@ function renderPDF(printContent, data, notes = '') {
     <div style="width:100%; max-width:100%; font-family:'Inter',Arial,sans-serif; color:#000; padding:2px; box-sizing:border-box; background:#fff; margin:0;">
         <div style="text-align:center; border-bottom:2.5px solid #000; padding-bottom:6px; margin-bottom:12px; width:100%;">
             <h1 style="font-size:18px; text-transform:uppercase; margin:0; letter-spacing:1px; font-weight:900;">CALİSTHENİCS ANTRENMAN ÇİZELGESİ</h1>
-            <p style="margin:2px 0 0; font-weight:700; color:#444; font-size:10px; opacity:0.8;">calith.com &nbsp;â€¢&nbsp; Profesyonel Haftalık Program</p>
+            <p style="margin:2px 0 0; font-weight:700; color:#444; font-size:10px; opacity:0.8;">calith.com &nbsp;•&nbsp; Profesyonel Haftalık Program</p>
         </div>
         
         <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:flex-start; align-items:stretch; gap:${gap}; width:100% !important; margin:0; box-sizing:border-box;">
@@ -3866,7 +3866,7 @@ function renderPDF(printContent, data, notes = '') {
             </div>
             ${card.badge ? `<p style="font-size:7.5px; font-weight:800; text-align:center; color:#666; margin-bottom:6px; text-transform:uppercase; border-bottom:1px solid #eee; padding-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${card.badge}</p>` : ''}
             <ul style="list-style:none; padding:0; margin:0; font-size:${fontSize}; line-height:${lineHeight}; word-break:break-word;">
-                ${card.items.map(item => `<li style="padding:2.5px 0; border-bottom:1px dashed #eee;">â€¢ ${item}</li>`).join('')}
+                ${card.items.map(item => `<li style="padding:2.5px 0; border-bottom:1px dashed #eee;">• ${item}</li>`).join('')}
             </ul>
         </div>
     `).join('');
@@ -4676,7 +4676,7 @@ function getWorkoutEfficiencyBrief(log) {
 
         if (totalSets === 0) return '0 SET';
         const efficiency = Math.round((cleanSets / totalSets) * 100);
-        return `${totalSets} SET â€¢ %${efficiency}`;
+        return `${totalSets} SET • %${efficiency}`;
 
     } catch (e) {
         console.error('Efficiency calculation error:', e);
@@ -4816,7 +4816,7 @@ async function copyBulkReport() {
         const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
         const time = new Date(log.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
-        text += `ğŸ“… ${date} â€¢ ${time} (${log.program_title || 'Özel'})\n`;
+        text += `ğŸ“… ${date} • ${time} (${log.program_title || 'Özel'})\n`;
         text += `⏱️ Süre: ${log.duration || '00:00'} | Tekrar: ${calculateWorkoutTotalReps(log)}\n`;
 
         try {
@@ -5043,7 +5043,7 @@ function showWorkoutLogDetail(logId) {
                     </div>
                     <div>
                         <h3 class="text-white font-black uppercase tracking-tight text-sm">${log.program_title}</h3>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${date} â€¢ ${log.duration}</p>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${date} • ${log.duration}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -5337,7 +5337,7 @@ function renderAdminLinks() {
                 </div>
                 <div class="min-w-0">
                     <h4 class="font-bold text-xs md:text-sm text-white truncate">${l.title}</h4>
-                    <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest truncate">${l.category} â€¢ Sıra: ${l.order_index}</p>
+                    <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest truncate">${l.category} • Sıra: ${l.order_index}</p>
                 </div>
             </div>
             <div class="flex gap-2 shrink-0">
