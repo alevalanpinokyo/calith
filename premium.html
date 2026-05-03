@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=202605032245">
+    <link rel="stylesheet" href="styles.css?v=202605032257">
 
     <script>
         tailwind.config = {
@@ -66,6 +66,10 @@
 
             <!-- Actions (Sağ Kolon - Her zaman sağda) -->
             <div class="flex items-center gap-3 justify-end">
+                <a href="cart.html" class="relative p-2 text-white hover:text-calith-orange transition-colors group">
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-calith-orange text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden border-2 border-calith-dark">0</span>
+                </a>
                 <a href="profile.html" class="text-white font-medium hover:text-calith-orange text-base flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 lg:bg-transparent lg:border-none transition-all group drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_0_12px_rgba(255,107,53,0.6)]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg> <span class="auth-text tracking-wider whitespace-nowrap text-[10px] lg:text-base">PROFİLİM</span>
                 </a>
@@ -113,7 +117,7 @@
 
 
 
-    <script src="js/app.js?v=202605032245"></script>
+    <script src="js/app.js?v=202605032257"></script>
     <script></script>
 </body>
 </html>

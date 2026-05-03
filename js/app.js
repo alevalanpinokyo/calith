@@ -7304,6 +7304,63 @@ function initSharedUI() {
         document.body.appendChild(print);
     }
 
+    // 7. CART SIDEBAR (Sepet Paneli)
+    if (!document.getElementById('cart-sidebar')) {
+        const cartSidebar = document.createElement('div');
+        cartSidebar.innerHTML = `
+            <div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] hidden transition-opacity duration-500" onclick="toggleCart()"></div>
+            <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full max-w-[400px] bg-calith-dark border-l border-white/10 z-[1000] transform translate-x-full transition-transform duration-500 flex flex-col shadow-2xl">
+                <div class="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-calith-orange/10 rounded-xl flex items-center justify-center text-calith-orange">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display text-xl font-bold uppercase tracking-tight">SEPETİM <span id="cart-count-drawer" class="text-gray-500 text-sm ml-1">(0)</span></h3>
+                        </div>
+                    </div>
+                    <button onclick="toggleCart()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-all text-white border border-white/5">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                    <!-- Ürünler buraya basılacak -->
+                </div>
+
+                <div class="p-6 bg-white/[0.02] border-t border-white/5 space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm text-gray-400 font-medium uppercase tracking-widest">
+                            <span>Ara Toplam</span>
+                            <span id="cart-subtotal" class="text-white font-bold tracking-normal">0₺</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                            <span>Kargo</span>
+                            <span id="cart-shipping" class="text-green-500 tracking-normal">Ücretsiz</span>
+                        </div>
+                    </div>
+                    <div class="h-[1px] bg-white/5 my-2"></div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-display text-lg font-bold uppercase italic">TOPLAM</span>
+                        <span id="cart-total" class="text-3xl font-black text-calith-orange italic tracking-tighter">0₺</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3">
+                        <a href="cart.html" class="w-full bg-white text-black py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-gray-200 transition-all shadow-xl">
+                            <span>SEPETE GİT</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                        <button onclick="checkout()" class="w-full bg-calith-orange text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-calith-orange/20">
+                            HIZLI ÖDEME
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(cartSidebar);
+    }
+
+
     // Lucide ikonlarını yenile (Yeni eklenen elementler için)
     if (window.lucide) lucide.createIcons();
 
