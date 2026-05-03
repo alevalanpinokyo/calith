@@ -1,13 +1,13 @@
-﻿const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
+const supabaseUrl = 'https://xargjfqxfcinhyssxfal.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcmdqZnF4ZmNpbmh5c3N4ZmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNDU4MzEsImV4cCI6MjA4ODgyMTgzMX0.0wD-i-iy3tkBCfObwgvXvDZJwCHBTu7GziAN6NOf3O0';
 // --- MERKEZİ UI & İMZA SİSTEMİ ---
 window.calithConfig = {
     developerName: "alevalanpinokyo",
     year: new Date().getFullYear(),
     socialLinks: {
-        instagram: "https://www.instagram.com/calith.official",
+        instagram: "https://instagram.com/calith",
         youtube: "https://www.youtube.com/@Calith.official",
-        tiktok: "https://www.tiktok.com/@calith.official",
+        tiktok: "https://tiktok.com/@calith",
         twitter: "https://twitter.com/calith",
         supportEmail: "destek@calith.com"
     }
@@ -2832,19 +2832,19 @@ async function importHomecardDefaults() {
         { id: 'ben_3', section: 'benefits', icon: 'â±ï¸', title: 'Zaman Tasarrufu', desc_text: 'Günde sadece 20-30 dakika. Uzun saatler gerektirmez.' },
 
         // LEVELS
-        { id: 'lvl_1', section: 'levels', icon: 'ğŸŒ±', title: 'SIFIRDAN', desc_text: 'Hiç şınav yapamıyorum.\\nHareketler: Duvar şınavı, Koltuk dips\'i, Air squat', link_text: 'İncele', link_url: 'skills.html?level=baslangic' },
-        { id: 'lvl_2', section: 'levels', icon: 'ğŸŒ¿', badge: 'En Popüler', title: 'TEMEL ATILDI', desc_text: '10-15 şınav yapabiliyorum.\\nHareketler: Normal şınav, Negatif barfiks, Jackknife', link_text: 'İncele', link_url: 'skills.html?level=orta' },
-        { id: 'lvl_3', section: 'levels', icon: 'ğŸ”¥', title: 'GÜÇLENİYORUM', desc_text: '20+ şınav yapabiliyorum.\\nHareketler: Tek kol şınav, Muscle-up denemeleri, Front lever', link_text: 'İncele', link_url: 'skills.html?level=ileri' },
+        { id: 'lvl_1', section: 'levels', icon: '🌱', title: 'SIFIRDAN', desc_text: 'Hiç şınav yapamıyorum.\nHareketler: Duvar şınavı, Koltuk dips\'i, Air squat', link_text: 'İncele', link_url: 'skills.html?level=baslangic' },
+        { id: 'lvl_2', section: 'levels', icon: '🌿', badge: 'En Popüler', title: 'TEMEL ATILDI', desc_text: '10-15 şınav yapabiliyorum.\nHareketler: Normal şınav, Negatif barfiks, Jackknife', link_text: 'İncele', link_url: 'skills.html?level=orta' },
+        { id: 'lvl_3', section: 'levels', icon: '🔥', title: 'GÜÇLENİYORUM', desc_text: '20+ şınav yapabiliyorum.\nHareketler: Tek kol şınav, Muscle-up denemeleri, Front lever', link_text: 'İncele', link_url: 'skills.html?level=ileri' },
 
         // SCHEDULE
-        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: 'âœ“ Duvar şınavı: 3 set\\nâœ“ Koltuk dips\'i: 3 set\\nâœ“ Superman: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
-        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: 'âœ“ Air squat: 3 set\\nâœ“ Lunges: 3 set\\nâœ“ Calf raises: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
-        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: 'âœ“ Duvar şınavı: 3 set\\nâœ“ Glute bridge: 3 set\\nâœ“ Plank: 3 set', link_text: 'Hareketleri İzle â†’', link_url: 'blog.html' },
+        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: '✓ Duvar şınavı: 3 set\n✓ Koltuk dips\'i: 3 set\n✓ Superman: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
+        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: '✓ Air squat: 3 set\n✓ Lunges: 3 set\n✓ Calf raises: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
+        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: '✓ Duvar şınavı: 3 set\n✓ Glute bridge: 3 set\n✓ Plank: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
 
         // EQUIPMENT (AŞAMALAR)
-        { id: 'eq_1', section: 'equipment', badge: 'ğŸŸ¢ Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\\nMaliyet: 0â‚º', link_text: 'Programı İndir â†’', link_url: 'skills.html' },
-        { id: 'eq_2', section: 'equipment', badge: 'ğŸŸ¡ Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\\nMaliyet: ~400-600â‚º\\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele â†’', link_url: 'shop.html' },
-        { id: 'eq_3', section: 'equipment', badge: 'ğŸ”´ Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\\nMaliyet: ~1.200-1.800â‚º\\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele â†’', link_url: 'shop.html' }
+        { id: 'eq_1', section: 'equipment', badge: '🟢 Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\nMaliyet: 0₺', link_text: 'Programı İndir →', link_url: 'skills.html' },
+        { id: 'eq_2', section: 'equipment', badge: '🟡 Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\nMaliyet: ~400-600₺\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele →', link_url: 'shop.html' },
+        { id: 'eq_3', section: 'equipment', badge: '🔴 Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\nMaliyet: ~1.200-1.800₺\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele →', link_url: 'shop.html' }
     ];
 
     const { error } = await sb.from('homecards').upsert(defaults);
@@ -3810,17 +3810,17 @@ function exportProgramPDF() {
     if (data.length === 0 || data.every(d => d.items.length === 0)) {
         data = [
             {
-                title: 'GÜN 1 â€” ÜST VÜCUT',
+                title: 'GÜN 1 — ÜST VÜCUT',
                 badge: 'Pazartesi / Çarşamba',
                 items: ['Isınma: 5 dk yürüyüş', '3x10 Şınav', '3x8 Pike Push-up', '3x10 Dips (sandalye)', '3x12 Diamond Push-up', '2x10 Triceps Germe']
             },
             {
-                title: 'GÜN 2 â€” ALT VÜCUT',
+                title: 'GÜN 2 — ALT VÜCUT',
                 badge: 'Salı / Perşembe',
                 items: ['Isınma: 5 dk esneme', '4x15 Squat', '3x10 Lunges (her bacak)', '3x15 Glute Bridge', '3x20 Calf Raises', '2x30s Duvar Oturması']
             },
             {
-                title: 'GÜN 3 â€” CORE & DİNAMİK',
+                title: 'GÜN 3 — CORE & DİNAMİK',
                 badge: 'Cuma / Cumartesi',
                 items: ['Isınma: 5 dk hafif koşu', '3x45s Plank', '3x15 Crunch', '3x10 Mountain Climber', '3x10 Leg Raise', '2x20 Flutter Kicks']
             }
@@ -6803,7 +6803,7 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
                     const doneBtn = document.createElement('button');
                     doneBtn.id = 'timer-done-btn';
                     doneBtn.className = 'px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-widest rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/30';
-                    doneBtn.textContent = 'âœ“  TAMAM';
+                    doneBtn.textContent = '✓  TAMAM';
                     doneBtn.onclick = () => {
                         const repsInput = document.getElementById('workout-input-reps');
                         if (repsInput) repsInput.value = duration;
@@ -7628,7 +7628,7 @@ function showCalibrationModal() {
                 <div class="w-24 h-24 bg-calith-orange/10 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-calith-orange/5">
                     <i data-lucide="compass" class="w-12 h-12 text-calith-orange animate-spin-slow"></i>
                 </div>
-                <h3 class="font-display text-3xl font-black text-white mb-4 tracking-tighter italic uppercase leading-none">ğŸš€ KALİBRASYON MODU</h3>
+                <h3 class="font-display text-3xl font-black text-white mb-4 tracking-tighter italic uppercase leading-none">🚀 KALİBRASYON MODU</h3>
                 <p class="text-[11px] font-medium text-gray-400 mb-8 leading-relaxed uppercase tracking-widest">
                     Bu hareketi ilk kez yapıyorsun kanka! <br><br>
                     Seni tanımam için bu antrenman bir <span class="text-calith-orange font-black">"Test Sürüşü"</span> olacak.
