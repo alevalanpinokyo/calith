@@ -5674,9 +5674,7 @@ async function renderAdminReferralCodes() {
     const sb = getSupabase();
     if (!sb) return;
 
-    const { data, error } = await sb.from('referral_codes')
-        .select('*, profiles(full_name, email)')
-        .order('created_at', { ascending: false });
+    const { data, error } = await sb.rpc('get_admin_referral_codes');
 
     if (error || !data) {
         list.innerHTML = '<p class="text-red-500 text-[10px] text-center uppercase font-bold">Kodlar yüklenemedi.</p>';
@@ -5689,8 +5687,8 @@ async function renderAdminReferralCodes() {
     }
 
     list.innerHTML = data.map(c => {
-        const ownerName = c.profiles?.full_name || 'İSİMSİZ KULLANICI';
-        const ownerEmail = c.profiles?.email || 'Email Yok';
+        const ownerName = c.full_name || 'İSİMSİZ KULLANICI';
+        const ownerEmail = c.email || 'Email Yok';
 
         return `
             <div class="p-4 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between group hover:border-calith-orange/30 transition-all">
