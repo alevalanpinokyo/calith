@@ -445,18 +445,18 @@ function renderShop(filter = 'all') {
     const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
     grid.innerHTML = filtered.map(p => `
         <div onclick="showProductDetail('${p.id}')" class="product-card group cursor-pointer rounded-3xl overflow-hidden card-hover">
-            <div class="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-8 relative overflow-hidden">
-                <img src="${p.image}" class="w-full h-full object-cover mix-blend-overlay opacity-50 group-hover:opacity-100 transition-opacity">
-                ${p.badge ? `<span class="absolute top-4 left-4 bg-calith-orange text-white text-[10px] font-bold px-3 py-1 rounded-full">${p.badge}</span>` : ''}
-                ${p.oldPrice ? `<span class="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">-%${Math.round((1 - p.price / p.oldPrice) * 100)}</span>` : ''}
+            <div class="aspect-square bg-calith-gray/50 flex items-center justify-center relative overflow-hidden">
+                <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                ${p.badge ? `<span class="absolute top-4 left-4 bg-calith-orange text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-calith-orange/20">${p.badge}</span>` : ''}
+                ${p.old_price ? `<span class="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-red-500/20">-%${Math.round((1 - p.price / p.old_price) * 100)}</span>` : ''}
             </div>
-            <div class="p-6">
+            <div class="p-6 bg-gradient-to-b from-transparent to-black/20">
                 <p class="text-[10px] text-calith-orange font-bold uppercase tracking-widest mb-1">${p.category}</p>
-                <h3 class="font-display text-lg font-bold mb-3 group-hover:text-white transition-colors">${p.name}</h3>
+                <h3 class="font-display text-lg font-bold mb-3 group-hover:text-calith-orange transition-colors">${p.name}</h3>
                 <div class="flex items-center justify-between">
                     <div class="flex items-baseline gap-2">
                         <span class="font-bold text-xl">${p.price}₺</span>
-                        ${p.oldPrice ? `<span class="text-xs text-gray-500 line-through">${p.oldPrice}₺</span>` : ''}
+                        ${p.old_price ? `<span class="text-xs text-gray-500 line-through">${p.old_price}₺</span>` : ''}
                     </div>
                     <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-10 h-10 bg-calith-orange/10 text-calith-orange rounded-full flex items-center justify-center hover:bg-calith-orange hover:text-white transition-all transform hover:rotate-90">
                         <i data-lucide="plus" class="w-5 h-5"></i>
