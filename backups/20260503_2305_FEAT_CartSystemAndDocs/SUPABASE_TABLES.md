@@ -19,7 +19,7 @@ Kullanıcı fiziksel bilgileri ve ban durumu.
 ### 2. public.user_roles
 Yetki ve rol yönetimi (RLS anahtarı).
 - `user_id` (uuid, Unique, FK -> auth.users, CASCADE)
-- `role` (text, Check: admin, moderator, coach, premium, user, reserve)
+- `role` (text, Check: admin, premium, user)
 
 ---
 
@@ -91,27 +91,3 @@ Link-in-bio sayfası bağlantıları.
 ### 13. public.leads
 Bülten kayıtları.
 - `email` (text, Unique)
-
----
-
-## 💰 Affiliate & E-Ticaret Sistemi
-
-### 14. public.referral_codes
-Moderatör ve antrenörlere özel indirim/takip kodları.
-- `id` (uuid, PK)
-- `owner_id` (uuid, FK -> profiles)
-- `code` (text, Unique, BÜYÜK HARF)
-- `discount_rate` (numeric, Örn: 0.10)
-- `is_active` (boolean, default: true)
-- `created_at` (timestamptz)
-
-### 15. public.orders
-Sistem üzerinden yapılan satışların kaydı.
-- `id` (uuid, PK)
-- `user_id` (uuid, FK -> profiles, Opsiyonel/Misafir)
-- `referral_code_id` (uuid, FK -> referral_codes)
-- `total_amount` (numeric)
-- `items` (jsonb, Satın alınan ürünlerin ID listesi)
-- `status` (text, default: 'completed')
-- `created_at` (timestamptz)
-

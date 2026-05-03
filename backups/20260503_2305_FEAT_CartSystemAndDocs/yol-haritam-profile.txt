@@ -22,13 +22,6 @@ Sistem artık sadece yüzde hesaplamayacak, profesyonel antrenman kurallarını 
 - [ ] (2026-05-02) **Smart Engine Brain:** PR ID'leri üzerinden kullanıcının gelişimine göre dinamik ağırlık/tekrar önerisi. [GÜNCEL SÜREÇ]
 - [ ] (2024-04-25) **Otomatik Karar Mekanizması:** CNS Yorgunluğu / Deload kontrolü. [BEKLİYOR]
 
-## ✅ FAZ 6: YETKİ MİMARİSİ VE AFFILIATE (İNDİRİM KODU) SİSTEMİ (TAMAMLANDI)
-*Kullanıcı rollerinin derinleşmesi ve topluluk odaklı satış/indirim mekanizması kuruldu.*
-- [x] (2026-05-03) **Gelişmiş Rol Yönetimi:** `admin`, `moderator`, `coach`, `premium`, `reserve` rolleri eklendi. [TAMAM ✅]
-- [x] (2026-05-03) **Affiliate (Referans/Kupon) Motoru:** Admin panelinden kod atama ve DB tabanlı indirim sistemi. [TAMAM ✅]
-- [x] (2026-05-03) **Canlı Sepet Entegrasyonu:** Kodların sepet sayfasında veritabanı üzerinden anlık doğrulanması. [TAMAM ✅]
-- [x] (2026-05-03) **Sipariş Takibi:** Admin panelinde "Siparişler & Kodlar" sekmesi ile satış geçmişi izleme. [TAMAM ✅]
-
 ## 📊 FAZ 4: ANALİTİK VE GÖRSELLEŞTİRME (ÖNCELİK)
 ID altyapısı sayesinde artık verileri görselleştirebiliriz.
 - [ ] **Gelişim Grafikleri (Chart.js):** Her hareketin ID bazlı gelişim grafiğinin (Line Chart) kullanıcıya sunulması. [KRİTİK ÖNCELİK 🚀]
@@ -39,17 +32,32 @@ ID altyapısı sayesinde artık verileri görselleştirebiliriz.
 - [ ] **Program Builder:** Kullanıcıların kütüphaneden sürükle-bırak ile kendi programını yazması. [BEKLİYOR]
 - [ ] **Admin Maintenance Tools:** Veritabanındaki ID'siz mükerrer kayıtları temizleme ve optimize etme araçları. [PLANLANDI 🧹]
 
+## 🚀 FAZ 6: YETKİ MİMARİSİ VE AFFILIATE (İNDİRİM KODU) SİSTEMİ
+Kullanıcı rollerinin derinleşmesi ve topluluk odaklı satış/indirim mekanizması. [YENİ PLANLANDI ✨]
+
+- [ ] **Gelişmiş Rol Yönetimi:**
+    *   `admin`: Tam yetki (Sadece DB/Supabase üzerinden atanır).
+    *   `premium`: Elit üye (Admin panelinden atanabilir).
+    *   `antrenor / mod / rezerve`: İçerik ve topluluk yöneticileri (Özel yetki setleri).
+- [ ] **Affiliate (Referans/Kupon) Motoru:**
+    *   Moderatörlere özel "İndirim Kodları" tanımlanması (Örn: `ASRIN10`).
+    *   Mağaza sepet aşamasında kod uygulama ve anlık indirim yansıtma.
+- [ ] **Satış ve Performans Takibi:**
+    *   **Admin Dashboard:** Tüm kod kullanımlarını, toplam satışları ve istatistikleri görme.
+    *   **Moderatör Dashboard:** Sadece kendi koduyla yapılan satış adedini ve başarısını takip etme.
+
 ---
 
 ### 🚨 KRİTİK TEST / TAMAMLANANLAR LİSTESİ
-- [x] (2026-05-03) **Affiliate System:** Veritabanı tabanlı indirim kodu ve satış takip mimarisi. [TAMAM ✅]
-- [x] (2026-05-03) **Admin UI Fix:** Erişilebilirlik hataları ve inline CSS temizliği. [TAMAM ✅]
 - [x] (2026-05-03) **Admin Ürün Yönetimi Fix:** Eksik butonlar, taşma hataları ve gerçek silme mantığı onarıldı. [TAMAM ✅]
 - [x] (2026-05-02) **Note Display Fix:** Program detayda görünmeyen notların "Calith Mavisi" (#00D9FF) ile eklenmesi. [TAMAM ✅]
+- [x] (2026-05-02) **PR Deduplication:** Aynı hareketin farklı isimlerle (Pull-up, Pull-up!) birden fazla kart oluşturmasının engellenmesi. [TAMAM ✅]
+- [x] (2026-04-30) **Unified Rest & Feedback UI:** Dinlenme ve geri bildirim ekranlarının premium birleşimi. [TAMAM ✅]
+- [x] (2026-05-02) **Accordion Animation Fix:** Program gün kartlarındaki jerky animasyonun `max-height` düzenlemesi ile pürüzsüz hale getirilmesi. [TAMAM ✅]
 
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
-- **(2026-05-03):** BÜYÜK GÜNCELLEME: Affiliate ve Yetki sistemi (Faz 6) başarıyla tamamlandı. Sepet canlı veriye bağlandı.
-- **(2026-05-03):** Ürün yönetim sistemi stabilize edildi.
-- **(2026-05-02):** Calith tamamen ID bazlı mimariye geçti.
+- **(2026-05-03):** Ürün yönetim sistemi stabilize edildi. Affiliate sistemi Faz 6 olarak planlandı.
+- **(2026-05-02):** BÜYÜK GÜNCELLEME: Calith tamamen ID bazlı mimariye geçti. Veri bütünlüğü ve kütüphane senkronizasyonu kusursuz hale getirildi.
+- **(2026-04-30):** ÇÖZÜLDÜ: Antrenman özeti paylaşma ve geçmiş set düzenleme özellikleri eklendi.

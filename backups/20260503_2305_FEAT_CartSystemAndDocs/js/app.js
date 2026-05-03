@@ -1232,42 +1232,33 @@ function updateCartPageTotals() {
     totalEl.textContent = Math.round(total).toLocaleString() + '₺';
 }
 
-async function applyDiscountCode() {
+function applyDiscountCode() {
     const input = document.getElementById('discount-code');
     const code = input.value.trim().toUpperCase();
     const msg = document.getElementById('discount-msg');
     
     if (!code) return;
 
-    const sb = getSupabase();
-    if (!sb) return;
+    // SIMDILIK STATIK KONTROL (Ileride DB'den cekilecek)
+    const validCodes = {
+        'CALITH15': 0.15,
+        'ELITE20': 0.20
+    };
 
-    msg.textContent = 'KOD KONTROL EDİLİYOR...';
-    msg.className = 'mt-2 text-[10px] font-bold text-gray-500 uppercase animate-pulse';
-    msg.classList.remove('hidden');
-
-    // VERİTABANINDAN KODU SORGULA
-    const { data, error } = await sb.from('referral_codes')
-        .select('*')
-        .eq('code', code)
-        .eq('is_active', true)
-        .maybeSingle();
-
-    if (error || !data) {
+    if (validCodes[code]) {
+        currentDiscount = { code: code, rate: validCodes[code] };
+        msg.textContent = `TEBRİKLER! %${validCodes[code]*100} İNDİRİM UYGULANDI. 🔥`;
+        msg.className = "mt-2 text-[10px] font-bold text-green-500 uppercase tracking-widest";
+        msg.classList.remove('hidden');
+        updateCartPageTotals();
+        showToast(`'${code}' kodu uygulandı!`);
+    } else {
         currentDiscount = null;
         msg.textContent = "GEÇERSİZ VEYA HATALI KOD KANKA. ❌";
         msg.className = "mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest";
-    } else {
-        currentDiscount = { 
-            id: data.id, 
-            code: data.code, 
-            rate: data.discount_rate 
-        };
-        msg.textContent = `TEBRİKLER! %${data.discount_rate * 100} İNDİRİM UYGULANDI. 🔥`;
-        msg.className = "mt-2 text-[10px] font-bold text-green-500 uppercase tracking-widest";
-        showToast(`'${code}' kodu uygulandı!`);
+        msg.classList.remove('hidden');
+        updateCartPageTotals();
     }
-    updateCartPageTotals();
 }
 
 function proceedToCheckout() {
@@ -5522,11 +5513,8 @@ async function renderAdminUsers() {
     list.innerHTML = data.map(u => {
         const joinDate = u.profile_created_at ? new Date(u.profile_created_at).toLocaleDateString('tr-TR') : '-';
         const roleBadge = u.role === 'admin'
-            ? '<span class="bg-red-500/20 text-red-500 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest uppercase">ADMİN</span>'
-            : (u.role === 'moderator' ? '<span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest uppercase">MODERATÖR</span>' : 
-              (u.role === 'coach' ? '<span class="bg-calith-accent/20 text-calith-accent px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest uppercase">ANTRENÖR</span>' :
-              (u.role === 'premium' ? '<span class="bg-calith-orange/20 text-calith-orange px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest uppercase">PREMİUM</span>' : 
-              '<span class="bg-white/10 text-gray-400 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest uppercase">KULLANICI</span>')));
+            ? '<span class="bg-red-500/20 text-red-500 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">ADMİN</span>'
+            : (u.role === 'premium' ? '<span class="bg-calith-orange/20 text-calith-orange px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">PREMİUM</span>' : '<span class="bg-white/10 text-gray-400 px-3 py-1 rounded-lg text-[10px] font-bold tracking-widest">KULLANICI</span>');
 
         let banBadge = '';
         if (u.banned_until) {
@@ -5556,7 +5544,6 @@ async function renderAdminUsers() {
                 <td class="p-4 text-[11px] text-gray-500 font-bold tracking-wider">${joinDate}</td>
                 <td class="p-4 text-right">
                     <div class="flex items-center justify-end gap-2">
-                        <button onclick="openReferralModal('${u.id}', '${u.full_name || 'İsimsiz'}')" class="w-8 h-8 rounded-lg bg-calith-orange/10 hover:bg-calith-orange flex items-center justify-center text-calith-orange hover:text-white transition-colors" title="Satış Kodu Ata"><i data-lucide="ticket" class="w-4 h-4"></i></button>
                         <button onclick="adminChangeRole('${u.id}', '${u.role || 'user'}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-calith-accent flex items-center justify-center text-white transition-colors" title="Rol Değiştir"><i data-lucide="shield" class="w-4 h-4"></i></button>
                         <button onclick="adminBanUser('${u.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-orange-500 flex items-center justify-center text-white transition-colors" title="Uzaklaştır (Ban)"><i data-lucide="ban" class="w-4 h-4"></i></button>
                         <button onclick="adminDeleteUser('${u.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-red-500 flex items-center justify-center text-white transition-colors" title="Kullanıcıyı Sil"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
@@ -5570,12 +5557,11 @@ async function renderAdminUsers() {
 }
 
 async function adminChangeRole(userId, currentRole) {
-    const roles = ['admin', 'moderator', 'coach', 'premium', 'user', 'reserve'];
-    const newRole = prompt(`Mevcut Rol: ${currentRole}\nYeni rolü yazın (${roles.join(', ')}):`, currentRole);
+    const newRole = prompt(`Mevcut Rol: ${currentRole}\nYeni rolü yazın (admin, premium, user):`, currentRole);
     if (!newRole || newRole === currentRole) return;
 
-    if (!roles.includes(newRole)) {
-        alert(`Geçersiz rol! Sadece şunları yazabilirsiniz: ${roles.join(', ')}`);
+    if (!['admin', 'premium', 'user'].includes(newRole)) {
+        alert("Sadece 'admin', 'premium' veya 'user' yazabilirsiniz.");
         return;
     }
 
@@ -5621,131 +5607,6 @@ async function adminDeleteUser(userId) {
         showToast("Kullanıcı başarıyla silindi.");
         renderAdminUsers();
     }
-}
-
-// --- AFFILIATE & SATIŞ FONKSİYONLARI ---
-
-function openReferralModal(userId, fullName) {
-    const modal = document.getElementById('referral-modal');
-    if (!modal) return;
-
-    document.getElementById('ref-user-id').value = userId;
-    document.getElementById('ref-user-name').textContent = fullName;
-    document.getElementById('ref-code-input').value = '';
-    
-    modal.classList.remove('hidden');
-    if (window.lucide) lucide.createIcons();
-}
-
-async function saveReferralCode() {
-    const userId = document.getElementById('ref-user-id').value;
-    const code = document.getElementById('ref-code-input').value.trim().toUpperCase();
-    const rate = parseFloat(document.getElementById('ref-rate-input').value);
-
-    if (!code) return showToast('Lütfen bir kod girin kanka.');
-    if (code.length < 3) return showToast('Kod en az 3 karakter olmalı.');
-
-    const sb = getSupabase();
-    if (!sb) return;
-
-    showToast('Kod kaydediliyor...');
-    
-    const { error } = await sb.from('referral_codes').upsert({
-        owner_id: userId,
-        code: code,
-        discount_rate: rate,
-        is_active: true
-    }, { onConflict: 'code' }); // Kod çakışırsa güncelle
-
-    if (error) {
-        console.error('Referral Save Error:', error);
-        alert('Hata: ' + error.message);
-    } else {
-        showToast('Satış kodu başarıyla atandı! 🎟️');
-        document.getElementById('referral-modal').classList.add('hidden');
-        renderAdminReferralCodes(); // Listeyi yenile
-    }
-}
-
-async function renderAdminReferralCodes() {
-    const list = document.getElementById('admin-referral-list');
-    if (!list) return;
-
-    const sb = getSupabase();
-    if (!sb) return;
-
-    const { data, error } = await sb.from('referral_codes')
-        .select('*, profiles(full_name)')
-        .order('created_at', { ascending: false });
-
-    if (error || !data) {
-        list.innerHTML = '<p class="text-red-500 text-[10px] text-center uppercase font-bold">Kodlar yüklenemedi.</p>';
-        return;
-    }
-
-    if (data.length === 0) {
-        list.innerHTML = '<p class="text-gray-600 text-[10px] text-center uppercase font-bold py-4">Aktif kod bulunmuyor.</p>';
-        return;
-    }
-
-    list.innerHTML = data.map(c => `
-        <div class="p-4 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between group hover:border-calith-orange/30 transition-all">
-            <div>
-                <p class="text-lg font-black text-white italic tracking-widest">${c.code}</p>
-                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">${c.profiles?.full_name || 'İsimsiz'} • %${c.discount_rate * 100} İndirim</p>
-            </div>
-            <button onclick="deleteReferralCode('${c.id}')" class="w-8 h-8 rounded-lg bg-red-500/5 text-red-500/20 group-hover:text-red-500 hover:bg-red-500/20 flex items-center justify-center transition-all">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-        </div>
-    `).join('');
-    if (window.lucide) lucide.createIcons();
-}
-
-async function deleteReferralCode(id) {
-    if (!confirm('Bu indirim kodunu silmek istediğine emin misin kanka?')) return;
-    const sb = getSupabase();
-    await sb.from('referral_codes').delete().eq('id', id);
-    renderAdminReferralCodes();
-}
-
-async function renderAdminOrders() {
-    const list = document.getElementById('admin-order-list');
-    if (!list) return;
-
-    const sb = getSupabase();
-    if (!sb) return;
-
-    const { data, error } = await sb.from('orders')
-        .select('*, profiles(full_name, email), referral_codes(code)')
-        .order('created_at', { ascending: false });
-
-    if (error || !data) {
-        list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500 font-bold uppercase text-xs">Siparişler yüklenemedi.</td></tr>';
-        return;
-    }
-
-    if (data.length === 0) {
-        list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-600 font-bold uppercase text-xs">Henüz satış yapılmadı.</td></tr>';
-        return;
-    }
-
-    list.innerHTML = data.map(o => `
-        <tr class="hover:bg-white/5 transition-colors">
-            <td class="p-4">
-                <p class="font-bold text-white text-xs">${o.profiles?.full_name || 'Misafir'}</p>
-                <p class="text-[9px] text-gray-500">${o.profiles?.email || '-'}</p>
-            </td>
-            <td class="p-4">
-                ${o.referral_codes ? `<span class="bg-calith-orange/10 text-calith-orange px-2 py-1 rounded text-[10px] font-black italic tracking-widest">${o.referral_codes.code}</span>` : '<span class="text-gray-700 text-[10px] font-bold">-</span>'}
-            </td>
-            <td class="p-4 font-black text-white italic text-sm">${o.total_amount}₺</td>
-            <td class="p-4 text-[10px] text-gray-500 font-bold uppercase">${new Date(o.created_at).toLocaleDateString('tr-TR')}</td>
-            <td class="p-4 text-right">
-                <span class="text-[9px] font-black text-green-500 uppercase tracking-widest border border-green-500/20 px-2 py-1 rounded bg-green-500/5">TAMAMLANDI</span>
-            </td>
-        </tr>
-    `).join('');
 }
 
 function resetLinkForm() {

@@ -32,33 +32,21 @@ Sistem iki farklı katmandan oluşur:
 
 ---
 
-## 🎟️ 4. DİNAMİK AFFILIATE MOTORU (CANLI SİSTEM)
-Moderatör ve antrenörlere özel kurgulanan veritabanı tabanlı indirim sistemidir.
+## 🎟️ 4. İNDİRİM VE AFFILIATE MOTORU
+Kullanıcının isteği üzerine kurgulanan moderatör bazlı indirim sistemidir.
 
-- **Mantık:** `currentDiscount` adında global bir nesne indirim bilgilerini tutar.
+- **Mantık:** `currentDiscount` adında global bir değişken indirim oranını tutar.
 - **Fonksiyon:** `applyDiscountCode()`
-- **Kod Doğrulama (DATABASE):** Kodlar artık `app.js` içinde değil, Supabase `referral_codes` tablosu üzerinden sorgulanır.
-  - Kod aktif mi? (`is_active: true`)
-  - İndirim oranı nedir? (`discount_rate`)
-- **İş Akışı:**
-    1. Kullanıcı kodu girer.
-    2. `applyDiscountCode` asenkron olarak DB'ye gider.
-    3. Başarılıysa `currentDiscount` dolar ve `updateCartPageTotals()` fiyatları günceller.
+- **Kod Doğrulama:** Şimdilik `app.js` içinde statik bir sözlük (dictionary) üzerinden çalışır.
+  - Örn: `ASRIN10` -> %10 İndirim.
+- **Hesaplama:** `updateCartPageTotals()` fonksiyonu ara toplamdan indirim oranını düşer ve "TOPLAM" fiyatı belirler.
 
 ---
 
-## 📊 5. SATIŞ VE ADMİN YÖNETİMİ (FAZ 6)
-Sistem artık sadece indirim yapmıyor, aynı zamanda satış takibi de yapıyor:
-
-1.  **Kod Atama:** Admin panelinde `renderAdminUsers` listesinde her kullanıcının yanında bir "Bilet" ikonu bulunur. Bu ikonla kullanıcıya anında `referral_codes` tablosunda bir kod tanımlanır.
-2.  **Sipariş Kaydı:** Ödeme/Sipariş tamamlandığında (Şu an demo aşamasında), sipariş bilgileri `orders` tablosuna; kullanılan kod ID'si ve toplam tutar ile birlikte kaydedilir.
-3.  **Admin Paneli:** "Siparişler & Kodlar" sekmesi üzerinden tüm satış geçmişi ve aktif referans kodları canlı olarak izlenebilir.
-
----
-
-## 🚀 6. GELECEK PLANLAR
-1.  **Moderatör Paneli:** `moderator` veya `coach` rolündeki kullanıcıların profil sayfasında kendi satış istatistiklerini görebileceği bir "Partner Area" oluşturulacak.
-2.  **Otomatik Hak Ediş:** Satış başına otomatik komisyon veya puan hesaplama sistemi eklenecek.
+## 🚀 5. GELECEK PLANLAR (FAZ 6 ENTEGRASYONU)
+1.  **Dinamik Kodlar:** İndirim kodları `referral_codes` tablosundan çekilecek.
+2.  **Satış Takibi:** Sipariş tamamlandığında, kullanılan kodun sahibine (Mod/Antrenör) `sales` tablosu üzerinden +1 puan/satış eklenecek.
+3.  **Admin Kontrolü:** Tüm bu işlemler Admin Panelinde yeni bir "Satışlar" sekmesinde listelenecek.
 
 ---
 
