@@ -3962,15 +3962,10 @@ function renderProfileSection() {
                             <h2 id="profile-name" class="text-2xl sm:text-3xl font-display font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">YÜKLENİYOR...</h2>
                             <div id="profile-badge" class="px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border border-calith-orange/20 bg-calith-orange/10 text-calith-orange shadow-[0_0_15px_rgba(255,107,53,0.1)]">ÜYE</div>
                         </div>
-                        <div class="flex items-center justify-center md:justify-start gap-2 group/mail relative">
-                            <p id="profile-email" class="text-gray-500 font-bold text-xs uppercase tracking-widest hover:text-gray-300 transition-colors cursor-pointer" onclick="toggleEmailVisibility()">
-                                <i data-lucide="mail" class="w-3 h-3 text-calith-orange inline-block mr-1"></i>
-                                <span id="profile-email-text">******</span>
-                            </p>
-                            <button onclick="toggleEmailVisibility()" class="w-6 h-6 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-gray-500 hover:text-calith-orange transition-all" title="Göster/Gizle">
-                                <i id="email-toggle-icon" data-lucide="eye-off" class="w-3 h-3"></i>
-                            </button>
-                        </div>
+                        <p id="profile-email" class="text-gray-500 font-bold text-xs uppercase tracking-widest flex items-center justify-center md:justify-start gap-2 hover:text-gray-300 transition-colors">
+                            <i data-lucide="mail" class="w-3 h-3 text-calith-orange"></i>
+                            YÜKLENİYOR...
+                        </p>
                         <p id="profile-since" class="text-gray-600 font-bold text-[9px] uppercase tracking-[0.2em] mt-2 flex items-center justify-center md:justify-start gap-2">
                             <div class="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.03] border border-white/5">
                                 <i data-lucide="calendar" class="w-3 h-3 text-calith-orange"></i>
@@ -4252,12 +4247,8 @@ async function loadProfileData(user) {
 
     // Hızlı bilgi yükle (Metadatadan)
     if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
-    const emailTextEl = document.getElementById('profile-email-text');
-    if (emailTextEl) {
-        const realEmail = user.email || 'BİLİNMİYOR';
-        emailTextEl.setAttribute('data-real-email', realEmail);
-        emailTextEl.textContent = '******' + realEmail.substring(realEmail.indexOf('@')); // Maskeli yükle
-    }
+    const emailEl = document.getElementById('profile-email');
+    if (emailEl) emailEl.textContent = user.email;
 
     // TÜM VERİLERİ PARALEL ÇEK (Hız optimizasyonu)
     const [profileResult, roleResult, programsResult] = await Promise.all([
@@ -7759,28 +7750,4 @@ function submitSetFeedback(weight, reps) {
         console.error('[Calith] submitSetFeedback HATA:', e);
         processSetWithFeedback(weight, reps, true, 'ideal');
     }
-}
-
-/**
- * E-Posta Görünürlüğünü Değiştir (Gizlilik Modu)
- */
-function toggleEmailVisibility() {
-    const emailEl = document.getElementById('profile-email-text');
-    const iconEl = document.getElementById('email-toggle-icon');
-    if (!emailEl || !iconEl) return;
-
-    const realEmail = emailEl.getAttribute('data-real-email');
-    if (!realEmail) return;
-
-    const isMasked = emailEl.textContent.includes('******');
-
-    if (isMasked) {
-        emailEl.textContent = realEmail;
-        iconEl.setAttribute('data-lucide', 'eye');
-    } else {
-        emailEl.textContent = '******' + realEmail.substring(realEmail.indexOf('@'));
-        iconEl.setAttribute('data-lucide', 'eye-off');
-    }
-
-    if (window.lucide) lucide.createIcons();
 }
