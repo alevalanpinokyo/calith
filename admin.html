@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=202605032335">
+    <link rel="stylesheet" href="styles.css?v=202605032338">
 
     <script>
         tailwind.config = {
@@ -455,7 +455,6 @@
                     </div>
                 </div>
                 
-                <!-- LIST -->
                 <div class="lg:col-span-2 space-y-6">
                     <h2 class="font-display text-2xl font-bold uppercase">MEVCUT KARTLAR</h2>
                     <div id="admin-hc-list" class="grid gap-4"></div>
@@ -535,6 +534,28 @@
         </div>
 
         <!-- KULLANICILAR SECTION -->
+        <div id="section-users" class="hidden space-y-6 mt-12">
+            <div class="flex items-center justify-between">
+                <h2 class="font-display text-2xl font-bold uppercase">SİSTEM KULLANICILARI</h2>
+                <button onclick="renderAdminUsers()" class="text-[10px] font-bold text-calith-orange border border-calith-orange/30 px-3 py-1.5 rounded-lg hover:bg-calith-orange hover:text-white transition-all"><i data-lucide="refresh-cw" class="w-3 h-3 inline"></i> YENİLE</button>
+            </div>
+            <div class="overflow-x-auto bg-calith-gray/50 rounded-3xl border border-white/10 p-1">
+                <table class="w-full text-left border-collapse md:min-w-[800px]">
+                    <thead>
+                        <tr class="bg-black/40 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                            <th class="p-4 rounded-tl-2xl">Kullanıcı</th>
+                            <th class="p-4">Rol</th>
+                            <th class="p-4">Fiziksel / Yaş</th>
+                            <th class="p-4">Spor Geçmişi</th>
+                            <th class="p-4">Kayıt Tarihi</th>
+                            <th class="p-4 rounded-tr-2xl text-right">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-list" class="divide-y divide-white/5 text-sm">
+                        <tr><td colspan="6" class="p-8 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">Kullanıcılar Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- SİPARİŞLER & KODLAR SECTION -->
@@ -615,7 +636,7 @@
     </div>
 </section>
 
-    <script src="js/app.js?v=202605032335"></script>
+    <script src="js/app.js?v=202605032338"></script>
     <script>
         
         function switchAdminTab(tab) {
@@ -627,6 +648,7 @@
             document.getElementById('section-homecards').classList.toggle('hidden', tab !== 'homecards');
             document.getElementById('section-links').classList.toggle('hidden', tab !== 'links');
             document.getElementById('section-users').classList.toggle('hidden', tab !== 'users');
+            document.getElementById('section-orders').classList.toggle('hidden', tab !== 'orders');
             
             document.getElementById('tab-blog').className = tab === 'blog' ? "px-6 md:px-8 py-3 rounded-xl font-bold text-xs md:text-sm bg-calith-orange text-white shadow-lg shrink-0" : "px-6 md:px-8 py-3 rounded-xl font-bold text-xs md:text-sm text-gray-400 hover:text-white shrink-0";
             document.getElementById('tab-products').className = tab === 'products' ? "px-6 md:px-8 py-3 rounded-xl font-bold text-xs md:text-sm bg-calith-orange text-white shadow-lg shrink-0" : "px-6 md:px-8 py-3 rounded-xl font-bold text-xs md:text-sm text-gray-400 hover:text-white shrink-0";
