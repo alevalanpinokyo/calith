@@ -5767,11 +5767,10 @@ async function renderAdminOrders() {
     const sb = getSupabase();
     if (!sb) return;
 
-    const { data, error } = await sb.from('orders')
-        .select('*, profiles(full_name, email), referral_codes(code)')
-        .order('created_at', { ascending: false });
+    const { data, error } = await sb.rpc('get_admin_orders');
 
     if (error || !data) {
+        console.error('Orders RPC Error:', error);
         list.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500 font-bold uppercase text-xs">Siparişler yüklenemedi.</td></tr>';
         return;
     }
@@ -5784,16 +5783,16 @@ async function renderAdminOrders() {
     list.innerHTML = data.map(o => `
         <tr class="hover:bg-white/5 transition-colors">
             <td class="p-4">
-                <p class="font-bold text-white text-xs">${o.profiles?.full_name || 'Misafir'}</p>
-                <p class="text-[9px] text-gray-500">${o.profiles?.email || '-'}</p>
+                <p class="font-bold text-white text-xs">${o.full_name || 'Misafir'}</p>
+                <p class="text-[9px] text-gray-500">${o.email || '-'}</p>
             </td>
             <td class="p-4">
-                ${o.referral_codes ? `<span class="bg-calith-orange/10 text-calith-orange px-2 py-1 rounded text-[10px] font-black italic tracking-widest">${o.referral_codes.code}</span>` : '<span class="text-gray-700 text-[10px] font-bold">-</span>'}
+                ${o.referral_code ? `<span class="bg-calith-orange/10 text-calith-orange px-2 py-1 rounded text-[10px] font-black italic tracking-widest">${o.referral_code}</span>` : '<span class="text-gray-700 text-[10px] font-bold">-</span>'}
             </td>
             <td class="p-4 font-black text-white italic text-sm">${o.total_amount}₺</td>
             <td class="p-4 text-[10px] text-gray-500 font-bold uppercase">${new Date(o.created_at).toLocaleDateString('tr-TR')}</td>
             <td class="p-4 text-right">
-                <span class="text-[9px] font-black text-green-500 uppercase tracking-widest border border-green-500/20 px-2 py-1 rounded bg-green-500/5">TAMAMLANDI</span>
+                <span class="text-[9px] font-black text-green-500 uppercase tracking-widest border border-green-500/20 px-2 py-1 rounded bg-green-500/5">${o.status?.toUpperCase() || 'TAMAMLANDI'}</span>
             </td>
         </tr>
     `).join('');
