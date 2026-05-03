@@ -1270,50 +1270,9 @@ async function applyDiscountCode() {
     updateCartPageTotals();
 }
 
-async function proceedToCheckout() {
+function proceedToCheckout() {
     if (cart.length === 0) return showToast("Sepetin boş kanka!");
-    
-    const sb = getSupabase();
-    if (!sb) return;
-
-    // Fiyat Hesaplama
-    const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-    const total = currentDiscount ? (subtotal * (1 - currentDiscount.rate)) : subtotal;
-
-    // Sipariş Verisi
-    const orderData = {
-        user_id: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : null,
-        referral_code_id: currentDiscount ? currentDiscount.id : null,
-        total_amount: Math.round(total),
-        items: cart,
-        status: 'completed'
-    };
-
-    showToast("Sipariş işleniyor...");
-
-    const { error } = await sb.from('orders').insert([orderData]);
-
-    if (error) {
-        console.error('Sipariş hatası:', error);
-        showToast('Sipariş oluşturulamadı kanka!', 'error');
-    } else {
-        showToast('Sipariş başarıyla tamamlandı! 🔥');
-        
-        // Temizlik
-        cart = [];
-        saveCart();
-        currentDiscount = null;
-        
-        // Arayüzü Güncelle
-        renderCartPage();
-        updateCartUI();
-        
-        // Eğer bir indirim kodu alanı varsa mesajı temizle
-        const msg = document.getElementById('discount-msg');
-        if (msg) msg.classList.add('hidden');
-        const input = document.getElementById('discount-code');
-        if (input) input.value = '';
-    }
+    showToast("Sipariş sistemi hazırlanıyor...");
 }
 
 function showToast(msg) {

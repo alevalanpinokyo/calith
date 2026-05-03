@@ -1,0 +1,55 @@
+# CALITH: AKILLI GELİŞİM VE ANTRENMAN ASİSTANI (YOL HARİTASI)
+
+Bu döküman, Calith'in bir içerik sitesinden "Yapay Zeka Destekli Dijital Koç"a dönüşüm planını içerir.
+
+---
+
+## ✅ FAZ 1: VERİ MİMARİSİ VE 1RM MOTORU (TAMAMLANDI)
+- [x] (2024-04-25) Exercise Stats Tablosu & 1RM Hesaplama. [TEST EDİLDİ]
+- [x] (2024-04-25) Profilde "Rekorlarım (PR)" Sekmesi. [TEST EDİLDİ]
+
+## ✅ FAZ 2: ID-LINKED ARCHITECTURE (ID DEVRİMİ - TAMAMLANDI)
+*Veritabanı ve uygulama mantığı "İsim" tabanlı yapıdan "Dinamik ID" referanslı yapıya taşındı.*
+- [x] (2026-05-02) **Program ID Entegrasyonu:** Hareketlerin kütüphane ile ID üzerinden mühürlenmesi. [TAMAM ✅]
+- [x] (2026-05-02) **PR (Kişisel Rekor) Senkronizasyonu:** Rekorların kütüphane güncellemelerini (isim/video) canlı takip etmesi. [TAMAM ✅]
+- [x] (2026-05-02) **Hybrid Matching & Deduplication:** Mükerrer rekor kartlarının UI tarafında birleştirilmesi ve eski verilerin ID'ye otomatik göçü. [TAMAM ✅]
+
+## 🔄 FAZ 3: AKILLI ÖNERİ VE KURAL MOTORU (GÜNCEL SÜREÇ)
+Sistem artık sadece yüzde hesaplamayacak, profesyonel antrenman kurallarını (DUP vb.) uygulayacak.
+
+- [x] (2024-04-25) **Smart Suggestion UI:** Ağırlık giriş alanında "💡 ÖNERİLEN: X KG" etiketi. [TEST EDİLDİ]
+- [x] (2024-04-25) **Interaktif Geri Bildirim:** Set sonu Form (Temiz/Kirli) ve RPE (Hafif/İdeal/Ağır) modalı. [TEST EDİLDİ]
+- [ ] (2026-05-02) **Smart Engine Brain:** PR ID'leri üzerinden kullanıcının gelişimine göre dinamik ağırlık/tekrar önerisi. [GÜNCEL SÜREÇ]
+- [ ] (2024-04-25) **Otomatik Karar Mekanizması:** CNS Yorgunluğu / Deload kontrolü. [BEKLİYOR]
+
+## ✅ FAZ 6: YETKİ MİMARİSİ VE AFFILIATE (İNDİRİM KODU) SİSTEMİ (TAMAMLANDI)
+*Kullanıcı rollerinin derinleşmesi ve topluluk odaklı satış/indirim mekanizması kuruldu.*
+- [x] (2026-05-03) **Gelişmiş Rol Yönetimi:** `admin`, `moderator`, `coach`, `premium`, `reserve` rolleri eklendi. [TAMAM ✅]
+- [x] (2026-05-03) **Affiliate (Referans/Kupon) Motoru:** Admin panelinden kod atama ve DB tabanlı indirim sistemi. [TAMAM ✅]
+- [x] (2026-05-03) **Canlı Sepet Entegrasyonu:** Kodların sepet sayfasında veritabanı üzerinden anlık doğrulanması. [TAMAM ✅]
+- [x] (2026-05-03) **Sipariş Takibi:** Admin panelinde "Siparişler & Kodlar" sekmesi ile satış geçmişi izleme. [TAMAM ✅]
+
+## 📊 FAZ 4: ANALİTİK VE GÖRSELLEŞTİRME (ÖNCELİK)
+ID altyapısı sayesinde artık verileri görselleştirebiliriz.
+- [ ] **Gelişim Grafikleri (Chart.js):** Her hareketin ID bazlı gelişim grafiğinin (Line Chart) kullanıcıya sunulması. [KRİTİK ÖNCELİK 🚀]
+- [ ] **Program Verimlilik Raporu:** Hangi programın hangi hareketlerde ne kadar artış sağladığının analizi.
+- [ ] **PR Kart Oluşturucu:** Yeni rekor kırıldığında indirilebilir "Trophy Card" üretimi.
+
+## 🛠️ FAZ 5: CUSTOM BUILDER & ADMIN TOOLS
+- [ ] **Program Builder:** Kullanıcıların kütüphaneden sürükle-bırak ile kendi programını yazması. [BEKLİYOR]
+- [ ] **Admin Maintenance Tools:** Veritabanındaki ID'siz mükerrer kayıtları temizleme ve optimize etme araçları. [PLANLANDI 🧹]
+
+---
+
+### 🚨 KRİTİK TEST / TAMAMLANANLAR LİSTESİ
+- [x] (2026-05-03) **Affiliate System:** Veritabanı tabanlı indirim kodu ve satış takip mimarisi. [TAMAM ✅]
+- [x] (2026-05-03) **Admin UI Fix:** Erişilebilirlik hataları ve inline CSS temizliği. [TAMAM ✅]
+- [x] (2026-05-03) **Admin Ürün Yönetimi Fix:** Eksik butonlar, taşma hataları ve gerçek silme mantığı onarıldı. [TAMAM ✅]
+- [x] (2026-05-02) **Note Display Fix:** Program detayda görünmeyen notların "Calith Mavisi" (#00D9FF) ile eklenmesi. [TAMAM ✅]
+
+---
+
+### GÜNCEL DURUM VE NOTLAR:
+- **(2026-05-03):** BÜYÜK GÜNCELLEME: Affiliate ve Yetki sistemi (Faz 6) başarıyla tamamlandı. Sepet canlı veriye bağlandı.
+- **(2026-05-03):** Ürün yönetim sistemi stabilize edildi.
+- **(2026-05-02):** Calith tamamen ID bazlı mimariye geçti.

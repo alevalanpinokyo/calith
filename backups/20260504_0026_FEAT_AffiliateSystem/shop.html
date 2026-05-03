@@ -6,15 +6,15 @@
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CALITH | Premium</title>
+    <title>CALITH | Calisthenics Ekipman</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=202605040032">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=202605040024">
     <script>
         tailwind.config = {
             theme: {
@@ -39,8 +39,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="font-sans antialiased bg-calith-dark text-white">
+
 <div class="grain"></div>
 
+<!-- Navigation -->
 <nav id="global-nav" class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-[#0A0A0A]/85 shadow-2xl shadow-black/50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div class="grid grid-cols-[auto_1fr_auto] items-center h-20 gap-4">
@@ -56,10 +58,10 @@
             <div class="hidden lg:flex items-center justify-center gap-8">
                 <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ANA SAYFA</a>
                 <a href="skills.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">PROGRAMLAR</a>
-                <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">EKİPMAN</a>
+                <a href="shop.html" class="text-calith-orange font-bold text-base whitespace-nowrap transition-all">EKİPMAN</a>
                 <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">ÖĞREN</a>
                 <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap transition-all">HAKKIMIZDA</a>
-                <a href="premium.html" class="text-calith-orange font-bold text-base whitespace-nowrap uppercase tracking-widest transition-all drop-shadow-[0_0_8px_rgba(255,107,53,0.3)]">KOÇLUK</a>
+                <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base whitespace-nowrap uppercase tracking-widest transition-all drop-shadow-[0_0_8px_rgba(255,107,53,0.3)]">KOÇLUK</a>
             </div>
             <!-- Mobilde orta kolon boş kalır -->
             <div class="lg:hidden"></div>
@@ -85,39 +87,89 @@
         <div class="px-5 py-6 space-y-4">
             <a href="index.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ANA SAYFA</a>
             <a href="skills.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">PROGRAMLAR</a>
-            <a href="shop.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">EKİPMAN</a>
+            <a href="shop.html" class="text-calith-orange font-bold text-base block py-2 transition-colors">EKİPMAN</a>
             <a href="blog.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">ÖĞREN</a>
             <a href="about.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 transition-colors">HAKKIMIZDA</a>
-            <a href="premium.html" class="text-calith-orange font-bold text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
+            <a href="premium.html" class="text-white font-medium hover:text-calith-orange text-base block py-2 uppercase tracking-widest transition-colors">KOÇLUK</a>
             <!-- Profil linki header'a taşındı -->
         </div>
     </div>
 </nav>
 
-<section class="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center text-center px-4">
-    <h1 class="font-display text-5xl md:text-8xl font-bold mb-6">CALITH <span class="gradient-text">PREMIUM</span></h1>
-    <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-12">Kişiye özel koçluk, profesyonel antrenman programları ve beslenme takibi.</p>
-    <div class="grid md:grid-cols-2 gap-8 max-w-4xl w-full">
-        <div class="product-card p-10 rounded-3xl border-calith-orange/20">
-            <h3 class="font-display text-2xl font-bold mb-4">AYLIK PLAN</h3>
-            <p class="text-4xl font-bold mb-8">299₺ <span class="text-sm font-normal text-gray-500">/ay</span></p>
-            <button class="w-full btn-primary py-4 rounded-xl font-bold">KATIL</button>
-        </div>
-        <div class="product-card p-10 rounded-3xl border-calith-accent/20">
-            <h3 class="font-display text-2xl font-bold mb-4">YILLIK PLAN</h3>
-            <p class="text-4xl font-bold mb-8">199₺ <span class="text-sm font-normal text-gray-500">/ay</span></p>
-            <button class="w-full bg-calith-accent text-black py-4 rounded-xl font-bold">KATIL</button>
+<!-- SHOP HEADER (JS tarafindan yonetilecek veya temizlendi) -->
+<div class="pt-24"></div>
+
+<!-- SHOP FILTERS -->
+<div id="shop-filters" class="sticky top-20 z-30 nav-blur border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex gap-3 overflow-x-auto no-scrollbar">
+        <button onclick="filterProducts('all')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all active bg-calith-orange text-white" data-filter="all">Tümü</button>
+        <button onclick="filterProducts('bar')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="bar">Barfiks</button>
+        <button onclick="filterProducts('parallettes')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="parallettes">Paralel</button>
+        <button onclick="filterProducts('rings')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="rings">Halka</button>
+        <button onclick="filterProducts('band')" class="shop-filter px-6 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-calith-orange hover:text-white transition-all" data-filter="band">Band</button>
+    </div>
+</div>
+
+<!-- SHOP GRID -->
+<section id="shop" class="pt-32 pb-20 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Loaded via app.js renderShop() -->
         </div>
     </div>
 </section>
 
-<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8">
+<!-- PRODUCT DETAIL (Hidden by default) -->
+<section id="product-detail" class="hidden min-h-screen pt-32 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <button onclick="showSection('shop')" class="mb-12 text-sm text-gray-400 hover:text-calith-orange transition-colors flex items-center gap-2 group">
+            <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>Tüm ürünler
+        </button>
+        <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div class="aspect-square rounded-3xl overflow-hidden bg-calith-gray border border-white/5 flex items-center justify-center p-12 relative">
+                <div class="absolute inset-0 bg-gradient-to-br from-calith-orange/10 to-transparent"></div>
+                <img id="pd-image" src="" alt="Ürün Görseli" class="w-3/4 h-3/4 object-contain transition-transform duration-500 hover:scale-110 z-10">
+            </div>
+            <div class="flex flex-col">
+                <p id="pd-category" class="text-calith-orange font-bold text-sm tracking-widest uppercase mb-4"></p>
+                <h2 id="pd-name" class="font-display text-4xl lg:text-6xl font-bold mb-6"></h2>
+                <div class="flex items-baseline gap-4 mb-8">
+                    <span id="pd-price" class="text-4xl font-bold"></span>
+                    <span id="pd-old-price" class="text-xl text-gray-500 line-through"></span>
+                </div>
+                <p id="pd-desc" class="text-gray-400 text-lg leading-relaxed mb-10"></p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex items-center border border-white/10 rounded-full h-14 bg-white/5">
+                        <button onclick="changePdQty(-1)" class="px-6 hover:text-calith-orange transition-colors font-bold">-</button>
+                        <span id="pd-qty" class="px-4 font-bold min-w-[3rem] text-center text-lg">1</span>
+                        <button onclick="changePdQty(1)" class="px-6 hover:text-calith-orange transition-colors font-bold">+</button>
+                    </div>
+                    <button onclick="addToCartFromDetail()" class="flex-1 btn-primary h-14 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        <span>SEPETE EKLE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8 mt-20">
     <!-- Merkezi Footer app.js tarafından render edilir -->
 </footer>
 
+<!-- Cart Drawer -->
 
 
-    <script src="js/app.js?v=202605040032"></script>
-    <script></script>
+    <script src="js/app.js?v=202605040024"></script>
+    <script>
+        
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, observerOptions);
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>

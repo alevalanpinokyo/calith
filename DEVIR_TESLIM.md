@@ -1,39 +1,32 @@
-# 📋 CALİTH DEVİR TESLİM RAPORU (20260503_2335)
+# CALITH DEVİR TESLİM RAPORU (04.05.2026 - 00:30)
 
-Bu oturumda; Calith projesine **Affiliate (İş Ortaklığı) ve İndirim Sistemi** tamamen entegre edilmiş, admin yetkilendirme sistemi genişletilmiş ve sepet motoru canlı veritabanına bağlanmıştır.
-
----
-
-### ✅ Tamamlanan İşlemler
-1.  **Affiliate & Referans Sistemi Kuruldu:**
-    *   Supabase üzerinde `referral_codes` ve `orders` tabloları oluşturuldu (SQL seviyesinde).
-    *   Admin panelinden kullanıcılara özel indirim kodu atama (Modal üzerinden) özelliği eklendi.
-    *   Her kodun indirim oranı (%5 - %25 arası) ve sahibi (owner) artık veritabanında takip ediliyor.
-2.  **Moderasyon ve Rol Genişletmesi:**
-    *   `adminChangeRole` sistemi güncellendi; artık `moderator`, `coach`, `reserve` rolleri resmi olarak atanabiliyor.
-    *   Admin kullanıcı listesinde "Kod Ata" (Ticket ikonlu) butonu aktif edildi.
-3.  **Canlı Sepet İndirim Motoru:**
-    *   `app.js` içerisindeki statik `validCodes` listesi kaldırıldı.
-    *   Sepet sayfasında girilen kodlar artık Supabase üzerinden anlık sorgulanıyor (`referral_codes` tablosu).
-    *   Geçersiz veya süresi dolmuş kodlar için dinamik uyarılar eklendi.
-4.  **Admin Paneli UI Fixleri:**
-    *   `admin.html` üzerindeki erişilebilirlik (Accessibility) hataları (select title eksikliği vb.) giderildi.
-    *   Modal yapılarındaki satır içi (inline) CSS'ler Tailwind sınıflarına taşındı.
-5.  **Otomasyon:**
-    *   Son stabil sürüm: `v=202605032332`
-    *   Oluşturulan tam yedek: `backups/20260503_2305_FEAT_CartSystemAndDocs`
+Bu rapor, "Affiliate ve Sipariş Sistemi Entegrasyonu" oturumunun sonuçlarını içerir.
 
 ---
 
-### ⚠️ Devralan Ajan / Kullanıcı İçin Not
-*   **Önemli:** Sepet sayfasındaki indirimlerin çalışması için Supabase'de `referral_codes` tablosunda en az bir aktif kod bulunmalıdır.
-*   Admin panelindeki yeni sekmeyi (Siparişler & Kodlar) görmek için sayfayı yenilemek yeterlidir.
+## ✅ Tamamlanan İşler
+1.  **Affiliate & Sipariş Sistemi:**
+    *   `referral_codes` ve `orders` tabloları Supabase'e işlendi.
+    *   Admin panelinde "Siparişler & Kodlar" sekmesi tamamen aktif edildi.
+2.  **Süper RPC (get_admin_referral_codes):**
+    *   Adminin, kod sahiplerinin gizli maillerini görebilmesi için `auth.users` ile join yapan özel bir fonksiyon yazıldı.
+    *   Postgres tip uyuşmazlığı (`varchar` vs `text`) sorunları `::text` cast'leri ile giderildi.
+3.  **Admin UI Onarımı:**
+    *   Hatalı `switchAdminTab` mantığı ve silinen `section-users` divi geri getirilerek panel stabil hale getirildi.
+    *   Referans listesinde isim ve mail görünürlüğü optimize edildi.
+4.  **Dökümantasyon:**
+    *   `SUPABASE_TABLES.md` projenin son haline göre güncellendi ve tüm RPC SQL kodları içine eklendi.
+5.  **Yedekleme:**
+    *   `20260504_0026_FEAT_AffiliateSystem` adıyla tam yedek alındı.
+
+## 🛠️ Teknik Notlar
+- **Versiyon:** `v=202605040024` (Final Stabil).
+- **Kritik:** Admin panelinde mailleri görmek için dökümandaki en güncel SQL fonksiyonunun (Cast edilmiş hali) çalıştırılması şarttır.
+
+## 📋 Gelecek Adımlar
+- **Sipariş Detayları:** `orders` tablosuna düşen siparişlerin hangi ürünleri içerdiğini (JSONB) admin panelinde detaylı göstermek.
+- **Partner Dashboard:** Moderatörlerin kendi satışlarını görebileceği basit bir arayüz.
 
 ---
-
-### ⏭️ Gelecek Adımlar
-1.  **Partner Dashboard:** Moderatör veya Antrenör rolündeki kullanıcıların kendi satış istatistiklerini görebileceği profil alt-sayfası tasarlanabilir.
-2.  **Otomatik Ödeme Onayı:** `orders` tablosuna düşen siparişlerin ödeme onayına göre otomatikleşmesi sağlanabilir.
-
-> **Calith Engineering Team:**
-> "Kullanıcılar artık sadece spor yapmıyor, Calith ailesinin bir parçası olup kazanabiliyor! 🚀🎟️🛡️"
+**OTURUM DURUMU:** ✅ BAŞARIYLA TAMAMLANDI VE YEDEKLENDİ.
+**SON PUSH:** GitHub main dalında güncel.
