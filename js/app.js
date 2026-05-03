@@ -2837,14 +2837,14 @@ async function importHomecardDefaults() {
         { id: 'lvl_3', section: 'levels', icon: '🔥', title: 'GÜÇLENİYORUM', desc_text: '20+ şınav yapabiliyorum.\nHareketler: Tek kol şınav, Muscle-up denemeleri, Front lever', link_text: 'İncele', link_url: 'skills.html?level=ileri' },
 
         // SCHEDULE
-        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: '✓ Duvar şınavı: 3 set\n✓ Koltuk dips\'i: 3 set\n✓ Superman: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
-        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: '✓ Air squat: 3 set\n✓ Lunges: 3 set\n✓ Calf raises: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
-        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: '✓ Duvar şınavı: 3 set\n✓ Glute bridge: 3 set\n✓ Plank: 3 set', link_text: 'Hareketleri İzle →', link_url: 'blog.html' },
+        { id: 'sch_1', section: 'schedule', icon: '01', badge: 'Üst Vücut (20 dk)', title: 'PAZARTESİ', desc_text: '\u2713 Duvar şınavı: 3 set\n\u2713 Koltuk dips\'i: 3 set\n\u2713 Superman: 3 set', link_text: 'Hareketleri İzle \u2192', link_url: 'blog.html' },
+        { id: 'sch_2', section: 'schedule', icon: '02', badge: 'Alt Vücut (20 dk)', title: 'ÇARŞAMBA', desc_text: '\u2713 Air squat: 3 set\n\u2713 Lunges: 3 set\n\u2713 Calf raises: 3 set', link_text: 'Hareketleri İzle \u2192', link_url: 'blog.html' },
+        { id: 'sch_3', section: 'schedule', icon: '03', badge: 'Tüm Vücut (25 dk)', title: 'CUMA', desc_text: '\u2713 Duvar şınavı: 3 set\n\u2713 Glute bridge: 3 set\n\u2713 Plank: 3 set', link_text: 'Hareketleri İzle \u2192', link_url: 'blog.html' },
 
         // EQUIPMENT (AŞAMALAR)
-        { id: 'eq_1', section: 'equipment', badge: '🟢 Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\nMaliyet: 0₺', link_text: 'Programı İndir →', link_url: 'skills.html' },
-        { id: 'eq_2', section: 'equipment', badge: '🟡 Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\nMaliyet: ~400-600₺\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele →', link_url: 'shop.html' },
-        { id: 'eq_3', section: 'equipment', badge: '🔴 Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\nMaliyet: ~1.200-1.800₺\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele →', link_url: 'shop.html' }
+        { id: 'eq_1', section: 'equipment', badge: '🟢 Aşama 1', title: 'ŞU AN (0-2 AY)', desc_text: 'İhtiyacın: Sadece bu rehber ve biraz yer\nMaliyet: 0₺', link_text: 'Programı İndir \u2192', link_url: 'skills.html' },
+        { id: 'eq_2', section: 'equipment', badge: '🟡 Aşama 2', title: 'TEMEL GÜÇ (2-6 AY)', desc_text: 'İhtiyacın: Kapı Barfiksi + Yoga Matı\nMaliyet: ~400-600₺\nNeden: Normal barfiks, yer hareketleri için stabil zemin', link_text: 'Ürünleri İncele \u2192', link_url: 'shop.html' },
+        { id: 'eq_3', section: 'equipment', badge: '🔴 Aşama 3', title: 'İLERİ SEVİYE (6+ AY)', desc_text: 'İhtiyacın: Paralel Barlar + Direnç Bandı\nMaliyet: ~1.200-1.800₺\nNeden: Dips, ileri hareketler, yardımcı egzersizler', link_text: 'Ürünleri İncele \u2192', link_url: 'shop.html' }
     ];
 
     const { error } = await sb.from('homecards').upsert(defaults);
@@ -3171,7 +3171,7 @@ function renderFrontendHomecards() {
                 const colorMap = ['calith-orange', 'calith-accent', 'red-500', 'green-500'];
                 const c = colorMap[i % colorMap.length];
                 const listItems = (sch.desc_text || '').split(/\n|\\n/).filter(l => l.trim().length > 0).map(l =>
-                    `<li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-${c} shrink-0 mt-0.5 font-bold text-lg">âœ“</span><span class="text-gray-400 font-medium tracking-tight">${l.trim().replace(/^[-âœ“* ]+/, '')}</span></li>`
+                    `<li class="flex items-start gap-3 pb-2.5 border-b border-white/[0.05] last:border-0"><span class="text-${c} shrink-0 mt-0.5 font-bold text-lg">\u2713</span><span class="text-gray-400 font-medium tracking-tight">${l.trim().replace(/^[-\u2713* ]+/, '')}</span></li>`
                 ).join('');
 
                 return `
@@ -3782,7 +3782,7 @@ function exportProgramPDF() {
             title: sch.title || '',
             badge: sch.badge || '',
             items: (sch.desc_text || '').split(/\n|\\n/)
-                .map(l => l.trim().replace(/^[-âœ“* ]+/, ''))
+                .map(l => l.trim().replace(/^[-\u2713* ]+/, ''))
                 .filter(l => l.length > 0)
         }));
     } else {
@@ -6803,7 +6803,7 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
                     const doneBtn = document.createElement('button');
                     doneBtn.id = 'timer-done-btn';
                     doneBtn.className = 'px-10 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-widest rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/30';
-                    doneBtn.textContent = '✓  TAMAM';
+                    doneBtn.textContent = '\u2713  TAMAM';
                     doneBtn.onclick = () => {
                         const repsInput = document.getElementById('workout-input-reps');
                         if (repsInput) repsInput.value = duration;
