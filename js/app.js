@@ -1276,13 +1276,20 @@ async function proceedToCheckout() {
     const sb = getSupabase();
     if (!sb) return;
 
+    // OTURUM GARANTİLEME: Eğer currentUser yoksa tekrar dene
+    let finalUserId = (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : null;
+    if (!finalUserId) {
+        const { data: { user } } = await sb.auth.getUser();
+        if (user) finalUserId = user.id;
+    }
+
     // Fiyat Hesaplama
     const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const total = currentDiscount ? (subtotal * (1 - currentDiscount.rate)) : subtotal;
 
     // Sipariş Verisi
     const orderData = {
-        user_id: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : null,
+        user_id: finalUserId,
         referral_code_id: currentDiscount ? currentDiscount.id : null,
         total_amount: Math.round(total),
         items: cart,
