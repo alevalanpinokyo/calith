@@ -5,11 +5,11 @@ window.calithConfig = {
     developerName: "alevalanpinokyo",
     year: new Date().getFullYear(),
     socialLinks: {
-        instagram: "https://instagram.com/calith",
+        instagram: "https://instagram.com/Calith.official",
         youtube: "https://www.youtube.com/@Calith.official",
-        tiktok: "https://tiktok.com/@calith",
-        twitter: "https://twitter.com/calith",
-        supportEmail: "destek@calith.com"
+        tiktok: "https://www.tiktok.com/@calith.official",
+        twitter: "https://twitter.com/Calith.official",
+        supportEmail: "[EMAIL_ADDRESS]"
     }
 };
 
