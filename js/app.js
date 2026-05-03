@@ -7049,7 +7049,6 @@ function initSharedUI() {
         `;
         document.body.appendChild(auth);
     }
-}
 
 /**
  * Calith Premium Onay Modalı (Custom Popup)
