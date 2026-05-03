@@ -1293,7 +1293,8 @@ async function proceedToCheckout() {
         referral_code_id: currentDiscount ? currentDiscount.id : null,
         total_amount: Math.round(total),
         items: cart,
-        status: 'completed'
+        status: 'completed',
+        payment_method: 'Kart' // Varsayılan ödeme türü
     };
 
     showToast("Sipariş işleniyor...");
@@ -5787,22 +5788,37 @@ async function renderAdminOrders() {
         return;
     }
 
-    list.innerHTML = data.map(o => `
+    list.innerHTML = data.map(o => {
+        const dateObj = new Date(o.order_date);
+        const formattedDate = dateObj.toLocaleDateString('tr-TR');
+        const formattedTime = dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        const shortOrderId = o.order_id ? o.order_id.split('-')[0].toUpperCase() : 'N/A';
+
+        return `
         <tr class="hover:bg-white/5 transition-colors">
             <td class="p-4">
-                <p class="font-bold text-white text-xs">${o.buyer_name || 'Misafir'}</p>
-                <p class="text-[9px] text-gray-500">${o.buyer_email || '-'}</p>
+                <div class="flex flex-col">
+                    <span class="text-[8px] font-black text-calith-orange mb-1">#${shortOrderId}</span>
+                    <p class="font-bold text-white text-xs">${o.buyer_name || 'Misafir'}</p>
+                    <p class="text-[9px] text-gray-500">${o.buyer_email || '-'}</p>
+                </div>
             </td>
             <td class="p-4">
                 ${o.used_code ? `<span class="bg-calith-orange/10 text-calith-orange px-2 py-1 rounded text-[10px] font-black italic tracking-widest">${o.used_code}</span>` : '<span class="text-gray-700 text-[10px] font-bold">-</span>'}
             </td>
-            <td class="p-4 font-black text-white italic text-sm">${o.order_total}₺</td>
-            <td class="p-4 text-[10px] text-gray-500 font-bold uppercase">${new Date(o.order_date).toLocaleDateString('tr-TR')}</td>
+            <td class="p-4">
+                <p class="font-black text-white italic text-sm">${o.order_total}₺</p>
+                <p class="text-[9px] text-gray-600 font-bold uppercase">${o.payment_method || 'Kart'}</p>
+            </td>
+            <td class="p-4">
+                <p class="text-[10px] text-white font-bold uppercase">${formattedDate}</p>
+                <p class="text-[9px] text-gray-500 font-bold tracking-widest">${formattedTime}</p>
+            </td>
             <td class="p-4 text-right">
                 <span class="text-[9px] font-black text-green-500 uppercase tracking-widest border border-green-500/20 px-2 py-1 rounded bg-green-500/5">${o.order_status?.toUpperCase() || 'TAMAMLANDI'}</span>
             </td>
         </tr>
-    `).join('');
+    `}).join('');
 }
 
 function resetLinkForm() {

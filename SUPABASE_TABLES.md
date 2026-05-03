@@ -1,59 +1,46 @@
-# CALITH SUPABASE VERİTABANI ŞEMASI (GÜNCEL)
+# SUPABASE VERİTABANI ŞEMASI VE TABLO YAPILARI
 
-Bu döküman, projenin en güncel veritabanı yapısını ve API (RPC) fonksiyonlarını içerir.
+Bu döküman, Calith projesindeki tüm veritabanı tablolarını, kolonlarını ve özel fonksiyonlarını (RPC) içerir. Veritabanı taşımalarında veya sıfırlamalarında bu yapı kullanılmalıdır.
 
 ---
 
-## 📊 Tablo Yapıları
+## 1. TEMEL TABLOLAR
 
-### 1. public.profiles
-Kullanıcıların genel profili ve fiziksel bilgileri.
-- `id` (uuid, PK, auth.users'a bağlı)
+### `profiles` (Kullanıcı Bilgileri)
+- `id` (uuid, primary key, auth.users.id ile eşleşir)
 - `full_name` (text)
-- `email` (text) -- *Sync yapılması önerilir*
-- `role` (text, default: 'user')
-- `fitness_level`, `goal` (text)
-- `weight`, `height` (numeric)
-- `age`, `since` (integer)
-- `created_at` (timestamptz)
+- `updated_at` (timestamptz)
 
-### 2. public.user_roles
-Kullanıcı yetki yönetimi (Admin, Coach, Moderator vb.).
-- `user_id` (uuid, PK)
-- `role` (text)
-- `created_at` (timestamptz)
+### `user_roles` (Yetkilendirme)
+- `id` (uuid, primary key)
+- `user_id` (uuid, references profiles.id)
+- `role` (text, default: 'user' - Seçenekler: 'user', 'admin', 'moderator', 'coach')
 
-### 3. public.referral_codes
-Affiliate/Satış ortaklığı kodları.
-- `id` (uuid, PK)
-- `owner_id` (uuid, profiles.id'ye bağlı)
-- `code` (text, Unique, BÜYÜK HARF)
-- `discount_rate` (numeric, Örn: 0.10)
+### `referral_codes` (İndirim ve Satış Ortaklığı Kodları)
+- `id` (uuid, primary key)
+- `owner_id` (uuid, references profiles.id - Koda sahip olan kişi)
+- `code` (text, unique - Örn: 'GAYALI', 'ALISIKEN')
+- `discount_rate` (numeric - Örn: 0.10 for 10%)
 - `is_active` (boolean, default: true)
 - `created_at` (timestamptz)
 
-### 4. public.orders
-Sistem üzerinden yapılan satışların kaydı.
-- `id` (uuid, PK)
-- `user_id` (uuid, FK -> profiles, Opsiyonel)
-- `referral_code_id` (uuid, FK -> referral_codes)
-- `total_amount` (numeric)
-- `items` (jsonb)
-- `status` (text, default: 'completed')
-- `created_at` (timestamptz)
+### `orders` (Sipariş Geçmişi)
+- `id` (uuid, primary key)
+- `user_id` (uuid, references profiles.id - Satın alan kişi)
+- `referral_code_id` (uuid, references referral_codes.id - Kullanılan indirim kodu)
+- `total_amount` (numeric, Toplam tutar)
+- `items` (jsonb, Satın alınan ürünlerin detaylı listesi)
+- `status` (text, Sipariş durumu: completed, pending vb.)
+- `payment_method` (text, Ödeme yöntemi: Kart, Havale vb.)
+- `created_at` (timestamptz, Sipariş tarihi ve saati)
 
 ---
 
-## 🛠️ Admin API (RPC Fonksiyonları)
-Güvenlik duvarlarını aşarak admin panelinin ihtiyaç duyduğu özel verileri çeker.
+## 🔐 ÖZEL RPC FONKSİYONLARI (ADMIN ONLY)
 
-### 1. get_admin_users
-Tüm kullanıcıları, rollerini ve `auth.users` tablosundaki e-postalarını birleştirerek getirir.
+Aşağıdaki fonksiyonlar, RLS kısıtlamalarını aşmak ve hassas verilere (E-posta vb.) güvenli erişim sağlamak için kullanılır.
 
-### 2. get_admin_referral_codes
-Referans kodlarını, sahiplerinin isimlerini ve **e-posta adreslerini** (auth.users'dan join ile) getirir. 🕵️‍♂️📧
-
-**SQL Kodu:**
+### 1. Referans Kodlarını Listeleme (`get_admin_referral_codes`)
 ```sql
 CREATE OR REPLACE FUNCTION get_admin_referral_codes()
 RETURNS TABLE (
@@ -90,26 +77,31 @@ BEGIN
     END IF;
 END;
 $$;
+```
 
--- SİPARİŞLERİ, ALICI BİLGİLERİNİ VE KULLANILAN KODLARI GETİREN ADMIN FONKSİYONU
+### 2. Siparişleri Listeleme (`get_admin_orders`)
+```sql
+DROP FUNCTION IF EXISTS get_admin_orders();
+
 CREATE OR REPLACE FUNCTION get_admin_orders()
 RETURNS TABLE (
-    id uuid,
-    user_id uuid,
-    referral_code_id uuid,
-    total_amount numeric,
-    items jsonb,
-    status text,
-    created_at timestamptz,
-    full_name text,
-    email text,
-    referral_code text
+    order_id uuid,
+    buyer_id uuid,
+    code_id uuid,
+    order_total numeric,
+    order_items jsonb,
+    order_status text,
+    order_date timestamptz,
+    payment_method text,
+    buyer_name text,
+    buyer_email text,
+    used_code text
 ) 
 LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 BEGIN
-    IF (SELECT role FROM public.user_roles WHERE user_id = auth.uid()) = 'admin' THEN
+    IF EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin') THEN
         RETURN QUERY
         SELECT 
             o.id,
@@ -119,6 +111,7 @@ BEGIN
             o.items,
             o.status,
             o.created_at,
+            o.payment_method,
             p.full_name::text,
             u.email::text,
             rc.code::text
@@ -133,14 +126,3 @@ BEGIN
 END;
 $$;
 ```
-
-
-### 3. get_admin_orders
-Tüm sipariş geçmişini; alıcı adı, kullanılan kod ve tutar bilgileriyle birlikte getirir.
-
----
-
-## 🛡️ Güvenlik (RLS) Politikaları
-- **Genel Kural:** Sadece `admin` rolüne sahip kullanıcılar RPC fonksiyonlarını tetikleyebilir.
-- **Referans Kodları:** Tüm kullanıcılar (misafirler dahil) bir kodun geçerli olup olmadığını kontrol edebilir (`SELECT` yetkisi).
-- **Profil:** Her kullanıcı sadece kendi profilini görebilir ve güncelleyebilir.
