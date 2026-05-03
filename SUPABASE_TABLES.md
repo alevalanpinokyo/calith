@@ -73,8 +73,14 @@ BEGIN
     IF (SELECT role FROM public.user_roles WHERE user_id = auth.uid()) = 'admin' THEN
         RETURN QUERY
         SELECT 
-            rc.id, rc.owner_id, rc.code, rc.discount_rate, 
-            rc.is_active, rc.created_at, p.full_name, u.email
+            rc.id, 
+            rc.owner_id, 
+            rc.code::text, 
+            rc.discount_rate, 
+            rc.is_active, 
+            rc.created_at, 
+            p.full_name::text, 
+            u.email::text
         FROM public.referral_codes rc
         LEFT JOIN public.profiles p ON rc.owner_id = p.id
         LEFT JOIN auth.users u ON p.id = u.id
