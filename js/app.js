@@ -4256,7 +4256,7 @@ async function loadProfileData(user) {
     if (emailTextEl) {
         const realEmail = user.email || 'BİLİNMİYOR';
         emailTextEl.setAttribute('data-real-email', realEmail);
-        emailTextEl.textContent = '******' + realEmail.substring(realEmail.indexOf('@')); // Maskeli yükle
+        emailTextEl.textContent = '******'; // Full Gizlilik
     }
 
     // TÜM VERİLERİ PARALEL ÇEK (Hız optimizasyonu)
@@ -7762,7 +7762,7 @@ function submitSetFeedback(weight, reps) {
 }
 
 /**
- * E-Posta Görünürlüğünü Değiştir (Gizlilik Modu)
+ * E-Posta G�r�n�rl���n� De�i�tir (Gizlilik Modu)
  */
 function toggleEmailVisibility() {
     const emailEl = document.getElementById('profile-email-text');
@@ -7778,7 +7778,7 @@ function toggleEmailVisibility() {
         emailEl.textContent = realEmail;
         iconEl.setAttribute('data-lucide', 'eye');
     } else {
-        emailEl.textContent = '******' + realEmail.substring(realEmail.indexOf('@'));
+        emailEl.textContent = '******';
         iconEl.setAttribute('data-lucide', 'eye-off');
     }
 
