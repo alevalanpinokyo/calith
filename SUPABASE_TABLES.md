@@ -52,7 +52,40 @@ Tüm kullanıcıları, rollerini ve `auth.users` tablosundaki e-postalarını bi
 
 ### 2. get_admin_referral_codes
 Referans kodlarını, sahiplerinin isimlerini ve **e-posta adreslerini** (auth.users'dan join ile) getirir. 🕵️‍♂️📧
-- **Amacı:** Adminin kimin ne kadar satış yaptığını ve kodun kime ait olduğunu net görmesi.
+
+**SQL Kodu:**
+```sql
+CREATE OR REPLACE FUNCTION get_admin_referral_codes()
+RETURNS TABLE (
+    id uuid,
+    owner_id uuid,
+    code text,
+    discount_rate numeric,
+    is_active boolean,
+    created_at timestamptz,
+    full_name text,
+    email text
+) 
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    IF (SELECT role FROM public.user_roles WHERE user_id = auth.uid()) = 'admin' THEN
+        RETURN QUERY
+        SELECT 
+            rc.id, rc.owner_id, rc.code, rc.discount_rate, 
+            rc.is_active, rc.created_at, p.full_name, u.email
+        FROM public.referral_codes rc
+        LEFT JOIN public.profiles p ON rc.owner_id = p.id
+        LEFT JOIN auth.users u ON p.id = u.id
+        ORDER BY rc.created_at DESC;
+    ELSE
+        RAISE EXCEPTION 'Yetkisiz erişim!';
+    END IF;
+END;
+$$;
+```
+
 
 ### 3. get_admin_orders
 Tüm sipariş geçmişini; alıcı adı, kullanılan kod ve tutar bilgileriyle birlikte getirir.
