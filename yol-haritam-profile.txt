@@ -32,19 +32,32 @@ ID altyapısı sayesinde artık verileri görselleştirebiliriz.
 - [ ] **Program Builder:** Kullanıcıların kütüphaneden sürükle-bırak ile kendi programını yazması. [BEKLİYOR]
 - [ ] **Admin Maintenance Tools:** Veritabanındaki ID'siz mükerrer kayıtları temizleme ve optimize etme araçları. [PLANLANDI 🧹]
 
+## 🚀 FAZ 6: YETKİ MİMARİSİ VE AFFILIATE (İNDİRİM KODU) SİSTEMİ
+Kullanıcı rollerinin derinleşmesi ve topluluk odaklı satış/indirim mekanizması. [YENİ PLANLANDI ✨]
+
+- [ ] **Gelişmiş Rol Yönetimi:**
+    *   `admin`: Tam yetki (Sadece DB/Supabase üzerinden atanır).
+    *   `premium`: Elit üye (Admin panelinden atanabilir).
+    *   `antrenor / mod / rezerve`: İçerik ve topluluk yöneticileri (Özel yetki setleri).
+- [ ] **Affiliate (Referans/Kupon) Motoru:**
+    *   Moderatörlere özel "İndirim Kodları" tanımlanması (Örn: `ASRIN10`).
+    *   Mağaza sepet aşamasında kod uygulama ve anlık indirim yansıtma.
+- [ ] **Satış ve Performans Takibi:**
+    *   **Admin Dashboard:** Tüm kod kullanımlarını, toplam satışları ve istatistikleri görme.
+    *   **Moderatör Dashboard:** Sadece kendi koduyla yapılan satış adedini ve başarısını takip etme.
+
 ---
 
 ### 🚨 KRİTİK TEST / TAMAMLANANLAR LİSTESİ
+- [x] (2026-05-03) **Admin Ürün Yönetimi Fix:** Eksik butonlar, taşma hataları ve gerçek silme mantığı onarıldı. [TAMAM ✅]
 - [x] (2026-05-02) **Note Display Fix:** Program detayda görünmeyen notların "Calith Mavisi" (#00D9FF) ile eklenmesi. [TAMAM ✅]
 - [x] (2026-05-02) **PR Deduplication:** Aynı hareketin farklı isimlerle (Pull-up, Pull-up!) birden fazla kart oluşturmasının engellenmesi. [TAMAM ✅]
 - [x] (2026-04-30) **Unified Rest & Feedback UI:** Dinlenme ve geri bildirim ekranlarının premium birleşimi. [TAMAM ✅]
-- [x] (2026-04-30) **Monthly Performance Dashboard:** Ay bazlı antrenman analizi. [TAMAM ✅]
-
 - [x] (2026-05-02) **Accordion Animation Fix:** Program gün kartlarındaki jerky animasyonun `max-height` düzenlemesi ile pürüzsüz hale getirilmesi. [TAMAM ✅]
+
 ---
 
 ### GÜNCEL DURUM VE NOTLAR:
+- **(2026-05-03):** Ürün yönetim sistemi stabilize edildi. Affiliate sistemi Faz 6 olarak planlandı.
 - **(2026-05-02):** BÜYÜK GÜNCELLEME: Calith tamamen ID bazlı mimariye geçti. Veri bütünlüğü ve kütüphane senkronizasyonu kusursuz hale getirildi.
-- **(2026-05-02):** ÇÖZÜLDÜ: Program önizleme (detail) ekranındaki eksik notlar eklendi ve tasarımı modernize edildi.
 - **(2026-04-30):** ÇÖZÜLDÜ: Antrenman özeti paylaşma ve geçmiş set düzenleme özellikleri eklendi.
-- **(2026-04-26):** ÇÖZÜLDÜ: Vücut ağırlığı (BW) egzersizleri PR sistemine başarıyla dahil edildi.
