@@ -371,7 +371,7 @@ function restoreWorkoutState() {
 
                 updateWorkoutUI();
                 startWorkoutClock(); // Saati kaldığı yerden devam ettirir (Date.now() - startTime)
-                showToast('Antrenman başarıyla kurtarıldı! ğŸ”¥');
+                showToast('Antrenman başarıyla kurtarıldı! 🔥');
                 return true;
             }
         } catch (e) {
@@ -2261,7 +2261,7 @@ async function showProgramDetail(id, skipHistory = false) {
 }
 // ====== DUYURU YÖNETİMİ (ANNOUNCEMENTS) ======
 let defaultAnnouncements = [
-    { id: '1', title: 'Pazar Günü Soru-Cevap', desc: 'Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.', label: 'ğŸ”´ YAKLAŞAN ETKİNLİK', icon: 'video', color: 'calith-orange', link: 'premium.html' },
+    { id: '1', title: 'Pazar Günü Soru-Cevap', desc: 'Form kontrolü ve program analizi için toplanıyoruz. Hemen yerini ayırt.', label: '🔴 YAKLAŞAN ETKİNLİK', icon: 'video', color: 'calith-orange', link: 'premium.html' },
     { id: '2', title: 'Sıfırdan İlk Barfiks', desc: 'Asla çekemem diyenler için hazırladığımız özel eğitim serisi yayında.', label: 'YENİ İÇERİK EKLENDİ', icon: 'flame', color: 'calith-accent', link: 'blog.html' },
     { id: '3', title: '100 Şınav Challenge', desc: 'Bu hafta her gün 100 şınav tamamlıyoruz. Skorunu toplulukta paylaş!', label: 'ğŸ† HAFTANIN GÖREVİ', icon: 'target', color: 'green-500', link: 'premium.html' }
 ];
@@ -2827,9 +2827,9 @@ async function importHomecardDefaults() {
         { id: 'hero_1', section: 'hero', title: 'Kendi Vücudunla Çalış.<br><span class="gradient-text">Sınırlarını</span> Zorla.', desc_text: 'Sadece şınav, barfiks ve squat ile evinde profesyonel formuna ulaş. Ekipman? Sonradan düşünürüz. Şimdi başla, tamamen ücretsiz.' },
 
         // BENEFITS
-        { id: 'ben_1', section: 'benefits', icon: 'ğŸ’ª', title: 'Kas İnşa', desc_text: 'Ağırlık salonu gerektirmez. Vücut ağırlığın yeterli.' },
-        { id: 'ben_2', section: 'benefits', icon: 'ğŸ ', title: 'Evde Yap', desc_text: 'Seyahatte, parkta, odanda. Her yer spor salonun olur.' },
-        { id: 'ben_3', section: 'benefits', icon: 'â±ï¸', title: 'Zaman Tasarrufu', desc_text: 'Günde sadece 20-30 dakika. Uzun saatler gerektirmez.' },
+        { id: 'ben_1', section: 'benefits', icon: '💪', title: 'Kas İnşa', desc_text: 'Ağırlık salonu gerektirmez. Vücut ağırlığın yeterli.' },
+        { id: 'ben_2', section: 'benefits', icon: '🏠', title: 'Evde Yap', desc_text: 'Seyahatte, parkta, odanda. Her yer spor salonun olur.' },
+        { id: 'ben_3', section: 'benefits', icon: '⏱️', title: 'Zaman Tasarrufu', desc_text: 'Günde sadece 20-30 dakika. Uzun saatler gerektirmez.' },
 
         // LEVELS
         { id: 'lvl_1', section: 'levels', icon: '🌱', title: 'SIFIRDAN', desc_text: 'Hiç şınav yapamıyorum.\nHareketler: Duvar şınavı, Koltuk dips\'i, Air squat', link_text: 'İncele', link_url: 'skills.html?level=baslangic' },
@@ -3105,7 +3105,7 @@ function renderFrontendHomecards() {
                         <i data-lucide="chevron-down" class="chevron-icon w-5 h-5 transition-transform duration-300"></i>
                     </div>
                     <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                        <div class="text-4xl">${b.icon || 'ğŸ’ª'}</div>
+                        <div class="text-4xl">${b.icon || '💪'}</div>
                     </div>
                     <h3 class="font-display text-2xl font-bold mb-3 uppercase group-[.is-open]:text-calith-orange transition-colors">${b.title}</h3>
                     <div class="w-full">
@@ -3129,7 +3129,7 @@ function renderFrontendHomecards() {
                 return `
                 <a href="${lvl.link_url || 'skills.html'}" class="block bg-calith-dark/50 border ${borderClass} rounded-3xl p-8 flex flex-col hover:border-calith-orange/30 transition-all card-hover group cursor-pointer text-center relative fade-in stagger-${(i % 3) + 1}">
                     ${isPop ? '<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-calith-orange text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">' + lvl.badge + '</div>' : ''}
-                    <div class="text-5xl mb-6">${lvl.icon || 'ğŸŒ±'}</div>
+                    <div class="text-5xl mb-6">${lvl.icon || '🌱'}</div>
                     <h3 class="font-display text-2xl font-bold mb-2 uppercase">${lvl.title}</h3>
                     <div class="bg-black/30 rounded-2xl p-5 w-full mb-8 text-left border border-white/5">
                         <p class="text-[15px] text-gray-300 leading-relaxed tracking-wide whitespace-pre-line">${lvl.desc_text || ''}</p>
@@ -4809,7 +4809,7 @@ async function copyBulkReport() {
 
     const activeFilter = document.querySelector('.history-filter-btn.active')?.textContent || 'GENEL';
 
-    let text = `ğŸ”¥ CALITH PERFORMANS RAPORU - ${activeFilter}\n`;
+    let text = `🔥 CALITH PERFORMANS RAPORU - ${activeFilter}\n`;
     text += `========================================\n\n`;
 
     logs.forEach(log => {
@@ -4817,7 +4817,7 @@ async function copyBulkReport() {
         const time = new Date(log.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
         text += `ğŸ“… ${date} â€¢ ${time} (${log.program_title || 'Özel'})\n`;
-        text += `â±ï¸ Süre: ${log.duration || '00:00'} | Tekrar: ${calculateWorkoutTotalReps(log)}\n`;
+        text += `⏱️ Süre: ${log.duration || '00:00'} | Tekrar: ${calculateWorkoutTotalReps(log)}\n`;
 
         try {
             let data = log.workout_data;
@@ -4969,7 +4969,7 @@ window.editWorkoutSet = async function (logId, exerciseIdx, setIdx) {
         if (error) {
             showToast('Hata: ' + error.message);
         } else {
-            showToast('Set başarıyla güncellendi! ğŸ”¥');
+            showToast('Set başarıyla güncellendi! 🔥');
             log.workout_data = data;
             showWorkoutLogDetail(logId);
             const exId = data.exercises[exerciseIdx].exercise_id || null;
@@ -5148,10 +5148,10 @@ function copyWorkoutToClipboard(logId) {
 
     const date = new Date(log.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    let text = `ğŸ”¥ CALITH ANTRENMAN ÖZETİ - ${date}\n`;
+    let text = `🔥 CALITH ANTRENMAN ÖZETİ - ${date}\n`;
     text += `----------------------------------------\n`;
     text += `ğŸ“Š Program: ${log.program_title || 'Özel'}\n`;
-    text += `â±ï¸ Süre: ${log.duration || '-'}\n\n`;
+    text += `⏱️ Süre: ${log.duration || '-'}\n\n`;
 
     data.exercises.forEach((ex, idx) => {
         text += `${idx + 1}. ${ex.name ? ex.name.toUpperCase() : 'Bilinmeyen Hareket'} (${ex.target || '-'})\n`;
@@ -5175,7 +5175,7 @@ function copyWorkoutToClipboard(logId) {
     });
 
     text += `----------------------------------------\n`;
-    text += `ğŸ’ª Calith ile güçlenmeye devam! #Calith #Training`;
+    text += `💪 Calith ile güçlenmeye devam! #Calith #Training`;
 
     console.log('[Calith] Kopyalanacak Metin:\n', text);
 
@@ -5954,11 +5954,11 @@ function moveExerciseToEnd() {
     const isLast = currentIndex === workoutSession.exercises.length - 1;
 
     if (isLast) {
-        showToast("Zaten son harekettesin kanka! ğŸ”¥");
+        showToast("Zaten son harekettesin kanka! 🔥");
         return;
     }
 
-    showConfirmModal("Bu hareketi gerçekten antrenman sonuna bırakmak istiyor musun? Yorulduysan dert etme kanka, sona atıp sonra bitirebilirsin! ğŸ”¥", () => {
+    showConfirmModal("Bu hareketi gerçekten antrenman sonuna bırakmak istiyor musun? Yorulduysan dert etme kanka, sona atıp sonra bitirebilirsin! 🔥", () => {
         // Hareketi diziden çıkar ve sona ekle
         const exerciseToMove = workoutSession.exercises.splice(currentIndex, 1)[0];
         exerciseToMove.skippedToEnd = true;
@@ -6531,7 +6531,7 @@ function clearSkippedFlag() {
     if (ex) ex.skippedToEnd = false;
     const banner = document.getElementById('skipped-exercise-banner');
     if (banner) banner.remove();
-    showToast('Hareketi yapmaya karar verdin! ğŸ’ª');
+    showToast('Hareketi yapmaya karar verdin! 💪');
 }
 
 function completeSet() {
@@ -6590,11 +6590,11 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
         // Fallback Alert (Modal açılmazsa diye garanti)
         setTimeout(() => {
             if (!document.getElementById('next-exercise-modal')) {
-                alert("ğŸ”¥ HAREKETİ TAMAMLADIN! Sıradaki harekete geçebilirsin.");
+                alert("🔥 HAREKETİ TAMAMLADIN! Sıradaki harekete geçebilirsin.");
             }
         }, 500);
     } else if (workoutSession.currSet > targetSets) {
-        showToast(`ğŸ”¥ Limitleri zorluyorsun! (${workoutSession.currSet}. Set)`);
+        showToast(`🔥 Limitleri zorluyorsun! (${workoutSession.currSet}. Set)`);
     } else {
         showToast(`${workoutSession.currSet}. Set Tamamlandı!`);
     }
@@ -6791,7 +6791,7 @@ function runExerciseCountdown(duration, clock, box, label, timerBtn, isMax = fal
                 // TAMAMLANDI EKRANI
                 box.className = "mb-10 p-8 rounded-[2rem] bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 text-center relative overflow-hidden";
                 if (label) {
-                    label.textContent = 'ğŸ”¥ SÜRE DOLDU!';
+                    label.textContent = '🔥 SÜRE DOLDU!';
                     label.className = 'text-[10px] font-black text-green-400 uppercase tracking-[0.3em] mb-3';
                 }
                 clock.className = 'text-4xl font-mono font-black text-green-400 tracking-tighter mb-6';
@@ -7088,13 +7088,13 @@ function initSharedUI() {
                             <label class="cursor-pointer">
                                 <input type="radio" name="fitness_level" value="baslangic" class="peer sr-only" checked>
                                 <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
-                                    <div class="text-xl mb-1">ğŸŒ±</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Başlangıç</span>
+                                    <div class="text-xl mb-1">🌱</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Başlangıç</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="fitness_level" value="orta" class="peer sr-only">
                                 <div class="text-center p-2 rounded-xl border border-white/10 peer-checked:border-calith-orange peer-checked:bg-calith-orange/10 hover:bg-white/5 transition-all">
-                                    <div class="text-xl mb-1">ğŸ”¥</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Orta</span>
+                                    <div class="text-xl mb-1">🔥</div><span class="text-[10px] font-bold uppercase block text-gray-400 peer-checked:text-white">Orta</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
@@ -7400,7 +7400,7 @@ async function updateExerciseBest(exerciseName, weight, reps, exerciseId = null)
                 }).eq('id', existing.id);
 
                 const recordMsg = isBW ? `${reps} ${ex?.type === 'secs' ? 'SANİYE' : 'TEKRAR'}` : `${oneRM}KG 1RM`;
-                showToast(`ğŸ”¥ YENİ REKOR! ${exerciseName.toUpperCase()}: ${recordMsg}`);
+                showToast(`🔥 YENİ REKOR! ${exerciseName.toUpperCase()}: ${recordMsg}`);
             }
         } else {
             await sb.from('user_exercise_stats').insert([{
