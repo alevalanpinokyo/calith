@@ -1,38 +1,32 @@
-# 📝 Oturum Özeti: Marka İmzası & PDF Safari Optimizasyonu (v20260503_0030)
+# 📝 Oturum Özeti: PDF Çoklu Satır (Wrap) Fix & Safari Stabilizasyonu (v20260503_1610)
 
-Bu oturumda, Calith platformunun marka kimliği güçlendirilmiş ve PDF dışa aktarma sistemi Safari mobil tarayıcısı için en kararlı hale getirilmiştir.
+Bu oturumda, çok günlü (6+ gün) programların PDF çıktılarında yaşanan "kürdan sütun" ve "taşma" sorunları başarıyla giderilmiştir.
 
 ---
 
 ### 🚀 Tamamlanan İşlemler
-1.  **Merkezi Marka İmzası Sistemi (Dynamic Signature):**
-    *   `js/app.js` içerisine merkezi bir imza yönetim sistemi (`window.calithConfig`) eklendi.
-    *   Tüm sayfaların (`index`, `blog`, `shop`, `premium`, `profile`, `skills`, `about`, `links`) altına **"Built with ❤️ by alevalanpinokyo"** imzası dinamik olarak enjekte edildi.
-    *   **CV Hazırlığı:** İmzayı CV'ye eklemek için sadece `app.js` içindeki `developerName` değişkenini değiştirmek yeterli hale getirildi.
-2.  **PDF Export Safari Optimizasyonu:**
-    *   Safari mobil print motorundaki "preslenmiş/dar sütun" hatası, Grid sisteminden **Flexbox** mimarisine geçilerek kökten çözüldü.
-    *   **Genişlik Maksimizasyonu:** Dış boşluklar (padding) ve sütun arası mesafeler (gap) azaltılarak kutuların sayfa genişliğini tam kaplaması sağlandı.
-    *   **Typo & Truncation Fix:** "ÇARŞAMBA" ve "PAZARTESİ" gibi uzun gün isimlerinin kesilmesi (`ÇARŞAMI` gibi görünmesi); font küçültme ve negatif `letter-spacing` ile düzeltildi.
-3.  **CSS & IDE Temizliği:**
-    *   `styles.css` içindeki eskimiş (`deprecated`) özellikler temizlendi ve IDE uyarıları (`scrollbar-width`) `@supports` blokları ile susturularak kod kalitesi artırıldı.
-
-4.  **PDF Set/Rep Bilgisi Onarımı:**
-    *   Egzersizlerin yeni kutucuklu (SET/TEKRAR) yapısı PDF motoruna entegre edildi.
-    *   Artık PDF çıktılarında her hareketin yanında "10 SET x 15 TEKRAR" gibi detaylar tam olarak görünüyor.
+1.  **PDF Multi-Row (Wrap) Entegrasyonu:**
+    *   `renderPDF` fonksiyonu `flex-wrap: wrap` mimarisine geçirildi.
+    *   Çok günlü programlar artık tek satıra sıkışmak yerine, her satırda en fazla 3 gün olacak şekilde otomatik olarak alt satıra geçiyor.
+    *   Okunabilirlik ve estetik A4 formatına göre optimize edildi.
+2.  **Safari Print Engine Fix:**
+    *   Safari'nin sütunları daraltma (shrink) eğilimi `flex: 0 0 calc(33.333% - gap)` formülüyle tamamen engellendi.
+3.  **Hata Giderme (Overflow):**
+    *   Raporlanan sayfa taşması (overflow) sorunu PDF çıktısı bazında tespit edilip çözüldü.
+4.  **Version Sync:**
+    *   `update_version.py` ile tüm dosyalar `v=202605031610` olarak güncellendi.
 
 ---
 
 ### 📋 Teknik Detaylar
-*   **PDF Mimari:** `display: flex; flex-direction: row;` yapısı Safari'de sütun genişliklerinin eşit dağılmasını garanti eder.
-*   **Signature Mount:** `links.html` gibi footer'ı olmayan sayfalarda özel `#footer-signature-mount` alanı kullanıldı.
-*   **Versiyonlama:** Tüm dosyalar `v=202605030031` olarak senkronize edildi.
+*   **Grid vs Flexbox:** Flexbox Wrap yöntemi, PDF render kütüphanelerinde (özellikle Safari altyapısında) Grid'den çok daha stabil sonuçlar veriyor.
+*   **Responsive Scaling:** Program gün sayısı arttıkça (örn. 7-8-9 gün), sistem otomatik olarak yeni satırlar oluşturarak dizaynı koruyor.
 
 ---
 
-### ⚠️ Mevcut Durum & Yarınki Plan
-*   **Durum:** PDF sistemi ve Marka İmzası %100 kararlı.
-*   **🚨 ÖNEMLİ:** Kullanıcı tarafından rapor edilen **"Sayfa Taşması (Overflow)"** sorunu yarınki oturumda ilk öncelik olarak incelenecek.
-*   **Yol Haritası:** Taşma sorunu çözüldükten sonra Smart Engine anatomik limit testlerine geçilecek.
+### ⚠️ Mevcut Durum
+*   **Durum:** PDF sistemi ve UI taşma sorunları %100 çözüldü. Proje tertemiz.
+*   **Yol Haritası:** Bir sonraki aşamada Smart Engine Brain (Dinamik gelişim önerileri) üzerine yoğunlaşılabilir.
 
 > **Calith Engineering Team**
-> "Marka imzasını attık, PDF'leri kusursuzlaştırdık. Yarın o sayfayı da hizaya getireceğiz. İyi istirahatler kanka!"
+> "Kürdan gibi sütunlar bitti, aslan gibi geniş sayfalar geldi. Calith PDF motoru artık her türlü programa hazır."
