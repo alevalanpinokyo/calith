@@ -175,19 +175,21 @@ async function loadProducts() {
         console.error('Supabase error:', error);
         products = defaultProducts;
     } else {
-        const deletedProducts = JSON.parse(localStorage.getItem('calith_deleted_products')) || [];
+        // ARTIK LOCALSTORAGE KARA LISTE KULLANMIYORUZ - GERCEK VERITABANI VERISINE GUVENIYORUZ
         const dbProducts = data || [];
         const combined = [...dbProducts];
 
+        // Sadece DB'de olmayan varsayilanlari ekle (Hic veri yoksa bos kalmasin diye)
         defaultProducts.forEach(def => {
             const exists = dbProducts.some(db => db.name === def.name);
-            const isManuallyDeleted = deletedProducts.includes(def.name);
-            if (!exists && !isManuallyDeleted) combined.push(def);
+            if (!exists) combined.push(def);
         });
 
-        // TÜM listeyi süzgeçten geçir (DB'den silinse de silinmese de gizle)
-        products = combined.filter(p => !deletedProducts.includes(p.name));
+        products = combined;
         localStorage.setItem('calith_products_fallback', JSON.stringify(products));
+        
+        // Bir kerelige mahsus eski kara listeyi temizle (Senin gorememe sorununun cozumu)
+        localStorage.removeItem('calith_deleted_products');
     }
 
     renderShop();
@@ -802,13 +804,7 @@ async function deleteProduct(id) {
         }
     }
 
-    // Kara listeye ekle (Özellikle örnek veriler veya DB'den silinemeyenler için)
-    const deletedProducts = JSON.parse(localStorage.getItem('calith_deleted_products')) || [];
-    if (!deletedProducts.includes(productToDelete.name)) {
-        deletedProducts.push(productToDelete.name);
-        localStorage.setItem('calith_deleted_products', JSON.stringify(deletedProducts));
-    }
-
+    // ARTIK LOCALSTORAGE KARA LISTE KULLANMIYORUZ - GERCEK SILME YAPIYORUZ
     products = products.filter(p => String(p.id) !== String(id));
 
     showToast(deletedFromDb ? 'Ürün veritabanından silindi' : 'Ürün yerel listeden kaldırıldı');
