@@ -5675,7 +5675,7 @@ async function renderAdminReferralCodes() {
     if (!sb) return;
 
     const { data, error } = await sb.from('referral_codes')
-        .select('*, profiles(full_name)')
+        .select('*, profiles(full_name, email)')
         .order('created_at', { ascending: false });
 
     if (error || !data) {
@@ -5688,17 +5688,23 @@ async function renderAdminReferralCodes() {
         return;
     }
 
-    list.innerHTML = data.map(c => `
-        <div class="p-4 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between group hover:border-calith-orange/30 transition-all">
-            <div>
-                <p class="text-lg font-black text-white italic tracking-widest">${c.code}</p>
-                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">${c.profiles?.full_name || 'İsimsiz'} • %${c.discount_rate * 100} İndirim</p>
+    list.innerHTML = data.map(c => {
+        const ownerName = c.profiles?.full_name || 'İSİMSİZ KULLANICI';
+        const ownerEmail = c.profiles?.email || 'Email Yok';
+
+        return `
+            <div class="p-4 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between group hover:border-calith-orange/30 transition-all">
+                <div>
+                    <p class="text-lg font-black text-white italic tracking-widest">${c.code}</p>
+                    <p class="text-[9px] text-calith-orange font-bold uppercase tracking-widest mt-1">${ownerName}</p>
+                    <p class="text-[8px] text-gray-500 font-bold uppercase tracking-tighter">${ownerEmail} • %${c.discount_rate * 100} İndirim</p>
+                </div>
+                <button onclick="deleteReferralCode('${c.id}')" class="w-8 h-8 rounded-lg bg-red-500/5 text-red-500/20 group-hover:text-red-500 hover:bg-red-500/20 flex items-center justify-center transition-all">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
             </div>
-            <button onclick="deleteReferralCode('${c.id}')" class="w-8 h-8 rounded-lg bg-red-500/5 text-red-500/20 group-hover:text-red-500 hover:bg-red-500/20 flex items-center justify-center transition-all">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     if (window.lucide) lucide.createIcons();
 }
 
