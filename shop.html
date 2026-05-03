@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=202605032206">
+    <link rel="stylesheet" href="styles.css?v=202605032209">
     <script>
         tailwind.config = {
             theme: {
@@ -92,18 +92,8 @@
     </div>
 </nav>
 
-<!-- SHOP HEADER -->
-<section class="pt-32 pb-12 hero-gradient">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <span class="text-calith-orange font-semibold text-sm tracking-wider uppercase">Pro Serisi</span>
-            <h1 class="font-display text-5xl md:text-7xl font-bold mt-4 mb-4 uppercase">PROFESYONEL <span class="gradient-text">EKİPMAN</span></h1>
-            <p class="text-gray-400 max-w-xl mx-auto leading-relaxed text-lg">
-                Antrenmanını bir üst seviyeye taşıyacak, ömür boyu garantili calisthenics ekipmanları.
-            </p>
-        </div>
-    </div>
-</section>
+<!-- SHOP HEADER (JS tarafindan yonetilecek veya temizlendi) -->
+<div class="pt-24"></div>
 
 <!-- SHOP FILTERS -->
 <div id="shop-filters" class="sticky top-20 z-30 nav-blur border-b border-white/5">
@@ -117,7 +107,7 @@
 </div>
 
 <!-- SHOP GRID -->
-<section id="shop" class="py-12 min-h-screen">
+<section id="shop" class="pt-32 pb-20 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div id="shop-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <!-- Loaded via app.js renderShop() -->
@@ -168,7 +158,7 @@
 <!-- Cart Drawer -->
 
 
-    <script src="js/app.js?v=202605032206"></script>
+    <script src="js/app.js?v=202605032209"></script>
     <script>
         
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
