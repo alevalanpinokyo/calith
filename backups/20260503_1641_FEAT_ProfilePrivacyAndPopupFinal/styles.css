@@ -818,24 +818,3 @@ body {
     color: white !important;
     font-weight: 900;
 }
-
-/* Merkezi Footer Sosyal Butonlar */
-.footer-social-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 9999px;
-    background-color: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9CA3AF;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.footer-social-btn:hover {
-    background-color: #FF6B35;
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
-}

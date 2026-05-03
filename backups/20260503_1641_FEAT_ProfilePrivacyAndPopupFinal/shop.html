@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=202605031707">
+    <link rel="stylesheet" href="styles.css?v=202605031640">
     <script>
         tailwind.config = {
             theme: {
@@ -162,13 +162,57 @@
 
 <!-- Footer -->
 <footer class="bg-calith-dark border-t border-white/5 pt-16 pb-8 mt-20">
-    <!-- Merkezi Footer app.js tarafÄ±ndan render edilir -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="shrink-0 w-10 h-10 bg-gradient-to-br from-calith-orange to-calith-accent rounded-lg flex items-center justify-center">
+                        <i data-lucide="dumbbell" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="font-display text-2xl font-bold tracking-wider">CALITH</span>
+                </div>
+                <p class="text-gray-500 text-sm leading-relaxed">Profesyonel calisthenics ekipmanları ve eğitim kaynakları. Evinde spor salonu deneyimi.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ürünler</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Pull-Up Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Paralel Barlar</a></li>
+                    <li><a href="shop.html" class="hover:text-white transition-colors">Aksesuarlar</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Kaynaklar</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="skills.html" class="hover:text-white transition-colors">Programlar</a></li>
+                    <li><a href="premium.html" class="hover:text-white transition-colors">Premium</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Destek</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="about.html" class="hover:text-white transition-colors">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex flex-col items-center md:items-start gap-1">
+                <p class="text-gray-500 text-sm">© 2025 CALITH. Tüm hakları saklıdır.</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all" aria-label="Instagram"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-calith-orange hover:text-white transition-all" aria-label="YouTube"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </div>
 </footer>
 
 <!-- Cart Drawer -->
 
 
-    <script src="js/app.js?v=202605031707"></script>
+    <script src="js/app.js?v=202605031640"></script>
     <script>
         
         const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
