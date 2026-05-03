@@ -5674,21 +5674,32 @@ async function renderAdminReferralCodes() {
     const sb = getSupabase();
     if (!sb) return;
 
-    const { data, error } = await sb.rpc('get_admin_referral_codes');
+    // En garanti sorgu yöntemi: Explicit Join
+    const { data, error } = await sb.from('referral_codes')
+        .select(`
+            *,
+            profiles!referral_codes_owner_id_fkey (
+                full_name,
+                email
+            )
+        `)
+        .order('created_at', { ascending: false });
 
-    if (error || !data) {
-        list.innerHTML = '<p class="text-red-500 text-[10px] text-center uppercase font-bold">Kodlar yüklenemedi.</p>';
+    if (error) {
+        console.error("REFERRAL_ERROR:", error);
+        list.innerHTML = `<p class="text-red-500 text-[10px] text-center uppercase font-bold">Hata: ${error.message}</p>`;
         return;
     }
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         list.innerHTML = '<p class="text-gray-600 text-[10px] text-center uppercase font-bold py-4">Aktif kod bulunmuyor.</p>';
         return;
     }
 
     list.innerHTML = data.map(c => {
-        const ownerName = c.full_name || 'İSİMSİZ KULLANICI';
-        const ownerEmail = c.email || 'Email Yok';
+        const profile = c.profiles;
+        const ownerName = profile?.full_name || 'İSİMSİZ KULLANICI';
+        const ownerEmail = profile?.email || 'Email Yok';
 
         return `
             <div class="p-4 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between group hover:border-calith-orange/30 transition-all">
