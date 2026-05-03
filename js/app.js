@@ -3136,7 +3136,7 @@ function renderFrontendHomecards() {
                     </div>
                     <div class="mt-auto">
                         <div class="w-full ${isPop ? 'btn-primary' : 'btn-outline border-white/10 group-hover:border-calith-orange group-hover:bg-calith-orange group-hover:text-white'} py-4 rounded-xl font-bold text-sm transition-all uppercase tracking-widest mb-3">Ben Buradayım</div>
-                        <span class="text-xs ${isPop ? 'text-calith-orange' : 'text-gray-500'} font-bold uppercase tracking-widest group-hover:text-calith-orange transition-colors">â†’ ${lvl.link_text || 'İncele'}</span>
+                        <span class="text-xs ${isPop ? 'text-calith-orange' : 'text-gray-500'} font-bold uppercase tracking-widest group-hover:text-calith-orange transition-colors">${lvl.link_text || 'İncele'}</span>
                     </div>
                 </a>
                 `;
@@ -6585,7 +6585,7 @@ function processSetWithFeedback(weight, reps, isClean, feel) {
     console.log(`[Calith Debug] SET: ${workoutSession.currSet}, HEDEF: ${targetSets}, TARGET_RAW: "${ex.target}", TARGET_SETS_RAW: ${ex.targetSets}`);
 
     if (workoutSession.currSet >= targetSets) {
-        console.log('[Calith Debug] Hedef Tamam â†’ showNextExerciseModal');
+        console.log('[Calith Debug] Hedef Tamam showNextExerciseModal');
         showNextExerciseModal();
         // Fallback Alert (Modal açılmazsa diye garanti)
         setTimeout(() => {
