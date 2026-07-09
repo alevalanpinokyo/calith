@@ -198,37 +198,23 @@
         .option.selected { border-color: #1a3a5c; background: #e8f0f8; font-weight: bold; }
         .option.selected-evil { border-color: #e74c3c !important; background: #fde8e8 !important; font-weight: bold; }
 
-        /* D şıkkı her zaman dikkat çekici */
+        /* D şıkkı - hafif dikkat çekici */
         .option-d {
-            border: 2px solid #e74c3c;
-            background: linear-gradient(135deg, #fff5f5, #ffe8e8);
-            position: relative;
-            overflow: hidden;
-        }
-        .option-d::before {
-            content: '😈 EN İYİ SEÇENEK';
-            position: absolute;
-            top: 4px;
-            right: 8px;
-            font-size: 8px;
-            font-weight: 900;
-            color: #e74c3c;
-            letter-spacing: 1px;
-            opacity: 0.7;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-weight: 600;
         }
         .option-d .option-letter {
-            background: #e74c3c;
-            box-shadow: 0 0 8px rgba(231,76,60,0.5);
+            background: #2c3e50;
         }
         .option-d:hover {
-            border-color: #c0392b;
-            background: linear-gradient(135deg, #ffe8e8, #ffd0d0);
-            transform: scale(1.01);
+            border-color: #2c3e50;
+            background: #f5f5f5;
+            transform: scale(1.005);
         }
         .option-d.selected-evil {
-            border-color: #c0392b !important;
-            background: linear-gradient(135deg, #ffd0d0, #ffb8b8) !important;
-            box-shadow: 0 0 12px rgba(231,76,60,0.4);
+            border-color: #e74c3c !important;
+            background: #fde8e8 !important;
         }
         .option-letter {
             width: 28px; height: 28px; border-radius: 50%;
