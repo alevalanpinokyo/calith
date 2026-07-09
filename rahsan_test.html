@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kişilik Analizi | Türkiye Psikoloji Enstitüsü</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #f4f1ec;
+            color: #2c2c2c;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: #1a3a5c;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 4px solid #c8a84b;
+        }
+        .header-logo { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .header-text h1 { font-size: 18px; font-weight: bold; }
+        .header-text p { font-size: 11px; opacity: 0.8; }
+
+        .official-bar {
+            background: #c8a84b;
+            text-align: center;
+            padding: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #1a3a5c;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* ===== ŞEREFSİZ METRE ===== */
+        .meter-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #111;
+            padding: 12px 20px;
+            border-bottom: 3px solid #c8a84b;
+            display: none;
+        }
+        .meter-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .meter-label span { color: #fff; font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+        .meter-label .meter-pct { color: #ff4444; font-size: 20px; font-weight: bold; font-family: monospace; }
+        .meter-track {
+            background: #333;
+            border-radius: 30px;
+            height: 28px;
+            overflow: hidden;
+            border: 2px solid #555;
+            position: relative;
+        }
+        .meter-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 30px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .meter-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+            border-radius: 30px;
+        }
+        .meter-emoji {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px) rotate(-2deg); }
+            75% { transform: translateX(6px) rotate(2deg); }
+        }
+        @keyframes pulseRed {
+            0%, 100% { background: #111; }
+            50% { background: #3a0000; }
+        }
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0,0); }
+            20% { transform: translate(-10px, 5px); }
+            40% { transform: translate(10px, -5px); }
+            60% { transform: translate(-8px, 8px); }
+            80% { transform: translate(8px, -8px); }
+        }
+        .screen-shake { animation: screenShake 0.5s ease; }
+
+        /* ===== AÇILIŞ EKRANI ===== */
+        .intro-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-top: 4px solid #1a3a5c;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .intro-box h2 { font-size: 22px; color: #1a3a5c; margin-bottom: 12px; }
+        .intro-box p { font-size: 14px; line-height: 1.8; color: #444; }
+        .intro-box .warning {
+            background: #fff8e1;
+            border-left: 4px solid #f39c12;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #7d5a00;
+        }
+
+        .input-group {
+            margin-top: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #1a3a5c;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+            background: #fafafa;
+        }
+        .input-group input:focus { border-color: #1a3a5c; background: #fff; }
+        .input-group input::placeholder { color: #bbb; font-style: italic; }
+
+        /* ===== SORULAR ===== */
+        .progress-bar { background: #e0e0e0; border-radius: 4px; height: 8px; margin-bottom: 8px; }
+        .progress-fill-q { background: linear-gradient(90deg, #1a3a5c, #c8a84b); height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .progress-text { font-size: 12px; color: #888; margin-bottom: 25px; }
+
+        .question-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .question-card.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-number { font-size: 11px; color: #c8a84b; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+        .question-text { font-size: 17px; color: #1a3a5c; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
+        .highlight { color: #e74c3c; font-style: italic; }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .option:hover { border-color: #1a3a5c; background: #f0f4f8; }
+        .option.selected { border-color: #1a3a5c; background: #e8f0f8; font-weight: bold; }
+        .option.selected-evil { border-color: #e74c3c !important; background: #fde8e8 !important; font-weight: bold; }
+
+        /* D şıkkı her zaman dikkat çekici */
+        .option-d {
+            border: 2px solid #e74c3c;
+            background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+            position: relative;
+            overflow: hidden;
+        }
+        .option-d::before {
+            content: '😈 EN İYİ SEÇENEK';
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            font-size: 8px;
+            font-weight: 900;
+            color: #e74c3c;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+        .option-d .option-letter {
+            background: #e74c3c;
+            box-shadow: 0 0 8px rgba(231,76,60,0.5);
+        }
+        .option-d:hover {
+            border-color: #c0392b;
+            background: linear-gradient(135deg, #ffe8e8, #ffd0d0);
+            transform: scale(1.01);
+        }
+        .option-d.selected-evil {
+            border-color: #c0392b !important;
+            background: linear-gradient(135deg, #ffd0d0, #ffb8b8) !important;
+            box-shadow: 0 0 12px rgba(231,76,60,0.4);
+        }
+        .option-letter {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: #1a3a5c; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold; flex-shrink: 0;
+        }
+
+        .btn-next {
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .btn-next:hover { background: #0f2640; transform: translateY(-2px); }
+        .btn-next:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+
+        /* ===== SONUÇ ===== */
+        .result-card {
+            display: none;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .result-card.show { display: block; animation: fadeIn 0.5s ease; }
+        .result-emoji { font-size: 80px; margin-bottom: 20px; }
+        .result-title { font-size: 28px; font-weight: bold; color: #1a3a5c; margin-bottom: 16px; }
+        .result-score {
+            display: inline-block;
+            font-size: 48px;
+            font-weight: bold;
+            color: #c8a84b;
+            border: 4px solid #c8a84b;
+            border-radius: 50%;
+            width: 140px;
+            height: 140px;
+            line-height: 132px;
+            margin: 20px auto;
+        }
+        .result-desc { font-size: 16px; line-height: 1.8; color: #444; max-width: 500px; margin: 20px auto 30px; }
+        .result-badge {
+            display: inline-block;
+            background: #1a3a5c;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+        .share-btn {
+            background: #25d366; color: white; border: none;
+            padding: 14px 30px; font-size: 15px; border-radius: 6px;
+            cursor: pointer; font-weight: bold;
+        }
+        .stamp {
+            border: 3px solid #c8a84b; border-radius: 50%;
+            color: #c8a84b; font-size: 10px; font-weight: bold;
+            width: 100px; height: 100px;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            margin: 20px auto; transform: rotate(-15deg); opacity: 0.8;
+        }
+
+        /* ===== PATLAMA ===== */
+        .particle {
+            position: fixed; pointer-events: none; z-index: 9999;
+            font-size: 24px;
+            animation: explode var(--dur) ease forwards;
+        }
+        @keyframes explode {
+            0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3); opacity: 0; }
+        }
+        .flash-overlay {
+            position: fixed; inset: 0; background: white;
+            z-index: 9998; pointer-events: none;
+            animation: flashOut 0.6s ease forwards;
+        }
+        @keyframes flashOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes countUp {
+            from { transform: scale(1.5); color: #ff4444; }
+            to { transform: scale(1); }
+        }
+        .count-pop { animation: countUp 0.4s ease; }
+
+        .footer { text-align: center; padding: 30px; font-size: 11px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<!-- ŞEREFSİZ METRE -->
+<div class="meter-wrapper" id="meterWrapper">
+    <div class="meter-label">
+        <span>🧪 ŞEREFSİZLİK METRESİ</span>
+        <span class="meter-pct" id="meterPct">%0</span>
+    </div>
+    <div class="meter-track">
+        <div class="meter-fill" id="meterFill"></div>
+        <div class="meter-emoji" id="meterEmoji">😇</div>
+    </div>
+</div>
+
+<div class="header">
+    <div class="header-logo">🧠</div>
+    <div class="header-text">
+        <h1>Türkiye Psikoloji ve Kişilik Araştırmaları Enstitüsü</h1>
+        <p>T.C. Kültür Bakanlığı Onaylı | Sertifikalı Kişilik Analiz Platformu</p>
+    </div>
+</div>
+<div class="official-bar">⚠️ BU TEST BİLİMSEL VERİLERE DAYALI OLUP SONUÇLAR KESİNLİKLE GİZLİ TUTULACAKTIR ⚠️</div>
+
+<div class="container">
+
+    <!-- AÇILIŞ EKRANI -->
+    <div class="intro-box" id="intro">
+        <h2>📋 Türkiye Şerefsizlik Katsayısı Ölçeği (TŞK-2024)</h2>
+        <p>
+            Sayın katılımcı, bu test Hacettepe, Boğaziçi ve Ortadoğu Teknik Üniversiteleri 
+            işbirliğiyle geliştirilen <strong>ISO 9001:2018</strong> sertifikalı analiz aracıdır.
+            Teste başlamadan önce lütfen bilgilerinizi eksiksiz giriniz.
+        </p>
+        <div class="warning">
+            ⚠️ <strong>Uyarı:</strong> Girdiğiniz bilgiler analiz motoruna entegre edilecektir.
+            Sahte bilgi girilmesi sonuçları olumsuz etkileyebilir.
+        </div>
+
+        <div class="input-group" style="margin-top: 24px;">
+            <label>👤 Adınız Nedir?</label>
+            <input type="text" id="input-isim" placeholder="Adınızı buraya yazınız..." maxlength="30">
+
+            <label>💑 Erkek Arkadaşınızın Adı Nedir?</label>
+            <input type="text" id="input-mişamber" placeholder="Mişamberinizin adını yazınız..." maxlength="30">
+        </div>
+
+        <button class="btn-next" onclick="startTest()">▶ TESTİ BAŞLAT</button>
+    </div>
+
+    <!-- SORULAR -->
+    <div id="test-area" style="display:none">
+        <div class="progress-bar">
+            <div class="progress-fill-q" id="progress"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Soru 1 / 8</div>
+
+        <!-- SORU 1 -->
+        <div class="question-card active" id="q1">
+            <div class="question-number">Soru 1 / 8</div>
+            <div class="question-text" id="qt1"></div>
+            <div class="option" onclick="selectOption(this,1,1)"><div class="option-letter">A</div> <span id="q1a">Hesabı ben öderim, mişamberimin tostikleri sağ olsun.</span></div>
+            <div class="option" onclick="selectOption(this,1,2)"><div class="option-letter">B</div> Hiçbir şey olmamış gibi gelmesini beklerim.</div>
+            <div class="option" onclick="selectOption(this,1,3)"><div class="option-letter">C</div> Harika bir taktik, ben de bir sonrakinde yaparım.</div>
+            <div class="option option-d" onclick="selectOption(this,1,4)"><div class="option-letter">D</div> <span id="q1d">Sessizce cebinden iki parasını çalar, hesabı da telefonundan öderim.</span></div>
+            <button class="btn-next" id="btn1" disabled onclick="nextQuestion(2)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-number">Soru 2 / 8</div>
+            <div class="question-text" id="qt2"></div>
+            <div class="option" onclick="selectOption(this,2,1)"><div class="option-letter">A</div> Hemen iade ederim.</div>
+            <div class="option" onclick="selectOption(this,2,2)"><div class="option-letter">B</div> Bir an tereddüt ederim ama iade ederim.</div>
+            <div class="option" onclick="selectOption(this,2,3)"><div class="option-letter">C</div> Muhtemelen fark etmez diye alırım.</div>
+            <div class="option option-d" onclick="selectOption(this,2,4)"><div class="option-letter">D</div> <span id="q2d">Geri kalan 150 TL'yi de mişamberimin cebinden alırım.</span></div>
+            <button class="btn-next" id="btn2" disabled onclick="nextQuestion(3)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-number">Soru 3 / 8</div>
+            <div class="question-text" id="qt3"></div>
+            <div class="option" onclick="selectOption(this,3,1)"><div class="option-letter">A</div> Hemen kapatır, söz konusu bile etmem.</div>
+            <div class="option" onclick="selectOption(this,3,2)"><div class="option-letter">B</div> Kapatırım ama aklımda kalır.</div>
+            <div class="option" onclick="selectOption(this,3,3)"><div class="option-letter">C</div> Biraz okur, sonra kapatırım.</div>
+            <div class="option option-d" onclick="selectOption(this,3,4)"><div class="option-letter">D</div> "Gözüm karşıda" der, hamsi kavramasıyla tostiklerini sıkıca tutarım.</div>
+            <button class="btn-next" id="btn3" disabled onclick="nextQuestion(4)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 4 -->
+        <div class="question-card" id="q4">
+            <div class="question-number">Soru 4 / 8</div>
+            <div class="question-text" id="qt4"></div>
+            <div class="option" onclick="selectOption(this,4,1)"><div class="option-letter">A</div> Neşeli neşeli doğayı izlerim.</div>
+            <div class="option" onclick="selectOption(this,4,2)"><div class="option-letter">B</div> Örgü örerim.</div>
+            <div class="option" onclick="selectOption(this,4,3)"><div class="option-letter">C</div> Instagram'da dolanırım.</div>
+            <div class="option option-d" onclick="selectOption(this,4,4)"><div class="option-letter">D</div> <span id="q4d">Yol boyunca onu rahatsız edecek şeyler söyleyip işine karışırım.</span></div>
+            <button class="btn-next" id="btn4" disabled onclick="nextQuestion(5)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 5 -->
+        <div class="question-card" id="q5">
+            <div class="question-number">Soru 5 / 8</div>
+            <div class="question-text" id="qt5"></div>
+            <div class="option" onclick="selectOption(this,5,1)"><div class="option-letter">A</div> Kredi kartımı veririm.</div>
+            <div class="option" onclick="selectOption(this,5,2)"><div class="option-letter">B</div> Bir ihtiyacı var mı sorarım.</div>
+            <div class="option" onclick="selectOption(this,5,3)"><div class="option-letter">C</div> Onu gezmeye götürürüm.</div>
+            <div class="option option-d" onclick="selectOption(this,5,4)"><div class="option-letter">D</div> <span id="q5d">Mişamberimin iki parası olamaz, iki paraların hepsi benimdir zaten.</span></div>
+            <button class="btn-next" id="btn5" disabled onclick="nextQuestion(6)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 6 -->
+        <div class="question-card" id="q6">
+            <div class="question-number">Soru 6 / 8</div>
+            <div class="question-text">Film izlerken kahveyi kim yapmalı?</div>
+            <div class="option" onclick="selectOption(this,6,1)"><div class="option-letter">A</div> Tabiki ben yaparım.</div>
+            <div class="option" onclick="selectOption(this,6,2)"><div class="option-letter">B</div> Tabiki ben yaparım.</div>
+            <div class="option" onclick="selectOption(this,6,3)"><div class="option-letter">C</div> Tabiki ben yaparım.</div>
+            <div class="option option-d" onclick="selectOption(this,6,4)"><div class="option-letter">D</div> Kahve bana dokunuyor. ☕</div>
+            <button class="btn-next" id="btn6" disabled onclick="nextQuestion(7)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 7 -->
+        <div class="question-card" id="q7">
+            <div class="question-number">Soru 7 / 8</div>
+            <div class="question-text">Bir konuda %100 haksızsınız. Tepkiniz?</div>
+            <div class="option" onclick="selectOption(this,7,1)"><div class="option-letter">A</div> Hiçbir şey olmamış gibi davranırım.</div>
+            <div class="option" onclick="selectOption(this,7,2)"><div class="option-letter">B</div> Alttan alırım, özür dilerim.</div>
+            <div class="option" onclick="selectOption(this,7,3)"><div class="option-letter">C</div> Görmezden gelirim.</div>
+            <div class="option option-d" onclick="selectOption(this,7,4)"><div class="option-letter">D</div> <span id="q7d">Mişamberimin haksız olduğu diğer konuları düşünür, hangisini yüzüne vursam diye düşünür, sonra ağlarım iki para kazanırım.</span></div>
+            <button class="btn-next" id="btn7" disabled onclick="nextQuestion(8)">Sonraki Soru →</button>
+        </div>
+
+        <!-- SORU 8 -->
+        <div class="question-card" id="q8">
+            <div class="question-number">Soru 8 / 8 — KRİTİK SORU</div>
+            <div class="question-text">Bu testin sizi şerefsiz çıkaracak şekilde tasarlandığından şüpheleniyor musunuz?</div>
+            <div class="option" onclick="selectOption(this,8,1)"><div class="option-letter">A</div> Hayır, bilimsel bir test bu.</div>
+            <div class="option" onclick="selectOption(this,8,2)"><div class="option-letter">B</div> Biraz şüphelendim ama devam ettim.</div>
+            <div class="option" onclick="selectOption(this,8,3)"><div class="option-letter">C</div> Evet ama ne olacak ki.</div>
+            <div class="option option-d" onclick="selectOption(this,8,4)"><div class="option-letter">D</div> Zaten şüphelendim, yine de cevapladım.</div>
+            <button class="btn-next" id="btn8" disabled onclick="showResult()">📊 Sonuçları Gör</button>
+        </div>
+    </div>
+
+    <!-- SONUÇ -->
+    <div class="result-card" id="result">
+        <div class="result-emoji" id="result-emoji">🏆</div>
+        <div class="result-title" id="result-title"></div>
+        <div class="result-score" id="result-score">%0</div>
+        <div class="result-badge" id="result-badge"></div>
+        <div class="result-desc" id="result-desc"></div>
+        <div class="stamp">🏛️<br>RESMİ<br>ONAY</div>
+        <br>
+        <button class="share-btn" onclick="shareResult()">📱 WhatsApp'ta Paylaş</button>
+        <br><br>
+        <button class="btn-next" onclick="restart()" style="background:#888">🔄 Tekrar Yap</button>
+    </div>
+
+</div>
+
+<div class="footer">
+    © 2024 Türkiye Psikoloji ve Kişilik Araştırmaları Enstitüsü. Tüm hakları saklıdır.<br>
+    Bu test tamamen eğlence amaçlıdır. Mişamber gerçek bir tanımdır. 😂
+</div>
+
+<script>
+    let answers = {};
+    let currentMeterPct = 0;
+    let isim = '';
+    let mishamber = '';
+
+    const emojis = ['😇','🙂','😐','🤨','😏','😈','👿','💀','☠️'];
+    const PARTICLES_EVIL  = ['💀','😈','🔥','💣','☠️','👹','🤡','⚡','💥','🖤'];
+    const PARTICLES_GOOD  = ['😇','⭐','✨','🌟','💫','🕊️','🌸','💎'];
+
+    function startTest() {
+        isim      = document.getElementById('input-isim').value.trim()      || 'Canım';
+        mishamber = document.getElementById('input-mişamber').value.trim()  || 'Mişamberiniz';
+
+        // Soruları dinamik olarak doldur
+        document.getElementById('qt1').innerHTML =
+            `<span class="highlight">${mishamber}</span>'iniz yemekten para vermemek için kasıtlı olarak tuvalete gittiğini fark ettiniz. Ne yaparsınız?`;
+        document.getElementById('qt2').innerHTML =
+            `Markette <span class="highlight">${mishamber}</span>'inize kasiyerin yanlışlıkla 50 TL fazla para üstü verdiğini fark ettiniz. Tepkiniz?`;
+        document.getElementById('qt3').innerHTML =
+            `<span class="highlight">${mishamber}</span>'inizin bilgisayarını kullanırken onun kişisel e-postalarını kazara açtınız. Ne yaparsınız?`;
+        document.getElementById('qt4').innerHTML =
+            `<span class="highlight">${mishamber}</span>'iniz araba sürerken ben genelde... ne yaparım?`;
+        document.getElementById('qt5').innerHTML =
+            `<span class="highlight">${mishamber}</span>'inizin son iki parası kalmış. Ne yaparsınız?`;
+
+        // D seçeneklerinde de isim geçsin
+        document.getElementById('q1a').textContent = `Hesabı ben öderim, ${mishamber}'imin tostikleri sağ olsun.`;
+        document.getElementById('q1d').textContent = `Sessizce cebinden iki parasını çalar, hesabı da telefonundan öderim.`;
+        document.getElementById('q2d').textContent = `Geri kalan 150 TL'yi de ${mishamber}'imin cebinden alırım.`;
+        document.getElementById('q4d').textContent = `Yol boyunca ${mishamber}'i rahatsız edecek şeyler söyleyip işine karışırım.`;
+        document.getElementById('q5d').textContent = `${mishamber}'imin iki parası olamaz, iki paraların hepsi benimdir zaten.`;
+        document.getElementById('q7d').textContent = `${mishamber}'imin haksız olduğu diğer konuları düşünür, hangisini yüzüne vursam diye düşünür, sonra ağlarım iki para kazanırım.`;
+
+        document.getElementById('intro').style.display   = 'none';
+        document.getElementById('test-area').style.display = 'block';
+        document.getElementById('meterWrapper').style.display = 'block';
+        updateMeter(0);
+    }
+
+    function selectOption(el, qNum, val) {
+        const card = document.getElementById('q' + qNum);
+        card.querySelectorAll('.option').forEach(o => o.classList.remove('selected','selected-evil'));
+
+        if (val === 4) el.classList.add('selected-evil');
+        else el.classList.add('selected');
+
+        answers[qNum] = val;
+
+        let total = 0;
+        for (let q in answers) total += answers[q] - 1;
+        const pct = Math.round((total / 24) * 100);
+        updateMeter(pct);
+
+        document.getElementById('btn' + qNum).disabled = false;
+    }
+
+    function updateMeter(pct) {
+        currentMeterPct = pct;
+        const fill    = document.getElementById('meterFill');
+        const pctEl   = document.getElementById('meterPct');
+        const emojiEl = document.getElementById('meterEmoji');
+        const wrapper = document.getElementById('meterWrapper');
+
+        fill.style.width   = pct + '%';
+        pctEl.textContent  = '%' + pct;
+        pctEl.classList.remove('count-pop');
+        void pctEl.offsetWidth;
+        pctEl.classList.add('count-pop');
+
+        const idx = Math.min(Math.floor(pct / 13), emojis.length - 1);
+        emojiEl.textContent = emojis[idx];
+
+        if (pct < 30)       fill.style.background = 'linear-gradient(90deg,#2ecc71,#27ae60)';
+        else if (pct < 55)  fill.style.background = 'linear-gradient(90deg,#f1c40f,#e67e22)';
+        else if (pct < 75)  fill.style.background = 'linear-gradient(90deg,#e67e22,#e74c3c)';
+        else                fill.style.background = 'linear-gradient(90deg,#e74c3c,#8e44ad,#2c3e50)';
+
+        if (pct >= 70) {
+            fill.style.boxShadow = '0 0 20px #ff0000, 0 0 40px #ff000066';
+            document.body.classList.remove('screen-shake');
+            void document.body.offsetWidth;
+            document.body.classList.add('screen-shake');
+            if (pct >= 80) spawnParticles(PARTICLES_EVIL, 5);
+        } else {
+            fill.style.boxShadow = 'none';
+        }
+    }
+
+    function spawnParticles(pool, count) {
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                p.textContent = pool[Math.floor(Math.random() * pool.length)];
+                const tx  = (Math.random() - 0.5) * window.innerWidth * 0.8;
+                const ty  = -(Math.random() * window.innerHeight * 0.7) - 100;
+                const rot = (Math.random() - 0.5) * 720;
+                const dur = (0.8 + Math.random() * 1.2) + 's';
+                p.style.setProperty('--tx',  tx  + 'px');
+                p.style.setProperty('--ty',  ty  + 'px');
+                p.style.setProperty('--rot', rot + 'deg');
+                p.style.setProperty('--dur', dur);
+                p.style.left = (30 + Math.random() * 40) + 'vw';
+                p.style.top  = '60px';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), parseFloat(dur) * 1000 + 100);
+            }, i * 80);
+        }
+    }
+
+    function nextQuestion(nextNum) {
+        document.getElementById('q' + (nextNum-1)).classList.remove('active');
+        document.getElementById('q' + nextNum).classList.add('active');
+        document.getElementById('progress').style.width = ((nextNum-1)/8*100) + '%';
+        document.getElementById('progress-text').textContent = `Soru ${nextNum} / 8`;
+    }
+
+    function showResult() {
+        const pct = currentMeterPct;
+        triggerFinalExplosion(pct);
+
+        setTimeout(() => {
+            document.getElementById('q8').classList.remove('active');
+            document.getElementById('test-area').style.display   = 'none';
+            document.getElementById('meterWrapper').style.display = 'none';
+
+            let emoji, title, badge, desc;
+
+            if (pct <= 20) {
+                emoji = '😇';
+                title = `${isim}, Sen Mübarek Bir Ruhsun!`;
+                badge = '🕊️ ŞEREF MADALYASI SAHİBİ';
+                desc  = `Tebrikler ${isim}! Analiz sonuçlarınız inanılmaz derecede temiz çıktı. ${mishamber}'iniz çok şanslı. Ya gerçekten çok erdemlisiniz, ya da soruları yanlış okudunuz. Her iki durumda da kutlarız. 🌸`;
+            } else if (pct <= 40) {
+                emoji = '😊';
+                title = `${isim}, Normal Düzeyde Şüpheli Birey`;
+                badge = '📋 KABUL EDİLEBİLİR SINIRLAR';
+                desc  = `${isim}, zaman zaman "benim ne zararım var" mantığına kapıldığınız görülmektedir. ${mishamber}'iniz muhtemelen bunu hissediyordur. Ama sizi seviyoruz. Muhtemelen. 😅`;
+            } else if (pct <= 65) {
+                emoji = '😏';
+                title = `${isim}, Orta Seviye Pratikel`;
+                badge = '⚠️ ŞÜPHELİ VAKALAR DOSYASI';
+                desc  = `${isim}, "Yapabilirim ama yapmam... belki... duruma göre" profili çiziyorsunuz. ${mishamber}'iniz dikkatli olmalı. Vicdan henüz tamamen ölmemiş, ama sallanıyor. 🤨`;
+            } else if (pct <= 85) {
+                emoji = '😈';
+                title = `${isim}, Sertifikalı Şerefsiz`;
+                badge = '🏆 ŞEREFSİZLİK SERTİFİKASI';
+                desc  = `${isim}! Enstitümüz tarihinde nadir rastlanan bir profil sergiliyorsunuz. ${mishamber}'iniz bu sonuçları görse ne düşünür dersiniz? Hak verirdi muhtemelen. 💀`;
+            } else {
+                emoji = '👑';
+                title = `${isim}, EFSANE SEVİYE! 💀`;
+                badge = '🎖️ ALTIN ŞEREFSİZLİK MADALYASI';
+                desc  = `Bu kainata sizin gibi bir şerefsiz daha gelmedi, ${isim}. Deccal önünüzde önünü ilikler, "büyüğüm gelmiş" diye 2 rekat namaz kılar. ${mishamber}'inize HEMEN GİDİN ve diz çökün. 😂💀👑`;
+            }
+
+            document.getElementById('result-emoji').textContent = emoji;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-score').textContent = '%' + pct;
+            document.getElementById('result-badge').textContent = badge;
+            document.getElementById('result-desc').textContent  = desc;
+            document.getElementById('result').classList.add('show');
+
+        }, 2200);
+    }
+
+    function triggerFinalExplosion(pct) {
+        const flash = document.createElement('div');
+        flash.classList.add('flash-overlay');
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 700);
+
+        document.body.classList.remove('screen-shake');
+        void document.body.offsetWidth;
+        document.body.classList.add('screen-shake');
+
+        const pool  = pct >= 60 ? PARTICLES_EVIL : PARTICLES_GOOD;
+        const count = pct >= 60 ? 45 : 25;
+
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                p.textContent   = pool[Math.floor(Math.random() * pool.length)];
+                p.style.fontSize = (20 + Math.random() * 30) + 'px';
+                const tx  = (Math.random() - 0.5) * window.innerWidth * 1.2;
+                const ty  = -(Math.random() * window.innerHeight * 0.9) - 50;
+                const rot = (Math.random() - 0.5) * 1080;
+                const dur = (1 + Math.random() * 1.5) + 's';
+                p.style.setProperty('--tx',  tx  + 'px');
+                p.style.setProperty('--ty',  ty  + 'px');
+                p.style.setProperty('--rot', rot + 'deg');
+                p.style.setProperty('--dur', dur);
+                p.style.left = (10 + Math.random() * 80) + 'vw';
+                p.style.top  = '50vh';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), parseFloat(dur)*1000 + 200);
+            }, i * 40);
+        }
+    }
+
+    function shareResult() {
+        const score = document.getElementById('result-score').textContent;
+        const badge = document.getElementById('result-badge').textContent;
+        const text  = `${isim} olarak Türkiye Kişilik Testi'nden ${score} Şerefsizlik Katsayısı aldım! Unvanım: "${badge}" 😂 ${mishamber} bil bunu! 👀`;
+        window.open('https://wa.me/?text=' + encodeURIComponent(text));
+    }
+
+    function restart() { location.reload(); }
+</script>
+
+</body>
+</html>
