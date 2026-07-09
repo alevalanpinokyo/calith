@@ -493,8 +493,16 @@
     const PARTICLES_GOOD  = ['😇','⭐','✨','🌟','💫','🕊️','🌸','💎'];
 
     function startTest() {
-        isim      = document.getElementById('input-isim').value.trim()      || 'Canım';
-        mishamber = document.getElementById('input-mişamber').value.trim()  || 'Mişamberiniz';
+        const isimInput = document.getElementById('input-isim').value.trim();
+        const mishamberInput = document.getElementById('input-mişamber').value.trim();
+
+        if (!isimInput || !mishamberInput) {
+            alert('Lütfen analiz için tüm alanları eksiksiz doldurunuz! ⚠️');
+            return;
+        }
+
+        isim      = isimInput;
+        mishamber = mishamberInput;
 
         // Soruları dinamik olarak doldur
         document.getElementById('qt1').innerHTML =
